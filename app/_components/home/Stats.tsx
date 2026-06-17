@@ -50,23 +50,23 @@ export default function Stats() {
         <div className="stats-inner">
           <div className="reveal">
             <span className="eyebrow">AAA in numbers</span>
-            <h2>Measurable, transparent, and updated quarterly.</h2>
+            <h2>Accreditation built on internationally recognized standards.</h2>
           </div>
           <div>
             <div className="stats-grid">
               <div className="stat reveal">
-                <StatNum value={12400} suffix="+" />
-                <div className="lbl">Accredited certificates</div>
+                <StatNum value={12} suffix="" />
+                <div className="lbl">Accreditation programs</div>
               </div>
               <div className="stat reveal" style={{ transitionDelay: "120ms" }}>
-                <StatNum value={62} suffix="" />
-                <div className="lbl">Countries we operate in</div>
+                <StatNum value={8} suffix="" />
+                <div className="lbl">International standards applied</div>
               </div>
               <div className="stat reveal" style={{ transitionDelay: "240ms" }}>
-                <StatNum value={180} suffix="+" />
-                <div className="lbl">Active assessors</div>
+                <StatNum value={6} suffix="" />
+                <div className="lbl">International partner organizations</div>
               </div>
-              <div className="stats-caption">Updated quarterly · As of Q1 2026</div>
+              <div className="stats-caption">As of June 2026</div>
             </div>
           </div>
         </div>

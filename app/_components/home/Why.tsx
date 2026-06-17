@@ -5,25 +5,25 @@ const PILLARS: { n: string; icon: IconName; title: string; body: string }[] = [
     n: "01",
     icon: "globe",
     title: "Globally Accepted",
-    body: "Accreditations recognized across 60+ countries through international partnership networks and mutual recognition arrangements.",
+    body: "AAA's vision is to provide international accreditation accepted globally — promoting the acceptance of accredited results and certificates internationally and amongst global partners.",
   },
   {
     n: "02",
     icon: "iso",
-    title: "ISO/IEC Aligned",
-    body: "Every AAA program is built on an internationally-recognized ISO/IEC standard — not invented criteria.",
+    title: "Built on International Standards",
+    body: "Programs are based on internationally recognized standards — from ISO/IEC 17025 and ISO 15189 to ISO/IEC 17024 and ASTM E2659 — ensuring the competence of accredited organizations.",
   },
   {
     n: "03",
     icon: "flag",
     title: "US-Authorized",
-    body: "Authorized by the Commonwealth of Virginia, USA, with operations governed under United States legal jurisdiction.",
+    body: "Authorized by the State Corporation Commission of the Commonwealth of Virginia to transact business under Title 13.1 of the Code of Virginia, offering a full range of comprehensive accreditation services.",
   },
   {
     n: "04",
     icon: "scale",
     title: "Independent & Impartial",
-    body: "Governance protected by a public impartiality safeguarding policy — separating commercial interests from accreditation decisions.",
+    body: "Impartiality, transparency, objectivity, and independence are paramount in all AAA operations — safeguarded by a published impartiality policy, conflict-of-interest management, and non-discriminatory services.",
   },
 ];
 
@@ -37,8 +37,9 @@ export default function Why() {
             <h2 className="section-heading">Built for institutions that take quality seriously.</h2>
           </div>
           <p className="lede-side">
-            Four commitments that distinguish AAA from generic certification — and align our work
-            with the bodies our clients answer to.
+            Four commitments drawn from AAA&apos;s mission: independent, international
+            accreditation programs that provide globally accepted confidence in the competence
+            of accredited organizations.
           </p>
         </div>
 

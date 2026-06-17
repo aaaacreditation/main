@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../_components/Icon";
 import CTA from "../_components/CTA";
+import PageHero from "../_components/PageHero";
 
 export const metadata: Metadata = {
-  title: "Membership",
+  title: "AAA Membership",
   description:
-    "Join the American Accreditation Association membership community through individual or organizational membership.",
+    "AAA Membership — your gateway to excellence and professional growth. Join the American Accreditation Association as an individual or organizational member.",
 };
 
 const MEMBERSHIP_TYPES = [
@@ -16,11 +17,12 @@ const MEMBERSHIP_TYPES = [
     href: "/membership/individual",
     image:
       "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1400&q=82",
-    desc: "Designed for professionals passionate about shaping accreditation standards and advancing quality across industries.",
+    desc: "Advance in your accreditation knowledge and career. Designed for professionals passionate about shaping accreditation standards.",
     bullets: [
       "Support the advancement of quality and competence across industries.",
       "Gain recognition as a valued contributor to the accreditation ecosystem.",
-      "Access learning resources, leadership opportunities, and professional development programs.",
+      "Access exclusive learning resources, leadership opportunities, and professional development programs.",
+      "Two-year membership — $350.",
     ],
   },
   {
@@ -29,11 +31,12 @@ const MEMBERSHIP_TYPES = [
     href: "/membership/organizational",
     image:
       "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1400&q=82",
-    desc: "A strategic entry point for institutions that want to align with AAA before pursuing full accreditation.",
+    desc: "The first step in the journey to full accreditation — ideal for institutions aspiring to be aligned with AAA.",
     bullets: [
-      "Enhance credibility and brand reputation.",
-      "Showcase commitment to high-quality standards.",
-      "Access resources and professional support for future accreditation.",
+      "Enhance your credibility and brand reputation.",
+      "Showcase your commitment to maintaining high-quality standards.",
+      "Access exclusive resources and professional support to prepare for full accreditation.",
+      "One-year membership — $500.",
     ],
   },
 ];
@@ -42,54 +45,34 @@ const WHY_JOIN = [
   {
     icon: "book" as const,
     title: "Exclusive resources",
-    text: "Tailored guidance for personal and organizational development across accreditation, quality, and competence.",
+    text: "Exclusive resources tailored for personal and organizational development.",
   },
   {
     icon: "globe" as const,
-    title: "Global network",
-    text: "Connect with like-minded professionals and institutions working toward international standards of excellence.",
+    title: "Global networking",
+    text: "Networking with a global community of like-minded professionals and institutions.",
   },
   {
     icon: "chart" as const,
-    title: "Career-building visibility",
-    text: "Build credibility through leadership opportunities, professional development, and association with AAA.",
+    title: "Leadership opportunities",
+    text: "Leadership and career-building opportunities that enhance your credibility.",
   },
 ];
 
 export default function Page() {
   return (
     <>
-      <section className="mem-hero">
-        <div className="mem-hero-media" />
-        <div className="container">
-          <div className="mem-crumbs">
-            <Link href="/">Home</Link>
-            <span />
-            <span>Membership</span>
-          </div>
-          <div className="mem-hero-grid">
-            <div className="reveal">
-              <span className="eyebrow">Membership</span>
-              <h1>Join a global community advancing accreditation excellence.</h1>
-            </div>
-            <div className="mem-hero-panel reveal">
-              <p>
-                The American Accreditation Association (AAA) invites both organizations and
-                individuals to become part of a prestigious global community dedicated to advancing
-                accreditation standards and fostering professional development.
-              </p>
-              <div className="mem-hero-actions">
-                <Link href="/membership/individual" className="btn btn-primary">
-                  Individual Membership <Icon name="arrow" size={14} className="arrow" />
-                </Link>
-                <Link href="/membership/organizational" className="btn btn-ghost">
-                  Organizational Membership
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        image="/hero.jpg"
+        eyebrow="AAA Membership"
+        title={<>Your gateway to excellence and <em>professional growth.</em></>}
+        intro="The American Accreditation Association (AAA) invites both organizations and individuals to become part of a prestigious global community dedicated to advancing accreditation standards and fostering professional development."
+        crumbs={[{ label: "Membership" }]}
+        meta={[
+          { k: "Membership types", v: "Individual & Organizational" },
+          { k: "Community", v: "Global" },
+        ]}
+      />
 
       <section className="mem-overview">
         <div className="container">

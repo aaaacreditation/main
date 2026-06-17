@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SealRosette from "./SealRosette";
 
 export default function PageHero({
   eyebrow,
@@ -6,15 +7,25 @@ export default function PageHero({
   intro,
   crumbs,
   meta,
+  image,
 }: {
   eyebrow: string;
   title: React.ReactNode;
   intro?: React.ReactNode;
   crumbs?: { href?: string; label: string }[];
   meta?: { k: string; v: string }[];
+  image?: string;
 }) {
   return (
-    <section className="about-hero">
+    <section className={"about-hero" + (image ? " has-image" : "")}>
+      {image && (
+        <div
+          className="about-hero-bg"
+          style={{ backgroundImage: `url(${image})` }}
+          aria-hidden="true"
+        />
+      )}
+      <SealRosette spin={!!image} />
       <div className="container">
         <div className="crumbs">
           <Link href="/">Home</Link>

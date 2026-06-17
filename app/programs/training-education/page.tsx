@@ -3,11 +3,12 @@ import Link from "next/link";
 import CTA from "../../_components/CTA";
 import Icon from "../../_components/Icon";
 import type { IconName } from "../../_components/Icon";
+import PageHero from "../../_components/PageHero";
 
 export const metadata: Metadata = {
-  title: "Training & Education Providers",
+  title: "Training & Education Providers Accreditation",
   description:
-    "AAA accreditation for training and education providers, including program recognition, instructor requirements, digital certificates, and ADCP directory visibility.",
+    "AAA accreditation for training and education providers: formal recognition of classroom and e-learning programs, instructor requirements, the AAA accreditation mark, digital certificates, and listing in the American Directory of Competent Personnel (ADCP).",
 };
 
 const MEANS = [
@@ -20,37 +21,37 @@ const BENEFITS = [
   {
     title: "International Recognition",
     body:
-      "Accreditation is proof of your ability to meet high levels of professionalism in course material and course provision. It is a mark of quality.",
+      "Accreditation of training and education providers from AAA is proof of your ability to meet the high levels of professionalism in your course material and course provision that AAA requires — it is a mark of quality.",
   },
   {
     title: "Accreditation symbol and mark from AAA",
     body:
-      "Use the AAA accreditation mark to communicate that your training program has been independently reviewed against defined requirements.",
+      "Permission to use the accreditation symbol and mark from AAA on your training materials, training certificates, and publicity materials.",
   },
   {
     title: "Add your certified students to the directory",
     body:
-      "Accredited organizations can list certified trainees, staff, and students on a recognized platform for easier verification.",
+      "You will have access to add your certified students to the American Directory of Competent Personnel.",
   },
   {
     title: "Demonstrate adoption of new technologies",
     body:
-      "Digital validation, online records, and directory visibility show clients that your organization maintains modern credentialing practices.",
+      "You will demonstrate to your customers that you are adopting new technologies with our digital certificate service.",
   },
   {
     title: "Expand into new markets",
     body:
-      "International visibility helps training providers reach learners, employers, and partners outside their home market.",
+      "By running a course that has received AAA accreditation, you will not only attract more delegates but also be able to expand into new markets.",
   },
   {
     title: "Increase revenues",
     body:
-      "Accredited programs can command stronger trust, helping providers convert interest into enrollments and institutional partnerships.",
+      "Increase your revenues and get the opportunity to train worldwide.",
   },
   {
-    title: "Access to our researches",
+    title: "Access to our research",
     body:
-      "Accredited providers can access AAA research, standards updates, and program guidance supporting continuous improvement.",
+      "You will also have access to our research — giving you key insights into what delegates from specific industries really want from their trainer.",
   },
 ];
 
@@ -129,38 +130,17 @@ const STORIES = [
 
 function TEHero() {
   return (
-    <section className="te-hero">
-      <div className="te-hero-media" aria-hidden="true" />
-      <div className="container">
-        <div className="te-crumbs">
-          <Link href="/">Home</Link>
-          <span />
-          <Link href="/programs/healthcare">Programs</Link>
-          <span />
-          <strong>Training & Education Providers</strong>
-        </div>
-        <div className="te-hero-content">
-          <span className="eyebrow">Accreditation Program</span>
-          <h1>
-            <span>Training & Education</span>
-            <span>Providers Accreditation</span>
-          </h1>
-          <p>
-            Accreditation of training and education providers ensures that
-            competence delivered through courses is demonstrable, auditable, and
-            portable across borders.
-          </p>
-          <div className="te-hero-actions">
-            <Link href="/quote" className="btn btn-gold">
-              Request a Quote <Icon name="arrow" size={14} className="arrow" />
-            </Link>
-            <Link href="#application" className="btn btn-ghost-light">
-              Download Application <Icon name="download" size={14} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <PageHero
+      image="/hero.jpg"
+      eyebrow="Accreditation Program"
+      title={<>Training &amp; education providers <em>accreditation.</em></>}
+      intro="Have your training and education programs formally recognized — classroom, workshop-based, or e-learning, of any length, delivered anywhere in the world."
+      crumbs={[{ href: "/programs/healthcare", label: "Programs" }, { label: "Training & Education Providers" }]}
+      meta={[
+        { k: "Delivery", v: "Worldwide" },
+        { k: "Formats", v: "Classroom · Workshop · E-learning" },
+      ]}
+    />
   );
 }
 
@@ -189,9 +169,9 @@ function TEIntro() {
           <div className="te-intro-visual">
             <div className="te-photo-main" />
             <div className="te-photo-card">
-              <Icon name="cert" size={24} />
-              <strong>ASTM E-2659</strong>
-              <span>Certificate program recognition</span>
+              <Icon name="globe" size={24} />
+              <strong>Worldwide Delivery</strong>
+              <span>Classroom, workshop, or e-learning — any length, anywhere in the world</span>
             </div>
           </div>
         </div>
@@ -403,10 +383,12 @@ function TESchool() {
             <span className="eyebrow">Related Program</span>
             <h2>School Accreditation</h2>
             <p>
-              AAA also supports school accreditation pathways for institutions
-              seeking recognized quality assurance in education delivery.
+              AAA accredits elementary and secondary schools and supplementary
+              education programs — a framework for the best possible educational
+              program for learners, with recognized credibility for the quality
+              of a school&apos;s program.
             </p>
-            <Link href="/quote" className="btn btn-primary">
+            <Link href="/programs/school-accreditation" className="btn btn-primary">
               Read More <Icon name="arrow" size={14} className="arrow" />
             </Link>
           </div>

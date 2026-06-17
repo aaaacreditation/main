@@ -3,19 +3,24 @@ import PageHero from "../_components/PageHero";
 import Icon from "../_components/Icon";
 import CTA from "../_components/CTA";
 
-export const metadata: Metadata = { title: "Contact Us" };
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description:
+    "Contact the American Accreditation Association (AAA) — 8609 Westwood Center Drive, Tysons Corner, VA 22182, USA. T: +1 (571) 601 2616 · info@aaa-accreditation.org",
+};
 
 export default function Page() {
   return (
     <>
       <PageHero
+        image="/hero.jpg"
         eyebrow="Contact"
-        title={<>Talk to <em>the AAA team.</em></>}
-        intro="Reach the right desk on the first try — choose the topic that best matches your enquiry below."
+        title={<>Let&apos;s <em>connect.</em></>}
+        intro="Thanks for your interest in the American Accreditation Association (AAA). Please use this form if you have any questions and we'll get back to you very soon."
         crumbs={[{ label: "Contact" }]}
         meta={[
-          { k: "Headquarters", v: "Virginia, USA" },
-          { k: "Email", v: "contact@aaa-accreditation.org" },
+          { k: "Headquarters", v: "Tysons Corner, VA, USA" },
+          { k: "Email", v: "info@aaa-accreditation.org" },
         ]}
       />
       <section className="page-body">
@@ -25,16 +30,22 @@ export default function Page() {
               <div className="label">Direct contact</div>
               <ul className="bullets" style={{ marginTop: 24 }}>
                 <li>
-                  <Icon name="mail" size={14} /> contact@aaa-accreditation.org — general enquiries
+                  <Icon name="pin" size={14} /> 8609 Westwood Center Drive, Tysons Corner, VA 22182, USA
                 </li>
                 <li>
-                  <Icon name="mail" size={14} /> apply@aaa-accreditation.org — applications &amp; quotes
+                  <Icon name="phone" size={14} /> T: <a href="tel:+15716012616">+1 (571) 601 2616</a>
                 </li>
                 <li>
-                  <Icon name="mail" size={14} /> impartiality@aaa-accreditation.org — complaints &amp; appeals
+                  <Icon name="phone" size={14} /> Fax: +1 (571) 376 6582
                 </li>
                 <li>
-                  <Icon name="phone" size={14} /> WhatsApp · Mon–Fri
+                  <Icon name="mail" size={14} />{" "}
+                  <a href="mailto:info@aaa-accreditation.org">info@aaa-accreditation.org</a> — general enquiries
+                </li>
+                <li>
+                  <Icon name="mail" size={14} />{" "}
+                  <a href="mailto:healthcare@aaa-accreditation.org">healthcare@aaa-accreditation.org</a> — healthcare
+                  standards feedback &amp; draft-standard consultation
                 </li>
               </ul>
             </div>
@@ -52,8 +63,8 @@ export default function Page() {
                     <option>General enquiry</option>
                     <option>Quote request</option>
                     <option>Application</option>
+                    <option>Membership</option>
                     <option>Complaint or appeal</option>
-                    <option>Press / media</option>
                   </select>
                 </div>
                 <div className="form-row full"><label>Message</label><textarea name="message" required /></div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Icon from "../Icon";
+import SealRosette from "../SealRosette";
 
 const HERO_BG = "/hero.jpg";
 
@@ -13,19 +14,21 @@ export default function Hero() {
         aria-label="Laboratory professionals reviewing accreditation documentation"
       />
       <div className="hero-overlay" />
+      <SealRosette spin />
 
-      <div className="hero-corner-tag">Live · Q1 2026</div>
+      <div className="hero-corner-tag">Virginia, USA</div>
 
       <div className="container">
         <div className="hero-content reveal">
-          <span className="eyebrow">International Accreditation</span>
+          <span className="eyebrow">American Accreditation Association</span>
           <h1>
-            Accreditation that is <span className="accent">accepted, everywhere.</span>
+            International accreditation, <span className="accent">accepted globally.</span>
           </h1>
           <p className="lede">
-            AAA delivers internationally-recognized accreditation programs for healthcare,
-            conformity assessment bodies, and training providers — built on ISO/IEC standards
-            and trusted across <strong>60+ countries</strong>.
+            The American Accreditation Association (AAA) offers accreditation worldwide. Our
+            programs are based on <strong>internationally recognized standards</strong> that
+            ensure the competence of accredited organizations and the global acceptance of
+            their accreditations.
           </p>
           <div className="hero-ctas">
             <Link
@@ -35,23 +38,23 @@ export default function Hero() {
             >
               Get a Quote <Icon name="arrow" size={14} className="arrow" />
             </Link>
-            <Link href="/programs/healthcare" className="btn btn-ghost">
+            <Link href="#programs" className="btn btn-ghost">
               Explore Programs <Icon name="arrowUpRight" size={14} className="arrow" />
             </Link>
           </div>
 
           <div className="hero-trust">
             <span className="label">Recognized</span>
-            <span className="std-pill light">ISO/IEC 17011</span>
-            <span className="std-pill light">Virginia, USA</span>
-            <span className="std-pill light">Globally Accepted</span>
+            <span className="std-pill light">Authorized in Virginia, USA</span>
+            <span className="std-pill light">ISQua Member</span>
+            <span className="std-pill light">UNESCO Partner</span>
           </div>
         </div>
       </div>
 
       <div className="hero-stat-card">
-        <div className="num">12,400+ <span>certificates issued</span></div>
-        <div className="lbl">Across 62 countries · 180+ active assessors</div>
+        <div className="num">12 <span>accreditation programs</span></div>
+        <div className="lbl">Healthcare, education &amp; conformity assessment bodies</div>
       </div>
     </section>
   );

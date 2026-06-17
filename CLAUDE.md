@@ -17,6 +17,8 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
   - Do not place `#024985` text on dark backgrounds — use white instead.
 
 ### Suggested Supporting Palette (derived from `#024985`)
+- Map marker red: `#D6334D` — reserved exclusively for the animated location markers on the "Countries We Operate" world map (carried over from the legacy site map at the client's request, June 2026). Do not use it anywhere else.
+- Map deep navy: `#0E2A47` — world-map fill for countries without AAA accreditation (accredited countries use brand `#024985`).
 - White: `#FFFFFF` — backgrounds, surfaces, text on brand color.
 - Neutral 900: `#0F172A` — body text on light backgrounds.
 - Neutral 600: `#475569` — secondary text.
@@ -39,8 +41,9 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 - 700 — Bold (page headings, hero titles)
 
 ### Type Scale (recommended)
-- H1 / Hero: 48–64px, weight 700, tight tracking
-- H2: 36–48px, weight 700
+- H1 / Hero: 48–72px (inner-page heroes up to 88px), weight 600–700, tight tracking (−0.03 to −0.035em), fluid via clamp()
+- H2: 24–36px (modern compact scale; capped site-wide), weight 600, line-height ~1.15, fluid via clamp()
+- Headings use no italic — title accents are upright (color/weight only), never `font-style: italic`
 - H3: 24–32px, weight 600
 - H4: 20–24px, weight 600
 - Body Large: 18px, weight 400

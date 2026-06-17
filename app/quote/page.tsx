@@ -3,15 +3,20 @@ import PageHero from "../_components/PageHero";
 import Icon from "../_components/Icon";
 import CTA from "../_components/CTA";
 
-export const metadata: Metadata = { title: "Get a Quote" };
+export const metadata: Metadata = {
+  title: "Get a Quote",
+  description:
+    "Request a quote for AAA accreditation. Tell us about your organization and program of interest, and the American Accreditation Association team will get back to you.",
+};
 
 export default function Page() {
   return (
     <>
       <PageHero
+        image="/hero.jpg"
         eyebrow="Get a Quote"
-        title={<>A tailored quote, <em>within 48 hours.</em></>}
-        intro="Tell us about your sector, the applicable ISO/IEC standards, and the geographies you operate in. Our team will scope your accreditation journey and respond within two working days."
+        title={<>Fill a form to <em>get a quote.</em></>}
+        intro="Please use this form to get a quote. Tell us about your organization and the accreditation program you are interested in, and our team will get back to you. Thank you for your interest in the American Accreditation Association — AAA."
         crumbs={[{ label: "Get a Quote" }]}
       />
       <section className="page-body">
@@ -20,9 +25,9 @@ export default function Page() {
             <div className="reveal">
               <div className="label">Why we ask</div>
               <p style={{ marginTop: 24 }}>
-                Accreditation scope, applicable standards and witnessing requirements vary by sector
-                and by country. The information you provide here lets us prepare a defensible quote
-                rather than a placeholder.
+                Accreditation scope, applicable standards, and assessment requirements vary by
+                sector and by country. The information you provide here lets us prepare an accurate
+                quote for your organization.
               </p>
               <ul className="bullets">
                 <li>Sector and applicable ISO/IEC standard</li>

@@ -1,29 +1,6 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import Icon, { type IconName } from "../Icon";
-
-const PROGRAMS: { icon: IconName; title: string; desc: string; stds: string[]; href: string }[] = [
-  {
-    icon: "medical",
-    title: "Healthcare Accreditation",
-    desc: "Independent accreditation for hospitals, clinics, and medical laboratories — improving patient outcomes through internationally-aligned quality systems.",
-    stds: ["ISO 15189", "ISO 9001"],
-    href: "/programs/healthcare",
-  },
-  {
-    icon: "flask",
-    title: "Conformity Assessment Bodies",
-    desc: "Accreditation of testing, calibration, inspection and certification bodies, supporting global recognition of conformity-assessment results.",
-    stds: ["ISO/IEC 17025", "ISO/IEC 17020", "ISO/IEC 17021"],
-    href: "/programs/conformity-assessment-bodies",
-  },
-  {
-    icon: "book",
-    title: "Training Providers & Personnel",
-    desc: "Accreditation of personnel-certification bodies and training programs — ensuring competence is demonstrable, auditable, and portable across borders.",
-    stds: ["ISO/IEC 17024"],
-    href: "/programs/training-education",
-  },
-];
+import Icon from "../Icon";
 
 export default function Programs() {
   return (
@@ -31,39 +8,65 @@ export default function Programs() {
       <div className="container">
         <div className="block-head reveal">
           <div>
-            <span className="eyebrow">Programs</span>
-            <h2 className="section-heading">Internationally-recognized accreditation, scoped to your sector.</h2>
+            <span className="eyebrow">Our Services</span>
+            <h2 className="section-heading">Accreditation programs, recognized worldwide.</h2>
           </div>
           <p className="lede-side">
-            Each AAA program is built on a defined ISO/IEC standard and delivered by independent assessors
-            with sector experience.
+            Choose the accreditation pathway that matches your organization — each assessed
+            against internationally recognized standards.
           </p>
         </div>
 
-        <div className="programs-grid">
-          {PROGRAMS.map((p, i) => (
-            <article
-              className="program-card reveal"
-              key={p.title}
-              style={{ transitionDelay: `${i * 80}ms` }}
-            >
-              <div className="program-icon">
-                <Icon name={p.icon} size={26} />
-              </div>
-              <h3>{p.title}</h3>
-              <p>{p.desc}</p>
-              <div className="program-stds">
-                {p.stds.map((s) => (
-                  <span key={s} className="std-pill light">{s}</span>
-                ))}
-              </div>
-              <div className="program-foot">
-                <Link href={p.href} className="ed-link">
-                  Learn more <Icon name="arrow" size={14} className="arrow" />
+        <div className="svc-grid">
+          <article className="svc-card reveal" style={{ "--svc-bg": "url('/home/training.jpg')" } as CSSProperties}>
+            <div className="svc-card-inner">
+              <h3>Training &amp; Education Providers Accreditation</h3>
+              <p>
+                Formal recognition for training and education programs — classroom,
+                workshop-based, or e-learning, delivered anywhere in the world.
+              </p>
+              <Link href="/programs/training-education" className="svc-readmore">
+                Read More <Icon name="arrow" size={14} className="arrow" />
+              </Link>
+            </div>
+          </article>
+
+          <article className="svc-card reveal" style={{ transitionDelay: "90ms", "--svc-bg": "url('/home/healthcare.jpg')" } as CSSProperties}>
+            <div className="svc-card-inner">
+              <h3>Healthcare Accreditation</h3>
+              <p>
+                Accreditation for hospitals and healthcare organizations — demonstrating a
+                commitment to patient safety, clinical excellence, and continuous improvement.
+              </p>
+              <Link href="/programs/healthcare" className="svc-readmore">
+                Read More <Icon name="arrow" size={14} className="arrow" />
+              </Link>
+            </div>
+          </article>
+
+          <article className="svc-card reveal" style={{ transitionDelay: "180ms", "--svc-bg": "url('/home/conformity.jpg')" } as CSSProperties}>
+            <div className="svc-card-inner">
+              <h3>Conformity Assessment Bodies Accreditation</h3>
+              <p>
+                A full family of programs, supporting global recognition of conformity-assessment
+                results across:
+              </p>
+              <div className="svc-links">
+                <Link href="/programs/iso-17025">
+                  Laboratories <Icon name="arrowUpRight" size={13} />
+                </Link>
+                <Link href="/programs/iso-17065">
+                  Certification Bodies <Icon name="arrowUpRight" size={13} />
+                </Link>
+                <Link href="/programs/iso-17020">
+                  Inspection Bodies <Icon name="arrowUpRight" size={13} />
                 </Link>
               </div>
-            </article>
-          ))}
+              <Link href="/programs/conformity-assessment-bodies" className="svc-readmore">
+                Read More <Icon name="arrow" size={14} className="arrow" />
+              </Link>
+            </div>
+          </article>
         </div>
       </div>
     </section>

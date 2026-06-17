@@ -4,11 +4,12 @@ import Link from "next/link";
 import CTA from "../../_components/CTA";
 import Icon from "../../_components/Icon";
 import type { IconName } from "../../_components/Icon";
+import PageHero from "../../_components/PageHero";
 
 export const metadata: Metadata = {
-  title: "Conformity Assessment Bodies",
+  title: "Conformity Assessment Bodies Accreditation",
   description:
-    "AAA accreditation programs for laboratories, inspection bodies, certification bodies, and proficiency testing providers under ISO/IEC standards.",
+    "AAA accreditation programs for inspection bodies, system, personnel, and product certification bodies, testing, calibration, and medical laboratories, and proficiency testing providers under ISO/IEC 17020, 17021-1, 17024, 17025, ISO 15189, ISO/IEC 17065 & Halal, and ISO/IEC 17043.",
 };
 
 const PROGRAMS: {
@@ -94,75 +95,47 @@ const PROGRAMS: {
 
 const OVERVIEW = [
   {
-    label: "Who this program is for",
+    label: "To industry and trade",
     items: [
-      "Testing and calibration laboratories operating across regulated sectors",
-      "Independent inspection bodies (Type A, B, or C)",
-      "Management-system certification bodies (QMS, EMS, FSMS, etc.)",
-      "Product-certification and personnel-certification bodies",
+      "Accreditation facilitates trade",
+      "Eliminates the need for repetitive testing, certification, and inspection",
     ],
   },
   {
-    label: "Scope of accreditation",
+    label: "To regulators",
     items: [
-      "Technical competence and metrological traceability",
-      "Impartiality safeguards and management-system requirements",
-      "Sampling, decision rules, and reporting frameworks",
-      "Witnessed assessments and proficiency-testing participation",
+      "Accreditation provides a reliable and impartial basis for sound decision-making",
     ],
   },
   {
-    label: "Benefits of AAA accreditation",
+    label: "To conformity assessment service providers",
     items: [
-      "Global mutual-recognition through partnership networks (ILAC, IAF)",
-      "Reduced re-testing and re-inspection in cross-border trade",
-      "Demonstrated technical competence to regulators and clients",
-      "Continuous improvement through structured surveillance audits",
+      "A means of demonstrating your competence to your clients",
+      "An effective marketing tool and a passport to submit tenders to contractors that require independently verified conformity assessment service providers",
+    ],
+  },
+  {
+    label: "To users of accredited services and consumers",
+    items: [
+      "Your guarantee of reliable and comparable conformity assessment results",
+      "Accreditation increases the reliability of products",
     ],
   },
 ];
 
 function CABHero() {
   return (
-    <section className="cab-hero">
-      <div className="cab-hero-media" aria-hidden="true" />
-      <div className="cab-hero-shade" aria-hidden="true" />
-      <div className="container">
-        <div className="cab-crumbs">
-          <Link href="/">Home</Link>
-          <span />
-          <Link href="/programs/healthcare">Programs</Link>
-          <span />
-          <strong>Conformity Assessment Bodies</strong>
-        </div>
-
-        <div className="cab-hero-grid">
-          <div>
-            <span className="eyebrow">Accreditation Programs</span>
-            <h1>
-              <span>Conformity</span>
-              <span>Assessment</span>
-              <span>Bodies</span>
-              <span>Accreditation</span>
-            </h1>
-          </div>
-
-          <aside className="cab-hero-panel">
-            <p>
-              Accreditation of testing, calibration, inspection and certification
-              bodies, supporting global recognition of conformity-assessment results.
-            </p>
-            <div className="cab-hero-tags">
-              <span>ISO/IEC 17025</span>
-              <span>ISO/IEC 17020</span>
-              <span>ISO/IEC 17021</span>
-              <span>ISO/IEC 17024</span>
-              <span>ISO/IEC 17065</span>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
+    <PageHero
+      image="/hero.jpg"
+      eyebrow="Accreditation Programs"
+      title={<>Conformity assessment bodies <em>accreditation.</em></>}
+      intro="Accreditation of testing, calibration, inspection and certification bodies, supporting global recognition of conformity-assessment results."
+      crumbs={[{ href: "/programs/healthcare", label: "Programs" }, { label: "Conformity Assessment Bodies" }]}
+      meta={[
+        { k: "Programs", v: "7 ISO/IEC standards" },
+        { k: "Scope", v: "Testing · Inspection · Certification" },
+      ]}
+    />
   );
 }
 
@@ -222,12 +195,14 @@ function CABOverview() {
       <div className="container">
         <div className="cab-overview-grid">
           <div className="cab-overview-copy">
-            <span className="eyebrow">Program Overview</span>
+            <span className="eyebrow">Benefits of Accreditation</span>
             <h2>One accreditation family for the organizations that prove conformity.</h2>
             <p>
-              AAA evaluates the systems, competence, decision rules, records, and
-              impartiality controls behind each conformity-assessment activity, so
-              results can be trusted by regulators, clients, and markets.
+              Accreditation is a formal process by which a recognized body evaluates
+              and certifies that an institution meets predefined and established
+              quality standards. AAA is a third-party accreditation body that
+              delivers accreditation services according to various international
+              standards.
             </p>
             <div className="cab-overview-actions">
               <Link href="/quote" className="btn btn-gold">

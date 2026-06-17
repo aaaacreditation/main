@@ -1,50 +1,19 @@
-import Link from "next/link";
+import PageHero from "../PageHero";
 
 export default function AboutHero() {
   return (
-    <section className="about-hero">
-      <div className="container">
-        <div className="crumbs">
-          <Link href="/">Home</Link>
-          <span className="sep" />
-          <span className="current">About</span>
-        </div>
-
-        <div className="about-hero-grid">
-          <div className="reveal">
-            <span className="eyebrow">About AAA</span>
-            <h1>
-              An institution built on <em>the standards we audit.</em>
-            </h1>
-          </div>
-
-          <div className="about-hero-side reveal">
-            <p>
-              The American Accreditation Association is an independent accreditation body
-              authorized by the Commonwealth of Virginia, USA — delivering ISO/IEC-aligned
-              programs to organizations operating across more than sixty countries.
-            </p>
-            <div className="about-hero-meta">
-              <div className="cell">
-                <div className="k">Headquarters</div>
-                <div className="v">Virginia, USA</div>
-              </div>
-              <div className="cell">
-                <div className="k">Founded</div>
-                <div className="v">2014</div>
-              </div>
-              <div className="cell">
-                <div className="k">Operating in</div>
-                <div className="v">62 countries</div>
-              </div>
-              <div className="cell">
-                <div className="k">Active assessors</div>
-                <div className="v">180+ globally</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <PageHero
+      image="/hero.jpg"
+      eyebrow="About AAA"
+      title={<>International accreditation, <em>accepted globally.</em></>}
+      intro="AAA is the American Accreditation Association — authorized in the United States by the State Corporation Commission of the Commonwealth of Virginia to transact its business according to its articles of cooperation under Title 13.1 of the Code of Virginia, and to offer a full range of comprehensive accreditation services."
+      crumbs={[{ label: "About AAA" }]}
+      meta={[
+        { k: "Authorized by", v: "Commonwealth of Virginia, USA" },
+        { k: "Legal basis", v: "Code of Virginia · Title 13.1" },
+        { k: "Areas of competency", v: "10 accreditation programs" },
+        { k: "Acceptance", v: "Global" },
+      ]}
+    />
   );
 }

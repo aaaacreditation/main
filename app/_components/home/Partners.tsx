@@ -2,11 +2,12 @@ import Link from "next/link";
 import Icon from "../Icon";
 
 const PARTNER_NAMES = [
-  "Meridian Health", "Northgate Labs", "Apex Calibration", "Cedarwood Clinic",
-  "Stanford Testing Co.", "Riverbend Medical", "Ironside Inspection", "Pacific Standards",
-  "Caldwell Institute", "Veritas Assay", "Beacon Conformity", "Helios Hospital Group",
-  "Atlas Personnel Cert.", "Drumlin Diagnostics", "Quay Bio", "Foreland Training",
-  "Larkspur Imaging", "Brunton Calibration", "Concord Quality Co.", "Trent Standards Bureau",
+  "International Society for Quality in Health Care (ISQua)",
+  "UNESCO Institute for Lifelong Learning",
+  "American Association for Adult and Continuing Education (AAACE)",
+  "Council on International Higher Education Supervision (CONIES)",
+  "Earth Day Network",
+  "Association of Graduate Careers Advisory Services (AGCAS)",
 ];
 
 function LogoTile({ name, idx }: { name: string; idx: number }) {
@@ -46,7 +47,7 @@ function LogoTile({ name, idx }: { name: string; idx: number }) {
               textTransform: "uppercase",
             }}
           >
-            Accredited
+            Partner
           </span>
           <span>{name}</span>
         </div>
@@ -56,41 +57,32 @@ function LogoTile({ name, idx }: { name: string; idx: number }) {
 }
 
 export default function Partners() {
-  const row1 = PARTNER_NAMES.slice(0, 10);
-  const row2 = PARTNER_NAMES.slice(10);
   return (
     <section className="block partners-block tight">
       <div className="container">
         <div className="block-head reveal" style={{ textAlign: "center", display: "block" }}>
-          <span className="eyebrow" style={{ display: "inline-flex" }}>Accredited Organizations</span>
+          <span className="eyebrow" style={{ display: "inline-flex" }}>Partners of Success</span>
           <h2 className="section-heading" style={{ maxWidth: "28ch", margin: "14px auto 14px" }}>
-            Trusted by institutions worldwide.
+            National &amp; international partnerships.
           </h2>
           <p style={{ margin: "0 auto", color: "var(--ink-600)", maxWidth: "56ch" }}>
-            A selection of healthcare providers, laboratories, inspection bodies and training organizations
-            currently holding AAA accreditation.
+            AAA works alongside international organizations — from ISQua and the UNESCO
+            Institute for Lifelong Learning to AAACE, CONIES, the Earth Day Network, and
+            AGCAS — to advance quality and the global acceptance of accreditation.
           </p>
         </div>
 
         <div className="marquee">
           <div className="marquee-track">
-            {[...row1, ...row1].map((n, i) => (
+            {[...PARTNER_NAMES, ...PARTNER_NAMES].map((n, i) => (
               <LogoTile key={`a-${i}`} name={n} idx={i} />
-            ))}
-          </div>
-        </div>
-        <div style={{ height: 16 }} />
-        <div className="marquee reverse">
-          <div className="marquee-track">
-            {[...row2, ...row2].map((n, i) => (
-              <LogoTile key={`b-${i}`} name={n} idx={i + 1} />
             ))}
           </div>
         </div>
 
         <div className="partners-foot">
-          <Link href="/directory/accredited-organizations" className="ed-link">
-            Browse all 200+ accredited organizations <Icon name="arrow" size={14} className="arrow" />
+          <Link href="/partnerships" className="ed-link">
+            Explore our partnerships <Icon name="arrow" size={14} className="arrow" />
           </Link>
         </div>
       </div>

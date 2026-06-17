@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import Icon from "./Icon";
+import SealRosette from "./SealRosette";
 
 export default function Footer() {
   return (
     <footer className="site-footer">
+      <SealRosette />
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
@@ -19,7 +21,8 @@ export default function Footer() {
             </Link>
             <p>
               An independent accreditation body delivering internationally-recognized programs
-              for healthcare, conformity assessment bodies, and training providers.
+              for healthcare organizations, training and education providers, schools,
+              laboratories, and certification and inspection bodies.
             </p>
             <div className="social">
               <a href="#" aria-label="LinkedIn"><Icon name="linkedin" size={16} /></a>
@@ -40,6 +43,8 @@ export default function Footer() {
               <li><Link href="/programs/iso-17024">Personnel Certification</Link></li>
               <li><Link href="/programs/training-education">Training Providers</Link></li>
               <li><Link href="/programs/iso-17065">Product Certification</Link></li>
+              <li><Link href="/programs/school-accreditation">School Accreditation</Link></li>
+              <li><Link href="/programs/iso-17043">Proficiency Testing</Link></li>
             </ul>
           </div>
 
@@ -47,11 +52,13 @@ export default function Footer() {
             <h5>About</h5>
             <ul>
               <li><Link href="/about">About AAA</Link></li>
+              <li><Link href="/about-accreditation">About Accreditation</Link></li>
               <li><Link href="/partnerships">Partners</Link></li>
               <li><Link href="/impartiality-policy">Impartiality Policy</Link></li>
-              <li><Link href="/news">Insights</Link></li>
+              <li><Link href="/news">AAA News</Link></li>
               <li><Link href="/documents">Documents</Link></li>
               <li><Link href="/membership">Membership</Link></li>
+              <li><Link href="/faq">FAQ</Link></li>
             </ul>
           </div>
 
@@ -60,21 +67,21 @@ export default function Footer() {
             <div className="item">
               <Icon name="pin" size={16} className="ico" />
               <div>
-                <strong>Virginia, USA</strong>
-                Headquarters &amp; Registered Office
+                <strong>8609 Westwood Center Drive</strong>
+                Tysons Corner, VA 22182, USA
               </div>
             </div>
             <div className="item">
+              <Icon name="phone" size={16} className="ico" />
+              <a href="tel:+15716012616" style={{ color: "rgba(255,255,255,.85)" }}>+1 (571) 601 2616</a>
+            </div>
+            <div className="item">
               <Icon name="globe" size={16} className="ico" />
-              <div>International Operations<br /><span className="muted">Across 60+ countries</span></div>
+              <div>International Operations<br /><span className="muted">Tel./WhatsApp +44 (748) 755 0737</span></div>
             </div>
             <div className="item">
               <Icon name="mail" size={16} className="ico" />
-              <a href="mailto:contact@aaa-accreditation.org" style={{ color: "rgba(255,255,255,.85)" }}>contact@aaa-accreditation.org</a>
-            </div>
-            <div className="item">
-              <Icon name="phone" size={16} className="ico" />
-              <span>WhatsApp · Mon–Fri</span>
+              <a href="mailto:info@aaa-accreditation.org" style={{ color: "rgba(255,255,255,.85)" }}>info@aaa-accreditation.org</a>
             </div>
           </div>
         </div>
@@ -82,10 +89,9 @@ export default function Footer() {
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} American Accreditation Association. All rights reserved.</span>
           <div className="links">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/documents">Terms</Link>
-            <Link href="/contact">Sitemap</Link>
-            <Link href="/contact">Accessibility</Link>
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/faq">FAQ</Link>
+            <Link href="/contact">Contact</Link>
           </div>
         </div>
       </div>

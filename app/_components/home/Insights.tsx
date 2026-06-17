@@ -1,34 +1,34 @@
 import Link from "next/link";
 import Icon from "../Icon";
+import posts from "../../news/posts-data.json";
 
-const ARTICLES = [
-  {
-    cat: "Standards",
-    title: "What ISO/IEC 17025:2017 means for testing laboratories in 2026",
-    excerpt:
-      "A field guide to scope extension, decision rules, and impartiality risk in modern lab accreditation.",
-    date: "Apr 18, 2026",
-    read: "8 min read",
-    ph: "Editorial · Laboratory",
-  },
-  {
-    cat: "Healthcare",
-    title: "Patient-safety outcomes after ISO 15189 accreditation: a 5-year review",
-    excerpt:
-      "Findings from 320 accredited medical laboratories across the GCC, Africa, and Southeast Asia.",
-    date: "Apr 02, 2026",
-    read: "12 min read",
-    ph: "Editorial · Hospital",
-  },
-  {
-    cat: "Policy",
-    title: "AAA publishes 2026 Impartiality Safeguarding Framework",
-    excerpt: "An updated public policy separating accreditation decisions from commercial relationships.",
-    date: "Mar 21, 2026",
-    read: "6 min read",
-    ph: "Editorial · Policy",
-  },
+type Post = {
+  slug: string;
+  date: string;
+  title: string;
+  excerpt: string;
+};
+
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
+
+function formatDate(iso: string) {
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+  return `${MONTHS[(m ?? 1) - 1]} ${d}, ${y}`;
+}
+
+function cleanExcerpt(raw: string) {
+  return raw
+    .replace(/:\s*:/g, ":")
+    .replace(/\s*\[…\]\s*$/, "…")
+    .trim();
+}
+
+const LATEST: Post[] = [...(posts as Post[])]
+  .sort((a, b) => (a.date < b.date ? 1 : -1))
+  .slice(0, 3);
 
 export default function Insights() {
   return (
@@ -36,33 +36,34 @@ export default function Insights() {
       <div className="container">
         <div className="block-head reveal">
           <div>
-            <span className="eyebrow">Insights</span>
-            <h2 className="section-heading">Editorial coverage of the standards we work with.</h2>
+            <span className="eyebrow">AAA News</span>
+            <h2 className="section-heading">News &amp; events from the accreditation community.</h2>
           </div>
           <Link href="/news" className="ed-link" style={{ alignSelf: "end" }}>
-            View all insights <Icon name="arrow" size={14} className="arrow" />
+            View all news <Icon name="arrow" size={14} className="arrow" />
           </Link>
         </div>
 
         <div className="insights-grid">
-          {ARTICLES.map((a, i) => (
-            <article
+          {LATEST.map((p, i) => (
+            <Link
+              href={`/news/${p.slug}`}
               className="insight reveal"
-              key={a.title}
+              key={p.slug}
               style={{ transitionDelay: `${i * 80}ms` }}
             >
               <div className="insight-img">
-                <div className="ph">{a.ph}</div>
+                <div className="ph">AAA · News</div>
               </div>
-              <div className="insight-cat">{a.cat}</div>
-              <h4>{a.title}</h4>
-              <p>{a.excerpt}</p>
+              <div className="insight-cat">News &amp; Events</div>
+              <h4>{p.title}</h4>
+              <p>{cleanExcerpt(p.excerpt)}</p>
               <div className="insight-meta">
-                <span>{a.date}</span>
+                <span>{formatDate(p.date)}</span>
                 <span className="sep" />
-                <span>{a.read}</span>
+                <span>AAA News</span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>
