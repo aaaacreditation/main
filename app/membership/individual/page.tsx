@@ -60,18 +60,33 @@ const BENEFITS = [
   },
 ];
 
-const DETAILS = [
+const INCLUDED = [
+  "One free training course every year",
+  "Listing in the ADCP professional directory",
+  "Eligibility for AAA Technical Committees",
+];
+
+const REQUIREMENTS = [
+  "An updated professional CV",
+  "A recognized university degree",
+  "Evidence of competency in your field",
+];
+
+const STEPS = [
   {
-    title: "Duration: 2 years",
-    text: "Individual membership is valid for a two-year term.",
+    k: "01",
+    title: "Prepare your documents",
+    text: "Gather your updated CV, university degree, and evidence of competency and qualifications in your field.",
   },
   {
-    title: "Cost: $350",
-    text: "A single fee of $350 covers the full two-year membership.",
+    k: "02",
+    title: "Submit the membership form",
+    text: "Complete the short individual membership form and attach your supporting documents for review.",
   },
   {
-    title: "Eligibility requirements",
-    text: "An updated CV, a university degree, and evidence of competency and qualifications in the relevant field.",
+    k: "03",
+    title: "Get verified & listed",
+    text: "On approval, receive your official certificate and join the American Directory for Competent Persons.",
   },
 ];
 
@@ -90,78 +105,99 @@ export default function Page() {
         ]}
       />
 
-      <section className="mem-detail-section">
+      {/* ---------- Value proposition + membership credential ---------- */}
+      <section className="imem-value">
         <div className="container">
-          <div className="mem-detail-grid">
-            <article className="mem-detail-card reveal">
-              <span className="eyebrow">Who it is for</span>
-              <h2>Individual membership is ideal for anyone looking to grow.</h2>
+          <div className="imem-value-grid">
+            <div className="imem-value-copy reveal">
+              <span className="eyebrow">Who it’s for</span>
+              <h2>Built for professionals who set the standard.</h2>
               <p>
                 Whether you are an industry expert, educator, or quality professional, becoming an
                 individual member with AAA allows you to play an active role in promoting quality
                 and global excellence.
               </p>
-            </article>
-
-            <div className="mem-list-panel reveal">
-              {IDEAL_FOR.map((item) => (
-                <div className="mem-list-row" key={item}>
-                  <Icon name="check" size={16} />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mem-why">
-        <div className="container">
-          <div className="mem-why-layout">
-            <div className="reveal">
-              <span className="eyebrow">Member benefits</span>
-              <h2>Why become a member of AAA Accreditation?</h2>
-              <Link href="/contact" className="btn btn-primary">
-                Apply now <Icon name="arrow" size={14} className="arrow" />
-              </Link>
-            </div>
-            <div className="mem-benefit-grid">
-              {BENEFITS.map((item, index) => (
-                <article
-                  className="mem-benefit-card reveal"
-                  key={item.title}
-                  style={{ transitionDelay: `${index * 60}ms` }}
-                >
-                  <div className="mem-benefit-icon">
-                    <Icon name={item.icon} size={22} />
+              <div className="imem-checklist">
+                {IDEAL_FOR.map((item) => (
+                  <div className="imem-check" key={item}>
+                    <span className="tick">
+                      <Icon name="check" size={15} strokeWidth={2.4} />
+                    </span>
+                    <span>{item}</span>
                   </div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </article>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div className="imem-card-stage">
+              <div className="imem-card reveal">
+                <div className="imem-card-top">
+                  <div className="imem-card-brand">
+                    <span className="imem-card-monogram">AAA</span>
+                    <span className="imem-card-org">Accreditation</span>
+                  </div>
+                  <span className="imem-card-type">
+                    Individual
+                    <br />
+                    Member
+                  </span>
+                </div>
+
+                <span className="imem-card-chip" aria-hidden="true" />
+
+                <div className="imem-card-holder">
+                  <div className="imem-card-label">Cardholder</div>
+                  <div className="imem-card-name">Your Name</div>
+                </div>
+
+                <div className="imem-card-foot">
+                  <div>
+                    <div className="imem-card-label">Member ID</div>
+                    <div className="imem-card-id">AAA · IND · 2026</div>
+                  </div>
+                  <div>
+                    <div className="imem-card-label">Valid</div>
+                    <div className="imem-card-id">2 Years</div>
+                  </div>
+                  <span className="imem-card-qr" aria-hidden="true" />
+                </div>
+              </div>
+
+              <span className="imem-float imem-float-a reveal">
+                <Icon name="shield" size={16} /> Verified credential
+              </span>
+              <span className="imem-float imem-float-b reveal">
+                <Icon name="globe" size={16} /> Global recognition
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mem-audience">
+      {/* ---------- Benefits ---------- */}
+      <section className="imem-benefits">
         <div className="container">
-          <div className="mem-section-head reveal">
-            <span className="eyebrow">Membership details</span>
-            <h2>A two-year membership with clear eligibility requirements.</h2>
+          <div className="imem-head reveal">
+            <div>
+              <span className="eyebrow">Member benefits</span>
+              <h2>Everything your membership includes.</h2>
+            </div>
             <p>
-              Representing an institution? See also{" "}
-              <Link href="/membership/organizational">Organizational Membership</Link>.
+              Eight ways AAA membership advances your expertise, credibility, and connections
+              across the global quality and accreditation community.
             </p>
           </div>
-          <div className="mem-step-grid">
-            {DETAILS.map((item, index) => (
+
+          <div className="imem-benefit-grid">
+            {BENEFITS.map((item, index) => (
               <article
-                className="mem-step-card reveal"
+                className="imem-benefit reveal"
                 key={item.title}
-                style={{ transitionDelay: `${index * 70}ms` }}
+                style={{ transitionDelay: `${index * 55}ms` }}
               >
-                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div className="imem-benefit-ico">
+                  <Icon name={item.icon} size={22} />
+                </div>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </article>
@@ -170,20 +206,81 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="mem-detail-cta">
+      {/* ---------- Plan / pricing ---------- */}
+      <section className="imem-plan">
         <div className="container">
-          <div className="mem-detail-cta-inner reveal">
-            <div>
-              <h2>Ready to apply for individual membership?</h2>
+          <div className="imem-plan-card reveal">
+            <div className="imem-plan-price">
+              <span className="eyebrow">Membership</span>
+              <div className="imem-price">
+                <span className="cur">$</span>350
+                <span className="per">/ 2 years</span>
+              </div>
               <p>
-                Applications are submitted through a short membership form together with your
-                updated CV, university degree, and evidence of competency. Contact AAA to begin
-                your application.
+                A single fee of $350 covers your full two-year individual membership — no recurring
+                charges or hidden costs.
+              </p>
+              <ul className="imem-plan-list">
+                {INCLUDED.map((item) => (
+                  <li key={item}>
+                    <Icon name="check" size={18} strokeWidth={2.4} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/contact" className="btn btn-gold">
+                Apply now <Icon name="arrow" size={14} className="arrow" />
+              </Link>
+            </div>
+
+            <div className="imem-plan-detail">
+              <h3>What you’ll need to apply</h3>
+              <ul className="imem-req">
+                {REQUIREMENTS.map((item) => (
+                  <li key={item}>
+                    <span className="tick">
+                      <Icon name="check" size={14} strokeWidth={2.4} />
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="imem-plan-note">
+                Representing an institution? Explore{" "}
+                <Link href="/membership/organizational">Organizational Membership</Link> for
+                team-wide recognition.
               </p>
             </div>
-            <Link href="/contact" className="btn btn-primary">
-              Apply now <Icon name="arrow" size={14} className="arrow" />
-            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- How to join ---------- */}
+      <section className="imem-steps">
+        <div className="container">
+          <div className="imem-head reveal">
+            <div>
+              <span className="eyebrow">How to join</span>
+              <h2>Becoming a member takes three steps.</h2>
+            </div>
+            <p>
+              From application to recognition, the path to AAA individual membership is
+              straightforward and supported at every stage.
+            </p>
+          </div>
+
+          <div className="imem-steps-grid">
+            {STEPS.map((step, index) => (
+              <article
+                className="imem-step reveal"
+                key={step.k}
+                style={{ transitionDelay: `${index * 80}ms` }}
+              >
+                <span className="imem-step-num">{step.k}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

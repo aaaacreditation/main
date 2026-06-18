@@ -9,6 +9,7 @@ const PROGRAMS = [
   { href: "/programs/healthcare", label: "Healthcare Accreditation", std: "ISQua EEA Recognized" },
   { href: "/programs/conformity-assessment-bodies", label: "Conformity Assessment Bodies Accreditation", std: "7 Programs" },
   { href: "/programs/training-education", label: "Training & Education Providers Accreditation", std: "Worldwide" },
+  { href: "/programs/sme-funding-readiness", label: "SME Funding Readiness Accreditation", std: "Funding-Ready in 30 Days" },
 ];
 
 const ABOUT = [
