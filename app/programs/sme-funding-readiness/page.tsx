@@ -2,81 +2,92 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon, { type IconName } from "../../_components/Icon";
 import PageHero from "../../_components/PageHero";
+import ReadinessCheck from "./ReadinessCheck";
 
 export const metadata: Metadata = {
   title: "SME Funding Readiness Accreditation",
   description:
-    "AAA SME Accreditation translates your operational and financial health into a lender-readable funding-readiness score that is internationally recognized across 53+ countries. Get funding-ready in 30 days.",
+    "AAA SME Accreditation is an international accreditation that turns your operational and financial health into a lender-readable funding-readiness score, recognized across 53+ countries. Check your readiness for free.",
 };
 
 const CONSULT = "https://calendly.com/aaa-accreditation/30min";
 
-const PROBLEM_STATS = [
-  { num: "₹20L Cr+", label: "India MSME credit gap" },
-  { num: "60%+", label: "First-time loan applications rejected" },
-  { num: "63M+", label: "MSMEs across India" },
+const FUNDING_GAP = [
+  {
+    num: "$5.7T",
+    label: "The annual finance gap facing small and medium businesses in emerging markets.",
+  },
+  {
+    num: "40%+",
+    label: "Of formal small and medium businesses can't get the financing they need.",
+  },
+  {
+    num: "90%",
+    label: "Of all businesses worldwide are SMEs, together driving half of global GDP.",
+  },
 ];
 
 const PAIN: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "chart",
-    title: "No standardised signal",
-    text: "Lenders can't assess the creditworthiness of SMEs with informal records. There's no universal readiness indicator.",
+    title: "No standard signal",
+    text: "Lenders have no easy way to read a business that keeps informal records. There's no common measure that simply says: this one's ready.",
   },
   {
     icon: "search",
-    title: "Opaque process",
-    text: "Loan processes take 3–6 months, are relationship-dependent, and first-time borrowers have no track record to show.",
+    title: "A slow, closed process",
+    text: "Loan decisions can drag on for three to six months. They often come down to who you know, and a first-time borrower has nothing to point back to.",
   },
   {
     icon: "clipboard",
-    title: "One-size-fits-all",
-    text: "Existing ratings are pass/fail. 60% of first-time applicants simply don't qualify, with no pathway to improve.",
+    title: "One size fits all",
+    text: "Most ratings are just pass or fail. Plenty of first-time applicants don't make the cut, and they're left with no real way to improve and try again.",
   },
   {
     icon: "industry",
     title: "Sector blindness",
-    text: "Generalist lenders poorly understand sector-specific risks in agri, export, tech, and manufacturing businesses.",
+    text: "A generalist lender rarely gets the real risks in farming, exports, tech, or manufacturing. Genuine strengths get missed, and good businesses get turned away.",
   },
 ];
 
-const RECOGNITION = [
-  { num: "53+", title: "Countries", text: "Active accreditation presence worldwide." },
-  { num: "100+", title: "Surveyors", text: "Qualified assessors across the globe." },
-  { num: "ISQua", title: "EEA assessed", text: "Aligned with international best practice." },
-  { num: "US", title: "Gov-authorized", text: "Registered under Title 13.1, Code of Virginia." },
+const WHO_FOR = [
+  "SMEs seeking funding or investment",
+  "Businesses planning growth or market expansion",
+  "Organisations pursuing contracts that require demonstrated standards",
+  "Companies strengthening credibility with customers and stakeholders",
+  "Leaders building a stronger, more resilient business",
 ];
 
 const CATEGORIES: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "chart",
     title: "Financial & Funding Readiness",
-    text: "Financial records, obligations awareness, funding requirements, and financial monitoring processes.",
+    text: "Your financial records, awareness of obligations and liabilities, what funding you need and why, and how you track cash flow and sustainability.",
   },
   {
     icon: "industry",
     title: "Operational Requirements",
-    text: "Active operations, process documentation, resource adequacy, and stakeholder communication.",
+    text: "Active operations and delivery, documented processes, enough resources to do the work, and clear communication with clients and stakeholders.",
   },
   {
     icon: "clipboard",
     title: "Management & Structure",
-    text: "Legal registration, organizational structure, ownership clarity, and management responsibilities.",
+    text: "Legal registration, a defined organisational structure, and clear ownership and management responsibilities.",
   },
   {
     icon: "shield",
     title: "Governance & Compliance",
-    text: "Ethical operations, risk management, regulatory compliance, and business transparency.",
+    text: "Ethical operations, managing business risk, meeting legal and regulatory rules, and being transparent about who you are.",
   },
   {
     icon: "globe",
     title: "Market Presence & Growth",
-    text: "Product/service definition, customer activity, growth objectives, and stakeholder feedback.",
+    text: "A clear offer and target market, real customer activity, growth plans, and listening to customer feedback.",
   },
   {
     icon: "arrowUpRight",
     title: "Continuous Improvement",
-    text: "Improvement identification, feedback collection, issue resolution, and change documentation.",
+    text: "Spotting what to improve, acting on feedback, fixing issues, and keeping a record of the changes you make.",
   },
 ];
 
@@ -89,67 +100,96 @@ const FLOW: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "chart",
     title: "Funding-readiness score",
-    text: "Your evidence is scored against 6 weighted categories into a single, defensible score.",
+    text: "Your evidence is scored against six weighted categories into a single, defensible score.",
   },
   {
     icon: "scale",
     title: "Lender-readable signal",
-    text: "The score maps to lender KYB and credit criteria — a language banks and investors already trust.",
+    text: "The score gives lenders the structured evidence they look for, in a way banks and investors already understand.",
   },
   {
     icon: "arrowUpRight",
     title: "Faster funding access",
-    text: "Walk into funding conversations with verified credibility, fewer rejections, and stronger terms.",
+    text: "Walk into funding conversations with verified credibility and fewer rejections.",
   },
 ];
 
-const BENEFITS: { icon: IconName; title: string; text: string }[] = [
-  {
-    icon: "cert",
-    title: "Verified credibility",
-    text: "An independent, internationally recognized stamp that your business is structured, transparent, and trustworthy.",
-  },
+const BENEFIT_GROUPS: { icon: IconName; title: string; items: string[] }[] = [
   {
     icon: "chart",
-    title: "Faster loan decisions",
-    text: "Give lenders a pre-structured evidence pack so reviews move in weeks, not months.",
+    title: "Funding & Finance",
+    items: [
+      "Funding readiness",
+      "Greater lender confidence",
+      "Funding & credit support",
+      "Access to financial partners",
+      "Government scheme support",
+      "Investor readiness",
+      "Better financial documentation",
+      "Reduced funding rejection risk",
+      "Faster credit assessment",
+    ],
   },
   {
     icon: "shield",
-    title: "Lower rejection risk",
-    text: "Address the gaps that get applications rejected before you ever submit them.",
+    title: "Trust & Credibility",
+    items: [
+      "Verified credibility",
+      "Customer & partner trust",
+      "Global recognition",
+      "Competitive advantage",
+      "Accreditation mark usage",
+      "Public directory listing",
+      "Independent third-party validation",
+      "Enhanced business reputation",
+    ],
   },
   {
-    icon: "globe",
-    title: "Global recognition",
-    text: "A credential understood across 53+ countries, valuable for exporters and cross-border partners.",
-  },
-  {
-    icon: "scale",
-    title: "Investor confidence",
-    text: "Demonstrate governance and readiness that institutional investors and partners expect.",
+    icon: "cert",
+    title: "Business Excellence",
+    items: [
+      "Stronger governance",
+      "Operational excellence",
+      "Process improvement",
+      "Risk management",
+      "Compliance readiness",
+      "Better decision-making",
+      "Training & capability building",
+      "Mentorship & expert guidance",
+      "Continuous growth roadmap",
+    ],
   },
   {
     icon: "arrowUpRight",
-    title: "A clear growth path",
-    text: "Progressive levels give you a visible roadmap to strengthen and re-certify as you scale.",
+    title: "Growth & Market Opportunities",
+    items: [
+      "Networking & business connections",
+      "Market access opportunities",
+      "Export & international readiness",
+      "Increased market visibility",
+      "B2B partnerships",
+      "Investor engagement opportunities",
+      "Strategic collaborations",
+      "ESG readiness support",
+      "Expansion support",
+    ],
   },
 ];
 
 const PROCESS = [
-  { title: "Apply online", text: "Submit your application with basic business details and select your target accreditation level." },
-  { title: "Document submission", text: "Upload required evidence: registration, financials, operational records, and governance documents." },
-  { title: "Self-assessment", text: "Complete the structured questionnaire mapped to the 6 scoring categories." },
-  { title: "Expert review", text: "AAA assessors evaluate your submission through document review, interviews, and verification." },
-  { title: "Scoring & decision", text: "Final scoring, level determination, and accreditation decision by the AAA review board." },
-  { title: "Certification", text: "Certificate issued with a digital verification badge and full accreditation report." },
+  { title: "Application", text: "Send your accreditation application to AAA with your business details and the level you're aiming for." },
+  { title: "Documents", text: "Share the evidence we review: business registration, financial records, operational documents, and governance details." },
+  { title: "Assessment", text: "AAA assessors evaluate your submission through document review, interviews, and verification of your operations." },
+  { title: "Feedback", text: "If anything needs strengthening, our assessors tell you what to address, so you can act on it before any decision is made." },
+  { title: "Decision", text: "The AAA accreditation committee reviews your assessment and makes the accreditation decision." },
+  { title: "Certificate", text: "Your accreditation certificate is issued, valid for three years, with a digital verification badge." },
 ];
 
 const ELIGIBILITY = [
-  { title: "Registered MSMEs", text: "Micro, small, and medium enterprises with valid business registration." },
-  { title: "Funding-seeking businesses", text: "SMEs preparing for loans, working-capital, or investor funding." },
-  { title: "First-time borrowers", text: "Businesses with no prior credit track record who need a credible starting signal." },
-  { title: "Exporters & growth firms", text: "Companies needing internationally recognized credibility for cross-border trade." },
+  { title: "Registered SMEs", text: "Small and medium businesses with valid registration." },
+  { title: "Funding-seeking businesses", text: "SMEs getting ready for loans, working capital, or investor funding." },
+  { title: "First-time borrowers", text: "Businesses with no credit track record yet who need a credible place to start." },
+  { title: "Exporters & growth firms", text: "Companies that need recognised credibility to trade across borders." },
 ];
 
 const SECTORS = [
@@ -167,75 +207,60 @@ const SECTORS = [
   "Export & Import",
 ];
 
-const CLIENTS = [
-  { mono: "GV", name: "GovernValU Consulting", loc: "Türkiye" },
-  { mono: "T&C", name: "T&C Board", loc: "Gujarat, India" },
-  { mono: "MW", name: "Millennia Wellness", loc: "Texas, USA" },
-  { mono: "IIBMS", name: "Indian Institute for Business Management Studies", loc: "Mumbai, India" },
-  { mono: "RC", name: "RC Business Growth Consultancies", loc: "Business Growth Consultancy" },
-];
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "The accreditation gave our loan application a structure the bank immediately understood. It removed months of back-and-forth.",
-    role: "Operations Director",
-    org: "Manufacturing SME",
-  },
-  {
-    quote:
-      "As a first-time borrower, we finally had a credible signal to show lenders. The funding-readiness score made all the difference.",
-    role: "Founder",
-    org: "Agri-Processing Firm",
-  },
-  {
-    quote:
-      "International recognition opened cross-border partnerships we couldn't access before. A genuine growth unlock.",
-    role: "Managing Partner",
-    org: "Export Business",
-  },
+const ORGS = [
+  "Monarch Master Injectors",
+  "Adya Pain Management",
+  "Clarivate",
+  "Global Medical City Hospital, Egypt",
+  "Caribbean Cancer Research Institute, Trinidad & Tobago",
+  "Rocklin International School, Malaysia",
+  "World Academy for Research and Development, UK",
+  "American College of Teachers and Trainers, USA",
+  "Lazarus Alliance, USA",
+  "International Science and Technology University, Poland",
+  "KCertification, Brazil",
 ];
 
 const FAQ = [
   {
     q: "What is AAA SME accreditation?",
-    a: "AAA SME Accreditation is a small and medium business accreditation program that assesses how well a business is managed and prepared for growth. It helps SMEs demonstrate credibility, strengthen trust, and gain independent recognition for good business practices.",
+    a: "AAA SME Accreditation is a program for small and medium businesses that assesses how well your business is run and how prepared it is to grow. It helps you show credibility, build trust, and earn independent recognition for good business practices.",
   },
   {
     q: "What makes AAA different from other accreditation bodies?",
-    a: "AAA focuses on business readiness, governance, and growth. Through an independent assessment process, businesses receive recognition based on established criteria, internationally aligned with recognized accreditation principles.",
+    a: "AAA focuses on business readiness, governance, and growth. Through an independent assessment, your business earns recognition based on established criteria that align with recognised accreditation principles.",
   },
   {
     q: "Who can apply for AAA SME accreditation?",
-    a: "AAA SME Accreditation is open to eligible small and medium enterprises across various industries. Whether you are an established business or a growing SME, you can apply if you meet the mandatory accreditation requirements.",
+    a: "Any eligible small or medium enterprise can apply, across a wide range of industries. Whether you are well established or still growing, you can apply as long as you meet the mandatory accreditation requirements.",
   },
   {
-    q: "How is funding readiness assessed through AAA SME Accreditation?",
-    a: "AAA evaluates Business Foundation & Leadership, Financial Readiness, Operations & Quality, Customer Focus, Risk Management, and Continuous Improvement against defined accreditation standards. This determines how prepared a business is for SME funding opportunities, stakeholder expectations, and sustainable growth.",
+    q: "How is funding readiness assessed?",
+    a: "Your business is assessed across six areas: Financial & Funding Readiness, Operational Requirements, Management & Structure, Governance & Compliance, Market Presence & Growth, and Continuous Improvement. Together they show how prepared you are for funding, partnerships, and steady growth.",
   },
   {
     q: "How do I check whether my business is eligible?",
-    a: "You can check using the AAA SME Accreditation Readiness Check above. This simple assessment helps determine whether your business is likely to qualify for accreditation.",
+    a: "You can use the free Readiness Check above. It takes a couple of minutes and gives you an instant view of where your business stands and what to work on before you apply.",
   },
   {
     q: "How long does the accreditation process take?",
-    a: "The timeline depends on your business size, readiness, and the information provided. Most small and medium business accreditation assessments take 30 to 60 days, following a structured process of application review, evaluation, and accreditation decision.",
+    a: "It depends on your business size, how ready you are, and the information you provide. Most assessments take typically 30 to 60 days, following a clear process of application, review, and decision.",
   },
   {
     q: "Can startups apply for accreditation?",
-    a: "Yes. A startup may apply if it is actively operating and can demonstrate appropriate business practices, governance, and operational controls. Accreditation is available to SMEs at different stages of growth, provided they are engaged in ongoing business activities.",
+    a: "Yes. A startup can apply as long as it is actively operating and can show sound business practices, governance, and operational controls. Accreditation is open to SMEs at different stages, provided the business is genuinely up and running.",
   },
   {
-    q: "How long is the AAA SME accreditation valid?",
-    a: "AAA SME accreditation remains valid for a period of 3 years, subject to continued compliance with the required accreditation standards.",
+    q: "How long is the accreditation valid?",
+    a: "Your accreditation is valid for three years, as long as you continue to meet the required standards.",
   },
   {
     q: "How much does AAA SME accreditation cost?",
-    a: "The cost depends on the size, complexity, and scope of the assessment. AAA provides customized quotations to businesses seeking accreditation, ensuring the process is aligned with their specific requirements.",
+    a: "Cost depends on the size, complexity, and scope of the assessment. AAA gives each business a customised quote so the process fits its specific needs.",
   },
   {
     q: "How do I get started?",
-    a: "Getting started is simple. Complete the Accreditation Readiness Check or contact AAA directly. Our team will guide you through eligibility requirements, assessment expectations, and the next steps toward accreditation.",
+    a: "Getting started is simple. Run the free Readiness Check above, or contact AAA directly. Our team will walk you through the eligibility requirements, what to expect from the assessment, and your next steps.",
   },
 ];
 
@@ -245,26 +270,42 @@ export default function Page() {
       <PageHero
         image="/hero.jpg"
         eyebrow="SME Funding Readiness Program"
-        title={<>Get your business <em>funding-ready</em> in 30 days.</>}
-        intro="AAA's SME Accreditation translates your operational and financial health into a lender-readable funding-readiness score that's recognized internationally across 53+ countries."
+        title={
+          <>
+            Build Trust. Improve <em>Funding Readiness</em>. Grow Your Business.
+          </>
+        }
+        intro="The American Accreditation Association's funding readiness program turns the operational and financial health of your SME into a funding-readiness score that lenders can read, recognized internationally across 53+ countries."
         crumbs={[{ href: "/programs/healthcare", label: "Programs" }, { label: "SME Funding Readiness" }]}
         meta={[
-          { k: "Timeline", v: "Accredited in 30 days" },
           { k: "Recognition", v: "53+ countries" },
+          { k: "Readiness check", v: "Free · 2 minutes" },
         ]}
       />
 
-      {/* Problem framing stats */}
-      <section className="sme-stats">
+      {/* The funding gap (global) */}
+      <section className="sme-stats" id="why">
         <div className="container">
+          <div className="sme-head reveal">
+            <span className="eyebrow">Why accreditation matters</span>
+            <h2>The funding gap is real, and bigger than most people think</h2>
+            <p>
+              Across the world, strong businesses are turned away from funding
+              every day. The numbers behind the gap are striking.
+            </p>
+          </div>
           <div className="sme-stats-grid">
-            {PROBLEM_STATS.map((s, i) => (
-              <div className="sme-stat reveal" key={s.label} style={{ transitionDelay: `${i * 70}ms` }}>
+            {FUNDING_GAP.map((s, i) => (
+              <div className="sme-stat reveal" key={s.num} style={{ transitionDelay: `${i * 70}ms` }}>
                 <span className="sme-stat-num">{s.num}</span>
                 <span className="sme-stat-label">{s.label}</span>
               </div>
             ))}
           </div>
+          <p className="sme-stats-note reveal">
+            These businesses are not short on potential. They just can&rsquo;t show
+            lenders what they need to see. That is the gap we help close.
+          </p>
         </div>
       </section>
 
@@ -272,12 +313,14 @@ export default function Page() {
       <section className="sme-pain">
         <div className="container">
           <div className="sme-head reveal">
-            <span className="eyebrow">Why accreditation matters</span>
-            <h2>Why Indian SMEs struggle to access funding</h2>
+            <span className="eyebrow">The problem</span>
+            <h2>Why so many SMEs struggle to get funding</h2>
             <p>
-              India's 63+ million MSMEs contribute 30% of GDP yet face a massive funding gap. The
-              barrier isn't capital — it's the inability to demonstrate creditworthiness in a format
-              lenders trust.
+              For most small and medium businesses, the problem isn&rsquo;t money
+              to lend. It&rsquo;s that they can&rsquo;t show their strength in a way
+              a lender recognises. A good business with informal records still looks
+              risky on paper, and that is what holds the funding back &mdash; almost
+              anywhere you go.
             </p>
           </div>
           <div className="sme-pain-grid">
@@ -294,44 +337,31 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Global recognition (dark band) */}
-      <section className="sme-global" id="global">
+      {/* What is AAA SME Accreditation? (dark band) */}
+      <section className="sme-global" id="about">
         <div className="container">
           <div className="sme-global-layout">
             <div className="sme-global-text reveal">
-              <span className="eyebrow">Global recognition</span>
-              <h2>An accreditation respected worldwide</h2>
+              <span className="eyebrow">About the program</span>
+              <h2>What is AAA SME Accreditation?</h2>
               <p>
-                AAA is a US government-authorized accreditation body operating in more than 53
-                countries, with standards assessed by ISQua EEA — the global benchmark for
-                accreditation bodies. Your credential travels with your business.
+                AAA SME Accreditation is an international accreditation for SMEs
+                that independently assesses key areas of business performance,
+                governance, financial readiness, and operational effectiveness.
               </p>
-              <div className="sme-recog-grid">
-                {RECOGNITION.map((r) => (
-                  <div className="sme-recog" key={r.title}>
-                    <div className="sme-recog-num">{r.num}</div>
-                    <h4>{r.title}</h4>
-                    <p>{r.text}</p>
-                  </div>
-                ))}
-              </div>
+              <p>
+                It gives your business an objective, third-party view of how it is
+                run &mdash; and a credential that lenders, investors, partners, and
+                customers can trust.
+              </p>
             </div>
             <aside className="sme-isqua reveal">
-              <div className="sme-isqua-badge">ISQua EEA</div>
-              <p>
-                AAA Accreditation Standards are assessed by ISQua EEA, confirming alignment with
-                international best-practice requirements.
-              </p>
-              <div className="sme-isqua-row">
-                <div>
-                  <span className="n">30</span>
-                  <span className="l">Days to certify</span>
-                </div>
-                <div>
-                  <span className="n">24/7</span>
-                  <span className="l">Support</span>
-                </div>
-              </div>
+              <h4 className="sme-about-cardh">Who it&rsquo;s for</h4>
+              <ul className="sme-wholist">
+                {WHO_FOR.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
             </aside>
           </div>
         </div>
@@ -342,10 +372,11 @@ export default function Page() {
         <div className="container">
           <div className="sme-head reveal">
             <span className="eyebrow">AAA SME accreditation framework</span>
-            <h2>6 core assessment categories</h2>
+            <h2>Six things we assess, the same six lenders care about</h2>
             <p>
-              Your SME is evaluated across six core dimensions — the same things lenders and
-              investors weigh up when they decide if you're funding-ready.
+              Your business is scored across six weighted areas. Together they make
+              up your funding-readiness score, and they line up closely with what a
+              lender or investor looks at before they say yes.
             </p>
           </div>
           <div className="sme-cats-grid">
@@ -369,8 +400,10 @@ export default function Page() {
             <span className="eyebrow">How it works for funding</span>
             <h2>How accreditation supports funding readiness</h2>
             <p>
-              AAA converts your everyday business health into a structured, lender-readable signal
-              that turns “we can't assess you” into “you're funding-ready.”
+              AAA turns your everyday business health into a structured,
+              lender-readable signal. It changes the conversation from &ldquo;we
+              can&rsquo;t assess you&rdquo; into &ldquo;you&rsquo;re
+              funding-ready.&rdquo;
             </p>
           </div>
           <div className="sme-flow-grid">
@@ -388,25 +421,30 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Business benefits */}
-      <section className="sme-benefits">
+      {/* Business benefits (grouped) */}
+      <section className="sme-benefits" id="benefits">
         <div className="container">
           <div className="sme-head reveal">
             <span className="eyebrow">Business benefits</span>
-            <h2>What accreditation unlocks for your SME</h2>
+            <h2>What accreditation unlocks for your business</h2>
             <p>
-              Accreditation does more than hand you a certificate. It strengthens every conversation
-              you have with lenders, investors, partners, and customers.
+              Accreditation does more than hand you a certificate. It strengthens
+              every conversation you have with lenders, investors, partners, and
+              customers.
             </p>
           </div>
-          <div className="sme-benefit-grid">
-            {BENEFITS.map((b, i) => (
-              <article className="sme-benefit reveal" key={b.title} style={{ transitionDelay: `${i * 55}ms` }}>
-                <div className="sme-benefit-ico">
-                  <Icon name={b.icon} size={22} />
+          <div className="sme-bgroup-grid">
+            {BENEFIT_GROUPS.map((g, i) => (
+              <article className="sme-bgroup reveal" key={g.title} style={{ transitionDelay: `${i * 55}ms` }}>
+                <div className="sme-bgroup-ico">
+                  <Icon name={g.icon} size={22} />
                 </div>
-                <h3>{b.title}</h3>
-                <p>{b.text}</p>
+                <h3>{g.title}</h3>
+                <ul>
+                  {g.items.map((it) => (
+                    <li key={it}>{it}</li>
+                  ))}
+                </ul>
               </article>
             ))}
           </div>
@@ -414,7 +452,7 @@ export default function Page() {
       </section>
 
       {/* Mid CTA band */}
-      <section className="sme-band">
+      <section className="sme-band" id="apply">
         <span className="sme-band-corner" />
         <div className="container">
           <div className="sme-band-inner reveal">
@@ -422,8 +460,8 @@ export default function Page() {
               <span className="eyebrow">Get started</span>
               <h2>Ready to become funding-ready?</h2>
               <p>
-                Start your AAA SME Accreditation today, or book a free 30-minute consultation with
-                our team to see where your business stands.
+                Start your AAA SME Accreditation today, or book a free 30-minute
+                consultation with our team to see where your business stands.
               </p>
             </div>
             <div className="sme-band-actions">
@@ -444,7 +482,7 @@ export default function Page() {
           <div className="sme-head reveal">
             <span className="eyebrow">Accreditation process</span>
             <h2>How it works, step by step</h2>
-            <p>A straightforward 6-step process designed to get your business accredited in 30 days.</p>
+            <p>A clear six-step process that takes your business from application to a recognised credential.</p>
           </div>
           <div className="sme-process-grid">
             {PROCESS.map((step, i) => (
@@ -465,8 +503,9 @@ export default function Page() {
             <span className="eyebrow">Who can apply</span>
             <h2>Built for every growing SME</h2>
             <p>
-              If you run a registered, operating business seeking credibility and funding, AAA SME
-              Accreditation is for you — across the full breadth of the MSME landscape.
+              If you run a registered, working business that wants more credibility
+              and access to funding, AAA SME Accreditation is for you &mdash;
+              wherever you are in the world.
             </p>
           </div>
           <div className="sme-who-layout">
@@ -495,73 +534,53 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Free readiness check */}
-      <section className="sme-readiness" id="eligibility">
+      {/* Free readiness check (interactive) */}
+      <section className="smerc" id="readiness">
         <div className="container">
-          <div className="sme-readiness-card reveal">
-            <div>
-              <span className="eyebrow">Free readiness check</span>
-              <h2>Is your business ready for accreditation?</h2>
-              <p>
-                Talk to an accreditation specialist and get an evidence-based view of where your
-                business stands against the 6 scoring categories. It's confidential, and there's no
-                obligation.
-              </p>
-            </div>
-            <div className="sme-readiness-actions">
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                Book a free check <Icon name="arrow" size={14} className="arrow" />
-              </a>
-              <Link href="/contact" className="btn btn-ghost">Contact our team</Link>
-            </div>
+          <div className="sme-head reveal">
+            <span className="eyebrow">Free readiness check</span>
+            <h2>Check your funding readiness in two minutes</h2>
+            <p>
+              Answer twelve quick questions across the six areas we assess.
+              You&rsquo;ll get an instant readiness score and see exactly where your
+              business stands. No sign-up, no obligation.
+            </p>
+          </div>
+          <div className="reveal">
+            <ReadinessCheck />
           </div>
         </div>
       </section>
 
-      {/* Clients & testimonials */}
-      <section className="sme-clients">
+      {/* Accredited worldwide */}
+      <section className="sme-clients" id="accredited">
         <div className="container">
           <div className="sme-head reveal">
-            <span className="eyebrow">Success stories</span>
-            <h2>Be part of our accredited network</h2>
+            <span className="eyebrow">Accredited worldwide</span>
+            <h2>Organisations accredited by AAA around the world</h2>
             <p>
-              Join a growing community of organizations that have demonstrated readiness and
-              credibility through AAA accreditation.
+              From clinics and hospitals to universities, schools, and professional
+              firms, organisations across more than 53 countries hold AAA
+              accreditation.
             </p>
           </div>
-          <div className="sme-orgs-grid reveal">
-            {CLIENTS.map((c) => (
-              <div className="sme-org" key={c.name}>
-                <span className="sme-org-mono">{c.mono}</span>
-                <h3>{c.name}</h3>
-                <p>{c.loc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="sme-testi-row">
-            {TESTIMONIALS.map((t, i) => (
-              <figure className="sme-testi reveal" key={t.org} style={{ transitionDelay: `${i * 70}ms` }}>
-                <span className="sme-testi-mark">“</span>
-                <blockquote>{t.quote}</blockquote>
-                <figcaption>
-                  <strong>{t.role}</strong>
-                  <span>{t.org}</span>
-                </figcaption>
-              </figure>
+          <div className="sme-orgstrip reveal">
+            {ORGS.map((o) => (
+              <span className="sme-orgchip" key={o}>{o}</span>
             ))}
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="sme-faq">
+      <section className="sme-faq" id="faq">
         <div className="container">
           <div className="sme-head reveal">
             <span className="eyebrow">Frequently asked questions</span>
             <h2>Questions, answered</h2>
             <p>
-              Everything you need to know about AAA SME Accreditation: eligibility, timelines,
-              validity, and how to get started.
+              Everything you need to know about AAA SME Accreditation: eligibility,
+              timelines, validity, and how to get started.
             </p>
           </div>
           <div className="sme-faq-list">
@@ -587,8 +606,8 @@ export default function Page() {
               <span className="eyebrow">Get in touch</span>
               <h2>Ready to start your accreditation journey?</h2>
               <p>
-                Our team is here to guide you every step of the way. Apply today and get accredited
-                in 30 days, or book a free consultation first.
+                Our team is here to guide you every step of the way. Apply today and
+                get accredited, or book a free consultation first.
               </p>
               <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="sme-consult">
                 <span className="sme-consult-ico"><Icon name="cert" size={22} /></span>
@@ -607,7 +626,7 @@ export default function Page() {
               </a>
               <div className="sme-contact-item">
                 <span className="ico"><Icon name="phone" size={18} /></span>
-                <span><strong>Call us</strong>T: +1 (571) 601 2616 · Fax: +1 (571) 376 6582</span>
+                <span><strong>Call us</strong>+1 (571) 601 2616</span>
               </div>
               <a className="sme-contact-item" href="https://wa.me/447487550737" target="_blank" rel="noopener noreferrer">
                 <span className="ico"><Icon name="phone" size={18} /></span>

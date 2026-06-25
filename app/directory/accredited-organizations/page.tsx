@@ -1,27 +1,12 @@
 import type { Metadata } from "next";
 import PageHero from "../../_components/PageHero";
 import CTA from "../../_components/CTA";
+import DirectoryExplorer, { type Org } from "./DirectoryExplorer";
 
 export const metadata: Metadata = {
   title: "Accredited Organizations",
   description:
     "The public register of organizations accredited by the American Accreditation Association (AAA) — universities, training providers, certification bodies, laboratories, and healthcare institutions across 35 countries.",
-};
-
-type Accreditation = {
-  accreditedAs: string;
-  number: string;
-  scope: string;
-  expiry: string;
-  status: string;
-};
-
-type Org = {
-  name: string;
-  location: string;
-  country: string;
-  description?: string;
-  accreditation?: Accreditation;
 };
 
 /**
@@ -970,10 +955,10 @@ export default function Page() {
     <>
       <PageHero
         image="/hero.jpg"
-        eyebrow="Directory"
+        eyebrow="Public register"
         title={<>Accredited <em>organizations.</em></>}
         intro="The public register of organizations holding AAA accreditation — universities, training providers, certification bodies, laboratories, and healthcare institutions worldwide."
-        crumbs={[{ label: "Directory" }, { label: "Accredited Organizations" }]}
+        crumbs={[{ label: "Accredited Organizations" }]}
         meta={[
           { k: "Listed organizations", v: `${ORGS.length}` },
           { k: "Countries represented", v: `${COUNTRIES.length}` },
@@ -985,48 +970,16 @@ export default function Page() {
             <div>
               <span className="eyebrow">The register</span>
               <h2 className="section-heading">
-                {ORGS.length} listings across {COUNTRIES.length} countries.
+                {ORGS.length} accredited organizations across {COUNTRIES.length} countries.
               </h2>
             </div>
             <p className="lede-side">
-              Grouped by country. Each entry reflects the organization as published in the AAA
-              register, including accreditation details where recorded.
+              Search the public register or filter by country. Entries marked “Accredited” include a
+              structured accreditation record.
             </p>
           </div>
 
-          {COUNTRIES.map((country, i) => {
-            const orgs = ORGS.filter((o) => o.country === country);
-            return (
-              <div key={country} style={{ marginTop: i === 0 ? 0 : 56 }}>
-                <span className="eyebrow">
-                  {country} · {orgs.length}
-                </span>
-                <div className="dir-grid" style={{ marginTop: 20 }}>
-                  {orgs.map((o) => (
-                    <div className="dir-card reveal" key={`${o.name}-${o.location}`}>
-                      <div className="name">{o.name}</div>
-                      {o.description && <div className="scope">{o.description}</div>}
-                      {o.accreditation && (
-                        <div className="scope">
-                          <strong>Accredited as:</strong> {o.accreditation.accreditedAs} ·{" "}
-                          <strong>Accreditation No.</strong> {o.accreditation.number} ·{" "}
-                          <strong>Scope:</strong> {o.accreditation.scope} ·{" "}
-                          <strong>Expiry:</strong> {o.accreditation.expiry} ·{" "}
-                          <strong>Status:</strong> {o.accreditation.status}
-                        </div>
-                      )}
-                      <div className="tags">
-                        <span className="std-pill light">{o.location}</span>
-                        {o.accreditation && (
-                          <span className="std-pill light">{o.accreditation.number}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+          <DirectoryExplorer orgs={ORGS} />
         </div>
       </section>
       <CTA />

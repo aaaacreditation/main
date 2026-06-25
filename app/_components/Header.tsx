@@ -28,11 +28,6 @@ const MEMBERSHIP = [
   { href: "/membership/organizational", label: "Organizational Membership" },
 ];
 
-const DIRECTORY = [
-  { href: "/directory/accredited-organizations", label: "Accredited Organizations" },
-  { href: "https://adcp.aaa-accreditation.org", label: "Accredited Personnel ↗" },
-];
-
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
@@ -126,18 +121,7 @@ export default function Header() {
                   ))}
                 </span>
               </span>
-              <span className="nav-item">
-                <Link href="/directory/accredited-organizations" className="has-caret">Directory</Link>
-                <span className="nav-dropdown">
-                  {DIRECTORY.map((i) =>
-                    i.href.startsWith("http") ? (
-                      <a key={i.href} href={i.href} target="_blank" rel="noreferrer">{i.label}</a>
-                    ) : (
-                      <Link key={i.href} href={i.href}>{i.label}</Link>
-                    )
-                  )}
-                </span>
-              </span>
+              <Link href="/directory/accredited-organizations">Accredited Organizations</Link>
               <Link href="/news">News</Link>
             </nav>
 
@@ -175,17 +159,8 @@ export default function Header() {
             <Link key={i.href} href={i.href}>{i.label}</Link>
           ))}
         </details>
-        <details className="mm-group">
-          <summary>Directory</summary>
-          {DIRECTORY.map((i) =>
-            i.href.startsWith("http") ? (
-              <a key={i.href} href={i.href} target="_blank" rel="noreferrer">{i.label}</a>
-            ) : (
-              <Link key={i.href} href={i.href}>{i.label}</Link>
-            )
-          )}
-        </details>
         <div className="mm-links">
+          <Link href="/directory/accredited-organizations">Accredited Organizations</Link>
           <Link href="/news">News</Link>
           <Link href="/documents">Documents</Link>
           <Link href="/apply">Apply</Link>

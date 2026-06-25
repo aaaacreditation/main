@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import Icon from "../../_components/Icon";
 import CTA from "../../_components/CTA";
 import PageHero from "../../_components/PageHero";
@@ -129,45 +130,23 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="imem-card-stage">
-              <div className="imem-card reveal">
-                <div className="imem-card-top">
-                  <div className="imem-card-brand">
-                    <span className="imem-card-monogram">AAA</span>
-                    <span className="imem-card-org">Accreditation</span>
-                  </div>
-                  <span className="imem-card-type">
-                    Individual
-                    <br />
-                    Member
-                  </span>
-                </div>
-
-                <span className="imem-card-chip" aria-hidden="true" />
-
-                <div className="imem-card-holder">
-                  <div className="imem-card-label">Cardholder</div>
-                  <div className="imem-card-name">Your Name</div>
-                </div>
-
-                <div className="imem-card-foot">
-                  <div>
-                    <div className="imem-card-label">Member ID</div>
-                    <div className="imem-card-id">AAA · IND · 2026</div>
-                  </div>
-                  <div>
-                    <div className="imem-card-label">Valid</div>
-                    <div className="imem-card-id">2 Years</div>
-                  </div>
-                  <span className="imem-card-qr" aria-hidden="true" />
-                </div>
-              </div>
+            <div className="imem-show">
+              <figure className="imem-show-frame reveal">
+                <Image
+                  src="/member-approved-nigar.jpg"
+                  alt="Nigar Aslanova, Senior State Specialist in Azerbaijan, holding her American Accreditation Association certificate as a five-star approved AAA member."
+                  width={940}
+                  height={788}
+                  sizes="(max-width: 1080px) 480px, 42vw"
+                  className="imem-show-img"
+                />
+              </figure>
 
               <span className="imem-float imem-float-a reveal">
-                <Icon name="shield" size={16} /> Verified credential
+                <Icon name="shield" size={16} /> Approved by AAA
               </span>
               <span className="imem-float imem-float-b reveal">
-                <Icon name="globe" size={16} /> Global recognition
+                <Icon name="globe" size={16} /> Globally recognized
               </span>
             </div>
           </div>
