@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import RevealClient from "./_components/RevealClient";
+import SiteChrome from "./_components/SiteChrome";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -35,9 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} ${jetbrainsMono.variable}`}>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <SiteChrome header={<Header />} footer={<Footer />}>
+          {children}
+        </SiteChrome>
         <RevealClient />
       </body>
     </html>
