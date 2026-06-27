@@ -5924,14 +5924,22 @@ a.sme-contact-item:hover .ico{ background: rgba(255,255,255,.14); border-color: 
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  background:
-    radial-gradient(120% 120% at 88% -10%, var(--aaa-blue-500) 0%, transparent 50%),
-    linear-gradient(165deg, var(--aaa-blue-950) 0%, var(--aaa-blue-900) 100%);
+  background: var(--aaa-blue-950);
   color: #fff;
   padding: 128px 0 clamp(64px, 8vw, 100px);
 }
 @media (min-width: 721px){
   .smehome-hero{ padding-top: calc(var(--header-h) + 40px); }
+}
+/* Photographic background + brand overlay (matches the previous hero) */
+.smehome-hero-bg{
+  position: absolute; inset: 0; z-index: -3;
+  background-size: cover;
+  background-position: center;
+}
+.smehome-hero-overlay{
+  position: absolute; inset: 0; z-index: -2;
+  background: linear-gradient(105deg, rgba(2,42,71,.93) 0%, rgba(2,73,133,.82) 52%, rgba(2,73,133,.66) 100%);
 }
 .smehome-hero::before{
   content:""; position: absolute; inset: 0; z-index: -1;

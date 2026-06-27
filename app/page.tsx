@@ -7,6 +7,7 @@ import HomeGallery from "./_components/home/HomeGallery";
 import ApplyForm from "./_components/home/ApplyForm";
 
 const CONSULT = "https://calendly.com/aaa-accreditation/30min";
+const HERO_BG = "/hero.jpg";
 
 const HERO = {
   badge: "SME Funding Readiness Program",
@@ -261,6 +262,13 @@ export default function HomePage() {
     <>
       {/* 0. Hero */}
       <section className="smehome-hero">
+        <div
+          className="smehome-hero-bg"
+          style={{ backgroundImage: `url(${HERO_BG})` }}
+          role="img"
+          aria-label="Accreditation professionals reviewing documentation"
+        />
+        <div className="smehome-hero-overlay" />
         <div className="container">
           <div className="smehome-hero-inner">
             <div className="reveal">
