@@ -5911,3 +5911,261 @@ a.sme-contact-item:hover .ico{ background: rgba(255,255,255,.14); border-color: 
   .smerc-cols{ grid-template-columns: 1fr; }
   .smerc-ring{ margin: 0 auto; }
 }
+
+/* ============================================================
+   HOME — SME funding-readiness landing (smehome-* namespace)
+   Built on the shared .sme-* system; brand-only (blue + white).
+   Sits beneath the transparent overlay header, so the hero is a
+   dark brand band tall enough to clear it.
+   ============================================================ */
+
+/* ---------- Hero (split: pitch + trust card) ---------- */
+.smehome-hero{
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 120% at 88% -10%, var(--aaa-blue-500) 0%, transparent 50%),
+    linear-gradient(165deg, var(--aaa-blue-950) 0%, var(--aaa-blue-900) 100%);
+  color: #fff;
+  padding: 128px 0 clamp(64px, 8vw, 100px);
+}
+@media (min-width: 721px){
+  .smehome-hero{ padding-top: calc(var(--header-h) + 40px); }
+}
+.smehome-hero::before{
+  content:""; position: absolute; inset: 0; z-index: -1;
+  background-image: radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse at 20% 40%, #000, transparent 60%);
+  mask-image: radial-gradient(ellipse at 20% 40%, #000, transparent 60%);
+}
+.smehome-hero-inner{
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(40px, 5vw, 64px);
+  align-items: center;
+}
+.smehome-badge{
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.22);
+  padding: 7px 15px; border-radius: 999px;
+  margin-bottom: 22px;
+}
+.smehome-hero h1{
+  margin: 0 0 20px;
+  font-size: clamp(34px, 4.6vw, 56px);
+  font-weight: 700; line-height: 1.07; letter-spacing: -0.035em;
+  color: #fff;
+}
+.smehome-hero h1 .accent{ color: var(--aaa-blue-100); }
+.smehome-sub{
+  margin: 0 0 32px;
+  font-size: 17px; line-height: 1.72;
+  color: rgba(255,255,255,.82);
+  max-width: 50ch;
+}
+.smehome-stats{ display: flex; flex-wrap: wrap; gap: 14px 30px; margin-bottom: 34px; }
+.smehome-stat{ border-left: 3px solid var(--aaa-blue-100); padding-left: 14px; }
+.smehome-stat-num{ display: block; font-size: 25px; font-weight: 700; color: #fff; letter-spacing: -0.02em; line-height: 1.1; }
+.smehome-stat-label{ display: block; margin-top: 2px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+.smehome-actions{ display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* Trust card (right) */
+.smehome-card{
+  background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius-xl);
+  padding: clamp(26px, 3vw, 34px);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.smehome-card-title{
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.9);
+  margin: 0 0 20px;
+}
+.smehome-isqua{
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,.06);
+  border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 16px;
+}
+.smehome-isqua-badge{
+  flex: none;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: .05em;
+  color: var(--aaa-blue); background: #fff;
+  padding: 8px 12px; border-radius: 8px; white-space: nowrap;
+}
+.smehome-isqua p{ margin: 0; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,.78); }
+.smehome-trust-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.smehome-trust{ background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius); padding: 16px; text-align: center; }
+.smehome-trust .n{ display: block; font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+.smehome-trust .l{ display: block; margin-top: 4px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+
+/* ---------- Global recognition: embedded world map card ---------- */
+.sme-global-layout.with-map{ grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr); align-items: center; }
+.sme-mapcard{
+  background: var(--white);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-xl);
+  padding: clamp(18px, 2.2vw, 28px);
+  box-shadow: 0 30px 70px -30px rgba(2,28,52,.6);
+}
+.sme-mapcard .wm-wrap{ margin-top: 0; }
+.sme-mapcard .wm-legend{ margin-top: 20px; }
+.sme-mapcard-strip{
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 18px; padding-top: 18px;
+  border-top: 1px solid var(--ink-200);
+}
+.sme-mapcard-strip .badge{
+  flex: none; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: .05em;
+  color: var(--aaa-blue); background: var(--aaa-blue-50);
+  border: 1px solid var(--aaa-blue-100);
+  padding: 7px 11px; border-radius: 8px; white-space: nowrap;
+}
+.sme-mapcard-strip span{ font-size: 13px; color: var(--ink-600); line-height: 1.5; }
+
+/* ---------- Gallery ---------- */
+.sme-gallery{ padding: var(--section-pad) 0; background: var(--white); }
+.sme-gallery-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.sme-gallery-item{
+  position: relative; overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--aaa-blue) 0%, var(--aaa-blue-900) 100%);
+  box-shadow: var(--shadow-xs);
+}
+.sme-gallery-item img{ width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s var(--ease-out); }
+.sme-gallery-item:hover img{ transform: scale(1.06); }
+.sme-gallery-ph{
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  color: rgba(255,255,255,.6);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+.sme-gallery-ph .mark{ font-size: 26px; font-weight: 700; color: rgba(255,255,255,.34); letter-spacing: .04em; }
+.sme-gallery-cap{
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(2,28,52,.9), transparent);
+  color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .01em;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .3s ease, transform .3s var(--ease-out);
+}
+.sme-gallery-item:hover .sme-gallery-cap{ opacity: 1; transform: translateY(0); }
+
+/* ---------- Leadership team (dark band, hover bios) ---------- */
+.sme-team{ position: relative; overflow: hidden; isolation: isolate; padding: var(--section-pad) 0; background: var(--aaa-blue-950); color: #fff; }
+.sme-team::before{
+  content:""; position: absolute; inset: 0; z-index: -1;
+  background-image: radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse at 80% 25%, #000, transparent 60%);
+  mask-image: radial-gradient(ellipse at 80% 25%, #000, transparent 60%);
+}
+.sme-team-tabs{ display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: clamp(32px, 4vw, 44px); }
+.sme-team-tab{
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: rgba(255,255,255,.78);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+  padding: 10px 20px; border-radius: 999px; cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.sme-team-tab:hover{ color: #fff; border-color: rgba(255,255,255,.36); }
+.sme-team-tab.active{ background: #fff; color: var(--aaa-blue); border-color: #fff; }
+.sme-team-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.sme-team-card{
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.sme-team-avatar{ width: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: top center; display: block; background: rgba(255,255,255,.06); }
+.sme-team-ph{
+  width: 100%; aspect-ratio: 1 / 1;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--aaa-blue) 0%, var(--aaa-blue-900) 100%);
+  font-size: clamp(34px, 4vw, 46px); font-weight: 700; color: rgba(255,255,255,.34); letter-spacing: .02em;
+}
+.sme-team-info{ padding: 18px 20px; }
+.sme-team-info h3{ margin: 0 0 4px; font-size: 15.5px; font-weight: 600; color: #fff; line-height: 1.25; }
+.sme-team-info .role{ display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .03em; line-height: 1.4; color: var(--aaa-blue-100); }
+.sme-team-info .hint{ display: block; margin-top: 10px; font-size: 11px; font-style: italic; color: rgba(255,255,255,.5); }
+.sme-team-overlay{
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 24px;
+  background: linear-gradient(160deg, rgba(2,42,71,.97) 0%, rgba(2,24,46,.98) 100%);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.sme-team-card:hover .sme-team-overlay,
+.sme-team-card:focus-within .sme-team-overlay{ opacity: 1; pointer-events: auto; }
+.sme-team-overlay h3{ margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #fff; }
+.sme-team-overlay .role{ font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; color: var(--aaa-blue-100); }
+.sme-team-overlay .line{ width: 32px; height: 3px; border-radius: 2px; background: var(--aaa-blue-100); margin: 12px 0; }
+.sme-team-overlay p{ margin: 0; font-size: 12.5px; line-height: 1.6; color: rgba(255,255,255,.84); overflow-y: auto; }
+
+/* ---------- Contact application form (white card on dark band) ---------- */
+.sme-form-card{
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: clamp(26px, 3vw, 40px);
+  box-shadow: 0 30px 70px -30px rgba(2,28,52,.7);
+}
+.sme-form-card h3{ margin: 0 0 6px; font-size: 22px; font-weight: 600; color: var(--ink-900); letter-spacing: -0.01em; }
+.sme-form-card .sme-form-sub{ margin: 0 0 24px; font-size: 14px; color: var(--ink-600); line-height: 1.6; }
+.sme-form-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.sme-form-row.single{ grid-template-columns: 1fr; }
+.sme-input, .sme-select, .sme-textarea{
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--ink-200); border-radius: var(--radius);
+  font-family: inherit; font-size: 14.5px; color: var(--ink-900);
+  background: var(--white); outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.sme-input::placeholder, .sme-textarea::placeholder{ color: var(--ink-400); }
+.sme-input:focus, .sme-select:focus, .sme-textarea:focus{ border-color: var(--aaa-blue); box-shadow: 0 0 0 4px rgba(2,73,133,.1); }
+.sme-textarea{ resize: vertical; min-height: 92px; }
+.sme-select{
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+}
+.sme-form-card .btn{ width: 100%; justify-content: center; margin-top: 6px; }
+.sme-form-note{ margin: 14px 0 0; font-size: 11.5px; color: var(--ink-500); text-align: center; line-height: 1.5; }
+.sme-form-success{
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; margin-top: 6px;
+  border-radius: var(--radius);
+  background: var(--aaa-blue-50); border: 1px solid var(--aaa-blue-100);
+  color: var(--aaa-blue); font-size: 14.5px; font-weight: 500;
+}
+
+/* Contact items stacked beneath the consult CTA (left column) */
+.sme-contact-list{ display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
+
+/* ---------- Home responsive ---------- */
+@media (max-width: 960px){
+  .smehome-hero-inner{ grid-template-columns: 1fr; gap: 40px; }
+  .sme-global-layout.with-map{ grid-template-columns: 1fr; align-items: start; }
+  .sme-team-grid{ grid-template-columns: repeat(3, 1fr); }
+  .sme-gallery-grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px){
+  .sme-team-grid{ grid-template-columns: repeat(2, 1fr); }
+  .sme-form-row{ grid-template-columns: 1fr; }
+}
+@media (max-width: 480px){
+  .sme-gallery-grid{ grid-template-columns: 1fr; }
+  .smehome-stats{ gap: 16px 22px; }
+}

@@ -79,7 +79,13 @@ const ACCREDITED = new Set<string>([
   "Philippines",
 ]);
 
-export default function WorldMap({ eyebrow = "Global reach" }: { eyebrow?: string }) {
+/**
+ * The interactive map itself — SVG, hover tooltip and (optional) legend — with
+ * no section chrome. Embed this where you need just the map (e.g. inside a card
+ * on the home page). For the standalone "Countries We Operate" section, use the
+ * default <WorldMap /> below.
+ */
+export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const tipRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState<string | null>(null);
@@ -103,6 +109,64 @@ export default function WorldMap({ eyebrow = "Global reach" }: { eyebrow?: strin
   const markers = DATA.countries.filter((c) => ACCREDITED.has(c.name));
 
   return (
+    <>
+      <div
+        className="wm-wrap"
+        ref={wrapRef}
+        onPointerMove={positionTip}
+        onPointerLeave={() => setActive(null)}
+      >
+        <svg
+          className="wm-svg"
+          viewBox={`0 0 ${DATA.width} ${DATA.height}`}
+          role="img"
+          aria-label="World map highlighting the countries where AAA operates"
+        >
+          {DATA.countries.map((c) => (
+            <path
+              key={c.name}
+              d={c.d}
+              className={`wm-country${ACCREDITED.has(c.name) ? " on" : ""}${
+                active === c.name ? " hot" : ""
+              }`}
+              onPointerEnter={(e) => activate(e, c.name)}
+            />
+          ))}
+          {markers.map((c, i) => (
+            <g
+              key={c.name}
+              className="wm-marker"
+              style={{ "--wm-delay": `${(i % 8) * 0.35}s` } as React.CSSProperties}
+              onPointerEnter={(e) => activate(e, c.name)}
+            >
+              <circle className="halo" cx={c.cx} cy={c.cy} r={7} />
+              <circle className="dot" cx={c.cx} cy={c.cy} r={4} />
+            </g>
+          ))}
+        </svg>
+        <div ref={tipRef} className={`wm-tip${active ? " show" : ""}`} aria-hidden={!active}>
+          <strong>{active}</strong>
+          <span className={`sub${active && ACCREDITED.has(active) ? " on" : ""}`}>
+            {active && ACCREDITED.has(active) ? "AAA accredited presence" : "No AAA presence yet"}
+          </span>
+        </div>
+      </div>
+      {showLegend && (
+        <div className="wm-legend">
+          <span>
+            <i className="sw on" /> Countries with AAA accreditation
+          </span>
+          <span>
+            <i className="sw" /> Not yet covered
+          </span>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default function WorldMap({ eyebrow = "Global reach" }: { eyebrow?: string }) {
+  return (
     <section className="block wm-block">
       <div className="container">
         <div className="block-head reveal">
@@ -111,54 +175,8 @@ export default function WorldMap({ eyebrow = "Global reach" }: { eyebrow?: strin
             <h2 className="section-heading">Countries We Operate</h2>
           </div>
         </div>
-        <div
-          className="wm-wrap reveal"
-          ref={wrapRef}
-          onPointerMove={positionTip}
-          onPointerLeave={() => setActive(null)}
-        >
-          <svg
-            className="wm-svg"
-            viewBox={`0 0 ${DATA.width} ${DATA.height}`}
-            role="img"
-            aria-label="World map highlighting the countries where AAA operates"
-          >
-            {DATA.countries.map((c) => (
-              <path
-                key={c.name}
-                d={c.d}
-                className={`wm-country${ACCREDITED.has(c.name) ? " on" : ""}${
-                  active === c.name ? " hot" : ""
-                }`}
-                onPointerEnter={(e) => activate(e, c.name)}
-              />
-            ))}
-            {markers.map((c, i) => (
-              <g
-                key={c.name}
-                className="wm-marker"
-                style={{ "--wm-delay": `${(i % 8) * 0.35}s` } as React.CSSProperties}
-                onPointerEnter={(e) => activate(e, c.name)}
-              >
-                <circle className="halo" cx={c.cx} cy={c.cy} r={7} />
-                <circle className="dot" cx={c.cx} cy={c.cy} r={4} />
-              </g>
-            ))}
-          </svg>
-          <div ref={tipRef} className={`wm-tip${active ? " show" : ""}`} aria-hidden={!active}>
-            <strong>{active}</strong>
-            <span className={`sub${active && ACCREDITED.has(active) ? " on" : ""}`}>
-              {active && ACCREDITED.has(active) ? "AAA accredited presence" : "No AAA presence yet"}
-            </span>
-          </div>
-        </div>
-        <div className="wm-legend reveal">
-          <span>
-            <i className="sw on" /> Countries with AAA accreditation
-          </span>
-          <span>
-            <i className="sw" /> Not yet covered
-          </span>
+        <div className="reveal">
+          <WorldMapFigure />
         </div>
       </div>
     </section>
