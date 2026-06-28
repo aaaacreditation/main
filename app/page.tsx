@@ -51,11 +51,34 @@ const PAIN: { icon: IconName; title: string; text: string }[] = [
   },
 ];
 
-const RECOG = [
-  { num: "53+", h: "Countries", p: "Active accreditation presence worldwide." },
-  { num: "100+", h: "Surveyors", p: "Qualified assessors across the globe." },
-  { num: "ISQua", h: "EEA Assessed", p: "Aligned with international best practice." },
-  { num: "US", h: "Gov-Authorized", p: "Registered under Title 13.1, Code of Virginia." },
+const REASONS: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: "shield",
+    title: "Internationally recognized standards",
+    text: "AAA accreditation standards are assessed by ISQua EEA, reflecting alignment with international best-practice requirements.",
+  },
+  {
+    icon: "clipboard",
+    title: "Dedicated accreditation coordinator",
+    text: "Each applicant is assigned a dedicated coordinator to manage communication, coordinate the process, and provide timely support.",
+  },
+  {
+    icon: "scale",
+    title: "Flexible assessment options",
+    text: "AAA provides on-site, hybrid, and virtual assessment options while maintaining the same rigorous requirements and decision process.",
+  },
+  {
+    icon: "globe",
+    title: "Proven international experience",
+    text: "With activity across 53+ countries, AAA works with organizations of different sizes, sectors, and regional contexts.",
+  },
+];
+
+const GR_STATS = [
+  { num: "53+", label: "Countries served" },
+  { num: "200+", label: "Accredited organizations" },
+  { num: "100+", label: "Assessors & experts" },
+  { num: "ISQua", label: "EEA assessed" },
 ];
 
 const CATEGORIES: { icon: IconName; title: string; text: string }[] = [
@@ -345,34 +368,56 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. Global recognition + world map */}
-      <section className="sme-global" id="global">
+      {/* 2. Global recognition — trust layout + world map */}
+      <section className="smegr" id="global">
         <div className="container">
-          <div className="sme-global-layout with-map">
-            <div className="sme-global-text reveal">
-              <span className="eyebrow">Global recognition</span>
-              <h2>An accreditation respected worldwide</h2>
-              <p>
-                AAA is a US government-authorized accreditation body operating in more than 53
-                countries, with standards assessed by ISQua EEA, the global benchmark for
-                accreditation bodies. Your credential travels with your business.
-              </p>
-              <div className="sme-recog-grid">
-                {RECOG.map((r) => (
-                  <div className="sme-recog" key={r.h}>
-                    <div className="sme-recog-num">{r.num}</div>
-                    <h4>{r.h}</h4>
-                    <p>{r.p}</p>
+          <div className="sme-head light reveal">
+            <span className="eyebrow">Global recognition</span>
+            <h2>Why organizations around the world trust AAA</h2>
+            <p>
+              AAA brings together internationally recognized standards, structured coordination,
+              flexible assessment options, and international experience across a growing global
+              network.
+            </p>
+          </div>
+          <div className="smegr-layout">
+            <div className="smegr-reasons reveal">
+              {REASONS.map((r) => (
+                <div className="smegr-reason" key={r.title}>
+                  <div className="smegr-reason-ico">
+                    <Icon name={r.icon} size={22} />
                   </div>
-                ))}
-              </div>
+                  <h3>{r.title}</h3>
+                  <p>{r.text}</p>
+                </div>
+              ))}
             </div>
 
-            <div className="sme-mapcard reveal">
-              <WorldMapFigure />
-              <div className="sme-mapcard-strip">
-                <span className="badge">ISQua EEA</span>
-                <span>AAA standards are independently assessed against international best practice.</span>
+            <div className="smegr-visual reveal">
+              <div className="smegr-stats">
+                <div className="smegr-stats-grid">
+                  {GR_STATS.map((s) => (
+                    <div className="smegr-stat" key={s.label}>
+                      <div className="smegr-stat-num">{s.num}</div>
+                      <div className="smegr-stat-label">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="smegr-map">
+                <div className="smegr-map-head">
+                  <div>
+                    <h3>Operating across 53+ countries</h3>
+                    <p>
+                      AAA&rsquo;s international footprint reflects its growing role supporting
+                      quality-focused organizations across regions and sectors.
+                    </p>
+                  </div>
+                  <span className="smegr-map-badge">Global presence</span>
+                </div>
+                <div className="smegr-map-image">
+                  <WorldMapFigure />
+                </div>
               </div>
             </div>
           </div>
