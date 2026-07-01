@@ -3,25 +3,14 @@
 import { useState } from "react";
 import Icon from "../Icon";
 
-const SECTORS = [
-  "Manufacturing",
-  "IT & Software Services",
-  "Healthcare & Pharma",
-  "Agri-Processing",
-  "Textile & Apparel",
-  "Clean Energy & Greentech",
-  "Logistics & Transportation",
-  "Construction & Engineering",
-  "Retail & E-commerce",
-  "Consulting & Professional Services",
-  "Other",
-];
-
-const STAGES = [
-  "Preparing for first loan",
-  "Seeking working capital",
-  "Raising investor funding",
-  "Exploring / Need guidance",
+const PROGRAMS = [
+  "Healthcare Accreditation",
+  "Conformity Assessment Bodies — Laboratories",
+  "Conformity Assessment Bodies — Certification Bodies",
+  "Conformity Assessment Bodies — Inspection Bodies",
+  "Training & Education Providers Accreditation",
+  "SME Funding Readiness Accreditation",
+  "Other / Not sure yet",
 ];
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -47,11 +36,10 @@ export default function ApplyForm() {
           contact: fd.get("contact"),
           email: fd.get("email"),
           phone: fd.get("phone"),
-          sector: fd.get("sector"),
-          stage: fd.get("stage"),
+          sector: fd.get("program"),
           message: fd.get("message"),
           website: fd.get("website"), // honeypot
-          source: "home-apply",
+          source: "home-quote",
         }),
       });
       if (!res.ok) {
@@ -67,41 +55,34 @@ export default function ApplyForm() {
 
   return (
     <div className="sme-form-card reveal">
-      <h3>Start your application</h3>
+      <h3>Request a quote</h3>
       <p className="sme-form-sub">
-        Fill in the form and our team will get back to you within 24 hours.
+        Tell us about your organization and our team will get back to you within 24 hours with a
+        tailored quotation.
       </p>
 
       {status === "sent" ? (
         <div className="sme-form-success" role="status">
           <Icon name="check" size={20} strokeWidth={2.4} />
-          Application received — we&rsquo;ll be in touch within 24 hours.
+          Request received — we&rsquo;ll be in touch within 24 hours.
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="sme-form-row">
-            <input className="sme-input" type="text" name="business" placeholder="Business name *" required aria-label="Business name" />
+            <input className="sme-input" type="text" name="business" placeholder="Organization name *" required aria-label="Organization name" />
             <input className="sme-input" type="text" name="contact" placeholder="Contact person *" required aria-label="Contact person" />
           </div>
           <div className="sme-form-row">
             <input className="sme-input" type="email" name="email" placeholder="Email address *" required aria-label="Email address" />
             <input className="sme-input" type="tel" name="phone" placeholder="Phone number *" required aria-label="Phone number" />
           </div>
-          <div className="sme-form-row">
-            <select className="sme-select" name="sector" required defaultValue="" aria-label="Sector">
+          <div className="sme-form-row single">
+            <select className="sme-select" name="program" required defaultValue="" aria-label="Accreditation program">
               <option value="" disabled>
-                Select your sector
+                Which accreditation program are you interested in?
               </option>
-              {SECTORS.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-            <select className="sme-select" name="stage" required defaultValue="" aria-label="Funding stage">
-              <option value="" disabled>
-                Funding stage
-              </option>
-              {STAGES.map((s) => (
-                <option key={s}>{s}</option>
+              {PROGRAMS.map((p) => (
+                <option key={p}>{p}</option>
               ))}
             </select>
           </div>
@@ -109,9 +90,9 @@ export default function ApplyForm() {
             <textarea
               className="sme-textarea"
               name="message"
-              placeholder="Tell us about your business and funding goals (optional)"
+              placeholder="Tell us about your organization, scope, and locations (optional)"
               rows={3}
-              aria-label="About your business"
+              aria-label="About your organization"
             />
           </div>
           {/* Honeypot — hidden from real users, catches naive bots */}
@@ -129,12 +110,12 @@ export default function ApplyForm() {
           <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
             {status === "sending" ? "Sending…" : (
               <>
-                Submit application <Icon name="arrow" size={14} className="arrow" />
+                Request my quote <Icon name="arrow" size={14} className="arrow" />
               </>
             )}
           </button>
           <p className="sme-form-note">
-            🔒 Your details are confidential. No spam — just a real conversation about funding readiness.
+            🔒 Your details are confidential. No spam — just a real conversation about accreditation.
           </p>
         </form>
       )}

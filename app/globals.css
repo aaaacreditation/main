@@ -6879,3 +6879,43 @@ a.adm-list-row:hover .adm-list-title{ color: var(--aaa-blue); }
 .rte-body .tiptap ol{ list-style: decimal; }
 .cms-prose ul{ list-style: disc; }
 .cms-prose ol{ list-style: decimal; }
+
+/* ---------- Hero certificate card (accreditation home) ---------- */
+.cert-body{
+  position: relative; overflow: hidden;
+  padding: 26px 8px 24px;
+  border-bottom: 1px solid var(--ink-100);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+.cert-body .seal-rosette{
+  right: -56px; top: 50%;
+  width: 235px; height: 235px;
+  transform: translateY(-50%);
+  color: var(--aaa-blue);
+  opacity: .09;
+}
+.cert-line{ font-size: 12.5px; color: var(--ink-500); line-height: 1.5; max-width: 34ch; position: relative; z-index: 1; }
+.cert-org{
+  position: relative; z-index: 1;
+  font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink-900);
+  padding-bottom: 7px;
+  border-bottom: 2px solid var(--aaa-blue-100);
+}
+.cert-stds{ position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.cert-meta{
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  padding: 16px 0 18px;
+}
+.cert-meta > div{ padding: 0 14px; border-left: 1px solid var(--ink-100); }
+.cert-meta > div:first-child{ border-left: 0; padding-left: 8px; }
+.cert-meta em{
+  display: block; font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-500);
+  margin-bottom: 5px;
+}
+.cert-meta strong{ font-size: 14px; font-weight: 600; color: var(--aaa-blue); }
+
+/* News cards can now carry real cover images from the CMS */
+.insight-img img{ width: 100%; height: 100%; object-fit: cover; display: block; }
