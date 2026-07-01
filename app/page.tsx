@@ -5,6 +5,7 @@ import ReadinessCheck from "./programs/sme-funding-readiness/ReadinessCheck";
 import HomeTeam from "./_components/home/HomeTeam";
 import HomeGallery from "./_components/home/HomeGallery";
 import ApplyForm from "./_components/home/ApplyForm";
+import HeroStats from "./_components/home/HeroStats";
 
 const CONSULT = "https://calendly.com/aaa-accreditation/30min";
 const HERO_BG = "/hero.jpg";
@@ -20,13 +21,31 @@ const HERO = {
     { num: "40%+", label: "SMEs underserved by lenders" },
     { num: "53+", label: "Countries recognized" },
   ],
-  trust: [
-    { n: "53+", l: "Countries" },
-    { n: "100+", l: "Surveyors" },
-    { n: "30", l: "Days to certify" },
-    { n: "24/7", l: "Support" },
+};
+
+/* Sample scorecard the hero renders as a product visual (illustrative). */
+const SCORE = {
+  value: 86,
+  bars: [
+    { k: "Financial readiness", v: 92 },
+    { k: "Operational strength", v: 87 },
+    { k: "Governance & compliance", v: 84 },
+    { k: "Market presence & growth", v: 79 },
   ],
 };
+
+/* Standards the AAA programs are aligned with — shown in the hero marquee. */
+const STANDARDS = [
+  "ISQua EEA",
+  "ISO/IEC 17021-1",
+  "ISO/IEC 17025",
+  "ISO 15189",
+  "ISO/IEC 17020",
+  "ISO/IEC 17024",
+  "ISO/IEC 17065",
+  "ISO/IEC 17043",
+  "ASTM E2659",
+];
 
 const PAIN: { icon: IconName; title: string; text: string }[] = [
   {
@@ -284,33 +303,36 @@ export default function HomePage() {
   return (
     <>
       {/* 0. Hero */}
-      <section className="smehome-hero">
+      <section className="hero2">
         <div
-          className="smehome-hero-bg"
+          className="hero2-bg"
           style={{ backgroundImage: `url(${HERO_BG})` }}
           role="img"
           aria-label="Accreditation professionals reviewing documentation"
         />
-        <div className="smehome-hero-overlay" />
+        <div className="hero2-shade" aria-hidden="true" />
+        <div className="hero2-grain" aria-hidden="true" />
+        <div className="hero2-glow" aria-hidden="true" />
+
         <div className="container">
-          <div className="smehome-hero-inner">
-            <div className="reveal">
-              <span className="smehome-badge">{HERO.badge}</span>
+          <div className="hero2-grid">
+            <div className="hero2-copy reveal">
+              <span className="hero2-badge">
+                <span className="hero2-dot" aria-hidden="true" />
+                {HERO.badge}
+              </span>
               <h1>
                 {HERO.titleA}
-                <span className="accent">{HERO.accent}</span>
+                <span className="hero2-accent">
+                  {HERO.accent}
+                  <svg className="hero2-underline" viewBox="0 0 240 14" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M3 10.5 C 62 4.5, 172 3.5, 237 8.5" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+                  </svg>
+                </span>
                 {HERO.titleB}
               </h1>
-              <p className="smehome-sub">{HERO.sub}</p>
-              <div className="smehome-stats">
-                {HERO.stats.map((s) => (
-                  <div className="smehome-stat" key={s.label}>
-                    <span className="smehome-stat-num">{s.num}</span>
-                    <span className="smehome-stat-label">{s.label}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="smehome-actions">
+              <p className="hero2-sub">{HERO.sub}</p>
+              <div className="hero2-actions">
                 <Link href="/quote" className="btn btn-gold">
                   Start your accreditation <Icon name="arrow" size={14} className="arrow" />
                 </Link>
@@ -318,26 +340,91 @@ export default function HomePage() {
                   Book a free consultation
                 </a>
               </div>
+              <HeroStats stats={HERO.stats} />
             </div>
 
-            <aside className="smehome-card reveal">
-              <p className="smehome-card-title">Why SMEs trust AAA</p>
-              <div className="smehome-isqua">
-                <span className="smehome-isqua-badge">ISQua EEA</span>
-                <p>
-                  AAA accreditation standards are assessed by ISQua EEA, confirming alignment with
-                  international best-practice requirements.
-                </p>
-              </div>
-              <div className="smehome-trust-row">
-                {HERO.trust.map((t) => (
-                  <div className="smehome-trust" key={t.l}>
-                    <span className="n">{t.n}</span>
-                    <span className="l">{t.l}</span>
+            {/* Product visual — sample funding-readiness scorecard */}
+            <aside className="hero2-visual reveal" aria-hidden="true">
+              <div className="sc-card">
+                <div className="sc-head">
+                  <span className="sc-mark">AAA</span>
+                  <span className="sc-head-txt">
+                    <strong>SME Accreditation Scorecard</strong>
+                    <em>Independent assessment · sample</em>
+                  </span>
+                  <span className="sc-verified">
+                    <Icon name="check" size={11} strokeWidth={3} /> Verified
+                  </span>
+                </div>
+
+                <div className="sc-gauge-row">
+                  <div className="sc-gauge">
+                    <svg viewBox="0 0 120 120">
+                      <circle className="sc-gauge-track" cx="60" cy="60" r="52" />
+                      <circle
+                        className="sc-gauge-value"
+                        cx="60"
+                        cy="60"
+                        r="52"
+                        style={{ ["--score" as string]: SCORE.value / 100 }}
+                      />
+                    </svg>
+                    <span className="sc-gauge-center">
+                      <strong>{SCORE.value}</strong>
+                      <em>/ 100</em>
+                    </span>
                   </div>
-                ))}
+                  <div className="sc-gauge-info">
+                    <span className="sc-status">
+                      <Icon name="shield" size={13} /> Funding-ready
+                    </span>
+                    <p>Composite score across six weighted assessment categories, mapped to lender KYB and credit criteria.</p>
+                  </div>
+                </div>
+
+                <div className="sc-bars">
+                  {SCORE.bars.map((b) => (
+                    <div className="sc-bar" key={b.k}>
+                      <span className="sc-bar-top">
+                        <em>{b.k}</em>
+                        <strong>{b.v}</strong>
+                      </span>
+                      <span className="sc-bar-track">
+                        <span className="sc-bar-fill" style={{ ["--w" as string]: `${b.v}%` }} />
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="sc-foot">
+                  <span className="sc-isqua">ISQua EEA</span>
+                  <p>Standards assessed by ISQua EEA · Certificate valid 3 years</p>
+                </div>
+              </div>
+
+              <div className="sc-chip sc-chip-a">
+                <span className="sc-chip-ico"><Icon name="cert" size={16} /></span>
+                Accredited in 30 days
+              </div>
+              <div className="sc-chip sc-chip-b">
+                <span className="sc-chip-ico"><Icon name="globe" size={16} /></span>
+                Recognized in 53+ countries
               </div>
             </aside>
+          </div>
+        </div>
+
+        {/* Standards marquee */}
+        <div className="hero2-band">
+          <div className="container hero2-band-inner">
+            <span className="hero2-band-label">Aligned with international standards</span>
+            <div className="hero2-marquee" aria-hidden="true">
+              <div className="hero2-marquee-track">
+                {[...STANDARDS, ...STANDARDS].map((s, i) => (
+                  <span className="hero2-mq-item" key={`${s}-${i}`}>{s}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

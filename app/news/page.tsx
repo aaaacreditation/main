@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
-import { formatDate, posts, type Post } from "./posts";
+import { formatDate } from "./posts";
+import { getPublishedPosts, type PublicPost } from "@/lib/content";
 
 export const metadata: Metadata = { title: "AAA News & Events" };
+export const revalidate = 300;
 
 const RECENT_COUNT = 12;
 
-export default function Page() {
+export default async function Page() {
+  const posts = await getPublishedPosts();
   const recent = posts.slice(0, RECENT_COUNT);
   const archive = posts.slice(RECENT_COUNT);
 
   // posts are sorted newest-first, so years come out in descending order.
-  const byYear = new Map<string, Post[]>();
+  const byYear = new Map<string, PublicPost[]>();
   for (const p of archive) {
     const year = p.date.slice(0, 4);
     const group = byYear.get(year);
@@ -35,7 +38,7 @@ export default function Page() {
         crumbs={[{ label: "AAA News" }]}
         meta={[
           { k: "Articles", v: String(posts.length) },
-          { k: "Latest", v: formatDate(posts[0].date) },
+          { k: "Latest", v: posts.length ? formatDate(posts[0].date) : "—" },
         ]}
       />
 

@@ -12,12 +12,12 @@ export default function SiteChrome({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isLP = pathname.startsWith("/lp/");
+  const bare = pathname.startsWith("/lp/") || pathname.startsWith("/admin");
   return (
     <>
-      {!isLP && header}
+      {!bare && header}
       <main>{children}</main>
-      {!isLP && footer}
+      {!bare && footer}
     </>
   );
 }

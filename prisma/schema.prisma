@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CLOSED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(EDITOR)
+  posts        Post[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// News / blog article. `content` stores sanitized HTML from the admin editor.
+model Post {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  excerpt        String        @default("")
+  content        String        @default("")
+  coverImage     String?
+  images         String[]      @default([])
+  category       String        @default("News")
+  tags           String[]      @default([])
+  status         ContentStatus @default(DRAFT)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  author         User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId       String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, publishedAt(sort: Desc)])
+}
+
+/// Free-form CMS page served at /{slug} (static app routes always win).
+model Page {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  intro          String        @default("")
+  content        String        @default("")
+  heroImage      String?
+  status         ContentStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+/// Application / contact submissions captured from the public site.
+model Lead {
+  id        String     @id @default(cuid())
+  business  String
+  contact   String
+  email     String
+  phone     String     @default("")
+  sector    String     @default("")
+  stage     String     @default("")
+  message   String     @default("")
+  source    String     @default("home-apply")
+  status    LeadStatus @default(NEW)
+  notes     String     @default("")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([status, createdAt(sort: Desc)])
+}

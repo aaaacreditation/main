@@ -28,14 +28,59 @@ const MEMBERSHIP = [
   { href: "/membership/organizational", label: "Organizational Membership" },
 ];
 
+function NavLinks() {
+  return (
+    <nav className="nav">
+      <span className="nav-item">
+        <Link href="/about" className="has-caret">About</Link>
+        <span className="nav-dropdown">
+          {ABOUT.map((i) => (
+            <Link key={i.href} href={i.href}>{i.label}</Link>
+          ))}
+        </span>
+      </span>
+      <span className="nav-item">
+        <Link href="/programs/healthcare" className="has-caret">Accreditation Programs</Link>
+        <span className="nav-dropdown mega">
+          {PROGRAMS.map((i) => (
+            <Link key={i.href} href={i.href}>
+              <span className="mega-label">{i.label}</span>
+              <span className="mega-std">{i.std}</span>
+            </Link>
+          ))}
+        </span>
+      </span>
+      <span className="nav-item">
+        <Link href="/membership" className="has-caret">Membership</Link>
+        <span className="nav-dropdown">
+          {MEMBERSHIP.map((i) => (
+            <Link key={i.href} href={i.href}>{i.label}</Link>
+          ))}
+        </span>
+      </span>
+      <Link href="/directory/accredited-organizations">Accredited Organizations</Link>
+      <Link href="/news">News</Link>
+    </nav>
+  );
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 220);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <>
@@ -93,37 +138,7 @@ export default function Header() {
         {/* Centered primary nav */}
         <div className="header-nav">
           <div className="container">
-            <nav className="nav">
-              <span className="nav-item">
-                <Link href="/about" className="has-caret">About</Link>
-                <span className="nav-dropdown">
-                  {ABOUT.map((i) => (
-                    <Link key={i.href} href={i.href}>{i.label}</Link>
-                  ))}
-                </span>
-              </span>
-              <span className="nav-item">
-                <Link href="/programs/healthcare" className="has-caret">Accreditation Programs</Link>
-                <span className="nav-dropdown mega">
-                  {PROGRAMS.map((i) => (
-                    <Link key={i.href} href={i.href}>
-                      <span className="mega-label">{i.label}</span>
-                      <span className="mega-std">{i.std}</span>
-                    </Link>
-                  ))}
-                </span>
-              </span>
-              <span className="nav-item">
-                <Link href="/membership" className="has-caret">Membership</Link>
-                <span className="nav-dropdown">
-                  {MEMBERSHIP.map((i) => (
-                    <Link key={i.href} href={i.href}>{i.label}</Link>
-                  ))}
-                </span>
-              </span>
-              <Link href="/directory/accredited-organizations">Accredited Organizations</Link>
-              <Link href="/news">News</Link>
-            </nav>
+            <NavLinks />
 
             <div className="header-actions">
               <button className="search-btn" aria-label="Search"><Icon name="search" size={16} /></button>
@@ -134,6 +149,35 @@ export default function Header() {
           </div>
         </div>
       </header>
+
+      {/* Compact sticky bar — slides in once the tall header scrolls away */}
+      <div className={"header-compact" + (scrolled ? " show" : "")} aria-hidden={!scrolled}>
+        <div className="container">
+          <Link href="/" className="hc-brand" aria-label="American Accreditation Association — home" tabIndex={scrolled ? 0 : -1}>
+            <Image
+              src="/logo/AAA-Logo.png"
+              alt=""
+              width={146}
+              height={45}
+              className="hc-logo"
+            />
+          </Link>
+          <NavLinks />
+          <div className="hc-actions">
+            <Link href="/quote" className="btn hc-cta" tabIndex={scrolled ? 0 : -1}>
+              Get a Quote <Icon name="arrow" size={13} className="arrow" />
+            </Link>
+            <button
+              className={"menu-toggle" + (menuOpen ? " open" : "")}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              <span className="bars" />
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div
         className={"mobile-menu" + (menuOpen ? " open" : "")}

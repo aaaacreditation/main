@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: aaa-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aaa
+      POSTGRES_PASSWORD: aaa_dev_password
+      POSTGRES_DB: aaa_cms
+    ports:
+      # 5435 on the host — 5432/5433/5434/5439 are used by other local projects.
+      - "5435:5432"
+    volumes:
+      - aaa_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aaa -d aaa_cms"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  aaa_pgdata:

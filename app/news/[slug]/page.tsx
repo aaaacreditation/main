@@ -4,12 +4,11 @@ import { notFound } from "next/navigation";
 import PageHero from "../../_components/PageHero";
 import PageBody from "../../_components/PageBody";
 import CTA from "../../_components/CTA";
-import ArticleBody from "../ArticleBody";
-import { formatDate, getPost, posts } from "../posts";
+import PostBody from "../PostBody";
+import { formatDate } from "../posts";
+import { getPublishedPost } from "@/lib/content";
 
-export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
-}
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -17,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPublishedPost(slug);
   if (!post) return { title: "AAA News" };
   return {
     title: post.title,
@@ -31,7 +30,7 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPublishedPost(slug);
   if (!post) notFound();
 
   const crumbTitle =
@@ -51,7 +50,11 @@ export default async function Page({
       />
       <PageBody label="AAA Newsroom">
         <article>
-          <ArticleBody content={post.content} title={post.title} />
+          {post.coverImage && !/aaa-accreditation\.org/i.test(post.coverImage) ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={post.coverImage} alt="" className="cms-cover" />
+          ) : null}
+          <PostBody content={post.content} title={post.title} />
         </article>
         <p style={{ marginTop: 48 }}>
           <Link href="/news" className="ed-link">
