@@ -93,7 +93,7 @@ export default function Page() {
                 key={type.title}
                 style={{
                   transitionDelay: `${index * 90}ms`,
-                  backgroundImage: `linear-gradient(90deg, rgba(2,73,133,.92), rgba(2,73,133,.62)), url(${type.image})`,
+                  backgroundImage: `linear-gradient(90deg, rgba(23,61,115,.92), rgba(23,61,115,.62)), url(${type.image})`,
                 }}
               >
                 <span>{type.label}</span>

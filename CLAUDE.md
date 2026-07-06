@@ -4,24 +4,36 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 
 ## Colors
 
+> Rebranded July 2026 to the navy + gold palette from the client's `about_aaa2.html` reference. The previous single-color brand (`#024985`) is retired.
+
 ### Primary
-- **Brand Blue**: `#024985`
+- **Brand Navy**: `#173d73` (CSS token `--aaa-blue`)
   - Use for: primary buttons, links, headings, navigation accents, key brand elements, focus states.
   - Tailwind utility: configure as `brand` (e.g., `bg-brand`, `text-brand`, `border-brand`).
+- **Royal Blue**: `#244f93` (`--aaa-blue-500`) — gradient partner for navy (`linear-gradient(135deg, #173d73, #244f93)`), lighter accents.
+- **Brand Dark**: `#061a2c` (`--aaa-blue-950`) — dark surfaces: footer, utility bar, dark hero gradients (`#061a2c → #0b2d50 → #173d73`).
+
+### Accent
+- **Brand Gold**: `#b38a2e` (`--aaa-gold`) — the ONLY decorative accent. Kickers/eyebrows, accent bars and borders, icon rings, hover highlights on dark surfaces, gold CTA buttons (gradient `#b38a2e → #8e6b18`).
+- **Deep Gold**: `#8e6b18` (`--aaa-gold-700`) — gold text on light backgrounds (better contrast), gradient partner.
+- **Pale Gold**: `#f4e7c6` (`--aaa-gold-100`) — gold-tinted text on dark navy (e.g., hero subheadings).
 
 ### Color Usage Rules
-- The primary color `#024985` MUST be used as the dominant brand color across the site.
+- Navy `#173d73` MUST remain the dominant brand color; gold is an accent, never a dominant surface color.
 - Do NOT introduce new accent colors without updating these guidelines first.
 - Maintain WCAG AA contrast minimums:
-  - White (`#FFFFFF`) text on `#024985` is approved (high contrast).
-  - Do not place `#024985` text on dark backgrounds — use white instead.
+  - White (`#FFFFFF`) text on `#173d73` / `#244f93` / `#061a2c` is approved.
+  - Gold `#b38a2e` on dark navy passes AA only for large/bold text and decorative accents; do not use it for small body text on `#173d73`.
+  - On white, prefer deep gold `#8e6b18` over `#b38a2e` for small gold text.
+  - Do not place navy text on dark backgrounds — use white instead.
 
 ### Functional (semantic) colors — not brand accents
 - Danger/error: `#B3261E` (text/icons) on `#FDF0EF` (surface), border `#F2C6C2`. Reserved for destructive actions and validation errors (admin CMS, form errors). Never used decoratively. (Added July 2026 with the admin CMS.)
 
-### Suggested Supporting Palette (derived from `#024985`)
+### Suggested Supporting Palette
 - Map marker red: `#D6334D` — reserved exclusively for the animated location markers on the "Countries We Operate" world map (carried over from the legacy site map at the client's request, June 2026). Do not use it anywhere else.
-- Map deep navy: `#0E2A47` — world-map fill for countries without AAA accreditation (accredited countries use brand `#024985`).
+- Map deep navy: `#0E2A47` — world-map fill for countries without AAA accreditation (accredited countries use brand navy `#173d73`).
+- Light blue surfaces: `#eef4ff` (`--aaa-blue-50`) subtle tinted backgrounds; `#d7e2f4` (`--aaa-blue-100`) tinted borders.
 - White: `#FFFFFF` — backgrounds, surfaces, text on brand color.
 - Neutral 900: `#0F172A` — body text on light backgrounds.
 - Neutral 600: `#475569` — secondary text.
@@ -62,16 +74,17 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 ## Components
 
 ### Buttons
-- Primary: `background: #024985`, `color: #FFFFFF`, `font-weight: 600`, `border-radius: 6–8px`, hover darkens by ~8–10%.
-- Secondary: `background: transparent`, `color: #024985`, `border: 1px solid #024985`, hover fills with `#024985` and white text.
+- Primary: `background: #173d73` (or gradient to `#244f93`), `color: #FFFFFF`, `font-weight: 600`, `border-radius: 6–8px`, hover darkens by ~8–10%.
+- Gold CTA (hero/CTA bands only): `background: linear-gradient(135deg, #b38a2e, #8e6b18)`, `color: #FFFFFF`, `font-weight: 600` — reserve for the one highest-priority action per page.
+- Secondary: `background: transparent`, `color: #173d73`, `border: 1px solid #173d73`, hover fills with `#173d73` and white text (on dark surfaces: white text + translucent white border).
 - Disabled: 50% opacity, no hover state.
 
 ### Links
-- Color: `#024985`.
+- Color: `#173d73`.
 - Hover: underline + slight darken.
 
 ### Forms
-- Inputs use neutral borders (`#E2E8F0`); focus state uses `#024985` border + ring.
+- Inputs use neutral borders (`#E2E8F0`); focus state uses `#173d73` border + ring.
 - Labels are `font-weight: 500`, body text is `font-weight: 400`.
 
 ### Cards / Surfaces
@@ -89,15 +102,15 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 
 ## Implementation Checklist (must be true for every page/component)
 - [ ] Poppins is the active font family (no system fonts leaking through).
-- [ ] Primary CTAs use `#024985`.
-- [ ] No off-brand accent colors introduced.
+- [ ] Primary CTAs use `#173d73` (gold gradient reserved for the single highest-priority CTA).
+- [ ] No off-brand accent colors introduced (gold `#b38a2e` is the only accent).
 - [ ] Headings follow the type scale above.
 - [ ] Sufficient contrast (WCAG AA) for all text.
 - [ ] Spacing uses the 4/8px scale.
 
 ## Tech Stack Conventions
 - Next.js (App Router) — keep components in `app/_components/` when shared.
-- Tailwind CSS — extend the theme to expose `brand` color and Poppins font; do not hardcode `#024985` in components, use `bg-brand` / `text-brand` instead.
+- Tailwind CSS — extend the theme to expose `brand` color and Poppins font; do not hardcode `#173d73` in components, use `bg-brand` / `text-brand` (or the `--aaa-*` CSS tokens in globals.css) instead.
 - Global styles live in `app/globals.css`.
 
 ---
