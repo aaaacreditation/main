@@ -7280,14 +7280,9 @@ a.adm-list-row:hover .adm-list-title{ color: var(--aaa-blue); }
   line-height: 1;
 }
 .ab-ribbon-seal{
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.4);
-  display: grid; place-items: center;
-  color: rgba(255,255,255,.55);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .04em;
+  width: 36px; height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.28));
 }
 .ab-program-body{
   display: flex;

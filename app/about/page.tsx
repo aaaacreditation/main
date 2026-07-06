@@ -359,7 +359,8 @@ export default function AboutPage() {
               <Link key={p.title} href={p.href} className="ab-program-card">
                 <span className="ab-program-ribbon" aria-hidden="true">
                   <span className="ab-ribbon-star">&#9733;</span>
-                  <span className="ab-ribbon-seal">AAA</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="ab-ribbon-seal" src="/logo/acc-org.png" alt="" />
                 </span>
                 <div className="ab-program-body">
                   <div className="ab-program-icon">
