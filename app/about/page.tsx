@@ -357,14 +357,21 @@ export default function AboutPage() {
           <div className="ab-program-grid reveal">
             {PROGRAMS.map((p) => (
               <Link key={p.title} href={p.href} className="ab-program-card">
-                <div className="ab-program-icon">
-                  <Icon name={p.icon} />
-                </div>
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-                <span className="ab-program-more">
-                  Learn more <Icon name="arrow" className="arrow" />
+                <span className="ab-program-ribbon" aria-hidden="true">
+                  <span className="ab-ribbon-star">&#9733;</span>
+                  <span className="ab-ribbon-seal">AAA</span>
                 </span>
+                <div className="ab-program-body">
+                  <div className="ab-program-icon">
+                    <Icon name={p.icon} size={26} />
+                  </div>
+                  <h3>{p.title}</h3>
+                  <span className="ab-program-rule" aria-hidden="true" />
+                  <p>{p.text}</p>
+                  <span className="ab-program-more">
+                    Learn more <Icon name="arrow" className="arrow" size={16} />
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
