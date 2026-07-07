@@ -164,6 +164,12 @@ export default function AboutPage() {
 
       {/* ---------- Hero ---------- */}
       <section className="about-hero ab-hero">
+        <div className="ab-hero-glow" aria-hidden="true" />
+        <div className="ab-hero-waves" aria-hidden="true">
+          <div className="ab-wave ab-wave-back" />
+          <div className="ab-wave ab-wave-mid" />
+          <div className="ab-wave ab-wave-front" />
+        </div>
         <div className="container">
           <div className="crumbs">
             <Link href="/">Home</Link>
