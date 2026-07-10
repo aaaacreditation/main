@@ -51,9 +51,34 @@ export default function AboutCarousel({
   const goTo = (i: number) => {
     const el = trackRef.current;
     if (!el) return;
-    const max = pages - 1;
-    const clamped = Math.max(0, Math.min(i, max));
-    el.scrollTo({ left: clamped * step(), behavior: "smooth" });
+    const clamped = Math.max(0, Math.min(i, pages - 1));
+    const card = el.children[clamped] as HTMLElement | undefined;
+    if (!card) return;
+    // optimistic: buttons update the UI immediately; scroll events keep it
+    // in sync for touch/drag scrolling.
+    setPage(clamped);
+    // Chrome's mandatory scroll-snap cancels programmatic smooth scrolls,
+    // yanking the track back to the current snap point. Pause snapping for
+    // the animation; it re-engages once the scroll settles on the target.
+    el.style.scrollSnapType = "none";
+    const left =
+      el.scrollLeft + card.getBoundingClientRect().left - el.getBoundingClientRect().left;
+    const from = el.scrollLeft;
+    el.scrollTo({ left, behavior: "smooth" });
+    // Some environments silently drop programmatic smooth scrolls (reduced
+    // motion, automation, flags). If nothing moved shortly after, jump
+    // instantly so the buttons always navigate.
+    setTimeout(() => {
+      if (Math.abs(el.scrollLeft - from) < 2 && Math.abs(left - from) > 2) {
+        el.scrollLeft = left;
+      }
+    }, 200);
+    const restore = () => {
+      el.style.scrollSnapType = "";
+    };
+    // restore is idempotent — scrollend when supported, timeout as safety net
+    el.addEventListener("scrollend", restore, { once: true });
+    setTimeout(restore, 800);
   };
 
   return (
@@ -71,19 +96,24 @@ export default function AboutCarousel({
         >
           <Icon name="arrow" size={18} className="flip" strokeWidth={2} />
         </button>
-        <div className="abx-car-dots" role="tablist" aria-label="Carousel position">
-          {Array.from({ length: pages }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              role="tab"
-              aria-selected={i === page}
-              aria-label={`Go to slide ${i + 1}`}
-              className={`abx-car-dot${i === page ? " on" : ""}`}
-              onClick={() => goTo(i)}
-            />
-          ))}
+        <div
+          className="abx-car-progress"
+          aria-hidden="true"
+          onClick={(e) => {
+            const r = e.currentTarget.getBoundingClientRect();
+            goTo(Math.round(((e.clientX - r.left) / r.width) * (pages - 1)));
+          }}
+        >
+          <span
+            className="bar"
+            style={{ width: `${((page + 1) / pages) * 100}%` }}
+          />
         </div>
+        <span className="abx-car-count" aria-live="polite">
+          {String(page + 1).padStart(2, "0")}
+          <i>/</i>
+          {String(pages).padStart(2, "0")}
+        </span>
         <button
           type="button"
           className="abx-car-btn"

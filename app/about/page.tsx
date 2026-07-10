@@ -55,6 +55,27 @@ const STATS = [
   { num: "20,162", label: "Accredited Certificates" },
 ];
 
+const MVV = [
+  {
+    no: "01",
+    label: "Our Mission",
+    title: "Inspiring Confidence Through Quality",
+    text: "To provide impartial and credible accreditation services that recognize excellence, promote continual improvement, and strengthen confidence in organizations worldwide.",
+  },
+  {
+    no: "02",
+    label: "Our Vision",
+    title: "Excellence Through Accreditation",
+    text: "To be recognized as a leading international accreditation organization that inspires confidence and advances quality, competence, and continual improvement.",
+  },
+  {
+    no: "03",
+    label: "Our Values",
+    title: "The Principles That Guide Us",
+    text: "Integrity, impartiality, competence, excellence, and collaboration — the principles behind every accreditation decision and relationship we build.",
+  },
+];
+
 const REASONS: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "shield",
@@ -78,27 +99,52 @@ const REASONS: { icon: IconName; title: string; text: string }[] = [
   },
 ];
 
-const TEAM: { title: string; role: string; text: string; icon?: IconName; img?: string }[] = [
+const TEAM: { title: string; role: string; text: string; img: string }[] = [
   {
     title: "Executive Leadership",
     role: "Governance & Direction",
     text: "Experienced leadership guiding AAA's strategy, impartial governance, and international growth.",
     img: "/about/leadership.jpg",
   },
-  { icon: "scale", title: "Accreditation Committee", role: "Impartial Decisions", text: "An independent committee reviews assessment findings and grants accreditation on evidence alone." },
-  { icon: "check", title: "Qualified Assessors", role: "287 Assessors & Experts", text: "Sector-experienced assessors who evaluate organizations against recognized standards worldwide." },
-  { icon: "book", title: "Technical Experts", role: "Sector Specialists", text: "Specialists across healthcare, education, conformity assessment, and enterprise development." },
-  { icon: "clipboard", title: "Advisory Committees", role: "Standards & Guidance", text: "Advisory committees supporting the development and continual review of AAA requirements." },
-  { icon: "globe", title: "International Network", role: "57 Countries", text: "A worldwide professional network supporting organizations across regions and environments." },
+  {
+    title: "Accreditation Committee",
+    role: "Impartial Decisions",
+    text: "An independent committee reviews assessment findings and grants accreditation on evidence alone.",
+    img: "/about/team-committee.jpg",
+  },
+  {
+    title: "Qualified Assessors",
+    role: "287 Assessors & Experts",
+    text: "Sector-experienced assessors who evaluate organizations against recognized standards worldwide.",
+    img: "/about/team-assessors.jpg",
+  },
+  {
+    title: "Technical Experts",
+    role: "Sector Specialists",
+    text: "Specialists across healthcare, education, conformity assessment, and enterprise development.",
+    img: "/about/team-experts.jpg",
+  },
+  {
+    title: "Advisory Committees",
+    role: "Standards & Guidance",
+    text: "Advisory committees supporting the development and continual review of AAA requirements.",
+    img: "/about/team-advisory.jpg",
+  },
+  {
+    title: "International Network",
+    role: "57 Countries",
+    text: "A worldwide professional network supporting organizations across regions and environments.",
+    img: "/about/team-network.jpg",
+  },
 ];
 
-const STORIES: { name: string; sector: string; icon: IconName; text: string; href: string }[] = [
-  { name: "Domus Salutis", sector: "Healthcare", icon: "medical", text: "A healthcare organization demonstrating commitment to quality, patient confidence, and recognized excellence.", href: "/news" },
-  { name: "IIBMS", sector: "Education & Training", icon: "book", text: "An education and training provider using accreditation to strengthen trust, credibility, and learning standards.", href: "/news" },
-  { name: "NSC", sector: "International", icon: "globe", text: "A regional organization reflecting AAA's growing reach and recognition across international markets.", href: "/news" },
-  { name: "Woodcroft University", sector: "Education & Training", icon: "book", text: "Accredited as a Training & Education Provider for its Data Science and Cybersecurity master's programs.", href: "/news/woodcroft-university-earns-international-accreditation-for-data-science-and-cybersecurity-programs" },
-  { name: "Global College of America", sector: "Higher Education", icon: "cert", text: "Achieved AAA accreditation recognizing its commitment to higher-education quality and excellence.", href: "/news/global-college-of-america-achieves-aaa-accreditation-for-higher-education-excellence" },
-  { name: "Welcome Home Health", sector: "Healthcare", icon: "medical", text: "A Portland-based organization accredited for its commitment to quality care and professional training.", href: "/news/aaa-accredits-welcome-home-health-portland" },
+const STORIES: { name: string; sector: string; img: string; text: string; href: string }[] = [
+  { name: "Domus Salutis", sector: "Healthcare", img: "/about/story-domus.jpg", text: "A healthcare organization demonstrating commitment to quality, patient confidence, and recognized excellence.", href: "/news" },
+  { name: "IIBMS", sector: "Education & Training", img: "/about/story-iibms.jpg", text: "An education and training provider using accreditation to strengthen trust, credibility, and learning standards.", href: "/news" },
+  { name: "NSC", sector: "International", img: "/about/story-nsc.jpg", text: "A regional organization reflecting AAA's growing reach and recognition across international markets.", href: "/news" },
+  { name: "Woodcroft University", sector: "Education & Training", img: "/about/story-woodcroft.jpg", text: "Accredited as a Training & Education Provider for its Data Science and Cybersecurity master's programs.", href: "/news/woodcroft-university-earns-international-accreditation-for-data-science-and-cybersecurity-programs" },
+  { name: "Global College of America", sector: "Higher Education", img: "/about/story-gca.jpg", text: "Achieved AAA accreditation recognizing its commitment to higher-education quality and excellence.", href: "/news/global-college-of-america-achieves-aaa-accreditation-for-higher-education-excellence" },
+  { name: "Welcome Home Health", sector: "Healthcare", img: "/about/story-whh.jpg", text: "A Portland-based organization accredited for its commitment to quality care and professional training.", href: "/news/aaa-accredits-welcome-home-health-portland" },
 ];
 
 /** Cleans WP excerpt artifacts (": :" and trailing "[…]") for card display. */
@@ -141,10 +187,9 @@ export default function AboutPage() {
               Inspiring Confidence. <span className="gold">Recognizing Excellence.</span>
             </h1>
             <p className="abx-hero-sub">
-              The American Accreditation Association supports organizations worldwide in
-              demonstrating quality, strengthening credibility, and achieving recognition through
-              independent accreditation across education, healthcare, conformity assessment, and
-              SME sectors.
+              Independent accreditation that helps organizations demonstrate quality, strengthen
+              credibility, and achieve recognition across education, healthcare, conformity
+              assessment, and SME sectors.
             </p>
             <div className="abx-hero-actions">
               <Link href="/programs/healthcare" className="abx-btn abx-btn-gold">
@@ -241,31 +286,21 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="abx-mvv reveal">
-            <div className="abx-mvv-card navy">
-              <span className="ico"><Icon name="flag" /></span>
-              <h3>Our Mission</h3>
-              <p>
-                To provide impartial and credible accreditation services that recognize excellence,
-                promote continual improvement, and strengthen confidence in organizations
-                worldwide.
-              </p>
-            </div>
-            <div className="abx-mvv-card white">
-              <span className="ico"><Icon name="globe" /></span>
-              <h3>Our Vision</h3>
-              <p>
-                To be recognized as a leading international accreditation organization that inspires
-                confidence and advances quality, competence, and continual improvement.
-              </p>
-            </div>
-            <div className="abx-mvv-card navy">
-              <span className="ico"><Icon name="shield" /></span>
-              <h3>Our Values</h3>
-              <p>
-                Integrity, impartiality, competence, excellence, and collaboration — the principles
-                behind every accreditation decision and relationship we build.
-              </p>
-            </div>
+            {MVV.map((m) => (
+              <article className="abx-mvv-card" key={m.no}>
+                <div className="abx-mvv-in">
+                  <div className="abx-flagband" aria-hidden="true">
+                    <span className="canton">★ ★ ★</span>
+                    <span className="stripes" />
+                  </div>
+                  <span className="abx-mvv-no" aria-hidden="true">{m.no}</span>
+                  <span className="abx-mvv-label">{m.label}</span>
+                  <h3>{m.title}</h3>
+                  <p>{m.text}</p>
+                  <span className="abx-mvv-rule" aria-hidden="true" />
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -285,21 +320,16 @@ export default function AboutPage() {
           </div>
           <div className="reveal">
             <AboutCarousel label="AAA leadership and expertise">
-              {TEAM.map((m) => (
+              {TEAM.map((m, i) => (
                 <article className="abx-team-card" key={m.title}>
-                  <div className="abx-team-fig">
-                    {m.img ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={m.img} alt={m.title} />
-                    ) : (
-                      <span className="emblem" aria-hidden="true">
-                        <i><Icon name={m.icon!} size={34} strokeWidth={1.4} /></i>
-                      </span>
-                    )}
-                  </div>
-                  <div className="abx-team-cap">
-                    <b>{m.title}</b>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.img} alt={m.title} />
+                  <span className="abx-team-no" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="abx-team-overlay">
                     <small>{m.role}</small>
+                    <b>{m.title}</b>
                     <p>{m.text}</p>
                   </div>
                 </article>
@@ -381,10 +411,9 @@ export default function AboutPage() {
               {STORIES.map((s) => (
                 <article className="abx-story" key={s.name}>
                   <div className="abx-story-media">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={s.img} alt={s.name} />
                     <span className="abx-story-badge">{s.sector}</span>
-                    <span className="abx-story-emblem" aria-hidden="true">
-                      <Icon name={s.icon} size={46} strokeWidth={1.4} />
-                    </span>
                   </div>
                   <div className="abx-story-body">
                     <h3>{s.name}</h3>

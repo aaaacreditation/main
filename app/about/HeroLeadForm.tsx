@@ -73,10 +73,7 @@ export default function HeroLeadForm() {
   return (
     <form className="abx-hform" onSubmit={onSubmit} noValidate>
       <h2>Request Accreditation Information</h2>
-      <p>
-        Tell us about your organization and our team will guide you to the most suitable
-        accreditation pathway.
-      </p>
+      <p>Tell us about your organization — we&rsquo;ll guide you to the right pathway.</p>
 
       {/* honeypot */}
       <input
@@ -88,13 +85,15 @@ export default function HeroLeadForm() {
         style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
       />
 
-      <div className="abx-form-row">
-        <label htmlFor="hf-contact">Full Name</label>
-        <input id="hf-contact" name="contact" required placeholder="Your full name" autoComplete="name" />
-      </div>
-      <div className="abx-form-row">
-        <label htmlFor="hf-business">Organization Name</label>
-        <input id="hf-business" name="business" required placeholder="Enter organization name" autoComplete="organization" />
+      <div className="abx-form-two">
+        <div className="abx-form-row">
+          <label htmlFor="hf-contact">Full Name</label>
+          <input id="hf-contact" name="contact" required placeholder="Your full name" autoComplete="name" />
+        </div>
+        <div className="abx-form-row">
+          <label htmlFor="hf-business">Organization</label>
+          <input id="hf-business" name="business" required placeholder="Organization name" autoComplete="organization" />
+        </div>
       </div>
       <div className="abx-form-two">
         <div className="abx-form-row">
