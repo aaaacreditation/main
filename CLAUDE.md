@@ -30,6 +30,11 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 ### Functional (semantic) colors — not brand accents
 - Danger/error: `#B3261E` (text/icons) on `#FDF0EF` (surface), border `#F2C6C2`. Reserved for destructive actions and validation errors (admin CMS, form errors). Never used decoratively. (Added July 2026 with the admin CMS.)
 
+### About-page editorial surfaces (July 10 2026 — client-approved Claude Design "AAA About Us")
+- Warm parchment surfaces, used as **neutrals** (not accents) on the About page's editorial redesign: background `#f6f3ec`, borders/dividers `#ece7db`, secondary text `#5a6a7a`.
+- The reference design's bright gold `#c9a648` is **not** adopted — map it to `--aaa-gold` (#b38a2e) on dark surfaces and `--aaa-gold-700` (#8e6b18) on light.
+- The About redesign also uses sharp-cornered (no radius) uppercase letter-spaced buttons (`.abx-btn`) — scoped to that page's design language, not a site-wide button change.
+
 ### Suggested Supporting Palette
 - Map marker red: `#D6334D` — reserved exclusively for the animated location markers on the "Countries We Operate" world map (carried over from the legacy site map at the client's request, June 2026). Do not use it anywhere else.
 - Map deep navy: `#0E2A47` — world-map fill for countries without AAA accreditation (accredited countries use brand navy `#173d73`).
