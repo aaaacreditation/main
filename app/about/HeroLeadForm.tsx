@@ -30,7 +30,7 @@ export default function HeroLeadForm() {
       phone: String(fd.get("phone") || "").trim(),
       sector: String(fd.get("sector") || "").trim(),
       message: country ? `Country: ${country}` : "",
-      source: "about-hero",
+      source: "about-request",
       website: String(fd.get("website") || ""), // honeypot
     };
 

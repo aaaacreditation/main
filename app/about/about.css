@@ -119,11 +119,10 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1.12fr 366px;
-  gap: clamp(30px, 4.5vw, 56px);
-  align-items: start;
+  /* copy-only hero: constrain to the left so the photo subject shows at right */
+  grid-template-columns: minmax(0, 640px);
   /* top padding clears the site's absolute/transparent header (~148px) */
-  padding: clamp(150px, 13vw, 168px) 0 clamp(44px, 5vw, 60px);
+  padding: clamp(150px, 13vw, 168px) 0 clamp(52px, 6vw, 76px);
 }
 .abx-crumbs {
   display: flex;
@@ -181,16 +180,15 @@
 .abx-hero-trust div strong { display: block; font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
 .abx-hero-trust div span { font-size: 11.5px; color: var(--aaa-gold-100); letter-spacing: 0.02em; }
 
-/* compact lead form card */
+/* compact lead form card (lives in the Request Information section) */
 .abx-hform {
   background: #fff;
   color: var(--abx-text);
   border-radius: var(--abx-r);
-  padding: 22px 20px;
-  box-shadow: 0 26px 60px -18px rgba(0, 0, 0, 0.5);
+  padding: clamp(24px, 3vw, 30px) clamp(22px, 2.4vw, 26px);
+  box-shadow: var(--abx-shadow-lg);
+  border: 1px solid var(--abx-border);
   border-top: 4px solid var(--aaa-gold);
-  /* breathing room so the card clears the nav */
-  margin-top: 34px;
 }
 .abx-hform h2 { margin: 0 0 4px; color: var(--aaa-blue); font-size: 18.5px; font-weight: 700; letter-spacing: -0.01em; }
 .abx-hform > p { margin: 0 0 16px; color: var(--abx-muted); font-size: 12.5px; line-height: 1.5; }
@@ -264,7 +262,6 @@
     background-position: right center;
   }
   .abx-hero-grid { grid-template-columns: 1fr; padding-top: clamp(96px, 20vw, 132px); }
-  .abx-hform { max-width: 460px; margin-top: 0; }
 }
 
 /* ==========================================================================
@@ -680,6 +677,58 @@
 .abx-story-body h3 { color: var(--aaa-blue); margin: 0 0 10px; font-size: 20px; font-weight: 600; }
 .abx-story-body p { color: var(--abx-muted); line-height: 1.65; margin: 0 0 16px; font-size: 14px; flex: 1; }
 .abx-story-body .abx-readmore { padding-top: 14px; border-top: 1px solid var(--abx-border); }
+
+/* ==========================================================================
+   REQUEST INFORMATION — navy pitch panel + lead form
+   ========================================================================== */
+.abx-apply {
+  display: grid;
+  grid-template-columns: 1.02fr 0.98fr;
+  gap: 26px;
+  align-items: stretch;
+}
+.abx-apply-copy {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(155deg, #0b2d50 0%, #173d73 100%);
+  color: #fff;
+  border-radius: var(--abx-r);
+  padding: clamp(32px, 3.6vw, 46px);
+  box-shadow: var(--abx-shadow);
+}
+.abx-apply-copy > * { position: relative; z-index: 1; }
+.abx-apply-copy .abx-sq {
+  position: absolute;
+  right: -55px;
+  bottom: -55px;
+  width: 190px;
+  height: 190px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  transform: rotate(45deg);
+  z-index: 0;
+}
+.abx-apply-copy .abx-kicker { color: var(--aaa-gold-100); }
+.abx-apply-copy .abx-title { margin-top: 12px; }
+.abx-apply-copy p { margin: 14px 0 0; font-size: 15px; line-height: 1.75; color: rgba(255, 255, 255, 0.8); }
+.abx-apply-points { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 12px; }
+.abx-apply-points li { display: flex; align-items: center; gap: 11px; font-size: 14.5px; font-weight: 500; color: #fff; }
+.abx-apply-points svg { color: var(--aaa-gold); flex: 0 0 auto; }
+.abx-apply-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 26px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.abx-apply-contact a { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 500; color: var(--aaa-gold-100); }
+.abx-apply-contact a:hover { color: #fff; }
+.abx-apply-contact svg { color: var(--aaa-gold); flex: 0 0 auto; }
+.abx-apply-form { display: flex; }
+.abx-apply-form > * { width: 100%; }
+@media (max-width: 860px) {
+  .abx-apply { grid-template-columns: 1fr; gap: 22px; }
+}
 .abx-readmore { display: inline-flex; align-items: center; gap: 7px; color: var(--aaa-gold-700); font-weight: 600; font-size: 13.5px; }
 .abx-readmore svg { width: 15px; height: 15px; transition: transform 0.2s ease; }
 .abx-readmore:hover svg { transform: translateX(3px); }

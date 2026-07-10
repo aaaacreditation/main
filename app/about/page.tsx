@@ -173,7 +173,7 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
       />
 
-      {/* ---------- Hero + lead form ---------- */}
+      {/* ---------- Hero ---------- */}
       <section className="abx-hero">
         <div className="abx-container abx-hero-grid">
           <div className="abx-hero-copy reveal">
@@ -208,9 +208,6 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
-          </div>
-          <div className="abx-hero-form-wrap reveal">
-            <HeroLeadForm />
           </div>
         </div>
       </section>
@@ -431,6 +428,53 @@ export default function AboutPage() {
               View All Success Stories
               <Icon name="arrow" className="abx-arw" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Request Information (lead form) ---------- */}
+      <section className="abx-section wash">
+        <div className="abx-container abx-apply">
+          <div className="abx-apply-copy reveal">
+            <span className="abx-sq" aria-hidden="true" />
+            <div className="abx-kicker on-dark">Get Started</div>
+            <h2 className="abx-title light" style={{ fontSize: "clamp(28px,3.4vw,38px)" }}>
+              Begin Your Accreditation Journey
+            </h2>
+            <p>
+              Whether you are a training provider, healthcare organization, conformity assessment
+              body, or SME, our team will guide you to the accreditation pathway that fits your
+              organization.
+            </p>
+            <ul className="abx-apply-points">
+              <li>
+                <Icon name="check" size={18} strokeWidth={2.4} /> A dedicated accreditation
+                coordinator
+              </li>
+              <li>
+                <Icon name="check" size={18} strokeWidth={2.4} /> On-site, hybrid, or virtual
+                assessment
+              </li>
+              <li>
+                <Icon name="check" size={18} strokeWidth={2.4} /> Internationally recognized
+                standards
+              </li>
+              <li>
+                <Icon name="check" size={18} strokeWidth={2.4} /> A response within two business
+                days
+              </li>
+            </ul>
+            <div className="abx-apply-contact">
+              <a href="tel:+18005550122">
+                <Icon name="phone" size={17} strokeWidth={1.8} /> +1 (800) 555-0122
+              </a>
+              <a href="mailto:info@aaa-accreditation.org">
+                <Icon name="mail" size={17} strokeWidth={1.8} /> info@aaa-accreditation.org
+              </a>
+            </div>
+          </div>
+          <div className="abx-apply-form reveal">
+            <HeroLeadForm />
           </div>
         </div>
       </section>
