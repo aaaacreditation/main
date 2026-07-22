@@ -30,7 +30,8 @@
   --white:#ffffff;
 
   --font-sans: var(--font-poppins), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  /* Alias kept so the ~100 existing small-caps label styles keep resolving; brand is Poppins only. */
+  --font-mono: var(--font-sans);
 
   --radius-sm: 4px;
   --radius: 8px;

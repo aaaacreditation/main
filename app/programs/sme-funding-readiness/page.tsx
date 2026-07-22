@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import Icon, { type IconName } from "../../_components/Icon";
+import Icon from "../../_components/Icon";
 import ReadinessCheck from "./ReadinessCheck";
+import ApplicationForm from "./ApplicationForm";
 import CountUp from "./CountUp";
 import "./sme.css";
 
 export const metadata: Metadata = {
-  title: { absolute: "SME Accreditation & Funding Readiness Score | AAA" },
+  title: { absolute: "SMEs Accreditation Program | AAA" },
   description:
-    "Get an independent AAA SME Accreditation and a Funding Readiness Score lenders trust. Recognised in 53+ countries. Take the free 2-minute check.",
+    "Get an independent AAA SME Accreditation and a Business Readiness Score stakeholders trust. Recognised in 58 countries. Take the free 2-minute check.",
 };
 
-const CONSULT = "https://calendly.com/aaa-accreditation/30min";
+const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
 
 function LineIcon({ children }: { children: React.ReactNode }) {
   return (
@@ -43,96 +44,74 @@ function MiniSeal({ className }: { className?: string }) {
   );
 }
 
-const FUNDING_GAP = [
-  {
-    value: 5.7,
-    prefix: "$",
-    suffix: "T",
-    decimals: 1,
-    label: "The annual finance gap facing small businesses in emerging markets.",
-  },
-  {
-    value: 40,
-    suffix: "%+",
-    label: "Of formal small businesses have unmet financing needs.",
-  },
-  {
-    value: 90,
-    suffix: "%",
-    label: "Of all businesses worldwide are SMEs, together driving half of the world's employment.",
-  },
-];
-
-const PAIN: { icon: IconName; title: string; text: string }[] = [
-  {
-    icon: "chart",
-    title: "No standard signal",
-    text: "Lenders have no easy way to read a business that keeps informal records. There's no common measure that simply says: this one's ready.",
-  },
-  {
-    icon: "search",
-    title: "A slow, closed process",
-    text: "Loan decisions can drag on for three to six months. They often come down to who you know, and a first-time borrower has nothing to point back to.",
-  },
-  {
-    icon: "clipboard",
-    title: "One size fits all",
-    text: "Most ratings are just pass or fail. Many first-time applicants don't make the cut, with no clear way to improve and try again.",
-  },
-  {
-    icon: "industry",
-    title: "Sector blindness",
-    text: "A generalist lender rarely gets the real risks in farming, exports, tech, or manufacturing. Genuine strengths get missed, and good businesses get turned away.",
-  },
-];
-
-const AUDIENCES: { title: string; text: string; icon: React.ReactNode }[] = [
+const JOURNEY: {
+  title: string;
+  img: string;
+  alt: string;
+  icon: React.ReactNode;
+  items: string[];
+}[] = [
   {
     title: "SMEs Seeking Funding or Investment",
-    text: "Build confidence with lenders and investors.",
+    img: "/about/assessment.jpg",
+    alt: "Assessors reviewing business records together at a desk",
     icon: <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />,
+    items: [
+      "Business health becomes a Funding Readiness Score",
+      "Stronger confidence with lenders & investors",
+      "More productive funding conversations",
+    ],
   },
   {
     title: "Businesses Planning Growth or Expansion",
-    text: "Strengthen your foundation and scale with confidence.",
+    img: "/home/conformity.jpg",
+    alt: "Engineers reviewing a checklist on a manufacturing floor",
     icon: (
       <>
         <path d="M3 17l6-6 4 4 8-8" />
         <path d="M14 7h7v7" />
       </>
     ),
+    items: [
+      "Scale with stronger business foundations",
+      "Enter new markets with confidence",
+      "Build standards-based partnerships",
+    ],
   },
   {
     title: "Organisations Pursuing Larger Contracts",
-    text: "Meet procurement and compliance standards with ease.",
+    img: "/about/team-network.jpg",
+    alt: "Business partners meeting in front of a world map",
     icon: (
       <>
         <path d="M9 11l3 3L22 4" />
         <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
       </>
     ),
+    items: [
+      "Meet buyer and compliance expectations",
+      "Qualify for larger contracts & tenders",
+      "Strengthen supplier credibility",
+    ],
   },
   {
     title: "Companies Strengthening Credibility",
-    text: "Build trust with customers, partners, and stakeholders.",
+    img: "/acc-sme.jpeg",
+    alt: "Representatives holding a framed AAA Accreditation Certificate",
     icon: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
-  },
-  {
-    title: "Leaders Building Resilient Businesses",
-    text: "Create strong systems for sustainable, long-term success.",
-    icon: (
-      <>
-        <circle cx="12" cy="7" r="3.2" />
-        <path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7" />
-      </>
-    ),
+    items: [
+      "Independent, internationally recognised credential",
+      "Build trust with customers & partners",
+      "Demonstrate a well-managed business",
+    ],
   },
 ];
 
-const SECTORS: { name: string; icon: React.ReactNode }[] = [
-  { name: "Manufacturing", icon: <path d="M2 20h20M4 20V9l5 3V9l5 3V4l6 4v12" /> },
+const SECTORS: { name: string; img: string; icon: React.ReactNode }[] = [
+  { name: "Manufacturing", img: "/sectors/manufacturing.jpg", icon: <path d="M2 20h20M4 20V9l5 3V9l5 3V4l6 4v12" /> },
   {
     name: "IT & Software Services",
+    img: "/sectors/it-software.jpg",
     icon: (
       <>
         <rect x="3" y="4" width="18" height="12" rx="2" />
@@ -140,119 +119,221 @@ const SECTORS: { name: string; icon: React.ReactNode }[] = [
       </>
     ),
   },
-  { name: "Healthcare & Pharma", icon: <path d="M12 5v14M5 12h14" strokeWidth={2.2} /> },
-  { name: "Agri-Processing", icon: <path d="M12 22c5-3 8-7 8-13V4l-8 3-8-3v5c0 6 3 10 8 13z" /> },
-  { name: "Textile & Apparel", icon: <path d="M6 3l6 4 6-4 3 5-4 3v10H7V11L3 8z" /> },
-  { name: "Clean Energy & Greentech", icon: <path d="M13 2L4 14h7l-2 8 9-12h-7z" /> },
+  { name: "Healthcare & Pharma", img: "/sectors/healthcare.jpg", icon: <path d="M12 5v14M5 12h14" strokeWidth={2.2} /> },
+  { name: "Agri-Processing", img: "/sectors/agri.jpg", icon: <path d="M12 22c5-3 8-7 8-13V4l-8 3-8-3v5c0 6 3 10 8 13z" /> },
+  { name: "Textile & Apparel", img: "/sectors/textile.jpg", icon: <path d="M6 3l6 4 6-4 3 5-4 3v10H7V11L3 8z" /> },
+  { name: "Clean Energy & Greentech", img: "/sectors/clean-energy.jpg", icon: <path d="M13 2L4 14h7l-2 8 9-12h-7z" /> },
   {
     name: "Logistics & Transport",
+    img: "/sectors/logistics.jpg",
     icon: (
       <path d="M1 6h13v10H1zM14 9h5l3 3v4h-8M5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
     ),
   },
-  { name: "Construction & Engineering", icon: <path d="M2 20h20M5 20V8l7-4 7 4v12M9 20v-6h6v6" /> },
+  { name: "Construction & Engineering", img: "/sectors/construction.jpg", icon: <path d="M2 20h20M5 20V8l7-4 7 4v12M9 20v-6h6v6" /> },
   {
     name: "Retail & E-commerce",
+    img: "/sectors/retail.jpg",
     icon: <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" />,
   },
   {
     name: "Consulting & Services",
+    img: "/sectors/consulting.jpg",
     icon: <path d="M20 7h-9M14 17H5M17 21a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />,
   },
-  { name: "Hospitality & Food", icon: <path d="M3 2v7a3 3 0 0 0 6 0V2M6 2v20M21 15V2a5 5 0 0 0-3 5v6z" /> },
+  { name: "Hospitality & Food", img: "/sectors/hospitality.jpg", icon: <path d="M3 2v7a3 3 0 0 0 6 0V2M6 2v20M21 15V2a5 5 0 0 0-3 5v6z" /> },
   {
     name: "Export & Import",
+    img: "/sectors/export-import.jpg",
     icon: <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" />,
   },
 ];
 
-const CATEGORIES: { icon: IconName; title: string; text: string }[] = [
+const CATEGORIES: { title: string; text: string }[] = [
   {
-    icon: "chart",
     title: "Financial & Funding Readiness",
     text: "Your financial records, awareness of obligations and liabilities, what funding you need and why, and how you track cash flow and sustainability.",
   },
   {
-    icon: "industry",
     title: "Operational Requirements",
     text: "Active operations and delivery, documented processes, enough resources to do the work, and clear communication with clients and stakeholders.",
   },
   {
-    icon: "clipboard",
     title: "Management & Structure",
     text: "Legal registration, a defined organisational structure, and clear ownership and management responsibilities.",
   },
   {
-    icon: "shield",
     title: "Governance & Compliance",
     text: "Ethical operations, managing business risk, meeting legal and regulatory rules, and being transparent about who you are.",
   },
   {
-    icon: "globe",
     title: "Market Presence & Growth",
     text: "A clear offer and target market, real customer activity, growth plans, and listening to customer feedback.",
   },
   {
-    icon: "arrowUpRight",
     title: "Continuous Improvement",
     text: "Spotting what to improve, acting on feedback, fixing issues, and keeping a record of the changes you make.",
   },
 ];
 
-const UNLOCK: { icon: IconName; title: string; items: string[] }[] = [
+const PROCESS: { title: string; text: string; icon: React.ReactNode }[] = [
   {
-    icon: "chart",
-    title: "Funding access",
-    items: [
-      "Business health becomes a Funding Readiness Score",
-      "Recognised by lenders and investors",
-      "Faster funding conversations",
-    ],
+    title: "Application",
+    text: "Submit the accreditation application to AAA.",
+    icon: (
+      <>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <path d="M14 2v6h6M9 13h6M9 17h4" />
+      </>
+    ),
   },
   {
-    icon: "cert",
-    title: "Credibility & trust",
-    items: [
-      "Independent, internationally recognised credential",
-      "Signals a well-run business",
-      "Trusted by partners and customers",
-    ],
+    title: "Documents",
+    text: "Send programme documents for review.",
+    icon: <path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />,
   },
   {
-    icon: "arrowUpRight",
-    title: "Growth & expansion",
-    items: [
-      "Qualify for larger contracts",
-      "Enter new markets with confidence",
-      "Win standards-based partnerships",
-    ],
+    title: "Assessment",
+    text: "Documents assessed by AAA assessors.",
+    icon: (
+      <>
+        <rect x="6" y="4" width="12" height="17" rx="2" />
+        <path d="M9 4h6v3H9z" />
+        <path d="m9.5 14 2 2 3.5-4.5" />
+      </>
+    ),
   },
   {
-    icon: "shield",
-    title: "Business resilience",
-    items: [
-      "See exactly what to strengthen",
-      "Build resilience over time",
-      "Keep improving after accreditation",
-    ],
+    title: "Feedback",
+    text: "Assessors share feedback; SME takes action.",
+    icon: (
+      <>
+        <path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 3.5V11.5A7.5 7.5 0 0 1 10.5 4h3A7.5 7.5 0 0 1 21 11.5z" />
+        <path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01" />
+      </>
+    ),
+  },
+  {
+    title: "Decision",
+    text: "AAA accreditation committee decides.",
+    icon: (
+      <>
+        <path d="m13.5 12.5-8 8a1.77 1.77 0 0 1-2.5-2.5l8-8" />
+        <path d="m15.5 15.5 5.5-5.5M8.5 8.5 14 3M8 9l7 7M20 11l-7-7" />
+      </>
+    ),
   },
 ];
 
-const PROCESS = [
-  { title: "Application", text: "Send your accreditation application to AAA with your business details and the level you are aiming for." },
-  { title: "Documents", text: "Share the evidence we review: business registration, financial records, operational documents, and governance details." },
-  { title: "Assessment", text: "AAA assessors evaluate your submission through document review, interviews, and verification of your operations." },
-  { title: "Feedback", text: "If anything needs strengthening, our assessors tell you what to address, so you can act on it before any decision is made." },
-  { title: "Decision", text: "The AAA accreditation committee reviews your assessment and makes the accreditation decision." },
-  { title: "Certificate", text: "Your accreditation certificate is issued, valid for three years, with a digital verification badge." },
+const STORY_URL =
+  "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
+
+const STORIES: {
+  name: string;
+  sector: string;
+  country: string;
+  metric: string;
+  quote: string;
+  desc: string;
+  img?: string;
+  remoteImg?: string;
+  featured?: boolean;
+}[] = [
+  {
+    name: "Monarch Master Injector",
+    sector: "Medical Education",
+    country: "Texas, USA",
+    metric: "12% Growth · 500+ Students Certified",
+    quote: "AAA Accreditation has opened new doors for Monarch Master Injectors.",
+    desc: "World-class training for medical professionals in cosmetic injections and wellness/weight-loss injections.",
+    remoteImg:
+      "https://casestudies-alpha.vercel.app/_next/image?q=75&url=https%3A%2F%2Fres.cloudinary.com%2Fdldhco0xk%2Fimage%2Fupload%2Fv1763493779%2Fcase-studies%2Fcmi4ynrne0002l204ursb2qp4%2Fcontent%2Fua0hksdqgmcjkovktmvw.jpg&w=3840",
+    featured: true,
+  },
+  {
+    name: "Monarch Graduates",
+    sector: "Medical Education",
+    country: "Texas, USA",
+    metric: "Post-Accreditation Impact",
+    quote: "Graduates carry AAA-recognised certification into their professional practice.",
+    desc: "Monarch's certified graduates show the practical impact of accredited, hands-on training.",
+    remoteImg:
+      "https://casestudies-alpha.vercel.app/_next/image?q=75&url=https%3A%2F%2Fres.cloudinary.com%2Fdldhco0xk%2Fimage%2Fupload%2Fv1763493775%2Fcase-studies%2Fcmi4ynrne0002l204ursb2qp4%2Ffeatured%2Fcvi1bxdnazo6phtlv3wg.jpg&w=3840",
+  },
+  {
+    name: "Domus Salutis",
+    sector: "Healthcare",
+    country: "Italy",
+    metric: "Healthcare Accreditation",
+    quote: "A healthcare organization demonstrating commitment to recognized excellence.",
+    desc: "Accreditation supporting patient confidence, quality of care, and institutional recognition.",
+    img: "/about/story-domus.jpg",
+  },
+  {
+    name: "IIBMS",
+    sector: "Education & Training",
+    country: "Mumbai, India",
+    metric: "Training Provider Accreditation",
+    quote: "Accreditation helped strengthen trust, credibility, and learning standards.",
+    desc: "An education and training provider using accreditation as a signal of structured quality.",
+    img: "/about/story-iibms.jpg",
+  },
+  {
+    name: "NSC",
+    sector: "Professional · Regional",
+    country: "Middle East",
+    metric: "Regional Recognition",
+    quote: "A strong example of AAA's growing international presence.",
+    desc: "A regional organization reflecting the international reach and practical value of accreditation.",
+    img: "/about/story-nsc.jpg",
+  },
+  {
+    name: "Cinute Digital",
+    sector: "Corporate · SME",
+    country: "Mira Bhayandar, India",
+    metric: "Corporate Quality Recognition",
+    quote: "A modern organization demonstrating quality and professional development.",
+    desc: "An SME earning independent recognition for structured, well-managed business practices.",
+  },
+  {
+    name: "Meridian",
+    sector: "Training Provider",
+    country: "International",
+    metric: "Training Excellence",
+    quote: "Recognition for structured learning, quality, and continuous improvement.",
+    desc: "A training provider recognised for structured learning and continuous improvement.",
+  },
+  {
+    name: "Ullemeyer",
+    sector: "Healthcare · Professional",
+    country: "United States",
+    metric: "Professional Recognition",
+    quote: "A professional organization building confidence through accreditation.",
+    desc: "A US-based organization strengthening client trust through independent accreditation.",
+  },
 ];
 
-const LEGACY = [
-  "Monarch Master Injectors",
-  "Aadhya Pain Management Centre",
-  "Clarivate",
-  "Clinoxy Solutions",
-  "Priority Global Pvt Ltd",
+const STRUGGLES: { n: string; title: string; text: string }[] = [
+  {
+    n: "01",
+    title: "Hard to Earn Trust",
+    text: "Customers, lenders, investors and business partners want more than promises. Without independent validation, building confidence takes longer and opportunities can be harder to secure.",
+  },
+  {
+    n: "02",
+    title: "Difficult to Prove Capability",
+    text: "Many SMEs have strong products and capable teams, but lack objective evidence of their governance, operational maturity and business performance.",
+  },
+  {
+    n: "03",
+    title: "Missed Growth Opportunities",
+    text: "Expanding into new markets, winning larger contracts and attracting strategic partnerships often requires businesses to demonstrate recognised standards and organisational readiness.",
+  },
+  {
+    n: "04",
+    title: "No Clear Roadmap to Improve",
+    text: "Without a structured assessment, improvement efforts are often reactive. Businesses struggle to identify priorities, measure progress and strengthen long-term performance.",
+  },
 ];
 
 const FAQ = [
@@ -303,7 +384,6 @@ export default function Page() {
     <main className="smex">
       {/* Section 1 — Hero */}
       <section className="smex-hero">
-        <div className="smex-hero-stars" aria-hidden="true">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
         <div className="container smex-hero-grid">
           <div className="smex-hero-copy reveal">
             <nav className="smex-crumbs" aria-label="Breadcrumb">
@@ -311,19 +391,10 @@ export default function Page() {
               <span>/</span>
               <Link href="/#programs">Programs</Link>
               <span>/</span>
-              <strong>SME Funding Readiness</strong>
+              <strong>SMEs Accreditation Program</strong>
             </nav>
 
-            <div className="smex-kicker">
-              <span className="smex-mini-flag" aria-hidden="true">
-                <Image src="/flag-usa.webp" alt="" fill sizes="38px" />
-              </span>
-              SME Funding Readiness Program
-            </div>
-
-            <h1>
-              Build Trust. <em>Improve Funding Readiness.</em> Grow Your Business.
-            </h1>
+            <h1>SMEs Accreditation Program</h1>
             <p>
               The American Accreditation Association&rsquo;s (AAA) SME Accreditation Program helps
               Small and Medium Enterprises (SMEs) demonstrate credibility through an independent
@@ -333,30 +404,22 @@ export default function Page() {
             </p>
 
             <div className="smex-hero-actions">
-              <Link href="#readiness" className="smex-btn smex-btn-red">
+              <Link href="#readiness" className="smex-btn smex-btn-gold">
                 Check Your Readiness for Free
                 <Icon name="arrow" size={16} />
               </Link>
-              <Link href="/apply" className="smex-btn smex-btn-ghost">
-                Apply for Accreditation
-              </Link>
+              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
+                Book Your Consultation
+              </a>
             </div>
 
-            <div className="smex-hero-badges" aria-label="Program highlights">
-              <span className="smex-badge">
-                <Icon name="globe" size={15} /> Recognised in 53+ countries
-              </span>
-              <span className="smex-badge">
-                <Icon name="clipboard" size={15} /> Six-area evidence-based assessment
-              </span>
-            </div>
           </div>
 
           <div className="smex-hero-visual reveal">
             <figure className="smex-hero-photo">
               <Image
-                src="/about/team-advisory.jpg"
-                alt="Business advisors reviewing performance evidence and funding-readiness data"
+                src="/acc-sme.jpeg"
+                alt="Two representatives holding a framed AAA Accreditation Certificate at a presentation ceremony"
                 fill
                 priority
                 sizes="(max-width: 980px) 92vw, 48vw"
@@ -366,30 +429,6 @@ export default function Page() {
                 <strong>Built for real businesses</strong>
               </figcaption>
             </figure>
-
-            <div className="smex-signal-card" aria-label="AAA funding-readiness framework">
-              <div className="smex-signal-head">
-                <span className="smex-signal-mark"><Icon name="chart" size={19} /></span>
-                <span><small>AAA framework</small><strong>Funding Readiness Score</strong></span>
-                <span className="smex-live-dot">Evidence-led</span>
-              </div>
-              <div className="smex-signal-body">
-                <div className="smex-signal-ring"><strong>6</strong><span>areas</span></div>
-                <div className="smex-signal-bars" aria-hidden="true">
-                  {[84, 76, 91, 72, 88, 81].map((width, index) => (
-                    <span key={width} style={{ "--bar": `${width}%`, "--delay": `${index * 100}ms` } as React.CSSProperties} />
-                  ))}
-                </div>
-              </div>
-              <div className="smex-signal-foot">
-                <span><Icon name="shield" size={14} /> Independent</span>
-                <span><Icon name="check" size={14} /> Evidence based</span>
-              </div>
-            </div>
-
-            <div className="smex-hero-stamp">
-              <Image src="/logo/acc-org.png" alt="AAA Organizational Member accreditation seal" width={248} height={248} />
-            </div>
           </div>
         </div>
         <div className="smex-hero-rail" aria-label="Program principles">
@@ -397,67 +436,15 @@ export default function Page() {
             <span>U.S. headquartered</span><i>★</i>
             <span>Independent assessment</span><i>★</i>
             <span>International recognition</span><i>★</i>
-            <span>Lender-readable evidence</span>
+            <span>Recognised in 58 countries</span>
           </div>
         </div>
       </section>
 
-      {/* Section 2 — The Global Funding Gap (stats + problem, merged) */}
-      <section className="sme-stats" id="why">
+      {/* Section 2 — What is AAA SME Accreditation (big title over who-it-serves + sectors) */}
+      <section className="smex-journey" id="about">
         <div className="container">
           <div className="sme-head reveal">
-            <span className="eyebrow">The global funding gap</span>
-            <h2>Why Strong SMEs Are Still Overlooked</h2>
-            <p>
-              The funding gap is real, and bigger than most people think. Strong businesses.
-              Real potential. But the system still isn&rsquo;t built for them.
-            </p>
-          </div>
-          <div className="sme-stats-grid">
-            {FUNDING_GAP.map((s, i) => (
-              <div className="sme-stat reveal" key={s.label} style={{ transitionDelay: `${i * 70}ms` }}>
-                <span className="smex-stat-index">0{i + 1}</span>
-                <span className="sme-stat-num">
-                  <CountUp value={s.value} prefix={s.prefix} suffix={s.suffix} decimals={s.decimals} />
-                </span>
-                <span className="sme-stat-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
-          <p className="sme-stats-note reveal">
-            These businesses are not short on potential. They just can&rsquo;t show lenders what
-            they need to see.
-          </p>
-
-          <h3 className="smex-subhead reveal">Why SMEs struggle to get funding</h3>
-          <div className="sme-pain-grid">
-            {PAIN.map((p, i) => (
-              <article className="sme-pain-card reveal" key={p.title} style={{ transitionDelay: `${i * 60}ms` }}>
-                <span className="smex-card-kicker">Barrier {String(i + 1).padStart(2, "0")}</span>
-                <div className="sme-pain-ico">
-                  <Icon name={p.icon} size={22} />
-                </div>
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="smex-callout reveal">
-            <span className="smex-callout-star" aria-hidden="true">★</span>
-            <p>
-              <strong>That&rsquo;s where AAA makes the difference.</strong> We provide an
-              independent, evidence-based assessment that helps SMEs prove their business strength
-              and unlock the funding and growth they deserve.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3 — About the program (expandable panels) */}
-      <section className="sme-global" id="about">
-        <div className="container">
-          <div className="sme-head light reveal">
             <span className="eyebrow">About AAA SME Accreditation</span>
             <h2>What is AAA SME Accreditation?</h2>
             <p>
@@ -466,178 +453,141 @@ export default function Page() {
             </p>
           </div>
 
-          <div className="smex-trust reveal" aria-label="Program trust points">
-            <span>Recognised in 53+ countries</span><i>★</i>
-            <span>Independent and impartial</span><i>★</i>
-            <span>Funding Readiness Score</span><i>★</i>
-            <span>Six-pillar assessment</span>
-          </div>
-
-          <div className="smex-panels">
-            <details className="smex-panel reveal" open>
-              <summary>
-                <span className="smex-panel-mark">
-                  <LineIcon>
-                    <circle cx="12" cy="7" r="3.2" />
-                    <path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7" />
-                  </LineIcon>
-                </span>
-                <span className="smex-panel-head">
-                  <strong>Who is it for</strong>
-                  <em>For every SME. At every stage.</em>
-                </span>
-                <span className="smex-panel-plus" aria-hidden="true" />
-              </summary>
-              <div className="smex-panel-body">
-                <ul className="smex-aud">
-                  {AUDIENCES.map((a) => (
-                    <li key={a.title}>
-                      <span className="smex-line-ico"><LineIcon>{a.icon}</LineIcon></span>
-                      <div>
-                        <strong>{a.title}</strong>
-                        <p>{a.text}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </details>
-
-            <details className="smex-panel reveal">
-              <summary>
-                <span className="smex-panel-mark">
-                  <LineIcon>
-                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" />
-                  </LineIcon>
-                </span>
-                <span className="smex-panel-head">
-                  <strong>Sectors we accredit</strong>
-                  <em>Across industries. Around the world.</em>
-                </span>
-                <span className="smex-panel-plus" aria-hidden="true" />
-              </summary>
-              <div className="smex-panel-body">
-                <div className="smex-sectors-grid">
-                  {SECTORS.map((s) => (
-                    <div className="smex-sector-tile" key={s.name}>
-                      <span className="smex-line-ico sm"><LineIcon>{s.icon}</LineIcon></span>
-                      <span>{s.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </details>
-          </div>
-
-          <div className="smex-about-ctas reveal">
-            <Link href="#readiness" className="smex-btn smex-btn-red">
-              Check Your Readiness for Free <Icon name="arrow" size={16} />
-            </Link>
-            <Link href="#process" className="smex-link-light">
-              Learn more about the process <Icon name="arrow" size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 4 — The framework (six navy pillar cards) */}
-      <section className="sme-cats" id="framework">
-        <div className="container">
-          <div className="sme-head reveal">
-            <span className="eyebrow">The framework</span>
-            <h2>AAA SME accreditation framework</h2>
-            <p className="smex-h2-sub">Six things we assess, the same six lenders care about</p>
+          <div className="smex-sub reveal" id="who">
+            <h3>Where Your Business Is Today. What Accreditation Helps You Achieve.</h3>
             <p>
-              Your business is assessed across six weighted areas that determine your Funding
-              Readiness Score, using an evidence-based, consistent, impartial, risk-based, and
-              proportionate assessment methodology.
+              No matter where you are in your business journey, accreditation helps you build
+              trust, improve performance, and unlock new opportunities for sustainable growth.
             </p>
           </div>
-          <div className="sme-cats-grid">
-            {CATEGORIES.map((c, i) => (
-              <article className="sme-cat reveal" key={c.title} style={{ transitionDelay: `${i * 55}ms` }}>
-                <div className="smex-flagband" aria-hidden="true">
-                  <span>★ ★ ★</span><i />
+          <div className="smex-journey-grid">
+            {JOURNEY.map((j, i) => (
+              <article className="smex-journey-card reveal" key={j.title} style={{ transitionDelay: `${i * 60}ms` }}>
+                <div className="smex-journey-photo">
+                  <Image
+                    src={j.img}
+                    alt={j.alt}
+                    fill
+                    sizes="(max-width: 720px) 92vw, (max-width: 1100px) 46vw, 24vw"
+                  />
                 </div>
-                <div className="smex-cat-top">
-                  <span className="smex-card-no">{String(i + 1).padStart(2, "0")}</span>
-                  <div className="sme-cat-ico">
-                    <Icon name={c.icon} size={24} />
-                  </div>
-                </div>
-                <span className="smex-cat-label">Pillar {i + 1}</span>
-                <h3>{c.title}</h3>
-                <p>{c.text}</p>
-                <span className="smex-card-rule" aria-hidden="true" />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section 5 — Funding Readiness Check strip (gauge) */}
-      <section className="smex-strip" id="score">
-        <div className="container">
-          <div className="smex-strip-card reveal">
-            <div className="smex-gauge">
-              <svg viewBox="0 0 200 112" aria-hidden="true">
-                <defs>
-                  <linearGradient id="smexGaugeGrad" x1="0" y1="1" x2="1" y2="0">
-                    <stop offset="0" stopColor="#8e6b18" />
-                    <stop offset="1" stopColor="#b38a2e" />
-                  </linearGradient>
-                </defs>
-                <path className="smex-gauge-track" d="M16 104a84 84 0 0 1 168 0" pathLength={100} />
-                <path className="smex-gauge-val" d="M16 104a84 84 0 0 1 168 0" pathLength={100} />
-              </svg>
-              <div className="smex-gauge-read" aria-label="Sample Funding Readiness Score: 78 out of 100">
-                <strong><CountUp value={78} /></strong>
-                <span>/100</span>
-              </div>
-              <span className="smex-gauge-lbl">Sample score</span>
-            </div>
-            <div className="smex-strip-copy">
-              <span className="eyebrow">Funding Readiness Check</span>
-              <h2>Take the First Step Towards Accreditation</h2>
-              <p>Free Funding Readiness Check&ensp;·&ensp;about 2 minutes&ensp;·&ensp;no sign-up</p>
-            </div>
-            <Link href="#readiness" className="smex-btn smex-btn-gold">
-              Get my score <Icon name="arrow" size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 6 — What accreditation unlocks (benefits) */}
-      <section className="sme-benefits" id="benefits">
-        <div className="container">
-          <div className="sme-head reveal">
-            <span className="eyebrow">Business benefits</span>
-            <h2>What accreditation unlocks for your business</h2>
-            <p>
-              Accreditation does more than hand you a certificate. It strengthens every
-              conversation you have with lenders, investors, partners, and customers.
-            </p>
-          </div>
-          <div className="smex-unlock-grid">
-            {UNLOCK.map((g, i) => (
-              <article className="smex-unlock reveal" key={g.title} style={{ transitionDelay: `${i * 55}ms` }}>
-                <div className="smex-unlock-ico">
-                  <Icon name={g.icon} size={22} />
-                </div>
-                <h3>{g.title}</h3>
+                <span className="smex-journey-ico">
+                  <LineIcon>{j.icon}</LineIcon>
+                </span>
+                <h3>{j.title}</h3>
                 <ul>
-                  {g.items.map((it) => (
+                  {j.items.map((it) => (
                     <li key={it}>{it}</li>
                   ))}
                 </ul>
               </article>
             ))}
           </div>
+
+          <div className="smex-sub reveal" id="sectors">
+            <span className="smex-sub-kicker">Sectors We Serve</span>
+            <h3>Accreditation Across Every Industry</h3>
+            <p>
+              From manufacturing to global trade, we provide accreditation solutions that uphold
+              quality, safety, and excellence across all sectors.
+            </p>
+          </div>
+        </div>
+
+        <div className="smex-sector-strip reveal" aria-label="Industries we accredit">
+          <div className="smex-sector-cols">
+            {SECTORS.map((s) => (
+              <div className="smex-sector-col" key={s.name}>
+                <div className="smex-sector-photo">
+                  <Image
+                    src={s.img}
+                    alt={s.name}
+                    fill
+                    sizes="(max-width: 720px) 33vw, (max-width: 1100px) 17vw, 9vw"
+                  />
+                </div>
+                <div className="smex-sector-cell">
+                  <span className="smex-sector-glyph"><LineIcon>{s.icon}</LineIcon></span>
+                  <span className="smex-sector-name">{s.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="smex-sector-band">
+            <span className="smex-sector-band-ico" aria-hidden="true">
+              <LineIcon>
+                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" />
+              </LineIcon>
+            </span>
+            <p>
+              No matter your industry, our accreditation builds trust, ensures compliance, and
+              drives sustainable growth.
+            </p>
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="smex-about-ctas reveal">
+            <Link href="#readiness" className="smex-btn smex-btn-gold">
+              Check Your Readiness for Free <Icon name="arrow" size={16} />
+            </Link>
+            <Link href="#process" className="smex-btn smex-btn-ghost-navy">
+              Learn more about the process
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Section 7 — Accreditation process (timeline) */}
+      {/* Section 4 — Accreditation framework (hover-reveal cards) */}
+      <section className="sme-cats" id="framework">
+        <div className="container">
+          <div className="smex-fw-head reveal">
+            <div className="sme-head">
+              <span className="eyebrow">Accreditation framework</span>
+              <h2>What We Assess. What Stakeholders Value.</h2>
+              <p>
+                Your business is assessed across six weighted areas that determine your Business
+                Readiness Score, using an evidence-based, consistent, impartial, risk-based, and
+                proportionate assessment methodology.
+              </p>
+            </div>
+            <figure className="smex-fw-photo">
+              <Image
+                src="/about/story-iibms.jpg"
+                alt="AAA assessor presenting the accreditation framework to a business audience"
+                fill
+                sizes="(max-width: 1100px) 92vw, 38vw"
+              />
+              <figcaption>
+                <span>Six weighted areas</span>
+                <strong>One Business Readiness Score</strong>
+              </figcaption>
+            </figure>
+          </div>
+          <div className="sme-cats-grid">
+            {CATEGORIES.map((c, i) => (
+              <article
+                className="smex-mvv-card reveal"
+                key={c.title}
+                tabIndex={0}
+                style={{ transitionDelay: `${i * 55}ms` }}
+              >
+                <div className="smex-mvv-in">
+                  <span className="smex-mvv-no" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <h3>{c.title}</h3>
+                  <span className="smex-mvv-rule" aria-hidden="true" />
+                  <div className="smex-hover-panel">
+                    <h4>{c.title}</h4>
+                    <p>{c.text}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 5 — Accreditation process (timeline) */}
       <section className="sme-process" id="process">
         <div className="container">
           <div className="sme-head reveal">
@@ -649,60 +599,76 @@ export default function Page() {
             </p>
           </div>
           <div className="smex-timeline reveal">
-            <ol className="smex-tl">
-              {PROCESS.map((step, i) => (
-                <li
-                  className={"smex-tl-step" + (i === PROCESS.length - 1 ? " final" : "")}
-                  key={step.title}
-                  style={{ "--i": i } as React.CSSProperties}
-                >
-                  <span className="smex-tl-num" aria-hidden="true">{i + 1}</span>
-                  <h3>
-                    {i === PROCESS.length - 1 && <MiniSeal className="smex-tl-seal" />}
-                    {step.title}
-                  </h3>
-                  <p>{step.text}</p>
-                </li>
-              ))}
-            </ol>
+            <div className="smex-proc-grid">
+              <ol className="smex-proc-steps">
+                {PROCESS.map((step, i) => (
+                  <li
+                    className="smex-proc-step"
+                    key={step.title}
+                    style={{ "--i": i } as React.CSSProperties}
+                  >
+                    <span className="smex-proc-badge" aria-hidden="true">{i + 1}</span>
+                    <span className="smex-proc-ico">
+                      <LineIcon>{step.icon}</LineIcon>
+                    </span>
+                    <h3>{step.title}</h3>
+                    <p>{step.text}</p>
+                  </li>
+                ))}
+              </ol>
+              <aside className="smex-proc-cert">
+                <MiniSeal className="smex-proc-seal" />
+                <p>
+                  Accreditation Certificate valid for <strong>3 years</strong>
+                </p>
+              </aside>
+            </div>
+            <p className="smex-proc-note">
+              <em>Re-assessment, renewal and upgrades follow the same evidence-based methodology.</em>
+            </p>
           </div>
           <div className="smex-proc-ctas reveal">
-            <Link href="/apply" className="smex-btn smex-btn-red">
+            <Link href="/apply" className="smex-btn smex-btn-blue">
               Apply for Accreditation <Icon name="arrow" size={16} />
             </Link>
             <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost-navy">
-              Book a Meeting
+              Book Your Consultation
             </a>
           </div>
         </div>
       </section>
 
-      {/* Section 8 — A Legacy of Accredited Excellence (case studies) */}
-      <section className="smex-legacy" id="accredited">
+      {/* Section 6 — Readiness check strip (gauge) */}
+      <section className="smex-strip" id="score">
         <div className="container">
-          <div className="sme-head reveal">
-            <span className="eyebrow">Accredited excellence</span>
-            <h2>A Legacy of Accredited Excellence</h2>
-            <p>Organisations that put their business to the test and earned AAA accreditation.</p>
-          </div>
-          {/* Certificate photos, logos, and quotes are client-supplied — placeholders until assets arrive */}
-          <div className="smex-legacy-grid">
-            {LEGACY.map((name, i) => (
-              <figure className="smex-legacy-card reveal" key={name} style={{ transitionDelay: `${i * 60}ms` }}>
-                <div className="smex-legacy-photo" aria-hidden="true">
-                  <MiniSeal className="smex-legacy-seal" />
-                  <span>AAA Accredited</span>
-                </div>
-                <figcaption>
-                  <strong>{name}</strong>
-                  <em>Certificate photo &amp; quote to follow</em>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <div className="smex-legacy-cta reveal">
-            <Link href="/apply" className="smex-btn smex-btn-red">
-              Apply for Accreditation <Icon name="arrow" size={16} />
+          <div className="smex-strip-card reveal">
+            <div className="smex-gauge">
+              <svg viewBox="0 0 200 112" aria-hidden="true">
+                <defs>
+                  <linearGradient id="smexGaugeGrad" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0" stopColor="#173d73" />
+                    <stop offset="1" stopColor="#2b5da8" />
+                  </linearGradient>
+                </defs>
+                <path className="smex-gauge-track" d="M16 104a84 84 0 0 1 168 0" pathLength={100} />
+                <path className="smex-gauge-val" d="M16 104a84 84 0 0 1 168 0" pathLength={100} />
+              </svg>
+              <div className="smex-gauge-read" aria-label="Sample Business Readiness Score: 78 out of 100">
+                <strong><CountUp value={78} /></strong>
+                <span>/100</span>
+              </div>
+              <span className="smex-gauge-lbl">Sample score</span>
+            </div>
+            <div className="smex-strip-copy">
+              <span className="eyebrow">Readiness check</span>
+              <h2>Take the First Step Towards Accreditation</h2>
+              <p>
+                A simple first step towards accreditation. Complete a quick self-assessment to
+                understand your current level of business readiness.
+              </p>
+            </div>
+            <Link href="#readiness" className="smex-btn smex-btn-blue">
+              Start Business Readiness Check <Icon name="arrow" size={16} />
             </Link>
           </div>
         </div>
@@ -713,7 +679,7 @@ export default function Page() {
         <div className="container">
           <div className="sme-head reveal">
             <span className="eyebrow">Free readiness check</span>
-            <h2>Check your funding readiness in two minutes</h2>
+            <h2>Check your business readiness in two minutes</h2>
             <p>
               Answer twelve quick questions across the six areas we assess.
               You&rsquo;ll get an instant readiness score and see exactly where your
@@ -722,6 +688,124 @@ export default function Page() {
           </div>
           <div className="reveal">
             <ReadinessCheck />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 7 — Success stories (auto carousel, per client's mockup) */}
+      <section className="smex-legacy" id="accredited">
+        <div className="container">
+          <div className="smex-stories-head reveal">
+            <div className="sme-head">
+              <span className="eyebrow">Success stories</span>
+              <h2>Trusted by organizations committed to excellence.</h2>
+              <p>
+                Real accreditation journeys from healthcare organizations, education providers,
+                SMEs, public institutions, and international partners recognized through AAA.
+              </p>
+            </div>
+            <aside className="smex-stories-featured">
+              <strong>Featured Story</strong>
+              <span>
+                Monarch Master Injector: 12% growth and 500+ students certified after
+                accreditation.
+              </span>
+            </aside>
+          </div>
+        </div>
+        <div className="smex-carousel reveal" aria-label="AAA success stories">
+          <div className="smex-carousel-track">
+            {[...STORIES, ...STORIES].map((s, i) => (
+              <figure
+                className={"smex-story-card" + (s.featured ? " featured" : "")}
+                key={`${s.name}-${i}`}
+                aria-hidden={i >= STORIES.length || undefined}
+              >
+                <div className="smex-story-photo">
+                  {s.img ? (
+                    <Image
+                      src={s.img}
+                      alt={i < STORIES.length ? `${s.name} — AAA accreditation story` : ""}
+                      fill
+                      sizes="400px"
+                    />
+                  ) : s.remoteImg ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={s.remoteImg} alt={i < STORIES.length ? `${s.name} — AAA accreditation story` : ""} loading="lazy" />
+                  ) : (
+                    <MiniSeal className="smex-story-seal" />
+                  )}
+                  <span className="smex-story-pill">{s.sector}</span>
+                  <span className="smex-story-loc">{s.country}</span>
+                </div>
+                <figcaption>
+                  <div>
+                    <span className="smex-story-metric">{s.metric}</span>
+                    <h3>{s.name}</h3>
+                    <p className="smex-story-quote">&ldquo;{s.quote}&rdquo;</p>
+                    <p className="smex-story-desc">{s.desc}</p>
+                  </div>
+                  <div className="smex-story-foot">
+                    <a
+                      href={STORY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      tabIndex={i >= STORIES.length ? -1 : undefined}
+                    >
+                      Read Story →
+                    </a>
+                    <span className="smex-story-badge">Accredited</span>
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+        <div className="container">
+          <div className="smex-legacy-cta reveal">
+            <a
+              href="https://casestudies-alpha.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="smex-btn smex-btn-blue"
+            >
+              View All Success Stories
+            </a>
+            <Link href="/apply" className="smex-btn smex-btn-gold">
+              Apply for Accreditation <Icon name="arrow" size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 8 — Why many SMEs struggle to grow (hover-reveal cards) */}
+      <section className="smex-struggle" id="challenges">
+        <div className="container">
+          <div className="sme-head reveal">
+            <span className="eyebrow">The challenge</span>
+            <h2>Why Many SMEs Struggle to Grow</h2>
+            <p>
+              Growth isn&rsquo;t held back by ambition alone. Without independent validation and
+              structured business systems, even capable businesses can miss valuable opportunities.
+            </p>
+          </div>
+          <div className="smex-strug-grid">
+            {STRUGGLES.map((s, i) => (
+              <article
+                className="smex-strug-card reveal"
+                key={s.title}
+                tabIndex={0}
+                style={{ transitionDelay: `${i * 60}ms` }}
+              >
+                <span className="smex-card-kicker">Challenge {s.n}</span>
+                <h3>{s.title}</h3>
+                <span className="smex-strug-rule" aria-hidden="true" />
+                <div className="smex-hover-panel">
+                  <h4>{s.title}</h4>
+                  <p>{s.text}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -765,31 +849,33 @@ export default function Page() {
               </p>
             </div>
             <div className="smex-close-actions">
-              <Link href="/apply" className="smex-btn smex-btn-red">
+              <Link href="/apply" className="smex-btn smex-btn-gold">
                 Apply for Accreditation <Icon name="arrow" size={16} />
               </Link>
               <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
                 Book a Meeting
               </a>
+              <a href="#application" className="smex-btn smex-btn-ghost">
+                <Icon name="download" size={16} /> Download Application Form
+              </a>
             </div>
           </div>
 
           <div className="smex-close-grid">
-            <div className="smex-form-card reveal">
-              <div className="smex-doc" aria-hidden="true">
-                <MiniSeal className="smex-doc-seal" />
+            <div className="smex-form-card reveal" id="application">
+              <div className="smex-form-head">
+                <span className="smex-form-seal" aria-hidden="true">
+                  <MiniSeal />
+                </span>
+                <div>
+                  <strong>AAA SME accreditation application form</strong>
+                  <p>
+                    Complete your business details below and our team will begin your
+                    accreditation.
+                  </p>
+                </div>
               </div>
-              <div className="smex-form-copy">
-                <strong>AAA SME accreditation application form</strong>
-                <p>
-                  Download the application form, complete your business details, and send it back
-                  to our team to begin your accreditation.
-                </p>
-                {/* TODO: point this at the client-supplied application-form PDF when provided */}
-                <Link href="/apply" className="smex-btn smex-btn-gold sm">
-                  <Icon name="download" size={15} /> Download application form
-                </Link>
-              </div>
+              <ApplicationForm />
             </div>
 
             <div className="smex-close-contact reveal">
