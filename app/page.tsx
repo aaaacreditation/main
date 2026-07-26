@@ -11,7 +11,7 @@ import HomeGallery from "./_components/home/HomeGallery";
 import ApplyForm from "./_components/home/ApplyForm";
 import HeroStats from "./_components/home/HeroStats";
 
-const CONSULT = "https://calendly.com/aaa-accreditation/30min";
+const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
 const HERO_BG = "/hero.jpg";
 
 const HERO = {

@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "../../_components/Icon";
-import PageHero from "../../_components/PageHero";
 import ReadinessCheck from "../../programs/sme-funding-readiness/ReadinessCheck";
+import "../../programs/sme-funding-readiness/sme.css";
 
 export const metadata: Metadata = {
-  title: "SME Funding Readiness Accreditation",
+  title: "SMEs Funding Readiness Accreditation",
   description:
-    "AAA SME Accreditation is an international accreditation that turns your operational and financial health into a lender-readable funding-readiness score, recognized across 53+ countries. Check your readiness for free.",
+    "AAA SMEs Accreditation is an international accreditation that turns your operational and financial health into a lender-readable Business Readiness Score, recognized across 53+ countries. Check your readiness for free.",
   robots: { index: false, follow: false },
 };
 
-const CONSULT = "https://calendly.com/aaa-accreditation/30min";
+const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
 
 const FUNDING_GAP = [
   {
@@ -100,7 +101,7 @@ const FLOW: { icon: IconName; title: string; text: string }[] = [
   },
   {
     icon: "chart",
-    title: "Funding-readiness score",
+    title: "Business Readiness Score",
     text: "Your evidence is scored against six weighted categories into a single, defensible score.",
   },
   {
@@ -224,15 +225,15 @@ const ORGS = [
 
 const FAQ = [
   {
-    q: "What is AAA SME accreditation?",
-    a: "AAA SME Accreditation is a program for small and medium businesses that assesses how well your business is run and how prepared it is to grow. It helps you show credibility, build trust, and earn independent recognition for good business practices.",
+    q: "What is AAA SMEs accreditation?",
+    a: "AAA SMEs Accreditation is a program for small and medium businesses that assesses how well your business is run and how prepared it is to grow. It helps you show credibility, build trust, and earn independent recognition for good business practices.",
   },
   {
     q: "What makes AAA different from other accreditation bodies?",
     a: "AAA focuses on business readiness, governance, and growth. Through an independent assessment, your business earns recognition based on established criteria that align with recognised accreditation principles.",
   },
   {
-    q: "Who can apply for AAA SME accreditation?",
+    q: "Who can apply for AAA SMEs accreditation?",
     a: "Any eligible small or medium enterprise can apply, across a wide range of industries. Whether you are well established or still growing, you can apply as long as you meet the mandatory accreditation requirements.",
   },
   {
@@ -256,7 +257,7 @@ const FAQ = [
     a: "Your accreditation is valid for three years, as long as you continue to meet the required standards.",
   },
   {
-    q: "How much does AAA SME accreditation cost?",
+    q: "How much does AAA SMEs accreditation cost?",
     a: "Cost depends on the size, complexity, and scope of the assessment. AAA gives each business a customised quote so the process fits its specific needs.",
   },
   {
@@ -268,20 +269,62 @@ const FAQ = [
 export default function Page() {
   return (
     <>
-      <PageHero
-        image="/hero.jpg"
-        eyebrow="SME Funding Readiness Program"
-        title={
-          <>
-            Build Trust. Improve <em>Funding Readiness</em>. Grow Your Business.
-          </>
-        }
-        intro="The American Accreditation Association's funding readiness program turns the operational and financial health of your SME into a funding-readiness score that lenders can read, recognized internationally across 53+ countries."
-        meta={[
-          { k: "Recognition", v: "53+ countries" },
-          { k: "Readiness check", v: "Free · 2 minutes" },
-        ]}
-      />
+      <section className="smex smex-hero lpx-hero">
+        <div className="container lpx-hero-inner">
+          <div className="smex-hero-copy reveal">
+            <nav className="smex-crumbs" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span>/</span>
+              <Link href="/#programs">Programs</Link>
+              <span>/</span>
+              <strong>SMEs Accreditation Program</strong>
+            </nav>
+
+            <h1>SMEs Accreditation Program</h1>
+            <p>
+              The American Accreditation Association&rsquo;s (AAA) SMEs Accreditation Program helps
+              Small and Medium Enterprises (SMEs) demonstrate credibility through an independent
+              assessment of their business, governance, and operational framework. The resulting
+              internationally recognised accreditation and Business Readiness Score strengthen trust
+              and unlock opportunities for growth, partnerships, market expansion, and funding.
+            </p>
+
+            <div className="smex-hero-actions">
+              <Link href="#readiness" className="smex-btn smex-btn-gold">
+                Check Your Readiness for Free
+                <Icon name="arrow" size={16} />
+              </Link>
+              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
+                Book Your Consultation
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <div className="lpx-hero-media">
+          <Image
+            src="/acc-sme.jpeg"
+            alt="Two representatives holding a framed AAA Accreditation Certificate at a presentation ceremony"
+            fill
+            priority
+            sizes="(max-width: 980px) 100vw, 47vw"
+          />
+          <div className="lpx-hero-caption">
+            <span>Evidence-led assessment</span>
+            <strong>Built for real businesses</strong>
+          </div>
+        </div>
+
+        <div className="smex-hero-rail" aria-label="Program principles">
+          <div className="container">
+            <span>U.S. headquartered</span><i>★</i>
+            <span>Independent assessment</span><i>★</i>
+            <span>International recognition</span><i>★</i>
+            <span>Recognised in 58 countries</span>
+          </div>
+        </div>
+      </section>
 
       {/* The funding gap (global) */}
       <section className="sme-stats" id="why">
@@ -337,15 +380,15 @@ export default function Page() {
         </div>
       </section>
 
-      {/* What is AAA SME Accreditation? (dark band) */}
+      {/* What is AAA SMEs Accreditation? (dark band) */}
       <section className="sme-global" id="about">
         <div className="container">
           <div className="sme-global-layout">
             <div className="sme-global-text reveal">
               <span className="eyebrow">About the program</span>
-              <h2>What is AAA SME Accreditation?</h2>
+              <h2>What is AAA SMEs Accreditation?</h2>
               <p>
-                AAA SME Accreditation is an international accreditation for SMEs
+                AAA SMEs Accreditation is an international accreditation for SMEs
                 that independently assesses key areas of business performance,
                 governance, financial readiness, and operational effectiveness.
               </p>
@@ -371,11 +414,11 @@ export default function Page() {
       <section className="sme-cats" id="framework">
         <div className="container">
           <div className="sme-head reveal">
-            <span className="eyebrow">AAA SME accreditation framework</span>
+            <span className="eyebrow">AAA SMEs accreditation framework</span>
             <h2>Six things we assess, the same six lenders care about</h2>
             <p>
               Your business is scored across six weighted areas. Together they make
-              up your funding-readiness score, and they line up closely with what a
+              up your Business Readiness Score, and they line up closely with what a
               lender or investor looks at before they say yes.
             </p>
           </div>
@@ -460,7 +503,7 @@ export default function Page() {
               <span className="eyebrow">Get started</span>
               <h2>Ready to become funding-ready?</h2>
               <p>
-                Start your AAA SME Accreditation today, or book a free 30-minute
+                Start your AAA SMEs Accreditation today, or book a free 30-minute
                 consultation with our team to see where your business stands.
               </p>
             </div>
@@ -501,10 +544,10 @@ export default function Page() {
         <div className="container">
           <div className="sme-head light reveal">
             <span className="eyebrow">Who can apply</span>
-            <h2>Built for every growing SME</h2>
+            <h2>Built for growing SMEs</h2>
             <p>
               If you run a registered, working business that wants more credibility
-              and access to funding, AAA SME Accreditation is for you &mdash;
+              and access to funding, AAA SMEs Accreditation is for you &mdash;
               wherever you are in the world.
             </p>
           </div>
@@ -576,10 +619,9 @@ export default function Page() {
       <section className="sme-faq" id="faq">
         <div className="container">
           <div className="sme-head reveal">
-            <span className="eyebrow">Frequently asked questions</span>
-            <h2>Questions, answered</h2>
+            <h2>FAQs</h2>
             <p>
-              Everything you need to know about AAA SME Accreditation: eligibility,
+              Everything you need to know about AAA SMEs Accreditation: eligibility,
               timelines, validity, and how to get started.
             </p>
           </div>
