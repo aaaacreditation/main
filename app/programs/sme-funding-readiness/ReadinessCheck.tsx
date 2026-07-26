@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
 
-const CONSULT = "https://calendly.com/aaa-accreditation/30min";
+const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
 
 const CATS: { cat: string; qs: [string, string] }[] = [
   {

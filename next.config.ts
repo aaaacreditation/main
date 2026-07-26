@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
    * we only apply the ".nosync" override for local builds (VERCEL is unset).
    */
   distDir: process.env.VERCEL ? ".next" : ".next.nosync",
+
+  /*
+   * The SME funding-readiness self-assessment is a self-contained static app
+   * (public/readiness-check/index.html), not an App Router page. Next serves
+   * public/ files by exact path only, so map the clean URL onto the file.
+   */
+  async rewrites() {
+    return [
+      { source: "/readiness-check", destination: "/readiness-check/index.html" },
+    ];
+  },
 };
 
 export default nextConfig;
