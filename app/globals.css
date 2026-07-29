@@ -971,7 +971,7 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
   box-shadow: var(--shadow-md);
   overflow: hidden;
   content-visibility: auto;
-  contain-intrinsic-size: 372px 244px;
+  contain-intrinsic-size: 372px 288px;
   transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out), border-color .3s var(--ease-out);
 }
 .cs-card:hover{
@@ -1004,7 +1004,7 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
   font-size: 15px; line-height: 1.62; font-weight: 400;
   color: var(--ink-700);
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1020,6 +1020,18 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
   background: linear-gradient(150deg, var(--aaa-blue-500), var(--aaa-blue));
   box-shadow: 0 6px 14px -6px rgba(23,61,115,.6);
 }
+/* Supplied logos vary wildly in aspect ratio, so give each one a fixed box and
+   let it letterbox inside rather than cropping to a circle. */
+.cs-logo{
+  flex: none;
+  display: grid; place-items: center;
+  width: 112px; height: 46px;
+  padding: 5px 8px;
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  background: var(--white);
+}
+.cs-logo img{ width: auto; max-width: 100%; height: 100%; object-fit: contain; }
 .cs-id{ display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .cs-name{ font-size: 14.5px; font-weight: 600; color: var(--ink-900); }
 .cs-role{ font-size: 12.5px; line-height: 1.35; color: var(--ink-600); }
@@ -5465,6 +5477,9 @@ h2{ font-size: clamp(24px, 2.7vw, 36px) !important; line-height: 1.15; letter-sp
 .sme-testi-mark{ position: absolute; top: 4px; right: 22px; font-family: Georgia, "Times New Roman", serif; font-size: 90px; line-height: 1; color: var(--aaa-blue-50); pointer-events: none; user-select: none; }
 .sme-testi blockquote{ position: relative; z-index: 1; margin: 0 0 22px; padding: 0; border: 0; font-size: 15px; line-height: 1.65; color: var(--ink-700); }
 .sme-testi figcaption{ display: flex; flex-direction: column; gap: 2px; }
+/* Supplied logos vary in aspect ratio — letterbox each into a fixed height. */
+.sme-testi-logo{ display: block; height: 34px; margin-bottom: 12px; }
+.sme-testi-logo img{ width: auto; max-width: 132px; height: 100%; object-fit: contain; object-position: left center; }
 .sme-testi figcaption strong{ font-size: 14.5px; font-weight: 600; color: var(--ink-900); }
 .sme-testi figcaption span{ font-size: 12.5px; color: var(--aaa-blue); font-family: var(--font-mono); letter-spacing: .03em; }
 
