@@ -24,6 +24,21 @@ const nextConfig: NextConfig = {
       { source: "/readiness-check", destination: "/readiness-check/index.html" },
     ];
   },
+
+  /*
+   * The SME program page moved to /programs/smes-accreditation-program (July
+   * 2026) to match its client-approved name. Permanently redirect the old
+   * slug so existing links and indexed search results don't 404.
+   */
+  async redirects() {
+    return [
+      {
+        source: "/programs/sme-funding-readiness",
+        destination: "/programs/smes-accreditation-program",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

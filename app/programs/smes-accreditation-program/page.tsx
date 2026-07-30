@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
+import { CASE_STUDIES } from "../../_data/case-studies";
 import ReadinessLauncher from "./ReadinessLauncher";
 import "./sme.css";
 
@@ -207,108 +208,9 @@ const PROCESS: { title: string; text: string; icon: React.ReactNode }[] = [
   },
 ];
 
-const STORY_URL =
-  "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
-
-const STORIES: {
-  name: string;
-  sector: string;
-  country: string;
-  metric: string;
-  quote: string;
-  desc: string;
-  img: string;
-  logo?: string;
-}[] = [
-  {
-    name: "Cinute Digital",
-    sector: "Digital Services",
-    country: "Mira Bhayandar, India",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/cinute-digital-certificate.jpg",
-    logo: "/case-studies/cinute-digital-logo.jpg",
-  },
-  {
-    name: "Priority Global",
-    sector: "Professional Services",
-    country: "Ghaziabad, India",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/priority-global-certificate.png",
-    logo: "/case-studies/priority-global-logo.png",
-  },
-  {
-    name: "IIBMS",
-    sector: "Education & Training",
-    country: "Mumbai, India",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/iibms-certificate.jpg",
-    logo: "/case-studies/iibms-logo.jpg",
-  },
-  {
-    name: "Clinoxy Solutions",
-    sector: "Healthcare Solutions",
-    country: "Hyderabad, India",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/clinoxy-solutions-certificate.png",
-    logo: "/case-studies/clinoxy-solutions-logo.png",
-  },
-  {
-    name: "RC Growth Consultancies",
-    sector: "Consulting",
-    country: "Lucknow, India",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/rc-growth-consultancies-certificate.jpg",
-    logo: "/case-studies/rc-growth-consultancies-logo.png",
-  },
-  {
-    name: "Study Medic",
-    sector: "Medical Education",
-    country: "Qatar, India",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/study-medic-certificate.png",
-    logo: "/case-studies/study-medic-logo.png",
-  },
-  {
-    name: "Aldelma Trading",
-    sector: "Trading",
-    country: "Jordan, Iraq",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate supplied in the AAA case-study source.",
-    img: "/case-studies/aldelma-trading-certificate.jpg",
-  },
-  {
-    name: "Clarivate",
-    sector: "Information Services",
-    country: "India, USA, UK",
-    metric: "AAA Accredited Organization",
-    quote: "Recognised through AAA accreditation.",
-    desc: "Certificate and organization identity supplied in the AAA case-study source.",
-    img: "/case-studies/clarivate-certificate.jpg",
-    logo: "/case-studies/clarivate-logo.jpg",
-  },
-  {
-    name: "Domus Salutis",
-    sector: "Healthcare",
-    country: "Italy",
-    metric: "Healthcare Accreditation",
-    quote: "A healthcare organization demonstrating commitment to recognized excellence.",
-    desc: "Accreditation supporting patient confidence, quality of care, and institutional recognition.",
-    img: "/about/story-domus.jpg",
-  },
-];
+// Organizations, quotes, certificates and logos all come from the client's
+// case-study source — see app/_data/case-studies.ts.
+const STORIES = CASE_STUDIES;
 
 const FAQ = [
   {
@@ -646,8 +548,8 @@ export default function Page() {
             <aside className="smex-stories-featured">
               <strong>Featured Story</strong>
               <span>
-                Monarch Master Injector: 12% growth and 500+ students certified after
-                accreditation.
+                Monarch Master Injectors: 12% growth, 500+ students certified, and 1,500+ Google
+                reviews at a 5.0 rating after accreditation.
               </span>
             </aside>
           </div>
@@ -667,12 +569,10 @@ export default function Page() {
                     fill
                     sizes="400px"
                   />
-                  <span className="smex-story-pill">{s.sector}</span>
                   <span className="smex-story-loc">{s.country}</span>
                 </div>
                 <figcaption>
                   <div>
-                    <span className="smex-story-metric">{s.metric}</span>
                     <div className="smex-story-title">
                       <h3>{s.name}</h3>
                       {s.logo && (
@@ -686,17 +586,9 @@ export default function Page() {
                       )}
                     </div>
                     <p className="smex-story-quote">&ldquo;{s.quote}&rdquo;</p>
-                    <p className="smex-story-desc">{s.desc}</p>
+                    {s.desc && <p className="smex-story-desc">{s.desc}</p>}
                   </div>
                   <div className="smex-story-foot">
-                    <a
-                      href={STORY_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      tabIndex={i >= STORIES.length ? -1 : undefined}
-                    >
-                      Read Story →
-                    </a>
                     <span className="smex-story-badge">Accredited</span>
                   </div>
                 </figcaption>

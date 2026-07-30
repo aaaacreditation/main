@@ -1,142 +1,42 @@
+import Image from "next/image";
 import Link from "next/link";
 import Icon from "../Icon";
-
-type Case = {
-  quote: string;
-  name: string;
-  role: string;
-  org: string;
-  loc: string;
-  std: string;
-  initials: string;
-};
+import { CASE_STUDIES, type CaseStudy } from "../../_data/case-studies";
 
 // Two rows scrolling in opposite directions. Each row is duplicated once in
 // render so the CSS marquee can loop seamlessly at translateX(-50%).
-const ROW_A: Case[] = [
-  {
-    quote:
-      "AAA's assessment was rigorous and fair. Accreditation to ISO 15189 opened doors with referral hospitals that now accept our results without question.",
-    name: "Dr. Amina Okonkwo",
-    role: "Laboratory Director",
-    org: "Meridian Medical Laboratories",
-    loc: "Lagos, Nigeria",
-    std: "ISO 15189",
-    initials: "MM",
-  },
-  {
-    quote:
-      "Becoming an AAA-accredited testing laboratory gave our clients the international confidence they needed. Cross-border contracts followed within months.",
-    name: "Lars Henriksson",
-    role: "Quality Manager",
-    org: "Nordic Materials Testing",
-    loc: "Gothenburg, Sweden",
-    std: "ISO/IEC 17025",
-    initials: "NM",
-  },
-  {
-    quote:
-      "The process sharpened our impartiality controls. Our certificates now carry weight in markets that previously required re-testing.",
-    name: "Priya Raman",
-    role: "Scheme Manager",
-    org: "Crest Certification Services",
-    loc: "Bengaluru, India",
-    std: "ISO/IEC 17065",
-    initials: "CC",
-  },
-  {
-    quote:
-      "AAA recognition validated our programs against an international benchmark. Enrolment from corporate clients rose noticeably the following year.",
-    name: "Daniel Mbeki",
-    role: "Director of Education",
-    org: "Summit Professional Academy",
-    loc: "Nairobi, Kenya",
-    std: "ASTM E2659",
-    initials: "SP",
-  },
-  {
-    quote:
-      "Our inspection reports are now accepted across the region. The AAA mark removed a barrier we had struggled with for years.",
-    name: "Carla Ferreira",
-    role: "Operations Lead",
-    org: "Atlantic Inspection Group",
-    loc: "Porto, Portugal",
-    std: "ISO/IEC 17020",
-    initials: "AI",
-  },
-];
+// Organizations and quotes come from the client's case-study source.
+const ROW_A: CaseStudy[] = CASE_STUDIES.slice(0, 5);
+const ROW_B: CaseStudy[] = CASE_STUDIES.slice(5);
 
-const ROW_B: Case[] = [
-  {
-    quote:
-      "Accreditation reshaped how we approach patient safety. The framework gave our teams a shared standard to rally around.",
-    name: "Dr. Hassan Al-Rashid",
-    role: "Chief Medical Officer",
-    org: "Al Noor Specialist Hospital",
-    loc: "Amman, Jordan",
-    std: "Healthcare",
-    initials: "AN",
-  },
-  {
-    quote:
-      "Certifying our personnel through an AAA-accredited scheme gave employers real assurance. Our certified professionals are now in demand.",
-    name: "Mei-Ling Chen",
-    role: "Certification Lead",
-    org: "Pacific Skills Institute",
-    loc: "Taipei, Taiwan",
-    std: "ISO/IEC 17024",
-    initials: "PS",
-  },
-  {
-    quote:
-      "AAA held us to a high bar on competence and consistency — exactly the discipline our management-systems clients expect.",
-    name: "Tomás Herrera",
-    role: "Managing Director",
-    org: "Vanguard Compliance Bureau",
-    loc: "Monterrey, Mexico",
-    std: "ISO/IEC 17021",
-    initials: "VC",
-  },
-  {
-    quote:
-      "Proficiency-testing accreditation set us apart immediately. Laboratories choose our schemes because the AAA mark guarantees reliability.",
-    name: "Sophie Dubois",
-    role: "Programme Director",
-    org: "Calibre Proficiency Schemes",
-    loc: "Lyon, France",
-    std: "ISO/IEC 17043",
-    initials: "CP",
-  },
-  {
-    quote:
-      "International accreditation gave our graduates' credentials global currency. Partner universities now recognise our programs directly.",
-    name: "Prof. Robert Adeyemi",
-    role: "Vice-Chancellor",
-    org: "Woodcroft University",
-    loc: "Accra, Ghana",
-    std: "School Accreditation",
-    initials: "WU",
-  },
-];
-
-function CaseCard({ c }: { c: Case }) {
+function CaseCard({ c }: { c: CaseStudy }) {
   return (
     <figure className="cs-card">
       <span className="cs-qmark" aria-hidden>
         &rdquo;
       </span>
-      <span className="cs-badge">{c.std}</span>
+      <span className="cs-badge">{c.sector}</span>
       <blockquote className="cs-quote">{c.quote}</blockquote>
       <figcaption className="cs-by">
-        <span className="cs-avatar" aria-hidden>
-          {c.initials}
-        </span>
+        {c.logo ? (
+          <span className="cs-logo" aria-hidden>
+            <Image
+              src={c.logo}
+              alt=""
+              width={112}
+              height={44}
+              sizes="112px"
+              loading="lazy"
+            />
+          </span>
+        ) : (
+          <span className="cs-avatar" aria-hidden>
+            {c.initials}
+          </span>
+        )}
         <span className="cs-id">
           <span className="cs-name">{c.name}</span>
-          <span className="cs-role">
-            {c.role}, {c.org}
-          </span>
-          <span className="cs-loc">{c.loc}</span>
+          <span className="cs-loc">{c.country}</span>
         </span>
       </figcaption>
     </figure>

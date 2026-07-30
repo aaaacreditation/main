@@ -909,7 +909,7 @@
   display: grid;
   grid-template-rows: 200px 1fr;
   width: 344px;
-  height: 512px;
+  height: 430px;
   margin: 0 10px;
   overflow: hidden;
   border: 1px solid var(--sme-border);
@@ -930,7 +930,9 @@
     radial-gradient(circle at 50% 0%, rgba(43, 93, 168, 0.5), transparent 60%),
     linear-gradient(150deg, #0a2748, #071d34);
 }
-.smex-story-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Most of these are people holding their certificate — bias the crop upward so
+   faces and the certificate stay in frame rather than the floor. */
+.smex-story-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 32%; }
 .smex-story-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 29, 52, 0) 50%, rgba(7, 29, 52, 0.68)); }
 .smex-story-seal {
   width: 62px;
@@ -941,19 +943,6 @@
   transition: transform 0.4s var(--ease-out);
 }
 .smex-story-card:hover .smex-story-seal { transform: scale(1.08) rotate(-4deg); }
-.smex-story-pill {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 2;
-  padding: 6px 11px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--sme-navy);
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-}
 .smex-story-loc {
   position: absolute;
   bottom: 12px;
@@ -971,24 +960,12 @@
   gap: 12px;
   padding: 18px 19px 19px;
 }
-.smex-story-metric {
-  display: block;
-  margin-bottom: 7px;
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-}
 .smex-story-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
 .smex-story-card figcaption h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; color: var(--sme-blue); }
 .smex-story-logo { width: auto; max-width: 92px; height: 34px; object-fit: contain; object-position: right center; }
-.smex-story-quote { margin: 0 0 8px; font-size: 13.5px; font-weight: 600; line-height: 1.55; color: var(--sme-navy); }
+.smex-story-quote { margin: 0 0 8px; font-size: 13.5px; font-weight: 500; line-height: 1.6; color: var(--sme-navy); }
 .smex-story-desc { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink-600); }
-.smex-story-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.smex-story-foot a { font-size: 13.5px; font-weight: 600; color: var(--sme-blue); transition: color 0.2s ease; }
-.smex-story-foot a:hover { color: var(--sme-blue-bright); text-decoration: underline; }
+.smex-story-foot { display: flex; align-items: center; gap: 12px; }
 .smex-story-badge {
   padding: 6px 11px;
   border-radius: 999px;
@@ -1259,7 +1236,7 @@
   /* pillar cards are navy — the static description needs light text */
   .smex-mvv-card .smex-hover-panel { border-top-color: rgba(255, 255, 255, 0.22); }
   .smex-mvv-card .smex-hover-panel p { color: rgba(255, 255, 255, 0.82); }
-  .smex-story-card { width: 296px; height: 520px; }
+  .smex-story-card { width: 296px; height: 462px; }
   .smex-story-card.featured { width: 330px; }
   .smex-sector-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .smex-sector-col:nth-child(6n) { border-right: 1px solid var(--sme-border); }
@@ -1292,7 +1269,7 @@
 /* ------------------------------------------------------------------------
    Split hero variant (July 2026 mockup) — navy copy panel on the left,
    light/white photo panel on the right, blended with a soft blurred seam.
-   Used by /programs/sme-funding-readiness (with .lpx-hero--nav for header
+   Used by /programs/smes-accreditation-program (with .lpx-hero--nav for header
    clearance) and /lp/sme-funding-readiness (bare, no header).
    ------------------------------------------------------------------------ */
 

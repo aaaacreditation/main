@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "./_components/Icon";
+import { CASE_STUDIES, type CaseStudy } from "./_data/case-studies";
 import { WorldMapFigure } from "./_components/WorldMap";
 import SealRosette from "./_components/SealRosette";
 import Intro from "./_components/home/Intro";
@@ -80,26 +82,16 @@ const ORGS = [
   { name: "RC Business Growth Consultancies", loc: "Business Growth Consultancy", mono: "RC" },
 ];
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "The assessment was rigorous and fair. Accreditation gave our quality system a structure that international partners immediately trust.",
-    name: "Laboratory Director",
-    org: "Medical Laboratory",
-  },
-  {
-    quote:
-      "AAA accreditation opened cross-border recognition we couldn't access before. Our results are now accepted without re-testing.",
-    name: "Quality Manager",
-    org: "Testing Laboratory",
-  },
-  {
-    quote:
-      "Recognition against an international benchmark changed how institutions and corporate clients view our programs.",
-    name: "Director of Education",
-    org: "Training Provider",
-  },
-];
+// Real, attributed quotes from accredited organizations — see app/_data/case-studies.ts.
+const TESTIMONIALS = ["Cinute Digital", "Clarivate", "Monarch Master Injectors"]
+  .map((name) => CASE_STUDIES.find((c) => c.name === name))
+  .filter((c): c is CaseStudy => Boolean(c))
+  .map((c) => ({
+    quote: c.quote,
+    name: c.name,
+    org: `${c.sector} — ${c.country}`,
+    logo: c.logo,
+  }));
 
 const CONTACT = [
   { icon: "mail" as IconName, label: "Email us", value: "info@aaa-accreditation.org", href: "mailto:info@aaa-accreditation.org" },
@@ -323,6 +315,11 @@ export default function HomePage() {
                 </span>
                 <blockquote>{t.quote}</blockquote>
                 <figcaption>
+                  {t.logo && (
+                    <span className="sme-testi-logo" aria-hidden="true">
+                      <Image src={t.logo} alt="" width={120} height={40} sizes="120px" />
+                    </span>
+                  )}
                   <strong>{t.name}</strong>
                   <span>{t.org}</span>
                 </figcaption>

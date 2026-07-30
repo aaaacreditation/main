@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "../../_components/Icon";
-import ReadinessCheck from "../../programs/sme-funding-readiness/ReadinessCheck";
-import "../../programs/sme-funding-readiness/sme.css";
+import ReadinessCheck from "../../programs/smes-accreditation-program/ReadinessCheck";
+import "../../programs/smes-accreditation-program/sme.css";
 
 export const metadata: Metadata = {
   title: "SMEs Funding Readiness Accreditation",
