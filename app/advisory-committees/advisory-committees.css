@@ -1,0 +1,150 @@
+/* =========================================================================
+   ADVISORY TECHNICAL COMMITTEES — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything /advisory-committees needs on top of the shared
+   `.ax-*` design system (app/aaa-ds.css). Nothing here is global: every rule
+   is scoped under `.atcx`, which only this route puts on <main>:
+
+       <main className="axp atcx"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
+   ========================================================================= */
+
+/* ====================== Committee clusters by program =================== */
+.atcx .atcx-clusters { display: grid; gap: 16px; }
+
+.atcx .atcx-cluster {
+  overflow: hidden;
+  border: 1px solid var(--ax-border);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.atcx .atcx-cluster:hover { border-color: rgba(179, 138, 46, 0.45); box-shadow: var(--ax-shadow); }
+
+.atcx .atcx-cluster-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 22px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--ink-100);
+  background: linear-gradient(120deg, var(--aaa-blue-50), #fff 70%);
+}
+.atcx .atcx-cluster-head .atcx-cluster-ico {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 12px;
+  color: var(--aaa-blue);
+  background: #fff;
+}
+.atcx .atcx-cluster-id { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.atcx .atcx-cluster-id h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--aaa-blue);
+}
+.atcx .atcx-cluster-id span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+.atcx .atcx-cluster-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.atcx .atcx-cluster-link svg { transition: transform 0.2s ease; }
+.atcx .atcx-cluster-link:hover { color: var(--aaa-blue); }
+.atcx .atcx-cluster-link:hover svg { transform: translateX(3px); }
+
+.atcx .atcx-members {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--ink-100);
+}
+.atcx .atcx-member {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: #fff;
+}
+.atcx .atcx-member-no {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
+  box-shadow: 0 8px 16px -10px rgba(23, 61, 115, 0.85);
+}
+.atcx .atcx-member b {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--aaa-blue-950);
+}
+
+/* ======================== Stakeholder representation ==================== */
+.atcx .atcx-stake { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.atcx .atcx-stake-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(6px);
+}
+.atcx .atcx-stake-card .ax-ico {
+  width: 44px;
+  height: 44px;
+  padding: 11px;
+  border: 1px solid rgba(244, 231, 198, 0.35);
+  border-radius: 13px;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.18);
+}
+.atcx .atcx-stake-card b { font-size: 16px; font-weight: 600; line-height: 1.3; color: #fff; }
+.atcx .atcx-stake-card span { font-size: 13.5px; line-height: 1.6; color: rgba(255, 255, 255, 0.72); }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .atcx .atcx-stake { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .atcx .atcx-stake { grid-template-columns: 1fr; }
+  .atcx .atcx-cluster-head { padding: 18px 20px; }
+  .atcx .atcx-member { padding: 16px 20px; }
+  .atcx .atcx-members { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atcx .atcx-cluster { transition: none; }
+}

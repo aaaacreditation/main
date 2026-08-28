@@ -1,6 +1,15 @@
 import Link from "next/link";
-import SealRosette from "./SealRosette";
+import Image from "next/image";
 
+/**
+ * Shared inner-page hero.
+ *
+ * Aug 2026: re-skinned onto the `.ax-*` design system (app/aaa-ds.css) so every
+ * inner page carries the same navy/gold editorial language as the two
+ * client-approved reference pages (/programs/iso-17021 and
+ * /programs/smes-accreditation-program). The prop API is unchanged — ~25 pages
+ * render through this component.
+ */
 export default function PageHero({
   eyebrow,
   title,
@@ -8,6 +17,10 @@ export default function PageHero({
   crumbs,
   meta,
   image,
+  accent = "gold",
+  badge,
+  actions,
+  caption,
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -15,51 +28,73 @@ export default function PageHero({
   crumbs?: { href?: string; label: string }[];
   meta?: { k: string; v: string }[];
   image?: string;
+  /** `red` swaps the hero wash to the flag-red accent — use only where urgency is the story. */
+  accent?: "gold" | "red";
+  /** Optional pill above the h1. Defaults to the eyebrow text. */
+  badge?: string;
+  actions?: React.ReactNode;
+  caption?: { kicker: string; title: string; chip?: string };
 }) {
-  return (
-    <section className={"about-hero" + (image ? " has-image" : "")}>
-      {image && (
-        <div
-          className="about-hero-bg"
-          style={{ backgroundImage: `url(${image})` }}
-          aria-hidden="true"
-        />
-      )}
-      <SealRosette spin={!!image} />
-      <div className="container">
-        <div className="crumbs">
-          <Link href="/">Home</Link>
-          {crumbs?.map((c, i) => (
-            <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-              <span className="sep" />
-              {c.href ? (
-                <Link href={c.href}>{c.label}</Link>
-              ) : (
-                <span className="current">{c.label}</span>
-              )}
-            </span>
-          ))}
-        </div>
+  const hasVisual = Boolean(image);
 
-        <div className="about-hero-grid">
-          <div className="reveal">
-            <span className="eyebrow">{eyebrow}</span>
+  return (
+    <section className={"ax-hero" + (accent === "red" ? " red" : "")}>
+      <div className="container">
+        <div className={"ax-hero-grid" + (hasVisual ? "" : " solo")}>
+          <div className="ax-hero-copy">
+            <nav className="ax-crumbs" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              {crumbs?.map((c, i) => (
+                <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                  <span aria-hidden="true">/</span>
+                  {c.href ? <Link href={c.href}>{c.label}</Link> : <strong>{c.label}</strong>}
+                </span>
+              ))}
+            </nav>
+
+            <span className={"ax-hero-badge" + (accent === "red" ? " red" : "")}>
+              <i aria-hidden="true" />
+              {badge ?? eyebrow}
+            </span>
+
             <h1>{title}</h1>
+
+            {intro && <p className="ax-hero-lead">{intro}</p>}
+
+            {actions && <div className="ax-actions">{actions}</div>}
+
+            {meta && meta.length > 0 && (
+              <ul className={"ax-stats" + (meta.length === 3 ? " three" : "")}>
+                {meta.map((m) => (
+                  <li className="ax-stat" key={m.k}>
+                    <b>{m.v}</b>
+                    <span>{m.k}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {(intro || meta) && (
-            <div className="about-hero-side reveal">
-              {intro && <p>{intro}</p>}
-              {meta && (
-                <div className="about-hero-meta">
-                  {meta.map((m) => (
-                    <div className="cell" key={m.k}>
-                      <div className="k">{m.k}</div>
-                      <div className="v">{m.v}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {hasVisual && (
+            <div className="ax-hero-visual">
+              <figure className="ax-hero-photo">
+                <Image
+                  src={image!}
+                  alt=""
+                  fill
+                  sizes="(max-width: 980px) 100vw, 600px"
+                  priority
+                />
+                {caption && (
+                  <figcaption>
+                    <span className="ax-cap">
+                      <span>{caption.kicker}</span>
+                      <strong>{caption.title}</strong>
+                    </span>
+                    {caption.chip && <span className="ax-chip">{caption.chip}</span>}
+                  </figcaption>
+                )}
+              </figure>
             </div>
           )}
         </div>

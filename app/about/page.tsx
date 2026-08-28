@@ -10,7 +10,7 @@ import "./about.css";
 export const metadata: Metadata = {
   title: "About AAA",
   description:
-    "The American Accreditation Association (AAA) is an independent accreditation organization headquartered in Virginia, USA, supporting organizations across 57 countries in demonstrating quality, competence, and continual improvement.",
+    "The American Accreditation Association (AAA) is an independent accreditation organization headquartered in Virginia, USA, supporting organizations across 58 countries in demonstrating quality, competence, and continual improvement.",
   keywords: [
     "American Accreditation Association",
     "AAA accreditation",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About AAA — American Accreditation Association",
     description:
-      "Inspiring Confidence. Recognizing Excellence. Independent accreditation services across multiple sectors, supporting organizations in 57 countries.",
+      "Inspiring Confidence. Recognizing Excellence. Independent accreditation services across multiple sectors, supporting organizations in 58 countries.",
     url: "/about",
     type: "website",
   },
@@ -95,7 +95,7 @@ const REASONS: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "globe",
     title: "Proven International Experience",
-    text: "With activity across 57 countries, AAA works with organizations of different sizes, sectors, and regional contexts.",
+    text: "With activity across 58 countries, AAA works with organizations of different sizes, sectors, and regional contexts.",
   },
 ];
 
@@ -132,7 +132,7 @@ const TEAM: { title: string; role: string; text: string; img: string }[] = [
   },
   {
     title: "International Network",
-    role: "57 Countries",
+    role: "58 Countries",
     text: "A worldwide professional network supporting organizations across regions and environments.",
     img: "/about/team-network.jpg",
   },
@@ -247,7 +247,7 @@ export default function AboutPage() {
             <p>
               Headquartered in Virginia, United States, AAA delivers accreditation services through
               an international network of assessors and technical experts supporting organizations
-              across 57 countries — helping them strengthen credibility, improve performance, and
+              across 58 countries — helping them strengthen credibility, improve performance, and
               demonstrate their commitment to excellence.
             </p>
             <div className="abx-checklist">
@@ -374,7 +374,7 @@ export default function AboutPage() {
             <div className="abx-map-panel">
               <div className="abx-map-head">
                 <div>
-                  <h3>Supporting Organizations Across 57 Countries</h3>
+                  <h3>Supporting Organizations Across 58 Countries</h3>
                   <p>
                     AAA&rsquo;s international footprint reflects its growing role in supporting
                     quality-focused organizations across multiple regions and sectors.

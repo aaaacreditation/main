@@ -1,0 +1,185 @@
+/* =========================================================================
+   AAA FAQ — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything /faq needs on top of the shared `.ax-*` design system
+   (app/aaa-ds.css). Nothing here is global: every rule is scoped under
+   `.faqx`, which only this route puts on <main>:
+
+       <main className="axp faqx"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
+   ========================================================================= */
+
+/* ========================= Topic index cards ============================ */
+.faqx .faqx-topics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+
+.faqx a.faqx-topic {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 20px 20px;
+  border: 1px solid var(--ax-border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  color: inherit;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.faqx a.faqx-topic:hover {
+  transform: translateY(-6px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.faqx .faqx-topic-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.faqx .faqx-topic-ico {
+  width: 44px;
+  height: 44px;
+  padding: 11px;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(160deg, var(--aaa-blue-900), var(--aaa-blue) 70%, var(--aaa-blue-500));
+  box-shadow: 0 12px 22px -14px rgba(23, 61, 115, 0.9);
+}
+.faqx .faqx-topic-no {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: rgba(23, 61, 115, 0.14);
+  user-select: none;
+}
+.faqx .faqx-topic b {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue);
+}
+.faqx .faqx-topic span {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-600);
+}
+.faqx .faqx-topic i {
+  margin-top: auto;
+  padding-top: 14px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+
+/* ====================== Rich answers inside the DS ====================== */
+.faqx .ax-faq-a ul {
+  margin: 12px 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 7px;
+}
+.faqx .ax-faq-a ul li { position: relative; padding-left: 20px; }
+.faqx .ax-faq-a ul li::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--aaa-gold);
+  transform: rotate(45deg);
+}
+.faqx .ax-faq-a a {
+  font-weight: 600;
+  color: var(--aaa-blue);
+  border-bottom: 1px solid rgba(23, 61, 115, 0.3);
+}
+.faqx .ax-faq-a a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
+
+/* Group counter shown next to each section heading */
+.faqx .faqx-tally {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 12px;
+  padding: 5px 11px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  border-radius: 999px;
+  background: #fdf9ef;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+  vertical-align: middle;
+}
+
+/* ========================= Ask-us contact band ========================== */
+.faqx .faqx-channels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: clamp(28px, 3vw, 40px);
+  padding: 0;
+  list-style: none;
+}
+.faqx .faqx-channel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.3s var(--ease-out);
+}
+.faqx .faqx-channel:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 231, 198, 0.5);
+  background: rgba(255, 255, 255, 0.09);
+}
+.faqx .faqx-channel .ax-ico {
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  border: 1px solid rgba(244, 231, 198, 0.35);
+  border-radius: 11px;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.18);
+}
+.faqx .faqx-channel b {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.faqx .faqx-channel a,
+.faqx .faqx-channel span {
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #fff;
+  word-break: break-word;
+}
+.faqx .faqx-channel a { border-bottom: 1px solid rgba(255, 255, 255, 0.28); align-self: flex-start; }
+.faqx .faqx-channel a:hover { color: var(--aaa-gold-100); border-color: var(--aaa-gold-100); }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .faqx .faqx-topics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .faqx .faqx-channels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .faqx .faqx-topics,
+  .faqx .faqx-channels { grid-template-columns: 1fr; }
+  .faqx .faqx-tally { margin-left: 0; margin-top: 12px; display: flex; width: max-content; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faqx a.faqx-topic,
+  .faqx .faqx-channel { transition: none; }
+}

@@ -1,0 +1,382 @@
+/* =========================================================================
+   AAA MEMBERSHIP CLUSTER — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything the membership pages need on top of the shared
+   `.ax-*` design system (app/aaa-ds.css). Nothing here is global: every rule
+   is scoped under `.memx`, which only the membership routes put on <main>:
+
+       <main className="axp memx"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
+   ========================================================================= */
+
+/* Visually-hidden helper (globals.css has no .sr-only). */
+.memx .memx-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===================== Side-by-side comparison table ==================== */
+.memx .memx-compare {
+  overflow-x: auto;
+  border: 1px solid var(--ax-border);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  -webkit-overflow-scrolling: touch;
+}
+.memx .memx-compare table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.memx .memx-compare th,
+.memx .memx-compare td {
+  padding: 16px 20px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--ink-100);
+}
+.memx .memx-compare tbody tr:last-child th,
+.memx .memx-compare tbody tr:last-child td { border-bottom: 0; }
+.memx .memx-compare thead th {
+  padding-top: 22px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--aaa-gold);
+  background: var(--aaa-blue-50);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-blue);
+}
+.memx .memx-compare thead th:first-child { border-radius: 20px 0 0 0; }
+.memx .memx-compare thead th:last-child { border-radius: 0 20px 0 0; }
+.memx .memx-compare thead th b {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.memx .memx-compare tbody th {
+  width: 26%;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--aaa-blue);
+  background: var(--ax-cream);
+}
+.memx .memx-compare td {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-600);
+}
+.memx .memx-compare td b { color: var(--aaa-blue-950); font-weight: 600; }
+.memx .memx-compare td .no { color: var(--ink-400); }
+.memx .memx-compare-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.memx .memx-scroll-hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--ink-500);
+}
+
+/* =========================== Pricing panel ============================== */
+.memx .memx-price-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  overflow: hidden;
+  border: 1px solid var(--ax-border);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: var(--ax-shadow);
+}
+.memx .memx-price-main {
+  padding: clamp(28px, 3.2vw, 42px);
+  color: #fff;
+  background:
+    radial-gradient(circle at 88% 6%, rgba(36, 79, 147, 0.55), transparent 44%),
+    linear-gradient(160deg, var(--aaa-blue-900), var(--aaa-blue-950) 82%);
+}
+.memx .memx-price-main .eyebrow { color: var(--aaa-gold-100); }
+.memx .memx-price-main .eyebrow::before { height: 2px; background: var(--aaa-gold); }
+.memx .memx-fig {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 16px 0 0;
+  font-size: clamp(44px, 5vw, 62px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.memx .memx-fig .cur { font-size: 0.46em; font-weight: 600; color: var(--aaa-gold-100); }
+.memx .memx-fig .per {
+  margin-left: 6px;
+  font-size: 0.26em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.66);
+}
+.memx .memx-price-main > p {
+  max-width: 42ch;
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.76);
+}
+.memx .memx-price-main .ax-btn { margin-top: 24px; }
+.memx .memx-price-side { padding: clamp(28px, 3.2vw, 42px); background: linear-gradient(160deg, #fff 55%, var(--aaa-blue-50)); }
+.memx .memx-price-side h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+}
+.memx .memx-price-note { margin: 18px 0 0; font-size: 13px; line-height: 1.7; color: var(--ink-600); }
+.memx .memx-price-note strong { color: var(--aaa-blue); font-weight: 600; }
+.memx .memx-price-note a { color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); font-weight: 500; }
+.memx .memx-price-note a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
+
+/* Credit-toward-accreditation flow chip */
+.memx .memx-credit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  border-radius: 12px;
+  background: #fdf9ef;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--aaa-gold-700);
+}
+.memx .memx-credit .ax-ico { width: 16px; height: 16px; flex: none; }
+/* Same chip on the navy half of the pricing card. */
+.memx .memx-credit.on-dark {
+  border-color: rgba(244, 231, 198, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--aaa-gold-100);
+}
+
+/* ======================= Application page shell ========================= */
+.memx .memx-apply {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+.memx .memx-apply-aside { position: sticky; top: 118px; display: grid; gap: 16px; }
+
+.memx .memx-form-card {
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid var(--ax-border);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: var(--ax-shadow);
+}
+
+/* ============================== The form ================================ */
+.memx .memx-form { display: grid; gap: clamp(22px, 2.4vw, 30px); }
+.memx .memx-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.memx .memx-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--ink-100);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-blue);
+}
+.memx .memx-legend i {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #fff;
+  background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
+}
+.memx .memx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+.memx .memx-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+.memx .memx-field.full { grid-column: 1 / -1; }
+.memx .memx-field label { font-size: 12.5px; font-weight: 500; color: var(--aaa-blue); }
+.memx .memx-field label .req { margin-left: 3px; color: var(--aaa-red); }
+.memx .memx-field .hint { font-size: 11.5px; line-height: 1.5; color: var(--ink-500); }
+.memx .memx-field input,
+.memx .memx-field select,
+.memx .memx-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--ink-200);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.memx .memx-field select {
+  appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23173d73' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 15px;
+  cursor: pointer;
+}
+.memx .memx-field textarea { min-height: 88px; line-height: 1.6; resize: vertical; }
+.memx .memx-field input::placeholder,
+.memx .memx-field textarea::placeholder { color: var(--ink-400); }
+.memx .memx-field input:focus,
+.memx .memx-field select:focus,
+.memx .memx-field textarea:focus {
+  outline: none;
+  border-color: var(--aaa-blue);
+  box-shadow: 0 0 0 3px rgba(23, 61, 115, 0.14);
+}
+
+/* Declaration block */
+.memx .memx-declare {
+  padding: 20px 22px;
+  border: 1px solid rgba(179, 138, 46, 0.3);
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 12px;
+  background: #fdf9ef;
+}
+.memx .memx-declare > strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+}
+.memx .memx-declare ol { margin: 0; padding-left: 20px; }
+.memx .memx-declare li { margin-top: 8px; font-size: 13px; line-height: 1.62; color: var(--ink-700); }
+.memx .memx-declare li::marker { color: var(--aaa-gold-700); font-weight: 600; }
+.memx .memx-consent {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(179, 138, 46, 0.4);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-700);
+}
+.memx .memx-consent input {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--aaa-blue);
+  cursor: pointer;
+}
+
+/* Footer / submit */
+.memx .memx-form-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+.memx .memx-form-note { max-width: 48ch; margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-500); }
+.memx .memx-form-err {
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid #f2c6c2;
+  border-radius: 9px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #b3261e;
+  background: #fdf0ef;
+}
+.memx .memx-form-done { padding: clamp(28px, 3.4vw, 44px) 8px; text-align: center; }
+.memx .memx-form-done .tick {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(145deg, #c39a3d, var(--aaa-gold) 55%, var(--aaa-gold-700));
+}
+.memx .memx-form-done .tick svg { width: 28px; height: 28px; }
+.memx .memx-form-done strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+}
+.memx .memx-form-done p { max-width: 54ch; margin: 0 auto; font-size: 14px; line-height: 1.72; color: var(--ink-600); }
+.memx .memx-form-done .memx-done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Contact rail inside the aside panel */
+.memx .memx-contacts { display: grid; gap: 10px; margin: 20px 0 0; padding: 18px 0 0; border-top: 1px dashed var(--aaa-blue-100); list-style: none; }
+.memx .memx-contacts li { display: flex; align-items: center; gap: 10px; font-size: 13px; line-height: 1.45; color: var(--ink-700); }
+.memx .memx-contacts .ax-ico { width: 16px; height: 16px; flex: none; color: var(--aaa-gold-700); }
+.memx .memx-contacts a { color: var(--aaa-blue); font-weight: 500; }
+.memx .memx-contacts a:hover { color: var(--aaa-gold-700); }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .memx .memx-apply { grid-template-columns: 1fr; }
+  .memx .memx-apply-aside { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .memx .memx-price-card { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .memx .memx-apply-aside { grid-template-columns: 1fr; }
+  .memx .memx-grid { grid-template-columns: 1fr; }
+  .memx .memx-form-card { padding: 22px 18px 26px; border-radius: 18px; }
+  .memx .memx-form-foot { flex-direction: column; align-items: stretch; }
+  .memx .memx-form-foot .ax-btn { width: 100%; }
+  .memx .memx-compare table { min-width: 640px; }
+  .memx .memx-compare-foot .ax-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memx .memx-field input,
+  .memx .memx-field select,
+  .memx .memx-field textarea { transition: none; }
+}

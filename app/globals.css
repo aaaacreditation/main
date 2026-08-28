@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./aaa-ds.css";
 
 :root{
   /* Primary — AAA brand navy (#173d73) + gold accent (#b38a2e). July 2026 rebrand. */
@@ -48,8 +49,13 @@
   --ease-out: cubic-bezier(.22, 1, .36, 1);
 
   /* Vertical rhythm */
-  --section-pad: clamp(96px, 10vw, 144px);
-  --section-pad-tight: clamp(72px, 7.5vw, 104px);
+  /* Vertical rhythm. Tightened Aug 2026 from clamp(96px,10vw,144px) to match
+     the client-approved reference pages (cb.css / sme.css both use
+     clamp(48px,5vw,76px)). The old scale was roughly 2x too airy and was the
+     main reason legacy sections read as dated next to the new ones. Both
+     reference pages override their own padding, so they are unaffected. */
+  --section-pad: clamp(48px, 5vw, 76px);
+  --section-pad-tight: clamp(36px, 3.6vw, 56px);
 
   --container: 1240px;
   --container-wide: 1440px;
@@ -143,12 +149,20 @@ button{ font-family: inherit; cursor: pointer; background: none; border: 0; padd
   border-color: rgba(255,255,255,.28);
 }
 .btn-ghost-light:hover{ border-color: var(--white); }
+/* Gold CTA — the brand gradient from CLAUDE.md. Until Aug 2026 this rule
+   painted a WHITE button with blue text, which contradicted both its name and
+   the brand guideline; the seven call sites now render the real gold gradient,
+   matching .ax-btn-gold / .cbx-btn-gold / .smex-btn-gold. */
 .btn-gold{
-  background: var(--white);
-  color: var(--aaa-blue);
+  background: linear-gradient(135deg, #c39a3d, var(--aaa-gold) 45%, var(--aaa-gold-700));
+  color: var(--white);
   font-weight: 600;
+  box-shadow: 0 18px 36px -16px rgba(142,107,24,.8), inset 0 1px rgba(255,255,255,.28);
 }
-.btn-gold:hover{ background: var(--aaa-blue-50); transform: translateY(-1px); }
+.btn-gold:hover{ transform: translateY(-2px); box-shadow: 0 24px 44px -16px rgba(142,107,24,.9); }
+/* Kept for the few places that genuinely want a white button on navy. */
+.btn-white{ background: var(--white); color: var(--aaa-blue); font-weight: 600; }
+.btn-white:hover{ background: var(--aaa-blue-50); transform: translateY(-1px); }
 .btn .arrow{ transition: transform .2s ease; }
 .btn:hover .arrow{ transform: translateX(3px); }
 

@@ -1,0 +1,142 @@
+/* =========================================================================
+   SAFEGUARDING IMPARTIALITY POLICY — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything /impartiality-policy needs on top of the shared
+   `.ax-*` design system (app/aaa-ds.css). Nothing here is global: every rule
+   is scoped under `.impx`, which only this route puts on <main>:
+
+       <main className="axp impx"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent,
+   red #c1122f used once, for the "accreditation shall not be provided" rule.
+   ========================================================================= */
+
+/* ========================= The four values ============================== */
+.impx .impx-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.impx .impx-value {
+  padding: 20px 18px;
+  border: 1px solid var(--ax-border);
+  border-top: 3px solid var(--aaa-gold);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.impx .impx-value b {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--aaa-blue);
+}
+.impx .impx-value span {
+  display: block;
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-600);
+}
+
+/* Sub-labels inside the navy risk section — gold-700 is too dark on navy. */
+.impx .ax-section.navy .ax-label {
+  margin-top: clamp(28px, 3vw, 38px);
+  color: var(--aaa-gold-100);
+}
+
+/* ==================== Risk-evidence mechanism tiles ===================== */
+.impx .impx-mechs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.impx .impx-mech {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(6px);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #fff;
+}
+.impx .impx-mech .ax-ico {
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  flex: none;
+  border: 1px solid rgba(244, 231, 198, 0.35);
+  border-radius: 11px;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.18);
+}
+
+/* The four-verb risk cycle, rendered as a track. */
+.impx .impx-cycle {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: impx-cycle;
+}
+.impx .impx-cycle li {
+  position: relative;
+  padding: 18px 18px 18px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 3px solid var(--aaa-gold);
+  background: rgba(255, 255, 255, 0.06);
+}
+.impx .impx-cycle b {
+  display: block;
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.impx .impx-cycle span {
+  display: block;
+  margin-top: 5px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ============ The one red note: "accreditation shall not be provided" ====
+   Tertiary flag-red, used once on the page, on the navy surface. ========= */
+.impx .impx-alert {
+  margin-top: 26px;
+  border-color: rgba(255, 190, 200, 0.32);
+  border-left-color: var(--aaa-red);
+  background: rgba(193, 18, 47, 0.16);
+  color: rgba(255, 255, 255, 0.86);
+}
+.impx .impx-alert .ax-ico { width: 20px; height: 20px; flex: none; margin-top: 2px; color: #ffd9df; }
+.impx .impx-alert strong { color: #ffd9df; }
+.impx .impx-alert .impx-alert-rule { display: inline; color: #fff; }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .impx .impx-values,
+  .impx .impx-mechs,
+  .impx .impx-cycle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .impx .impx-values,
+  .impx .impx-mechs,
+  .impx .impx-cycle { grid-template-columns: 1fr; }
+}

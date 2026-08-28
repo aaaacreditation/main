@@ -1,10 +1,14 @@
 /**
  * Seeds the CMS database:
  *  - one ADMIN user (credentials from ADMIN_EMAIL / ADMIN_PASSWORD in .env)
- *  - all legacy WordPress articles from app/news/posts-data.json (299 posts)
+ *  - all legacy WordPress articles from app/news/posts-data.json
  *
- * Idempotent: the admin user is upserted; posts are only imported when the
- * posts table is empty, and duplicates are skipped either way.
+ * Idempotent, and INCREMENTAL: the admin user is upserted, and any post in the
+ * snapshot whose slug is not already in the database is inserted. It used to
+ * bail out entirely once the table was non-empty, which meant a refreshed
+ * snapshot could never reach the database — re-running it after
+ * `node scripts/sync-news-posts.mjs` silently imported nothing, and the new
+ * articles 404'd because the DB takes precedence over the JSON fallback.
  */
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -25,16 +29,23 @@ async function main() {
   console.log(`Admin user ready: ${admin.email}`);
 
   const existing = await prisma.post.count();
-  if (existing > 0) {
-    console.log(`Posts already present (${existing}) — skipping article import.`);
-    return;
-  }
+  console.log(`Posts already in database: ${existing}`);
 
   const raw = JSON.parse(
     readFileSync(new URL("../app/news/posts-data.json", import.meta.url), "utf8")
   );
 
-  const data = raw.map((p) => ({
+  const knownSlugs = new Set(
+    (await prisma.post.findMany({ select: { slug: true } })).map((p) => p.slug)
+  );
+  const fresh = raw.filter((p) => !knownSlugs.has(p.slug));
+  if (fresh.length === 0) {
+    console.log("No new posts in the snapshot — database is up to date.");
+    return;
+  }
+  console.log(`New posts to import: ${fresh.length}`);
+
+  const data = fresh.map((p) => ({
     slug: p.slug,
     title: p.title,
     excerpt: p.excerpt ?? "",

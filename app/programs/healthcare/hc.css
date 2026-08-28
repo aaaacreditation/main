@@ -1,0 +1,94 @@
+/* =========================================================================
+   Healthcare accreditation cluster — page-local additions
+   -------------------------------------------------------------------------
+   Aug 2026. Everything the `.ax-*` design system (app/aaa-ds.css) already
+   covers is used as-is; this file only adds the handful of variants the
+   cluster needs. EVERY rule is scoped under `.hcx` so nothing leaks.
+
+   Palette tokens only — navy #173d73, gold #b38a2e, neutrals.
+   ========================================================================= */
+
+/* Cards sitting on a navy band (recognition / feedback proof sections). */
+.hcx .ax-section.navy .ax-card {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: none;
+  backdrop-filter: blur(6px);
+}
+.hcx .ax-section.navy .ax-card:hover {
+  border-color: rgba(244, 231, 198, 0.5);
+  box-shadow: 0 26px 60px -34px rgba(0, 0, 0, 0.75);
+}
+.hcx .ax-section.navy .ax-card h3 { color: #fff; }
+.hcx .ax-section.navy .ax-card p { color: rgba(255, 255, 255, 0.74); }
+.hcx .ax-section.navy .ax-card .ax-card-no { color: rgba(255, 255, 255, 0.18); }
+.hcx .ax-section.navy .ax-card-ico {
+  border: 1px solid rgba(244, 231, 198, 0.3);
+  background: rgba(179, 138, 46, 0.18);
+  box-shadow: none;
+}
+
+/* Stat strip reused outside the hero (proof column on a navy split). */
+.hcx .hc-stats { margin-top: 0; }
+
+/* Dense facility tile grid on the hub — narrower than .ax-grid's default. */
+.hcx .hc-tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .hcx .hc-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Year badge inside a milestone step (four digits will not fit the circle). */
+.hcx .hc-year { font-size: 11px; letter-spacing: -0.02em; }
+
+/* Body copy that continues an .ax-head block. */
+.hcx .hc-para {
+  margin: 16px 0 0;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--ink-600);
+}
+
+/* Media that follows a tile pair inside a split column. */
+.hcx .hc-stacked-photo { margin-top: 18px; }
+
+/* Small gold chip in a card header — durations, chapter ranges, scopes. */
+.hcx .hc-phase-when,
+.hcx .hc-chip {
+  flex: none;
+  padding: 6px 11px;
+  border: 1px solid rgba(179, 138, 46, 0.34);
+  border-radius: 999px;
+  background: #fdf9ef;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.hcx .hc-phase .ax-checks { margin-top: 14px; }
+.hcx .hc-phase .ax-checks li { font-size: 13.5px; }
+.hcx .hc-phase .ax-checks li strong { color: var(--aaa-blue); font-weight: 600; }
+
+/* Contact rail on the consultation page. */
+.hcx .hc-contact { display: grid; gap: 10px; margin-top: 20px; padding: 0; list-style: none; }
+.hcx .hc-contact li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-700);
+}
+.hcx .hc-contact .ax-ico {
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 10px;
+  color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+}
+.hcx .hc-contact a { color: var(--aaa-blue); font-weight: 600; }
+.hcx .hc-contact a:hover { color: var(--aaa-gold-700); }
+
+@media (max-width: 720px) {
+  .hcx .hc-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

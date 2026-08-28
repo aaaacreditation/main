@@ -16,7 +16,7 @@ export default function SiteChrome({
   return (
     <>
       {!bare && header}
-      <main>{children}</main>
+      <main id="main">{children}</main>
       {!bare && footer}
     </>
   );

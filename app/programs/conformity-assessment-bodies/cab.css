@@ -1,0 +1,56 @@
+/* =========================================================================
+   Conformity Assessment Bodies hub — page-local additions to the shared
+   `.ax-*` design system (app/aaa-ds.css).
+
+   Everything the hub needs already exists in the design system except the
+   standard-code chip on the scheme cards and a couple of density tweaks, so
+   this file stays deliberately small. Every rule is scoped under `.cabx`
+   (the wrapper on this route only) so nothing can leak to another page.
+   ========================================================================= */
+
+.cabx section { scroll-margin-top: 92px; }
+
+/* ------------------------------------------------- Scheme directory cards */
+
+/* The anchor standard, shown top-right of each card opposite the icon. */
+.cabx .cabx-std {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(150deg, #faf3e0, #f4e7c6);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--aaa-gold-700);
+  transition: border-color 0.3s ease;
+}
+.cabx a.ax-card:hover .cabx-std { border-color: var(--aaa-gold); }
+
+/* Scheme cards carry icon + chip + title + summary, so they need a touch more
+   room between the chip row and the heading than the base .ax-card. */
+.cabx .cabx-scheme h3 { margin-top: 18px; }
+.cabx .cabx-scheme p { margin-top: 8px; }
+
+/* --------------------------------------------- "Benefits" audience cards */
+.cabx .cabx-audience h3 { margin-bottom: 0; }
+.cabx .cabx-audience .ax-checks { margin-top: 14px; }
+.cabx .cabx-audience .ax-checks li { font-size: 13.5px; line-height: 1.6; }
+
+@media (max-width: 480px) {
+  .cabx .cabx-std { padding: 5px 9px; font-size: 10px; letter-spacing: 0.05em; }
+}
+
+/* ------------------------------------------- "Common ground" section photo */
+/* The numbered list beside it is tall, so the figure gets a squarer crop than
+   the design system's default portrait ratio and sits centred against it. */
+.cabx .cabx-figure { aspect-ratio: 4 / 4.1; }
+.cabx .cabx-figure img { object-position: center 26%; }
+
+@media (max-width: 980px) {
+  .cabx .cabx-figure { aspect-ratio: 4 / 2.8; }
+}
