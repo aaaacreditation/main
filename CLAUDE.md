@@ -157,6 +157,37 @@ them; `aaa-ds.css` is the portable version every other page shares.
 | Closing | `.ax-close`, `.ax-close-inner`, `.ax-close-actions`, `.ax-related` |
 | Prose | `.ax-prose`, `.ax-note` (+`.gold` `.red`) |
 
+### Sept 2026 refresh — BizGen "demo one" styling pass
+
+The client asked for the site to take its styling cues from the **BizGen business-consulting
+template, demo one** (`../newwebsite/bizgen-business-consulting-html-template-*/bizgen-html/index.html`),
+rendered in AAA navy + gold + red. No colours or fonts changed — this is a treatment pass over
+the existing primitives. What was adopted:
+
+- **Three-tier header** (`app/_components/Header.tsx`, header block in `globals.css`): navy
+  utility strip → **white logo row** carrying the logo left plus email / phone contact blocks
+  (icon plate + label over value) and the primary CTA right → **full-bleed dark nav bar**,
+  square corners, with a hairline-separated search cell and a gold `Apply` cell at its end.
+  `--header-h` (188px) is the single knob heroes pad against — re-measure it if the header's
+  height changes.
+- **Arrow buttons** rest at −45° (↗) and swing level (→) on hover. Applied via
+  `.ax-btn:has(path[d^="M5 12h14"])` so buttons carrying a download / document / shield icon
+  keep the plain nudge.
+- **Centred kickers** get a matching rule on the trailing side (— OUR SERVICES —).
+- **Cards**: radius 20px, icon plate flips to a solid brand fill on hover, numerals render as
+  an outlined watermark (`-webkit-text-stroke`, with a flat-tint `@supports` fallback).
+- **`.ax-reason`** is now a stacked card with its numeral on a rounded plate hanging over the
+  left edge. `.ax-reasons` carries `padding-left: 26px` equal to that overhang so the plate
+  never spills out of its column — keep them in step if either changes.
+- **Home hero** (`app/home.css`, scoped `.homex`): full-bleed photograph behind a navy scrim,
+  kicker over a hairline, and a two-tier `h1` whose `<em>` is oversized gold with a solid
+  underline bar. The `<em>` uses `width: min-content` so the bar ends flush with the text.
+- **Footer**: gold underscore under each column heading, contact icons on tinted plates.
+
+**The SMEs Accreditation page was explicitly excluded.** It is safe because it uses only its
+own `.smex-*` classes from the frozen `sme.css` — it shares the Header and Footer (which did
+change) but not one `.ax-*` rule. Verify that still holds before touching `aaa-ds.css`.
+
 Rules:
 - New page-specific CSS goes in a **page-local file** (e.g. `app/foo/foo.css`), with every rule
   scoped under a page-only class, imported by that page. Never grow `app/globals.css`.

@@ -597,6 +597,30 @@ export default function Page() {
         </div>
       </section>
 
+      {/* 04b — Proof band */}
+      <section className="ax-section tight">
+        <div className="container">
+          <ul className="ax-counters reveal">
+            <li className="ax-counter">
+              <b>{FACTS.organizations}</b>
+              <span>Accredited organizations</span>
+            </li>
+            <li className="ax-counter">
+              <b>{FACTS.countriesPlus}</b>
+              <span>Countries served</span>
+            </li>
+            <li className="ax-counter">
+              <b>{FACTS.assessors}</b>
+              <span>Assessors &amp; experts</span>
+            </li>
+            <li className="ax-counter">
+              <b>E2659</b>
+              <span>ASTM anchor standard</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* 05 — Benefits */}
       <section className="ax-section" id="benefits">
         <div className="container">
@@ -606,7 +630,7 @@ export default function Page() {
                 <span className="eyebrow">Benefits</span>
                 <h2>What accreditation does for your training business.</h2>
               </div>
-              <ol className="ax-reasons">
+              <ol className="ax-reasons stagger">
                 {BENEFITS.map((b, i) => (
                   <li className="ax-reason" key={b.title}>
                     <span className="ax-reason-num" aria-hidden="true">
@@ -690,7 +714,7 @@ export default function Page() {
       </section>
 
       {/* 06 — What we assess */}
-      <section className="ax-section cream" id="assessment">
+      <section className="ax-slab" id="assessment">
         <div className="container">
           <div className="ax-head center reveal">
             <span className="eyebrow">What we assess</span>

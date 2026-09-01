@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "./_components/Icon";
 import JsonLd from "./_components/JsonLd";
-import SealRosette from "./_components/SealRosette";
 import { WorldMapFigure } from "./_components/WorldMap";
 import { CASE_STUDIES, type CaseStudy } from "./_data/case-studies";
 import HeroStats from "./_components/home/HeroStats";
@@ -49,8 +48,6 @@ const HERO_STATS = [
   { num: FACTS.assessors, label: "Assessors & experts" },
 ] as const;
 
-/** Standards named on the sample certificate in the hero visual. */
-const CERT_STANDARDS = ["ISO 15189", "ISO/IEC 17025", "ISQua EEA"];
 
 /** Standards the AAA programs are aligned with — shown in the hero marquee. */
 const STANDARDS = [
@@ -67,20 +64,24 @@ const STANDARDS = [
 
 /* ------------------------------------------------------ Why AAA (pillars) */
 // Transcribed from AAA's mission and the Virginia authorization statement.
-const PILLARS: { title: string; text: string }[] = [
+const PILLARS: { title: string; text: string; icon: IconName }[] = [
   {
+    icon: "globe",
     title: "Globally accepted",
     text: "AAA's vision is international accreditation accepted globally — promoting acceptance of accredited results and certificates internationally and amongst global partners.",
   },
   {
+    icon: "cert",
     title: "Built on international standards",
     text: "Programs are based on internationally recognized standards — from ISO/IEC 17025 and ISO 15189 to ISO/IEC 17024 and ASTM E2659 — ensuring the competence of accredited organizations.",
   },
   {
+    icon: "flag",
     title: "US-authorized",
     text: "Authorized by the State Corporation Commission of the Commonwealth of Virginia to transact business under Title 13.1 of the Code of Virginia, offering a full range of comprehensive accreditation services.",
   },
   {
+    icon: "scale",
     title: "Independent and impartial",
     text: "Impartiality, transparency, objectivity and independence are paramount in all AAA operations — safeguarded by a published impartiality policy, conflict-of-interest management and non-discriminatory services.",
   },
@@ -91,6 +92,7 @@ const PROGRAM_CARDS: {
   href: string;
   label: string;
   tag: string;
+  icon: IconName;
   img: string;
   alt: string;
   text: string;
@@ -100,6 +102,7 @@ const PROGRAM_CARDS: {
     href: PROGRAMS.healthcare.href,
     label: PROGRAMS.healthcare.label,
     tag: PROGRAMS.healthcare.standard,
+    icon: "medical",
     img: "/home/healthcare.jpg",
     alt: "Clinicians reviewing patient records in a hospital corridor",
     text: "Accreditation for hospitals, clinics, diagnostic centres, rehabilitation units and pharmacies — demonstrating a commitment to patient safety, clinical excellence and continuous improvement.",
@@ -108,6 +111,7 @@ const PROGRAM_CARDS: {
     href: PROGRAMS.cab.href,
     label: PROGRAMS.cab.label,
     tag: "ISO/IEC 17000 series",
+    icon: "flask",
     img: "/home/conformity.jpg",
     alt: "Technician calibrating instruments in a testing laboratory",
     text: "A full family of programs supporting the global recognition of conformity-assessment results — testing, calibration and medical laboratories, certification bodies, inspection bodies and proficiency testing providers.",
@@ -122,6 +126,7 @@ const PROGRAM_CARDS: {
     href: PROGRAMS.training.href,
     label: PROGRAMS.training.label,
     tag: PROGRAMS.training.standard,
+    icon: "book",
     img: "/home/training.jpg",
     alt: "Participants in a professional training workshop",
     text: "Formal recognition for training and education programs — classroom, workshop-based or e-learning, delivered anywhere in the world and assessed against ASTM E2659 and AAA's training standards.",
@@ -130,6 +135,7 @@ const PROGRAM_CARDS: {
     href: PROGRAMS.sme.href,
     label: PROGRAMS.sme.label,
     tag: "Business Readiness Score",
+    icon: "chart",
     img: "/sme-journey-team.jpg",
     alt: "Two business owners reviewing their AAA accreditation certificate",
     text: "An independent, evidence-based assessment of how a small or medium enterprise is managed — producing an internationally recognized accreditation and a Business Readiness Score.",
@@ -265,9 +271,27 @@ export default function HomePage() {
       <JsonLd schema={SCHEMA} />
 
       {/* ============================ 01 · Hero ============================ */}
-      <section className="ax-hero" id="top">
+      <section className="ax-hero hx-hero" id="top">
+        {/* Background footage. Muted + playsInline so mobile Safari autoplays
+            it inline; the poster paints immediately while the file streams,
+            and CSS drops the video entirely under prefers-reduced-motion. */}
+        <video
+          className="hx-hero-video"
+          poster="/video/home-hero.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          <source src="/video/home-hero.mp4" type="video/mp4" />
+        </video>
+        <span className="hx-hero-scrim" aria-hidden="true" />
+
         <div className="container">
-          <div className="ax-hero-grid">
+          <div className="ax-hero-grid solo">
             <div className="ax-hero-copy reveal">
               <span className="ax-hero-badge">
                 <i aria-hidden="true" />
@@ -291,73 +315,6 @@ export default function HomePage() {
 
               <HeroStats stats={HERO_STATS} />
             </div>
-
-            {/* Product visual — an illustrative certificate of accreditation */}
-            <div className="hx-cert-wrap reveal" aria-hidden="true">
-              <div className="hx-cert">
-                <div className="hx-cert-head">
-                  <span className="hx-cert-mark">AAA</span>
-                  <span className="hx-cert-title">
-                    <strong>Certificate of Accreditation</strong>
-                    <span>Illustrative sample</span>
-                  </span>
-                  <span className="hx-cert-verified">
-                    <Icon name="check" size={11} strokeWidth={3} /> Verified
-                  </span>
-                </div>
-
-                <div className="hx-cert-body">
-                  <SealRosette />
-                  <span className="hx-cert-line">This certifies that</span>
-                  <span className="hx-cert-org">Your Organization</span>
-                  <span className="hx-cert-line">
-                    has demonstrated competence and impartiality in accordance with
-                  </span>
-                  <div className="hx-cert-stds">
-                    {CERT_STANDARDS.map((s) => (
-                      <span className="hx-std" key={s}>
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="hx-cert-meta">
-                  <div>
-                    <span>Decision</span>
-                    <strong>Granted</strong>
-                  </div>
-                  <div>
-                    <span>Validity</span>
-                    <strong>{FACTS.cycleYears} years</strong>
-                  </div>
-                  <div>
-                    <span>Verification</span>
-                    <strong>Digital</strong>
-                  </div>
-                </div>
-
-                <div className="hx-cert-foot">
-                  <span className="hx-cert-seal">ISQua</span>
-                  <p>Standards assessed by ISQua EEA · verifiable online</p>
-                </div>
-              </div>
-
-              <div className="hx-chips">
-                <span className="hx-chip">
-                  <i>
-                    <Icon name="shield" size={15} />
-                  </i>
-                  ISQua EEA-assessed standards
-                </span>
-                <span className="hx-chip">
-                  <i>
-                    <Icon name="globe" size={15} />
-                  </i>
-                  Accepted in {FACTS.countriesLabel}
-                </span>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -379,12 +336,12 @@ export default function HomePage() {
       </section>
 
       {/* ========================== 02 · Why AAA =========================== */}
-      <section className="ax-section" id="why">
+      <section className="ax-section hx-why" id="why">
         <div className="container">
-          <div className="ax-split">
+          <div className="hx-why-split">
             <div className="reveal">
               <div className="ax-head">
-                <span className="eyebrow">Why AAA</span>
+                <span className="eyebrow">Why choose AAA</span>
                 <h2>
                   Independent accreditation for institutions that take{" "}
                   <em>quality seriously</em>
@@ -398,22 +355,13 @@ export default function HomePage() {
                 global acceptance of their accreditations.
               </p>
 
-              <ol className="ax-reasons">
-                {PILLARS.map((p, i) => (
-                  <li className="ax-reason" key={p.title}>
-                    <span className="ax-reason-num" aria-hidden="true">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <h3>{p.title}</h3>
-                      <p>{p.text}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <div className="hx-why-trust">
+                <b>{FACTS.organizations}</b>
+                <span>organizations accredited across {FACTS.countriesLabel}</span>
+              </div>
 
               <div className="ax-actions">
-                <Link href="/about" className="ax-btn ax-btn-ghost-navy">
+                <Link href="/about" className="ax-btn ax-btn-blue">
                   About AAA <Icon name="arrow" size={15} />
                 </Link>
                 <Link href="/about-accreditation" className="ax-btn ax-btn-ghost-navy">
@@ -422,25 +370,25 @@ export default function HomePage() {
               </div>
             </div>
 
-            <figure className="ax-photo wide reveal">
-              <Image
-                src="/about/assessment.jpg"
-                alt="AAA assessors reviewing documentation with clinical staff during an on-site accreditation assessment"
-                fill
-                sizes="(max-width: 980px) 92vw, 40vw"
-              />
-              <span className="ax-photo-badge">On-site assessment</span>
-              <figcaption>
-                Evidence-based assessment, delivered by a panel of {FACTS.assessorsLabel}.
-                <span>American Accreditation Association · Tysons Corner, Virginia</span>
-              </figcaption>
-            </figure>
+            <ul className="hx-why-list reveal">
+              {PILLARS.map((p) => (
+                <li className="hx-why-item" key={p.title}>
+                  <span className="hx-why-ico" aria-hidden="true">
+                    <Icon name={p.icon} size={28} />
+                  </span>
+                  <div className="hx-why-card">
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
       {/* ========================== 03 · Programs ========================== */}
-      <section className="ax-section cream" id="programs">
+      <section className="hx-svc" id="programs">
         <div className="container">
           <div className="ax-head center reveal">
             <span className="eyebrow">Our services</span>
@@ -451,28 +399,27 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="hx-progs">
+          <div className="hx-svc-grid">
             {PROGRAM_CARDS.map((p, i) => (
-              <article className="hx-prog reveal" key={p.href} style={{ transitionDelay: `${i * 70}ms` }}>
-                <div className="hx-prog-media">
-                  <Image src={p.img} alt={p.alt} fill sizes="(max-width: 980px) 92vw, 46vw" />
-                  <span className="hx-prog-tag">{p.tag}</span>
-                  <h3>{p.label}</h3>
+              <article className="hx-svc-item reveal" key={p.href} style={{ transitionDelay: `${i * 70}ms` }}>
+                <div className="hx-svc-top">
+                  <div className="hx-svc-iconcol">
+                    <span className="hx-svc-plate">
+                      <Icon name={p.icon} size={34} />
+                    </span>
+                    <span className="hx-svc-no" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <figure className="hx-svc-photo">
+                    <Image src={p.img} alt={p.alt} fill sizes="(max-width: 700px) 92vw, 24vw" />
+                    <span className="hx-svc-tag">{p.tag}</span>
+                  </figure>
                 </div>
-                <div className="hx-prog-body">
+                <div className="hx-svc-body">
+                  <h3>{p.label}</h3>
                   <p>{p.text}</p>
-                  {p.links && (
-                    <ul className="hx-prog-links">
-                      {p.links.map((l) => (
-                        <li key={l.href}>
-                          <Link href={l.href}>
-                            {l.label} <Icon name="arrowUpRight" size={12} />
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <Link href={p.href} className="hx-prog-go">
+                  <Link href={p.href} className="hx-svc-go">
                     Explore the program <Icon name="arrow" size={14} />
                   </Link>
                 </div>
@@ -639,17 +586,23 @@ export default function HomePage() {
             </p>
           </div>
 
-          <ul className="hx-orgs reveal">
-            {ORGS.map((o) => (
-              <li className="hx-org" key={o.name}>
-                <span className="hx-org-mono" aria-hidden="true">
-                  {o.mono}
-                </span>
-                <b>{o.name}</b>
-                <span>{o.loc}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="hx-strip reveal">
+            <p className="hx-strip-lead">
+              Accredited organizations in <b>{FACTS.countriesLabel}</b>, assessed by a panel of{" "}
+              <b>{FACTS.assessors}</b> assessors and experts
+            </p>
+            <ul className="hx-orgs">
+              {ORGS.map((o) => (
+                <li className="hx-org" key={o.name}>
+                  <span className="hx-org-mono" aria-hidden="true">
+                    {o.mono}
+                  </span>
+                  <b>{o.name}</b>
+                  <span>{o.loc}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="hx-testis">
             {TESTIMONIALS.map((t, i) => (

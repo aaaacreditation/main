@@ -74,8 +74,17 @@
 .ax-head { max-width: 760px; }
 .ax-head.center { margin: 0 auto clamp(30px, 3.4vw, 46px); text-align: center; }
 .ax-head .eyebrow { color: var(--aaa-gold-700); font-weight: 600; }
-.ax-head .eyebrow::before { height: 2px; background: var(--aaa-gold); }
+.ax-head .eyebrow::before { width: 46px; height: 2px; border-radius: 2px; background: var(--aaa-gold); }
+/* Centred kickers get a matching rule on the trailing side so the label sits
+   between two strokes (— OUR SERVICES —) as in the reference design. */
 .ax-head.center .eyebrow { justify-content: center; }
+.ax-head.center .eyebrow::after {
+  content: "";
+  width: 46px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--aaa-gold);
+}
 .ax-head h2 {
   margin: 14px 0 0;
   font-size: clamp(30px, 3.4vw, 46px);
@@ -135,11 +144,19 @@
   cursor: pointer;
   transition: transform 0.25s var(--ease-out), box-shadow 0.3s ease, background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
-.ax-btn svg { flex: none; transition: transform 0.2s ease; }
+.ax-btn svg { flex: none; transition: transform 0.25s var(--ease-out); }
 .ax-btn:hover { transform: translateY(-3px); }
 .ax-btn:hover svg { transform: translateX(3px); }
 .ax-btn:disabled { opacity: 0.6; transform: none; cursor: default; }
 .ax-btn.sm { min-height: 0; padding: 11px 18px; font-size: 13px; border-radius: 8px; }
+
+/* Arrow buttons rest at -45° (↗) and swing level (→) on hover — the signature
+   button motion of the client's reference design. Matched on the arrow's own
+   path data so buttons carrying a download / document / shield icon keep the
+   plain nudge above; `Icon name="arrow"` and the hand-written inline arrows
+   both emit this exact `d`. */
+.ax-btn:has(path[d^="M5 12h14"]) svg { transform: rotate(-45deg); }
+.ax-btn:has(path[d^="M5 12h14"]):hover svg { transform: rotate(0deg); }
 .ax-btn.block { width: 100%; }
 
 .ax-btn-blue {
@@ -342,7 +359,7 @@
   aspect-ratio: 1.06 / 1;
   margin: 0;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 28px 28px 84px 28px;
+  border-radius: 20px;
   background: var(--aaa-blue-950);
   box-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.8);
 }
@@ -406,7 +423,7 @@
   flex-direction: column;
   padding: 22px 22px 24px;
   border: 1px solid var(--ax-border);
-  border-radius: 18px;
+  border-radius: 20px;
   background: #fff;
   box-shadow: var(--ax-shadow-sm);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
@@ -421,12 +438,21 @@
   color: #fff;
   background: linear-gradient(160deg, var(--aaa-blue-900), var(--aaa-blue) 70%, var(--aaa-blue-500));
   box-shadow: 0 12px 22px -14px rgba(23, 61, 115, 0.9);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s var(--ease-out);
 }
+/* The reference design flips the icon plate to a solid brand fill as the card
+   is hovered — the tinted variants below start light and land on the brand. */
+.ax-card:hover .ax-card-ico { transform: scale(1.06); }
 .ax-card-ico.light {
   color: var(--aaa-blue);
   background: var(--aaa-blue-50);
   border: 1px solid var(--aaa-blue-100);
   box-shadow: none;
+}
+.ax-card:hover .ax-card-ico.light {
+  color: #fff;
+  background: var(--aaa-blue);
+  border-color: var(--aaa-blue);
 }
 .ax-card-ico.gold {
   color: var(--aaa-gold-700);
@@ -434,13 +460,30 @@
   border: 1px solid rgba(179, 138, 46, 0.32);
   box-shadow: none;
 }
+.ax-card:hover .ax-card-ico.gold {
+  color: #fff;
+  background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700));
+  border-color: var(--aaa-gold-700);
+}
+/* Outlined ghost numeral — drawn as a stroke rather than a flat tint so it
+   reads as a watermark behind the card's content. Falls back to the original
+   flat tint anywhere `-webkit-text-stroke` is missing, so the number is never
+   left transparent-on-white. */
 .ax-card-no {
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 34px;
+  font-weight: 800;
   line-height: 1;
   letter-spacing: -0.03em;
-  color: rgba(23, 61, 115, 0.14);
+  color: rgba(23, 61, 115, 0.16);
   user-select: none;
+}
+@supports (-webkit-text-stroke: 1px #000) {
+  .ax-card-no {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(23, 61, 115, 0.22);
+    transition: -webkit-text-stroke-color 0.3s ease;
+  }
+  .ax-card:hover .ax-card-no { -webkit-text-stroke-color: rgba(179, 138, 46, 0.55); }
 }
 .ax-card h3 {
   margin: 16px 0 8px;
@@ -449,7 +492,9 @@
   line-height: 1.3;
   letter-spacing: -0.01em;
   color: var(--aaa-blue);
+  transition: color 0.25s ease;
 }
+.ax-card:hover h3 { color: var(--aaa-gold-700); }
 .ax-card p { margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--ink-600); }
 .ax-card-rule { margin-top: auto; padding-top: 18px; }
 .ax-card-rule::after {
@@ -496,8 +541,11 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
   border-radius: 12px;
   color: var(--aaa-blue);
   background: var(--aaa-blue-50);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-.ax-tile b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--aaa-blue); }
+.ax-tile:hover .ax-tile-ico { color: #fff; background: var(--aaa-blue); border-color: var(--aaa-blue); }
+.ax-tile b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--aaa-blue); transition: color 0.25s ease; }
+.ax-tile:hover b { color: var(--aaa-gold-700); }
 .ax-tile span { display: block; font-size: 12.5px; line-height: 1.4; color: var(--ink-600); }
 
 /* ====================== Split (copy + media / list) ===================== */
@@ -514,7 +562,7 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
   aspect-ratio: 4 / 4.6;
   margin: 0;
   border: 1px solid var(--ax-border);
-  border-radius: 22px 22px 64px 22px;
+  border-radius: 20px;
   background: var(--aaa-blue-950);
   box-shadow: var(--ax-shadow);
 }
@@ -559,24 +607,156 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
 }
 .ax-photo figcaption span { display: block; margin-top: 4px; font-size: 11px; font-weight: 400; color: rgba(255, 255, 255, 0.66); }
 
-/* ===================== Numbered reasons ("why") list ==================== */
-.ax-reasons { margin: clamp(20px, 2.4vw, 30px) 0 0; padding: 0; list-style: none; }
-.ax-reason { display: grid; grid-template-columns: 46px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--ink-100); }
-.ax-reason:first-child { padding-top: 0; border-top: 0; }
+/* ===================== Numbered reasons ("why") list ====================
+   Sept 2026: reworked from a plain ruled list into the reference design's
+   stacked cards, each with its numeral on a rounded brand plate that hangs
+   over the card's left edge. Markup is unchanged — every call site already
+   renders `<li class="ax-reason"><span class="ax-reason-num">n</span><div>…`.
+   The list carries left padding equal to the plate's overhang so the plate
+   never spills outside the column it sits in.
+   ======================================================================== */
+.ax-reasons {
+  display: grid;
+  gap: 16px;
+  margin: clamp(20px, 2.4vw, 30px) 0 0;
+  padding-left: 26px;
+  list-style: none;
+}
+.ax-reason { position: relative; }
+.ax-reason > div {
+  padding: 24px 26px 24px 48px;
+  border: 1px solid var(--ax-border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 40px -28px rgba(7, 29, 52, 0.5);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.ax-reason:hover > div {
+  transform: translateY(-4px);
+  border-color: rgba(179, 138, 46, 0.45);
+  box-shadow: var(--ax-shadow);
+}
 .ax-reason-num {
+  position: absolute;
+  top: 50%;
+  left: -26px;
+  z-index: 2;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  font-size: 14px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #fff;
   background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
-  box-shadow: 0 10px 20px -12px rgba(23, 61, 115, 0.8);
+  box-shadow: 0 14px 26px -14px rgba(23, 61, 115, 0.9);
+  transform: translateY(-50%);
+  transition: background 0.3s ease, transform 0.3s var(--ease-out);
+}
+.ax-reason:hover .ax-reason-num {
+  background: linear-gradient(145deg, var(--aaa-gold), var(--aaa-gold-700));
+  transform: translateY(-50%) scale(1.06);
 }
 .ax-reason h3 { margin: 0 0 6px; font-size: 18px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--aaa-blue); }
 .ax-reason p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--ink-600); }
+
+/* On a navy section the card inverts to a translucent panel. */
+.ax-section.navy .ax-reason > div,
+.ax-hero .ax-reason > div {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+.ax-section.navy .ax-reason h3 { color: #fff; }
+.ax-section.navy .ax-reason p { color: rgba(255, 255, 255, 0.74); }
+
+/* Narrow columns: the plate moves to the top-left corner instead of hanging. */
+@media (max-width: 560px) {
+  .ax-reasons { padding-left: 0; }
+  .ax-reason > div { padding: 46px 20px 22px; }
+  .ax-reason-num { top: -14px; left: 20px; width: 46px; height: 46px; transform: none; }
+  .ax-reason:hover .ax-reason-num { transform: scale(1.06); }
+}
+
+/* `.stagger` — the reference design's zig-zag: alternate cards pull toward the
+   column's left edge. Opt-in, because it only reads well when the list has the
+   full width of a wide column to move within. Below 981px the offset is
+   dropped so nothing shifts on a single-column layout. */
+@media (min-width: 981px) {
+  .ax-reasons.stagger { padding-left: 60px; }
+  .ax-reasons.stagger .ax-reason:nth-child(odd) { margin-left: -34px; margin-right: 34px; }
+}
+
+/* ================= Dark inset panel section (reference) =================
+   A full section rendered as a rounded navy slab held in from the viewport
+   edges — the reference uses it to lift one band away from the page. Put it
+   on the <section> itself, in place of `.ax-section`.
+   ======================================================================== */
+.ax-slab {
+  margin: 0 clamp(10px, 2.2vw, 30px);
+  padding: clamp(52px, 5.4vw, 88px) 0;
+  border-radius: 20px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(36, 79, 147, 0.42), transparent 30%),
+    radial-gradient(circle at 86% 24%, rgba(179, 138, 46, 0.12), transparent 26%),
+    linear-gradient(140deg, var(--aaa-blue-950) 0%, #0b2138 55%, #0e2a47 100%);
+}
+.ax-slab .ax-head h2,
+.ax-slab .ax-head h3 { color: #fff; }
+.ax-slab .ax-head p { color: rgba(255, 255, 255, 0.74); }
+.ax-slab .ax-head .eyebrow { color: var(--aaa-gold-100); }
+.ax-slab .ax-label { color: var(--aaa-gold-100); }
+.ax-slab .ax-checks li { color: rgba(255, 255, 255, 0.8); }
+/* The tick is a background-image, so this has to restate the whole shorthand —
+   setting `background` to a flat colour alone would erase the check glyph. */
+.ax-slab .ax-checks li::before {
+  border-color: rgba(244, 231, 198, 0.35);
+  background: rgba(179, 138, 46, 0.2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4e7c6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / 10px no-repeat;
+}
+
+/* ===================== Counter band (reference) =========================
+   The reference's stat strip: oversized figures over a short label, split by
+   hairline rules rather than boxed into cards.
+   ======================================================================== */
+.ax-counters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ax-counter { padding: 6px clamp(14px, 2vw, 28px); text-align: center; }
+.ax-counter + .ax-counter { border-left: 1px solid var(--ax-border); }
+.ax-counter b {
+  display: block;
+  font-size: clamp(34px, 4.2vw, 56px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--aaa-blue);
+}
+.ax-counter span {
+  display: block;
+  margin-top: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--ink-500);
+}
+/* On a dark slab the figures switch to gold and the rules to translucency. */
+.ax-slab .ax-counter + .ax-counter { border-left-color: rgba(255, 255, 255, 0.14); }
+.ax-slab .ax-counter b { color: var(--aaa-gold); }
+.ax-slab .ax-counter span { color: rgba(255, 255, 255, 0.68); }
+
+@media (max-width: 760px) {
+  .ax-counters { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 0; }
+  .ax-counter:nth-child(odd) { border-left: 0; }
+}
 
 /* ======================= Dark numbered step panel ======================= */
 .ax-steps-panel {
@@ -671,6 +851,12 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
   border-radius: 16px;
   color: var(--aaa-gold-700);
   background: linear-gradient(150deg, var(--aaa-gold-50), var(--aaa-gold-100));
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.ax-panel:hover .ax-panel-ico {
+  color: #fff;
+  background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700));
+  border-color: var(--aaa-gold-700);
 }
 .ax-panel h3 {
   margin: 18px 0 0;
@@ -737,7 +923,9 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
   border-radius: 14px;
   background: #fff;
   box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
 }
+.ax-metric:hover { transform: translateY(-4px); box-shadow: var(--ax-shadow); }
 .ax-metric b {
   display: block;
   font-size: clamp(26px, 2.6vw, 36px);
@@ -856,7 +1044,9 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
 }
 .ax-close-inner { max-width: 900px; margin: 0 auto; text-align: center; }
 .ax-close-inner .eyebrow { justify-content: center; color: var(--aaa-gold-100); }
-.ax-close-inner .eyebrow::before { height: 2px; background: var(--aaa-gold); }
+.ax-close-inner .eyebrow::before,
+.ax-close-inner .eyebrow::after { width: 46px; height: 2px; border-radius: 2px; background: var(--aaa-gold); }
+.ax-close-inner .eyebrow::after { content: ""; }
 .ax-close-inner h2 {
   margin: 14px auto 0;
   font-size: clamp(30px, 3.6vw, 48px);
@@ -972,7 +1162,7 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
   .ax-close-actions .ax-btn { width: 100%; }
   .ax-stats,
   .ax-stats.three { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 30px; }
-  .ax-hero-photo { aspect-ratio: 1 / 1; border-radius: 22px 22px 54px 22px; }
+  .ax-hero-photo { aspect-ratio: 1 / 1; border-radius: 20px; }
   .ax-hero-photo figcaption { flex-direction: column; align-items: flex-start; right: 20px; bottom: 20px; left: 20px; }
   .ax-grid,
   .ax-grid.two,

@@ -26,7 +26,7 @@
   justify-content: flex-end;
   min-height: 340px;
   padding: clamp(28px, 3.4vw, 44px);
-  border-radius: 22px 22px 64px 22px;
+  border-radius: 20px;
   color: #fff;
   background:
     radial-gradient(circle at 88% 8%, rgba(36, 79, 147, 0.55), transparent 44%),
@@ -311,7 +311,7 @@
 }
 
 @media (max-width: 720px) {
-  .nxp .nx-lead-main { border-radius: 18px 18px 48px 18px; }
+  .nxp .nx-lead-main { border-radius: 20px; }
   .nxp .nx-updown { grid-template-columns: 1fr; }
   .nxp .nx-updown .nx-next { text-align: left; align-items: flex-start; }
   .nxp .nx-pager .nx-page-edge span { display: none; }

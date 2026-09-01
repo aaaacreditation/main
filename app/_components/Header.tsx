@@ -142,7 +142,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Centered logo */}
+        {/* Logo row — logo left, contact blocks and primary CTA right */}
         <div className="header-main">
           <div className="container">
             <Link href="/" className="brand" aria-label="American Accreditation Association — home">
@@ -156,6 +156,26 @@ export default function Header() {
               />
             </Link>
 
+            <div className="header-info">
+              <a className="hinfo" href={`mailto:${CONTACT.email}`}>
+                <span className="hinfo-ico"><Icon name="mail" size={18} /></span>
+                <span className="hinfo-txt">
+                  <span className="hinfo-label">Send us a message</span>
+                  <strong>{CONTACT.email}</strong>
+                </span>
+              </a>
+              <a className="hinfo" href={CONTACT.phoneHref}>
+                <span className="hinfo-ico"><Icon name="phone" size={18} /></span>
+                <span className="hinfo-txt">
+                  <span className="hinfo-label">Call our team</span>
+                  <strong>{CONTACT.phone}</strong>
+                </span>
+              </a>
+              <Link href="/quote" className="btn btn-primary hinfo-cta">
+                Get a Quote <Icon name="arrow" size={14} className="arrow" />
+              </Link>
+            </div>
+
             <button
               className={"menu-toggle" + (menuOpen ? " open" : "")}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -167,15 +187,15 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Centered primary nav */}
+        {/* Primary nav — dark bar that floats over the top of the hero */}
         <div className="header-nav">
           <div className="container">
             <NavLinks />
 
             <div className="header-actions">
               <button className="search-btn" aria-label="Search"><Icon name="search" size={16} /></button>
-              <Link href="/quote" className="btn btn-primary">
-                Get a Quote <Icon name="arrow" size={14} className="arrow" />
+              <Link href="/apply" className="nav-apply">
+                Apply <Icon name="arrow" size={13} className="arrow" />
               </Link>
             </div>
           </div>

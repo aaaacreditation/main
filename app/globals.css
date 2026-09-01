@@ -227,7 +227,7 @@ button{ font-family: inherit; cursor: pointer; background: none; border: 0; padd
 }
 
 /* ---------- HEADER (centered, transparent — overlays the hero) ---------- */
-:root{ --header-h: 168px; }
+:root{ --header-h: 188px; }
 
 .site-header{
   position: absolute; top: 0; left: 0; right: 0; z-index: 50;
@@ -252,26 +252,63 @@ button{ font-family: inherit; cursor: pointer; background: none; border: 0; padd
 .utility-right{ display: flex; gap: 18px; align-items: center; }
 .utility-divider{ width: 1px; height: 14px; background: rgba(255,255,255,.2); }
 
-/* Centered logo row — transparent, no background behind the logo */
-.header-main{ position: relative; }
+/* Logo row — white band: logo left, contact blocks + primary CTA right.
+   Sept 2026: restructured from the centred-logo layout to the three-tier
+   header pattern (utility strip → white logo/contact row → dark nav bar)
+   adapted from the client's BizGen reference into AAA navy + gold. */
+.header-main{ position: relative; background: var(--white); }
 .header-main .container{
   position: relative;
-  display: flex; align-items: center; justify-content: center;
-  padding: 18px 0 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 32px;
+  padding: 14px 0;
 }
 .brand{ display: flex; align-items: center; gap: 12px; }
-.brand-logo{ height: 80px; width: auto; display: block; }
+.brand-logo{ height: 72px; width: auto; display: block; }
 .brand-logo-footer{ height: 56px; }
-/* Mobile hamburger sits over the hero too */
-.site-header .menu-toggle{ color: var(--white); border-color: rgba(255,255,255,.4); }
 
-/* Nav row: empty | centered nav | actions on the right (like before) */
-.header-nav{ background: var(--aaa-blue-950); }
+/* Contact blocks — icon plate + label over value */
+.header-info{ display: flex; align-items: center; gap: 34px; }
+.hinfo{ display: flex; align-items: center; gap: 12px; }
+.hinfo-ico{
+  display: grid; place-items: center;
+  width: 48px; height: 48px;
+  flex: none;
+  border-radius: 12px;
+  color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+  border: 1px solid var(--aaa-blue-100);
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.hinfo:hover .hinfo-ico{ background: var(--aaa-blue); border-color: var(--aaa-blue); color: var(--white); }
+.hinfo-txt{ display: flex; flex-direction: column; gap: 1px; }
+.hinfo-label{
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-500);
+}
+.hinfo-txt strong{
+  font-size: 15px; font-weight: 600;
+  color: var(--aaa-blue);
+  transition: color .2s ease;
+}
+.hinfo:hover .hinfo-txt strong{ color: var(--aaa-gold-700); }
+.header-info .hinfo-cta{ flex: none; }
+
+/* Mobile hamburger — dark on the white band */
+.site-header .menu-toggle{ color: var(--aaa-blue); border-color: var(--ink-200); }
+
+/* Nav row: full-bleed dark bar, square corners */
+.header-nav{
+  position: relative;
+  background: var(--aaa-blue-950);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
 .header-nav .container{
-  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  display: grid; grid-template-columns: auto 1fr; align-items: center;
   gap: 16px;
 }
-.nav{ grid-column: 2; justify-self: center; display: flex; gap: 32px; align-items: center; }
+.nav{ grid-column: 1; justify-self: start; display: flex; gap: 30px; align-items: center; }
 .nav a{
   font-size: 15px; font-weight: 500; color: rgba(255,255,255,.92);
   display: inline-flex; align-items: center; gap: 4px;
@@ -297,18 +334,31 @@ button{ font-family: inherit; cursor: pointer; background: none; border: 0; padd
   margin-left: 2px; opacity: .7;
 }
 
-/* Right-hand actions inside the nav row */
-.header-actions{ grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 14px; }
+/* Right-hand actions inside the nav row — cells split by hairline dividers,
+   the way the reference header separates its language / search / menu slots. */
+.header-actions{ grid-column: 2; justify-self: end; display: flex; align-items: stretch; }
 .search-btn{
-  width: 40px; height: 40px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.4); background: transparent;
-  display: grid; place-items: center; color: var(--white);
-  transition: border-color .2s ease, color .2s ease, background .2s ease;
+  width: 58px;
+  border: 0;
+  border-left: 1px solid rgba(255,255,255,.14);
+  background: transparent;
+  display: grid; place-items: center; color: rgba(255,255,255,.9);
+  cursor: pointer;
+  transition: color .2s ease, background .2s ease;
 }
-.search-btn:hover{ border-color: var(--white); color: var(--white); background: rgba(255,255,255,.1); }
-.header-actions .btn-primary{ background: var(--white); color: var(--aaa-blue); }
-.header-actions .btn-primary:hover{ background: rgba(255,255,255,.86); }
-.header-actions .btn{ padding-top: 10px; padding-bottom: 10px; }
+.search-btn:hover{ color: var(--white); background: rgba(255,255,255,.07); }
+.nav-apply{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 24px;
+  border-left: 1px solid rgba(255,255,255,.14);
+  font-size: 14px; font-weight: 600;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--aaa-gold), var(--aaa-gold-700));
+  transition: filter .25s ease;
+}
+.nav-apply:hover{ filter: brightness(1.08); }
+.nav-apply .arrow{ transition: transform .25s var(--ease-out); transform: rotate(-45deg); }
+.nav-apply:hover .arrow{ transform: rotate(0deg); }
 
 /* Nav dropdown */
 .nav-item{ position: relative; }
@@ -1128,23 +1178,33 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
 }
 .social{ display: flex; gap: 8px; }
 .social a{
-  width: 36px; height: 36px;
-  border-radius: 4px;
+  width: 38px; height: 38px;
+  border-radius: 10px;
   background: rgba(255,255,255,.05);
   border: 1px solid rgba(255,255,255,.08);
   display: grid; place-items: center;
   color: rgba(255,255,255,.7);
-  transition: background .2s ease, color .2s ease, border-color .2s ease;
+  transition: background .2s ease, color .2s ease, border-color .2s ease, transform .25s var(--ease-out);
 }
-.social a:hover{ background: var(--aaa-gold); color: var(--aaa-blue-950); border-color: var(--aaa-gold); }
+.social a:hover{ background: var(--aaa-gold); color: var(--aaa-blue-950); border-color: var(--aaa-gold); transform: translateY(-3px); }
+/* Column headings carry a short gold underscore, echoing the kicker rule
+   used by the section titles above. */
 .footer-col h5{
+  position: relative;
   font-size: 12px;
   font-family: var(--font-mono);
   letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--white);
-  margin: 0 0 18px;
+  margin: 0 0 26px;
+  padding-bottom: 12px;
   font-weight: 500;
+}
+.footer-col h5::after{
+  content:"";
+  position: absolute; left: 0; bottom: 0;
+  width: 32px; height: 2px; border-radius: 2px;
+  background: var(--aaa-gold);
 }
 .footer-col ul{ list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .footer-col a{
@@ -1153,13 +1213,28 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
   transition: color .2s ease, transform .25s var(--ease-out);
 }
 .footer-col a:hover{ color: var(--aaa-gold); transform: translateX(3px); }
+/* `.footer-col a` above is specific enough to beat `.ax-btn`'s own display and
+   colour, which left the footer CTA laid out as inline text — its label and
+   arrow wrapped onto separate lines. Hand the button back its own styling. */
+.footer-col a.ax-btn{ display: inline-flex; color: #fff; }
+.footer-col a.ax-btn:hover{ color: #fff; transform: translateY(-3px); }
 .footer-contact .item{
-  display: flex; gap: 12px;
+  display: flex; align-items: flex-start; gap: 14px;
   font-size: 14px; color: rgba(255,255,255,.7);
-  margin-bottom: 14px;
+  margin-bottom: 18px;
   line-height: 1.55;
 }
-.footer-contact .item .ico{ color: var(--aaa-gold); flex-shrink: 0; margin-top: 2px; }
+/* Icon sits on a tinted plate, matching the header's contact blocks. */
+.footer-contact .item .ico{
+  box-sizing: content-box;
+  width: 16px; height: 16px;
+  padding: 10px;
+  border-radius: 10px;
+  color: var(--aaa-gold);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
+}
 .footer-contact .item strong{ color: rgba(255,255,255,.85); display: block; font-weight: 500; }
 .footer-contact .item .muted{ color: rgba(255,255,255,.55); }
 .footer-bottom{
@@ -1919,10 +1994,27 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
 @media (max-width: 1180px){
   .nav-dropdown.mega{ width: min(380px, calc(100vw - 40px)); }
 }
+/* Header logo row degrades block-by-block before the nav collapses:
+   both contact blocks → the email block → nothing but logo + CTA. */
+@media (max-width: 1400px){
+  .header-info{ gap: 24px; }
+  .hinfo-label{ display: none; }
+  .hinfo-ico{ width: 42px; height: 42px; border-radius: 10px; }
+}
+@media (max-width: 1240px){
+  .header-main .container{ gap: 20px; }
+  .hinfo:first-of-type{ display: none; }
+  .nav{ gap: 22px; }
+  .nav a{ font-size: 14px; }
+}
+@media (max-width: 1040px){
+  .header-info .hinfo{ display: none; }
+  .brand-logo{ height: 60px; }
+}
 @media (max-width: 720px){
-  /* Mobile: solid brand-blue header bar sitting above the hero (not overlaying it) */
-  .site-header{ position: static; background: var(--aaa-blue); border-bottom: 1px solid rgba(255,255,255,.14); }
-  .site-header .menu-toggle{ color: var(--white); border-color: rgba(255,255,255,.45); }
+  /* Mobile: solid white header bar sitting above the hero (not overlaying it) */
+  .site-header{ position: static; background: var(--white); border-bottom: 1px solid var(--ink-100); }
+  .site-header .menu-toggle{ color: var(--aaa-blue); border-color: var(--ink-200); }
   /* Keep the partners marquee from bleeding past the narrower mobile container */
   .marquee{ margin: 0 -20px; }
   .header-nav, .utility-bar{ display: none; }
