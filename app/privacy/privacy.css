@@ -1,0 +1,159 @@
+/* =========================================================================
+   PRIVACY POLICY — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything /privacy needs on top of the shared `.ax-*` design
+   system (app/aaa-ds.css). Nothing here is global: every rule is scoped
+   under `.pvx`, which only this route puts on <main>:
+
+       <main className="axp pvx"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
+   ========================================================================= */
+
+/* ====================== Plain-English summary cards ===================== */
+.pvx .pvx-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.pvx .pvx-sum-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 20px;
+  border: 1px solid var(--ax-border);
+  border-top: 3px solid var(--aaa-gold);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.pvx .pvx-sum-card .ax-ico {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 11px;
+  color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+}
+.pvx .pvx-sum-card b {
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue);
+}
+.pvx .pvx-sum-card span { font-size: 13px; line-height: 1.65; color: var(--ink-600); }
+
+/* ============================ Sticky contents =========================== */
+.pvx .pvx-toc {
+  padding: 22px 20px;
+  border: 1px solid var(--ax-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #fff 55%, var(--aaa-blue-50));
+  box-shadow: var(--ax-shadow-sm);
+}
+.pvx .pvx-toc ol { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: pvx-toc; display: grid; gap: 2px; }
+.pvx .pvx-toc li { counter-increment: pvx-toc; }
+.pvx .pvx-toc a {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-700);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.pvx .pvx-toc a::before {
+  content: counter(pvx-toc);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--aaa-gold-700);
+}
+.pvx .pvx-toc a:hover { background: var(--aaa-blue-50); color: var(--aaa-blue); }
+
+/* Numbered policy headings */
+.pvx .ax-prose h2 { scroll-margin-top: 110px; }
+.pvx .ax-prose h2 .pvx-n {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--aaa-gold-700);
+  font-weight: 700;
+}
+
+/* ==================== Closing data-contact band ========================= */
+.pvx .pvx-contact {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(48px, 5vw, 72px) 0;
+  color: #fff;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(36, 79, 147, 0.4), transparent 34%),
+    linear-gradient(135deg, #061a2c 0%, #0b2d50 48%, #173d73 100%);
+}
+.pvx .pvx-contact-corner {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 46px;
+  height: 46px;
+  border-top: 2px solid var(--aaa-gold-100);
+  border-right: 2px solid var(--aaa-gold-100);
+  opacity: 0.5;
+}
+.pvx .pvx-contact-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.85fr);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+.pvx .pvx-contact h2 {
+  margin: 14px 0 0;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #fff;
+  text-wrap: balance;
+}
+.pvx .pvx-contact h2 em { font-style: normal; color: var(--aaa-gold-100); }
+.pvx .pvx-contact > .container > .pvx-contact-grid p {
+  max-width: 56ch;
+  margin: 16px 0 0;
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.76);
+}
+.pvx .pvx-contact .eyebrow { color: var(--aaa-gold-100); }
+.pvx .pvx-contact .eyebrow::before { height: 2px; background: var(--aaa-gold); }
+
+.pvx .pvx-card {
+  padding: clamp(24px, 3vw, 32px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+}
+.pvx .pvx-card dl { margin: 0; display: grid; gap: 16px; }
+.pvx .pvx-card dt {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.pvx .pvx-card dd { margin: 5px 0 0; font-size: 14.5px; line-height: 1.55; color: #fff; }
+.pvx .pvx-card dd a { border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+.pvx .pvx-card dd a:hover { color: var(--aaa-gold-100); border-color: var(--aaa-gold-100); }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .pvx .pvx-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .pvx .pvx-contact-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pvx .pvx-toc { position: static; }
+}
+@media (max-width: 620px) {
+  .pvx .pvx-summary { grid-template-columns: 1fr; }
+}

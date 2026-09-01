@@ -1,0 +1,185 @@
+/* =========================================================================
+   /quote — page-local styles.
+   Every rule is scoped under `.qtx`; the rest of the page is built from the
+   shared `.ax-*` design system (app/aaa-ds.css).
+   Palette: navy #173d73 (dominant) · gold #b38a2e (accent). No new colours.
+   ========================================================================= */
+
+/* ------------------------------ Form card ------------------------------- */
+.qtx .qtx-request { position: relative; z-index: 3; padding: 0 0 clamp(40px, 4vw, 60px); background: #fff; }
+.qtx .qtx-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(26px, 3.5vw, 48px);
+  margin-top: clamp(-92px, -6.5vw, -64px);
+  overflow: hidden;
+  padding: clamp(26px, 3.5vw, 40px) clamp(24px, 3.6vw, 46px);
+  border: 1px solid rgba(23, 61, 115, 0.2);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 40px 90px -40px rgba(7, 29, 52, 0.6);
+}
+.qtx .qtx-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, var(--aaa-blue) 100%);
+}
+.qtx .qtx-card-copy .eyebrow { color: var(--aaa-gold-700); font-weight: 600; }
+.qtx .qtx-card-copy .eyebrow::before { height: 2px; background: var(--aaa-gold); }
+.qtx .qtx-card-copy h2 {
+  margin: 12px 0 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  color: var(--aaa-blue);
+  text-wrap: balance;
+}
+.qtx .qtx-card-copy > p { margin: 12px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-600); }
+.qtx .qtx-card-points { display: grid; gap: 9px; margin: 18px 0 0; padding: 0; list-style: none; }
+.qtx .qtx-card-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-700);
+}
+.qtx .qtx-card-points li::before {
+  content: "";
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 50%;
+  background: var(--aaa-blue-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23173d73' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / 10px no-repeat;
+}
+.qtx .qtx-card-aside {
+  margin: 22px 0 0;
+  padding-top: 18px;
+  border-top: 1px dashed var(--aaa-blue-100);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-600);
+}
+.qtx .qtx-card-aside a { font-weight: 600; color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); }
+.qtx .qtx-card-aside a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
+
+/* -------------------------------- Fields -------------------------------- */
+.qtx .qtx-form { position: relative; }
+.qtx .qtx-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.qtx .qtx-field { display: flex; flex-direction: column; gap: 6px; }
+.qtx .qtx-field.full,
+.qtx .qtx-form-err.full { grid-column: 1 / -1; }
+.qtx .qtx-field label { font-size: 12.5px; font-weight: 500; color: var(--aaa-blue-950); }
+.qtx .qtx-field label i { font-style: normal; font-weight: 400; color: var(--ink-400); }
+.qtx .qtx-field input,
+.qtx .qtx-field select,
+.qtx .qtx-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--ink-200);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.qtx .qtx-field select {
+  appearance: none;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  background-size: 15px;
+  cursor: pointer;
+}
+.qtx .qtx-field textarea { min-height: 92px; line-height: 1.6; resize: vertical; }
+.qtx .qtx-field input::placeholder,
+.qtx .qtx-field textarea::placeholder { color: var(--ink-400); }
+.qtx .qtx-field input:focus,
+.qtx .qtx-field select:focus,
+.qtx .qtx-field textarea:focus {
+  outline: none;
+  border-color: var(--aaa-blue);
+  box-shadow: 0 0 0 3px rgba(23, 61, 115, 0.14);
+}
+.qtx .qtx-field [aria-invalid="true"] { border-color: #f2c6c2; background: #fdf0ef; }
+.qtx .qtx-field [aria-invalid="true"]:focus { border-color: #b3261e; box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.14); }
+.qtx .qtx-err { font-size: 11.5px; line-height: 1.45; color: #b3261e; }
+
+.qtx .qtx-form-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 18px;
+  margin-top: 4px;
+}
+.qtx .qtx-form-note { max-width: 44ch; margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-500); }
+.qtx .qtx-form-err {
+  margin: 0;
+  padding: 10px 13px;
+  border: 1px solid #f2c6c2;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #b3261e;
+  background: #fdf0ef;
+}
+.qtx .qtx-form-done { padding: 30px 8px; text-align: center; }
+.qtx .qtx-form-done .tick {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(145deg, #c39a3d, var(--aaa-gold) 55%, var(--aaa-gold-700));
+}
+.qtx .qtx-form-done .tick svg { width: 27px; height: 27px; }
+.qtx .qtx-form-done strong { display: block; margin-bottom: 8px; font-size: 19px; color: var(--aaa-blue); }
+.qtx .qtx-form-done p { max-width: 54ch; margin: 0 auto; font-size: 13.5px; line-height: 1.7; color: var(--ink-600); }
+.qtx .qtx-form-done-next { margin-top: 12px !important; font-size: 12.5px !important; }
+.qtx .qtx-form-done a { font-weight: 600; color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); }
+.qtx .qtx-form-done a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
+
+/* ---------------------------- Pricing factors --------------------------- */
+.qtx .qtx-factor-no {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(23, 61, 115, 0.4);
+}
+
+/* --------------------------- Not-included note -------------------------- */
+.qtx .qtx-scope-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; margin-top: 24px; }
+.qtx .qtx-scope-cols h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+
+/* ------------------------------ Responsive ------------------------------ */
+@media (max-width: 980px) {
+  .qtx .qtx-card { grid-template-columns: 1fr; gap: 26px; }
+}
+@media (max-width: 720px) {
+  .qtx .qtx-card { margin-top: -74px; padding: 24px 20px; }
+  .qtx .qtx-form-grid { grid-template-columns: 1fr; }
+  .qtx .qtx-form-foot { flex-direction: column; align-items: stretch; }
+  .qtx .qtx-form-foot .ax-btn { width: 100%; }
+  .qtx .qtx-form-note { max-width: none; text-align: center; }
+  .qtx .qtx-scope-cols { grid-template-columns: 1fr; gap: 22px; }
+}

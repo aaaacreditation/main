@@ -23,6 +23,7 @@ type IconName =
   | "linkedin"
   | "youtube"
   | "facebook"
+  | "instagram"
   | "doc"
   | "download"
   | "check";
@@ -132,6 +133,13 @@ const PATHS: Record<IconName, JSX.Element> = {
     </>
   ),
   facebook: <path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v8h3v-8h2.5l.5-3H14V8Z" />,
+  instagram: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <path d="M16.5 7.5v.01" />
+    </>
+  ),
   doc: (
     <>
       <path d="M6 3h8l4 4v14H6z" />

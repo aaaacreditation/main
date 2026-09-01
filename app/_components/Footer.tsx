@@ -2,6 +2,44 @@ import Link from "next/link";
 import Image from "next/image";
 import Icon from "./Icon";
 import SealRosette from "./SealRosette";
+import { CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
+
+/**
+ * Site footer.
+ *
+ * Aug 2026: program labels, contact details and social profiles now come from
+ * lib/facts.ts. Previously the ISO/IEC 17021-1 link was labelled "System
+ * Certification" (renamed to Management Systems Certification Bodies) and all
+ * four social icons pointed at `href="#"`.
+ */
+
+const PROGRAM_LINKS = [
+  PROGRAMS.healthcare,
+  PROGRAMS.training,
+  PROGRAMS.sme,
+  PROGRAMS.school,
+  PROGRAMS.iso17021,
+  PROGRAMS.iso17065,
+  PROGRAMS.iso17024,
+  PROGRAMS.iso17020,
+  PROGRAMS.iso17025,
+  PROGRAMS.iso15189,
+  PROGRAMS.iso17043,
+  PROGRAMS.astm,
+];
+
+const ABOUT_LINKS = [
+  { href: "/about", label: "About AAA" },
+  { href: "/about-accreditation", label: "About Accreditation" },
+  { href: "/partnerships", label: "Partnerships" },
+  { href: "/advisory-committees", label: "Advisory Committees" },
+  { href: "/impartiality-policy", label: "Impartiality Policy" },
+  { href: "/news", label: "AAA News" },
+  { href: "/documents", label: "Documents" },
+  { href: "/membership", label: "Membership" },
+  { href: "/directory/accredited-organizations", label: "Accredited Organizations" },
+  { href: "/faq", label: "FAQ" },
+];
 
 export default function Footer() {
   return (
@@ -20,45 +58,45 @@ export default function Footer() {
               />
             </Link>
             <p>
-              An independent accreditation body delivering internationally-recognized programs
+              An independent accreditation body delivering internationally recognized programs
               for healthcare organizations, training and education providers, schools,
-              laboratories, and certification and inspection bodies.
+              laboratories, and certification and inspection bodies across{" "}
+              {FACTS.countriesLabel}.
             </p>
             <div className="social">
-              <a href="#" aria-label="LinkedIn"><Icon name="linkedin" size={16} /></a>
-              <a href="#" aria-label="Twitter"><Icon name="twitter" size={16} /></a>
-              <a href="#" aria-label="YouTube"><Icon name="youtube" size={16} /></a>
-              <a href="#" aria-label="Facebook"><Icon name="facebook" size={16} /></a>
+              {SOCIAL.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  aria-label={`AAA on ${s.name}`}
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                >
+                  <Icon name={s.icon} size={16} />
+                </a>
+              ))}
             </div>
           </div>
 
           <div className="footer-col">
-            <h5>Programs</h5>
+            <h5>Accreditation Programs</h5>
             <ul>
-              <li><Link href="/programs/healthcare">Healthcare</Link></li>
-              <li><Link href="/programs/iso-15189">Medical Laboratories</Link></li>
-              <li><Link href="/programs/iso-17025">Testing &amp; Calibration</Link></li>
-              <li><Link href="/programs/iso-17020">Inspection Bodies</Link></li>
-              <li><Link href="/programs/iso-17021">System Certification</Link></li>
-              <li><Link href="/programs/iso-17024">Personnel Certification</Link></li>
-              <li><Link href="/programs/training-education">Training Providers</Link></li>
-              <li><Link href="/programs/iso-17065">Product Certification</Link></li>
-              <li><Link href="/programs/school-accreditation">School Accreditation</Link></li>
-              <li><Link href="/programs/iso-17043">Proficiency Testing</Link></li>
+              {PROGRAM_LINKS.map((p) => (
+                <li key={p.href}>
+                  <Link href={p.href}>{"shortLabel" in p ? p.shortLabel : p.label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="footer-col">
             <h5>About</h5>
             <ul>
-              <li><Link href="/about">About AAA</Link></li>
-              <li><Link href="/about-accreditation">About Accreditation</Link></li>
-              <li><Link href="/partnerships">Partners</Link></li>
-              <li><Link href="/impartiality-policy">Impartiality Policy</Link></li>
-              <li><Link href="/news">AAA News</Link></li>
-              <li><Link href="/documents">Documents</Link></li>
-              <li><Link href="/membership">Membership</Link></li>
-              <li><Link href="/faq">FAQ</Link></li>
+              {ABOUT_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href}>{l.label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -67,22 +105,38 @@ export default function Footer() {
             <div className="item">
               <Icon name="pin" size={16} className="ico" />
               <div>
-                <strong>8609 Westwood Center Drive</strong>
-                Tysons Corner, VA 22182, USA
+                <strong>{CONTACT.street}</strong>
+                {CONTACT.city}, {CONTACT.region} {CONTACT.postalCode}, {CONTACT.country}
               </div>
             </div>
             <div className="item">
               <Icon name="phone" size={16} className="ico" />
-              <a href="tel:+15716012616" style={{ color: "rgba(255,255,255,.85)" }}>+1 (571) 601 2616</a>
+              <a href={CONTACT.phoneHref} style={{ color: "rgba(255,255,255,.85)" }}>
+                {CONTACT.phone}
+              </a>
             </div>
             <div className="item">
               <Icon name="globe" size={16} className="ico" />
-              <div>International Operations<br /><span className="muted">Tel./WhatsApp +44 (748) 755 0737</span></div>
+              <div>
+                International Operations
+                <br />
+                <span className="muted">
+                  Tel./WhatsApp{" "}
+                  <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
+                    {CONTACT.whatsapp}
+                  </a>
+                </span>
+              </div>
             </div>
             <div className="item">
               <Icon name="mail" size={16} className="ico" />
-              <a href="mailto:info@aaa-accreditation.org" style={{ color: "rgba(255,255,255,.85)" }}>info@aaa-accreditation.org</a>
+              <a href={`mailto:${CONTACT.email}`} style={{ color: "rgba(255,255,255,.85)" }}>
+                {CONTACT.email}
+              </a>
             </div>
+            <Link href="/quote" className="ax-btn ax-btn-gold sm" style={{ marginTop: 18 }}>
+              Request a Quote <Icon name="arrow" size={13} />
+            </Link>
           </div>
         </div>
 
@@ -90,6 +144,7 @@ export default function Footer() {
           <span>© {new Date().getFullYear()} American Accreditation Association. All rights reserved.</span>
           <div className="links">
             <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/impartiality-policy">Impartiality</Link>
             <Link href="/faq">FAQ</Link>
             <Link href="/contact">Contact</Link>
           </div>

@@ -1,0 +1,103 @@
+/* =========================================================================
+   /programs/school-accreditation — page-local styles.
+
+   Scoped under `.schx` so nothing leaks site-wide. Only covers what the
+   shared `.ax-*` design system (app/aaa-ds.css) does not: the ten-standard
+   index grid and the eligibility gate card.
+   ========================================================================= */
+
+/* ------------------------------------------------ The ten AAA standards -- */
+.schx-standards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+.schx-standard {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 15px 18px 15px 12px;
+  border: 1px solid var(--ax-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.3s var(--ease-out), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.schx-standard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.schx-standard-no {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--aaa-gold-700);
+  background: linear-gradient(150deg, #faf3e0, #f4e7c6);
+  border: 1px solid rgba(179, 138, 46, 0.32);
+}
+.schx-standard b {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue);
+}
+.schx-standard span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-500);
+}
+
+/* -------------------------------------------------------- Candidacy gate */
+.schx-gate {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: clamp(26px, 3vw, 36px);
+  padding: 0;
+  list-style: none;
+}
+.schx-gate li {
+  position: relative;
+  padding: 20px 18px 18px;
+  border: 1px solid var(--ax-border);
+  border-top: 3px solid var(--aaa-gold);
+  border-radius: 14px;
+  background: #fff;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: var(--ink-600);
+  box-shadow: var(--ax-shadow-sm);
+}
+.schx-gate li b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+}
+
+/* ---------------------------------------------------------- Responsive -- */
+@media (max-width: 1100px) {
+  .schx-gate { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .schx-standards { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .schx-gate { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .schx-standard { transition: none; }
+}

@@ -12,6 +12,8 @@ type Member = {
   img?: string;
 };
 
+// Portraits live on the AAA healthcare subdomain, so they use a plain <img>
+// with an initials fallback rather than next/image.
 const MEMBERS: Member[] = [
   {
     name: "Sakshi Mishra",
@@ -64,7 +66,7 @@ const MEMBERS: Member[] = [
 
 const TABS: { label: string; value: "all" | Cat }[] = [
   { label: "All", value: "all" },
-  { label: "SME Team", value: "team" },
+  { label: "AAA Team", value: "team" },
   { label: "Board Members", value: "board" },
 ];
 
@@ -83,17 +85,11 @@ function Avatar({ member }: { member: Member }) {
   if (member.img && !failed) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img
-        className="sme-team-avatar"
-        src={member.img}
-        alt={member.name}
-        loading="lazy"
-        onError={() => setFailed(true)}
-      />
+      <img src={member.img} alt={member.name} loading="lazy" onError={() => setFailed(true)} />
     );
   }
   return (
-    <div className="sme-team-ph" aria-hidden="true">
+    <div className="hx-team-ph" aria-hidden="true">
       {initials(member.name)}
     </div>
   );
@@ -105,14 +101,14 @@ export default function HomeTeam() {
 
   return (
     <>
-      <div className="sme-team-tabs reveal" role="tablist" aria-label="Filter team members">
+      <div className="hx-team-tabs reveal" role="tablist" aria-label="Filter team members">
         {TABS.map((t) => (
           <button
             key={t.value}
             type="button"
             role="tab"
             aria-selected={filter === t.value}
-            className={"sme-team-tab" + (filter === t.value ? " active" : "")}
+            className={"hx-team-tab" + (filter === t.value ? " on" : "")}
             onClick={() => setFilter(t.value)}
           >
             {t.label}
@@ -120,19 +116,18 @@ export default function HomeTeam() {
         ))}
       </div>
 
-      <div className="sme-team-grid reveal">
+      <div className="hx-team-grid reveal">
         {shown.map((m) => (
-          <article className="sme-team-card" key={m.name} tabIndex={0}>
+          <article className="hx-team-card" key={m.name} tabIndex={0}>
             <Avatar member={m} />
-            <div className="sme-team-info">
+            <div className="hx-team-info">
               <h3>{m.name}</h3>
-              <span className="role">{m.role}</span>
-              <span className="hint">Hover to read more</span>
+              <span>{m.role}</span>
             </div>
-            <div className="sme-team-overlay">
-              <h3>{m.name}</h3>
-              <span className="role">{m.role}</span>
-              <span className="line" aria-hidden="true" />
+            <div className="hx-team-overlay">
+              <strong>{m.name}</strong>
+              <em>{m.role}</em>
+              <i aria-hidden="true" />
               <p>{m.bio}</p>
             </div>
           </article>

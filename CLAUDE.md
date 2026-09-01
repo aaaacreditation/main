@@ -14,12 +14,28 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 - **Brand Dark**: `#061a2c` (`--aaa-blue-950`) — dark surfaces: footer, utility bar, dark hero gradients (`#061a2c → #0b2d50 → #173d73`).
 
 ### Accent
-- **Brand Gold**: `#b38a2e` (`--aaa-gold`) — the ONLY decorative accent. Kickers/eyebrows, accent bars and borders, icon rings, hover highlights on dark surfaces, gold CTA buttons (gradient `#b38a2e → #8e6b18`).
+- **Brand Gold**: `#b38a2e` (`--aaa-gold`) — the PRIMARY decorative accent. Kickers/eyebrows, accent bars and borders, icon rings, hover highlights on dark surfaces, gold CTA buttons (gradient `#b38a2e → #8e6b18`).
 - **Deep Gold**: `#8e6b18` (`--aaa-gold-700`) — gold text on light backgrounds (better contrast), gradient partner.
 - **Pale Gold**: `#f4e7c6` (`--aaa-gold-100`) — gold-tinted text on dark navy (e.g., hero subheadings).
 
+### Tertiary (added Aug 2026)
+- **Flag Red**: `#c1122f` (`--aaa-red`) — the third brand color, promoted site-wide from the
+  client-approved SMEs Accreditation page (where it originated as `--sme-red`). It is an
+  *accent of last resort*, not a peer of navy and gold.
+  - Use for: urgency and time-boxed offers, alert/attention states, one high-intent CTA per
+    page at most (`.ax-btn-red`), the American flag motif, error emphasis on marketing pages.
+  - Never use for: section backgrounds, headings, body text, nav, icons-by-default, or more
+    than one moment per page.
+- **Deep Red**: `#8f0e23` (`--aaa-red-deep`) — gradient partner; red text on light surfaces.
+- **Soft Red**: `#fff0f2` (`--aaa-red-soft`) — tinted surface for red notice blocks only.
+- Contrast: `#c1122f` on white passes AA for normal text; white on `#c1122f` passes AA. Never
+  place red on navy — the two are too close in value.
+
 ### Color Usage Rules
-- Navy `#173d73` MUST remain the dominant brand color; gold is an accent, never a dominant surface color.
+- Navy `#173d73` MUST remain the dominant brand color; gold is an accent, never a dominant
+  surface color; red is a tertiary accent, rarer still than gold.
+- Order of precedence on any page: **navy > gold > red**. If red appears more than once in a
+  viewport, it is being overused.
 - Do NOT introduce new accent colors without updating these guidelines first.
 - Maintain WCAG AA contrast minimums:
   - White (`#FFFFFF`) text on `#173d73` / `#244f93` / `#061a2c` is approved.
@@ -108,10 +124,95 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 ## Implementation Checklist (must be true for every page/component)
 - [ ] Poppins is the active font family (no system fonts leaking through).
 - [ ] Primary CTAs use `#173d73` (gold gradient reserved for the single highest-priority CTA).
-- [ ] No off-brand accent colors introduced (gold `#b38a2e` is the only accent).
+- [ ] No off-brand accent colors introduced (gold `#b38a2e` primary accent, red `#c1122f` tertiary and sparing).
 - [ ] Headings follow the type scale above.
 - [ ] Sufficient contrast (WCAG AA) for all text.
 - [ ] Spacing uses the 4/8px scale.
+- [ ] Built from `.ax-*` primitives; any new CSS is page-local and scoped.
+- [ ] Stats come from `lib/facts.ts`, not hardcoded.
+- [ ] `metadata` via `pageMeta()` and JSON-LD via `<JsonLd>` are present.
+
+## The `.ax-*` Design System (Aug 2026) — build with this first
+
+`app/aaa-ds.css` is the site-wide component layer, extracted verbatim from the two
+client-approved reference pages (`app/programs/iso-17021/cb.css` and
+`app/programs/smes-accreditation-program/sme.css`). Those two files are FROZEN — do not edit
+them; `aaa-ds.css` is the portable version every other page shares.
+
+**Always reach for an `.ax-*` primitive before writing new CSS.** The vocabulary:
+
+| Concern | Classes |
+|---|---|
+| Page wrapper | `.axp` |
+| Sections | `.ax-section` + `.cream` `.fade` `.fade-up` `.navy` `.tight` |
+| Headings | `.ax-head` (+`.center`), `.ax-rule`, `.ax-label`, `.eyebrow` |
+| Buttons | `.ax-btn` + `-blue` `-gold` `-red` `-ghost` `-ghost-navy` `-white`, `.sm`, `.block` |
+| Hero | `.ax-hero` (+`.red`), `.ax-hero-grid` (+`.solo` `.overlap`), `.ax-crumbs`, `.ax-hero-badge`, `.ax-hero-lead`, `.ax-stats`/`.ax-stat`, `.ax-hero-visual`/`.ax-hero-photo` |
+| Cards | `.ax-grid` (+`.two` `.three` `.four` `.tight`), `.ax-card`, `.ax-card-ico`, `.ax-card-no`, `.ax-card-rule`, `.ax-tile` |
+| Layout | `.ax-split` (+`.reverse` `.wide-left` `.even` `.top`), `.ax-photo`, `.ax-panel` |
+| Sequences | `.ax-reasons`/`.ax-reason`, `.ax-steps-panel`/`.ax-steps`/`.ax-step`, `.ax-pill` |
+| Lists | `.ax-checks` (+`.gold`), `.ax-docs`, `.ax-metrics`/`.ax-metric` |
+| Proof | `.ax-quote`, `.ax-avatar` |
+| Q&A | `.ax-faq-list` (+`.single`), `.ax-faq-item`, `.ax-faq-plus`, `.ax-faq-a` |
+| Closing | `.ax-close`, `.ax-close-inner`, `.ax-close-actions`, `.ax-related` |
+| Prose | `.ax-prose`, `.ax-note` (+`.gold` `.red`) |
+
+### Sept 2026 refresh — BizGen "demo one" styling pass
+
+The client asked for the site to take its styling cues from the **BizGen business-consulting
+template, demo one** (`../newwebsite/bizgen-business-consulting-html-template-*/bizgen-html/index.html`),
+rendered in AAA navy + gold + red. No colours or fonts changed — this is a treatment pass over
+the existing primitives. What was adopted:
+
+- **Three-tier header** (`app/_components/Header.tsx`, header block in `globals.css`): navy
+  utility strip → **white logo row** carrying the logo left plus email / phone contact blocks
+  (icon plate + label over value) and the primary CTA right → **full-bleed dark nav bar**,
+  square corners, with a hairline-separated search cell and a gold `Apply` cell at its end.
+  `--header-h` (188px) is the single knob heroes pad against — re-measure it if the header's
+  height changes.
+- **Arrow buttons** rest at −45° (↗) and swing level (→) on hover. Applied via
+  `.ax-btn:has(path[d^="M5 12h14"])` so buttons carrying a download / document / shield icon
+  keep the plain nudge.
+- **Centred kickers** get a matching rule on the trailing side (— OUR SERVICES —).
+- **Cards**: radius 20px, icon plate flips to a solid brand fill on hover, numerals render as
+  an outlined watermark (`-webkit-text-stroke`, with a flat-tint `@supports` fallback).
+- **`.ax-reason`** is now a stacked card with its numeral on a rounded plate hanging over the
+  left edge. `.ax-reasons` carries `padding-left: 26px` equal to that overhang so the plate
+  never spills out of its column — keep them in step if either changes.
+- **Home hero** (`app/home.css`, scoped `.homex`): full-bleed photograph behind a navy scrim,
+  kicker over a hairline, and a two-tier `h1` whose `<em>` is oversized gold with a solid
+  underline bar. The `<em>` uses `width: min-content` so the bar ends flush with the text.
+- **Footer**: gold underscore under each column heading, contact icons on tinted plates.
+
+**The SMEs Accreditation page was explicitly excluded.** It is safe because it uses only its
+own `.smex-*` classes from the frozen `sme.css` — it shares the Header and Footer (which did
+change) but not one `.ax-*` rule. Verify that still holds before touching `aaa-ds.css`.
+
+Rules:
+- New page-specific CSS goes in a **page-local file** (e.g. `app/foo/foo.css`), with every rule
+  scoped under a page-only class, imported by that page. Never grow `app/globals.css`.
+- Shared shells `PageHero`, `PageBody`, `CTA`, `ProgramPage` already render `.ax-*`; prefer
+  them over bespoke markup.
+- Known quirk: `globals.css` carries `h2 { font-size: clamp(24px,2.7vw,36px) !important }`.
+  Every `h2` on the site renders at that compact scale regardless of what a component
+  stylesheet declares — that is the approved look, inherited from the reference pages.
+
+## Facts, SEO and GEO
+
+- **Never hardcode a company statistic.** `lib/facts.ts` is the single source of truth
+  (`FACTS`, `CONTACT`, `PROGRAMS`, `CAB_SCHEMES`, `SOCIAL`). The site previously published
+  nine different values for "countries served"; the canonical figure is **58**.
+- The ISO/IEC 17021-1 program is named **"Management Systems Certification Bodies
+  Accreditation"** (renamed Aug 2026 from "System Certification Bodies"). Use
+  `PROGRAMS.iso17021.label`.
+- Every page must export `metadata` built with `pageMeta()` from `lib/seo.ts` — it produces
+  the canonical URL, OpenGraph and Twitter card together. Titles ≤ 60 chars, descriptions
+  120–160.
+- Every page emits JSON-LD via `<JsonLd>`: `breadcrumbSchema` always, plus `faqSchema` /
+  `serviceSchema` / `articleSchema` where they apply. `organizationSchema` and
+  `websiteSchema` are emitted once, in `app/layout.tsx`.
+- Legacy WordPress URLs are redirected in `next.config.ts`; the news-post redirects are
+  generated from `app/news/posts-data.json`, so re-running the migration keeps them in sync.
 
 ## Tech Stack Conventions
 - Next.js (App Router) — keep components in `app/_components/` when shared.

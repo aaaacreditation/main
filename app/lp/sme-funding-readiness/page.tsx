@@ -8,7 +8,7 @@ import "../../programs/smes-accreditation-program/sme.css";
 export const metadata: Metadata = {
   title: "SMEs Funding Readiness Accreditation",
   description:
-    "AAA SMEs Accreditation is an international accreditation that turns your operational and financial health into a lender-readable Business Readiness Score, recognized across 53+ countries. Check your readiness for free.",
+    "AAA SMEs Accreditation is an international accreditation that turns your operational and financial health into a lender-readable Business Readiness Score, recognized across 58 countries. Check your readiness for free.",
   robots: { index: false, follow: false },
 };
 

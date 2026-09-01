@@ -1,37 +1,55 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "./_components/Icon";
-import { CASE_STUDIES, type CaseStudy } from "./_data/case-studies";
+import JsonLd from "./_components/JsonLd";
 import { WorldMapFigure } from "./_components/WorldMap";
-import SealRosette from "./_components/SealRosette";
-import Intro from "./_components/home/Intro";
-import Programs from "./_components/home/Programs";
-import Why from "./_components/home/Why";
-import Insights from "./_components/home/Insights";
-import HomeTeam from "./_components/home/HomeTeam";
-import HomeGallery from "./_components/home/HomeGallery";
-import ApplyForm from "./_components/home/ApplyForm";
+import { CASE_STUDIES, type CaseStudy } from "./_data/case-studies";
 import HeroStats from "./_components/home/HeroStats";
+import HomeGallery from "./_components/home/HomeGallery";
+import HomeTeam from "./_components/home/HomeTeam";
+import Insights from "./_components/home/Insights";
+import QuoteForm from "./_components/home/QuoteForm";
+import { CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
+import { faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import "./home.css";
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
-const HERO_BG = "/hero.jpg";
+/* =========================================================================
+   HOMEPAGE
+   -------------------------------------------------------------------------
+   Aug 2026 rebuild onto the shared `.ax-*` design system (app/aaa-ds.css),
+   the same visual language as the two client-approved reference pages
+   (/programs/iso-17021 and /programs/smes-accreditation-program). Bespoke
+   bits live in app/home.css, scoped under `.homex`.
 
-const HERO = {
-  badge: "US-authorized accreditation body",
-  titleA: "International Accreditation ",
-  accent: "Accepted Globally",
-  sub: "The American Accreditation Association offers accreditation worldwide, based on internationally recognized standards that ensure the competence of accredited organizations — and the global acceptance of their results.",
-  stats: [
-    { num: "200+", label: "Accredited organizations" },
-    { num: "53+", label: "Countries served" },
-    { num: "100+", label: "Assessors & experts" },
-  ],
-};
+   CONTENT: the client reverted this page to GENERAL ACCREDITATION positioning
+   in July 2026 — headline "International Accreditation Accepted Globally",
+   a "Get a Quote" CTA and a certificate hero visual. SME-specific messaging
+   belongs on the SME program/landing pages, not here. Every figure comes from
+   lib/facts.ts, every testimonial from app/_data/case-studies.ts.
+   ========================================================================= */
 
-/* Sample certificate the hero renders as a product visual (illustrative). */
-const CERT_STANDARDS = ["ISO 15189", "ISO/IEC 17025", "ISQua EEA"];
+// The root layout's `title.template` does not apply to its own segment, so the
+// homepage carries the brand suffix itself.
+export const metadata: Metadata = pageMeta({
+  title: "International Accreditation Accepted Globally | AAA",
+  description: `AAA delivers internationally recognized accreditation for healthcare, conformity assessment bodies, training providers and SMEs across ${FACTS.countriesLabel}.`,
+  path: "/",
+});
 
-/* Standards the AAA programs are aligned with — shown in the hero marquee. */
+const CONSULT = CONTACT.consultationUrl;
+
+const HERO_SUB =
+  "The American Accreditation Association offers accreditation worldwide, based on internationally recognized standards that ensure the competence of accredited organizations — and the global acceptance of their results.";
+
+const HERO_STATS = [
+  { num: FACTS.organizations, label: "Accredited organizations" },
+  { num: FACTS.countriesPlus, label: "Countries served" },
+  { num: FACTS.assessors, label: "Assessors & experts" },
+] as const;
+
+
+/** Standards the AAA programs are aligned with — shown in the hero marquee. */
 const STANDARDS = [
   "ISQua EEA",
   "ISO/IEC 17021-1",
@@ -44,7 +62,95 @@ const STANDARDS = [
   "ASTM E2659",
 ];
 
-const REASONS: { icon: IconName; title: string; text: string }[] = [
+/* ------------------------------------------------------ Why AAA (pillars) */
+// Transcribed from AAA's mission and the Virginia authorization statement.
+const PILLARS: { title: string; text: string; icon: IconName }[] = [
+  {
+    icon: "globe",
+    title: "Globally accepted",
+    text: "AAA's vision is international accreditation accepted globally — promoting acceptance of accredited results and certificates internationally and amongst global partners.",
+  },
+  {
+    icon: "cert",
+    title: "Built on international standards",
+    text: "Programs are based on internationally recognized standards — from ISO/IEC 17025 and ISO 15189 to ISO/IEC 17024 and ASTM E2659 — ensuring the competence of accredited organizations.",
+  },
+  {
+    icon: "flag",
+    title: "US-authorized",
+    text: "Authorized by the State Corporation Commission of the Commonwealth of Virginia to transact business under Title 13.1 of the Code of Virginia, offering a full range of comprehensive accreditation services.",
+  },
+  {
+    icon: "scale",
+    title: "Independent and impartial",
+    text: "Impartiality, transparency, objectivity and independence are paramount in all AAA operations — safeguarded by a published impartiality policy, conflict-of-interest management and non-discriminatory services.",
+  },
+];
+
+/* -------------------------------------------------------------- Programs */
+const PROGRAM_CARDS: {
+  href: string;
+  label: string;
+  tag: string;
+  icon: IconName;
+  img: string;
+  alt: string;
+  text: string;
+  links?: { href: string; label: string }[];
+}[] = [
+  {
+    href: PROGRAMS.healthcare.href,
+    label: PROGRAMS.healthcare.label,
+    tag: PROGRAMS.healthcare.standard,
+    icon: "medical",
+    img: "/home/healthcare.jpg",
+    alt: "Clinicians reviewing patient records in a hospital corridor",
+    text: "Accreditation for hospitals, clinics, diagnostic centres, rehabilitation units and pharmacies — demonstrating a commitment to patient safety, clinical excellence and continuous improvement.",
+  },
+  {
+    href: PROGRAMS.cab.href,
+    label: PROGRAMS.cab.label,
+    tag: "ISO/IEC 17000 series",
+    icon: "flask",
+    img: "/home/conformity.jpg",
+    alt: "Technician calibrating instruments in a testing laboratory",
+    text: "A full family of programs supporting the global recognition of conformity-assessment results — testing, calibration and medical laboratories, certification bodies, inspection bodies and proficiency testing providers.",
+    links: [
+      { href: PROGRAMS.iso17025.href, label: PROGRAMS.iso17025.shortLabel },
+      { href: PROGRAMS.iso15189.href, label: PROGRAMS.iso15189.shortLabel },
+      { href: PROGRAMS.iso17021.href, label: PROGRAMS.iso17021.shortLabel },
+      { href: PROGRAMS.iso17020.href, label: PROGRAMS.iso17020.shortLabel },
+    ],
+  },
+  {
+    href: PROGRAMS.training.href,
+    label: PROGRAMS.training.label,
+    tag: PROGRAMS.training.standard,
+    icon: "book",
+    img: "/home/training.jpg",
+    alt: "Participants in a professional training workshop",
+    text: "Formal recognition for training and education programs — classroom, workshop-based or e-learning, delivered anywhere in the world and assessed against ASTM E2659 and AAA's training standards.",
+  },
+  {
+    href: PROGRAMS.sme.href,
+    label: PROGRAMS.sme.label,
+    tag: "Business Readiness Score",
+    icon: "chart",
+    img: "/sme-journey-team.jpg",
+    alt: "Two business owners reviewing their AAA accreditation certificate",
+    text: "An independent, evidence-based assessment of how a small or medium enterprise is managed — producing an internationally recognized accreditation and a Business Readiness Score.",
+  },
+];
+
+/* ------------------------------------------------------ Global recognition */
+const METRICS = [
+  { num: FACTS.countriesPlus, label: "Countries served" },
+  { num: FACTS.organizations, label: "Accredited organizations" },
+  { num: FACTS.assessors, label: "Assessors & experts" },
+  { num: "ISQua", label: "EEA-assessed standards" },
+];
+
+const SUPPORT: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "shield",
     title: "Internationally recognized standards",
@@ -53,33 +159,47 @@ const REASONS: { icon: IconName; title: string; text: string }[] = [
   {
     icon: "clipboard",
     title: "Dedicated accreditation coordinator",
-    text: "Each applicant is assigned a dedicated coordinator to manage communication, coordinate the process, and provide timely support.",
+    text: "Each applicant is assigned a dedicated coordinator to manage communication, coordinate the process and provide timely support.",
   },
   {
     icon: "scale",
     title: "Flexible assessment options",
-    text: "AAA provides on-site, hybrid, and virtual assessment options while maintaining the same rigorous requirements and decision process.",
+    text: "AAA provides on-site, hybrid and virtual assessment options while maintaining the same rigorous requirements and decision process.",
   },
   {
     icon: "globe",
     title: "Proven international experience",
-    text: "With activity across 53+ countries, AAA works with organizations of different sizes, sectors, and regional contexts.",
+    text: `With activity across ${FACTS.countriesLabel}, AAA works with organizations of different sizes, sectors and regional contexts.`,
   },
 ];
 
-const GR_STATS = [
-  { num: "53+", label: "Countries served" },
-  { num: "200+", label: "Accredited organizations" },
-  { num: "100+", label: "Assessors & experts" },
-  { num: "ISQua", label: "EEA assessed" },
+/* ------------------------------------------------ Process (from /faq copy) */
+const PROCESS: { title: string; text: string }[] = [
+  {
+    title: "Application",
+    text: "Send the accreditation application form for your program to AAA and pay the application fees. AAA issues a letter confirming that your accreditation is in process.",
+  },
+  {
+    title: "Document review",
+    text: "AAA reviews your application and the related documents and sends you a Document Review Compliance Report; you revise your documentation where the review identifies gaps.",
+  },
+  {
+    title: "Assessment",
+    text: "AAA defines the assessment dates and the assessment team, conducts the assessment, and issues an assessment report that includes a recommendation for accreditation.",
+  },
+  {
+    title: "Decision",
+    text: "You implement corrective actions where needed, and the accreditation committee reviews the complete file before an independent accreditation decision is taken.",
+  },
 ];
 
+/* ------------------------------------------------------- Accredited network */
 const ORGS = [
   { name: "GovernValU Consulting", loc: "Türkiye", mono: "GV" },
   { name: "T&C Board", loc: "Gujarat, India", mono: "T&C" },
   { name: "Millennia Wellness", loc: "Texas, USA", mono: "MW" },
   { name: "Indian Institute for Business Management Studies", loc: "Mumbai, India", mono: "IIBMS" },
-  { name: "RC Business Growth Consultancies", loc: "Business Growth Consultancy", mono: "RC" },
+  { name: "RC Business Growth Consultancies", loc: "Business growth consultancy", mono: "RC" },
 ];
 
 // Real, attributed quotes from accredited organizations — see app/_data/case-studies.ts.
@@ -93,125 +213,121 @@ const TESTIMONIALS = ["Cinute Digital", "Clarivate", "Monarch Master Injectors"]
     logo: c.logo,
   }));
 
-const CONTACT = [
-  { icon: "mail" as IconName, label: "Email us", value: "info@aaa-accreditation.org", href: "mailto:info@aaa-accreditation.org" },
-  { icon: "phone" as IconName, label: "Call us", value: "+1 (571) 601 2616" },
-  { icon: "phone" as IconName, label: "International / WhatsApp", value: "+44 (748) 755 0737", href: "https://wa.me/447487550737" },
-  { icon: "pin" as IconName, label: "Visit us", value: "8609 Westwood Center Drive, Tysons Corner, VA 22182, USA" },
+/* ------------------------------------------------------- FAQ (from /faq) */
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "What is accreditation?",
+    a: "Accreditation is a formal process by which a recognized body evaluates and certifies that an institution meets predefined and established quality standards. The accreditation process aims to enhance service quality and ensure safety through compliance with global standards.",
+  },
+  {
+    q: "Who is the American Accreditation Association (AAA)?",
+    a: "AAA is authorized by the State Corporation Commission of the Commonwealth of Virginia to transact its business according to the articles of cooperation under Title 13.1 of the Code of Virginia and to offer a full range of comprehensive accreditation services. AAA is a third-party accreditation body that delivers accreditation services according to various international standards.",
+  },
+  {
+    q: "Is AAA internationally recognized?",
+    a: "AAA is an institutional member of the International Society for Quality in Health Care (ISQua). The AAA Accreditation Standards for Healthcare Facilities have been assessed and accredited by ISQua EEA against the Guidelines and Principles for the Development of Health and Social Care Standards, 5th Edition — meaning their development and content have been found to meet international best-practice requirements.",
+  },
+  {
+    q: "Which accreditation programs does AAA offer?",
+    a: "AAA delivers a range of accreditation programs using international standards: Healthcare Accreditation; Training & Education Providers Accreditation; School Accreditation; the SMEs Accreditation Program; Testing & Calibration Laboratories (ISO/IEC 17025); Medical Laboratories (ISO 15189); Personnel Certification Bodies (ISO/IEC 17024); Management Systems Certification Bodies (ISO/IEC 17021-1); Product Certification Bodies (ISO/IEC 17065); Inspection Bodies (ISO/IEC 17020); and Proficiency Testing Providers (ISO/IEC 17043).",
+  },
+  {
+    q: "What are the steps to get accreditation?",
+    a: "Although there may be certain differences from one application to another, the general process remains the same for all candidate bodies and follows four stages: Application, Document Review, Assessment and Decision.",
+  },
+];
+
+const CONTACT_ITEMS: { icon: IconName; label: string; value: string; href?: string }[] = [
+  { icon: "mail", label: "Email us", value: CONTACT.email, href: `mailto:${CONTACT.email}` },
+  { icon: "phone", label: "Call us", value: CONTACT.phone, href: CONTACT.phoneHref },
+  {
+    icon: "phone",
+    label: "International / WhatsApp",
+    value: CONTACT.whatsapp,
+    href: CONTACT.whatsappHref,
+  },
+  { icon: "pin", label: "Visit us", value: CONTACT.addressLine },
+];
+
+/* --------------------------------------------------------------- JSON-LD */
+// The site-wide Organization and WebSite nodes are emitted once in
+// app/layout.tsx, so this page adds only what is specific to it: the four
+// headline programs as Services, and the FAQ block above as an FAQPage.
+const SCHEMA = [
+  ...PROGRAM_CARDS.map((p) =>
+    serviceSchema({
+      name: p.label,
+      description: p.text,
+      path: p.href,
+      audience: "Organizations seeking international accreditation",
+    })
+  ),
+  faqSchema(FAQ),
 ];
 
 export default function HomePage() {
   return (
-    <>
-      {/* 0. Hero */}
-      <section className="hero2">
-        <div
-          className="hero2-bg"
-          style={{ backgroundImage: `url(${HERO_BG})` }}
-          role="img"
-          aria-label="Accreditation professionals reviewing documentation"
-        />
-        <div className="hero2-shade" aria-hidden="true" />
-        <div className="hero2-grain" aria-hidden="true" />
-        <div className="hero2-glow" aria-hidden="true" />
+    <div className="axp homex">
+      <JsonLd schema={SCHEMA} />
+
+      {/* ============================ 01 · Hero ============================ */}
+      <section className="ax-hero hx-hero" id="top">
+        {/* Background footage. Muted + playsInline so mobile Safari autoplays
+            it inline; the poster paints immediately while the file streams,
+            and CSS drops the video entirely under prefers-reduced-motion. */}
+        <video
+          className="hx-hero-video"
+          poster="/video/home-hero.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          <source src="/video/home-hero.mp4" type="video/mp4" />
+        </video>
+        <span className="hx-hero-scrim" aria-hidden="true" />
 
         <div className="container">
-          <div className="hero2-grid">
-            <div className="hero2-copy reveal">
-              <span className="hero2-badge">
-                <span className="hero2-dot" aria-hidden="true" />
-                {HERO.badge}
+          <div className="ax-hero-grid solo">
+            <div className="ax-hero-copy reveal">
+              <span className="ax-hero-badge">
+                <i aria-hidden="true" />
+                US-authorized accreditation body
               </span>
+
               <h1>
-                {HERO.titleA}
-                <span className="hero2-accent">
-                  {HERO.accent}
-                  <svg className="hero2-underline" viewBox="0 0 240 14" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M3 10.5 C 62 4.5, 172 3.5, 237 8.5" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
-                  </svg>
-                </span>
+                International Accreditation <em>Accepted Globally</em>
               </h1>
-              <p className="hero2-sub">{HERO.sub}</p>
-              <div className="hero2-actions">
-                <Link href="/quote" className="btn btn-gold">
-                  Get a Quote <Icon name="arrow" size={14} className="arrow" />
+
+              <p className="ax-hero-lead">{HERO_SUB}</p>
+
+              <div className="ax-actions">
+                <Link href="/quote" className="ax-btn ax-btn-gold">
+                  Get a Quote <Icon name="arrow" size={15} />
                 </Link>
-                <Link href="#programs" className="btn btn-ghost-light">
+                <Link href="#programs" className="ax-btn ax-btn-ghost">
                   Explore our programs
                 </Link>
               </div>
-              <HeroStats stats={HERO.stats} />
+
+              <HeroStats stats={HERO_STATS} />
             </div>
-
-            {/* Product visual — sample certificate of accreditation */}
-            <aside className="hero2-visual reveal" aria-hidden="true">
-              <div className="sc-card">
-                <div className="sc-head">
-                  <span className="sc-mark">AAA</span>
-                  <span className="sc-head-txt">
-                    <strong>Certificate of Accreditation</strong>
-                    <em>International accreditation · sample</em>
-                  </span>
-                  <span className="sc-verified">
-                    <Icon name="check" size={11} strokeWidth={3} /> Verified
-                  </span>
-                </div>
-
-                <div className="cert-body">
-                  <SealRosette />
-                  <span className="cert-line">This certifies that</span>
-                  <span className="cert-org">Your Organization</span>
-                  <span className="cert-line">
-                    has demonstrated competence and impartiality in accordance with
-                  </span>
-                  <div className="cert-stds">
-                    {CERT_STANDARDS.map((s) => (
-                      <span className="std-pill light" key={s}>{s}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="cert-meta">
-                  <div>
-                    <em>Decision</em>
-                    <strong>Granted</strong>
-                  </div>
-                  <div>
-                    <em>Validity</em>
-                    <strong>3 years</strong>
-                  </div>
-                  <div>
-                    <em>Verification</em>
-                    <strong>Digital</strong>
-                  </div>
-                </div>
-
-                <div className="sc-foot">
-                  <span className="sc-isqua">ISQua EEA</span>
-                  <p>Standards assessed by ISQua EEA · Verifiable online</p>
-                </div>
-              </div>
-
-              <div className="sc-chip sc-chip-a">
-                <span className="sc-chip-ico"><Icon name="shield" size={16} /></span>
-                ISQua EEA-assessed standards
-              </div>
-              <div className="sc-chip sc-chip-b">
-                <span className="sc-chip-ico"><Icon name="globe" size={16} /></span>
-                Accepted in 53+ countries
-              </div>
-            </aside>
           </div>
         </div>
 
         {/* Standards marquee */}
-        <div className="hero2-band">
-          <div className="container hero2-band-inner">
-            <span className="hero2-band-label">Programs aligned with international standards</span>
-            <div className="hero2-marquee" aria-hidden="true">
-              <div className="hero2-marquee-track">
+        <div className="hx-band">
+          <div className="container hx-band-inner">
+            <span className="hx-band-label">Programs aligned with international standards</span>
+            <div className="hx-mq" aria-hidden="true">
+              <div className="hx-mq-track">
                 {[...STANDARDS, ...STANDARDS].map((s, i) => (
-                  <span className="hero2-mq-item" key={`${s}-${i}`}>{s}</span>
+                  <span className="hx-mq-item" key={`${s}-${i}`}>
+                    {s}
+                  </span>
                 ))}
               </div>
             </div>
@@ -219,78 +335,249 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 1. Mission statement */}
-      <Intro />
-
-      {/* 2. Our services — three accreditation programs (photo cards) */}
-      <Programs />
-
-      {/* 3. Why AAA */}
-      <Why />
-
-      {/* 4. Global recognition — reasons + numbers + world map */}
-      <section className="smegr" id="global">
+      {/* ========================== 02 · Why AAA =========================== */}
+      <section className="ax-section hx-why" id="why">
         <div className="container">
-          <div className="sme-head light reveal">
-            <span className="eyebrow">Global recognition</span>
-            <h2>Why organizations around the world trust AAA</h2>
-            <p>
-              AAA brings together internationally recognized standards, structured coordination,
-              flexible assessment options, and international experience across a growing global
-              network.
-            </p>
-          </div>
-          <div className="smegr-layout">
-            <div className="smegr-reasons reveal">
-              {REASONS.map((r) => (
-                <div className="smegr-reason" key={r.title}>
-                  <div className="smegr-reason-ico">
-                    <Icon name={r.icon} size={22} />
-                  </div>
-                  <h3>{r.title}</h3>
-                  <p>{r.text}</p>
-                </div>
-              ))}
+          <div className="hx-why-split">
+            <div className="reveal">
+              <div className="ax-head">
+                <span className="eyebrow">Why choose AAA</span>
+                <h2>
+                  Independent accreditation for institutions that take{" "}
+                  <em>quality seriously</em>
+                </h2>
+              </div>
+              <span className="ax-rule" aria-hidden="true" />
+              <p>
+                The American Accreditation Association is a third-party accreditation body
+                headquartered in Tysons Corner, Virginia. Its programs are based on internationally
+                recognized standards that ensure the competence of accredited organizations and the
+                global acceptance of their accreditations.
+              </p>
+
+              <div className="hx-why-trust">
+                <b>{FACTS.organizations}</b>
+                <span>organizations accredited across {FACTS.countriesLabel}</span>
+              </div>
+
+              <div className="ax-actions">
+                <Link href="/about" className="ax-btn ax-btn-blue">
+                  About AAA <Icon name="arrow" size={15} />
+                </Link>
+                <Link href="/about-accreditation" className="ax-btn ax-btn-ghost-navy">
+                  What accreditation means
+                </Link>
+              </div>
             </div>
 
-            <div className="smegr-visual reveal">
-              <div className="smegr-stats">
-                <div className="smegr-stats-grid">
-                  {GR_STATS.map((s) => (
-                    <div className="smegr-stat" key={s.label}>
-                      <div className="smegr-stat-num">{s.num}</div>
-                      <div className="smegr-stat-label">{s.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="smegr-map">
-                <div className="smegr-map-head">
-                  <div>
-                    <h3>Countries we operate in</h3>
-                    <p>
-                      AAA&rsquo;s international footprint reflects its growing role supporting
-                      quality-focused organizations across regions and sectors.
-                    </p>
+            <ul className="hx-why-list reveal">
+              {PILLARS.map((p) => (
+                <li className="hx-why-item" key={p.title}>
+                  <span className="hx-why-ico" aria-hidden="true">
+                    <Icon name={p.icon} size={28} />
+                  </span>
+                  <div className="hx-why-card">
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
                   </div>
-                  <span className="smegr-map-badge">Global presence</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================== 03 · Programs ========================== */}
+      <section className="hx-svc" id="programs">
+        <div className="container">
+          <div className="ax-head center reveal">
+            <span className="eyebrow">Our services</span>
+            <h2>Accreditation programs, recognized worldwide</h2>
+            <p>
+              Choose the accreditation pathway that matches your organization — each assessed
+              against internationally recognized standards, by the same independent process.
+            </p>
+          </div>
+
+          <div className="hx-svc-grid">
+            {PROGRAM_CARDS.map((p, i) => (
+              <article className="hx-svc-item reveal" key={p.href} style={{ transitionDelay: `${i * 70}ms` }}>
+                <div className="hx-svc-top">
+                  <div className="hx-svc-iconcol">
+                    <span className="hx-svc-plate">
+                      <Icon name={p.icon} size={34} />
+                    </span>
+                    <span className="hx-svc-no" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <figure className="hx-svc-photo">
+                    <Image src={p.img} alt={p.alt} fill sizes="(max-width: 700px) 92vw, 24vw" />
+                    <span className="hx-svc-tag">{p.tag}</span>
+                  </figure>
                 </div>
-                <div className="smegr-map-image">
-                  <WorldMapFigure />
+                <div className="hx-svc-body">
+                  <h3>{p.label}</h3>
+                  <p>{p.text}</p>
+                  <Link href={p.href} className="hx-svc-go">
+                    Explore the program <Icon name="arrow" size={14} />
+                  </Link>
                 </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== 04 · Global recognition ===================== */}
+      <section className="ax-section" id="global">
+        <div className="container">
+          <div className="ax-head center reveal">
+            <span className="eyebrow">Global recognition</span>
+            <h2>Trusted by organizations around the world</h2>
+            <p>
+              AAA&rsquo;s international footprint reflects its growing role supporting
+              quality-focused organizations across regions and sectors.
+            </p>
+          </div>
+
+          <div className="ax-metrics reveal">
+            {METRICS.map((m) => (
+              <div className="ax-metric" key={m.label}>
+                <b>{m.num}</b>
+                <span>{m.label}</span>
               </div>
+            ))}
+          </div>
+
+          <div className="hx-map reveal" style={{ marginTop: "22px" }}>
+            <div className="hx-map-head">
+              <div>
+                <h3>Countries we operate in</h3>
+                <p>
+                  Accredited organizations in {FACTS.countriesLabel} — hover a country to see
+                  whether it is part of the AAA network.
+                </p>
+              </div>
+              <span className="hx-map-badge">Global presence</span>
+            </div>
+            <div className="hx-map-body">
+              <WorldMapFigure />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. News & events */}
-      <Insights />
-
-      {/* 6. Accredited network + testimonials */}
-      <section className="sme-clients" id="clients">
+      {/* ======================= 05 · How it works ========================= */}
+      <section className="ax-section cream" id="process">
         <div className="container">
-          <div className="sme-head reveal">
+          <div className="ax-head center reveal">
+            <span className="eyebrow">How it works</span>
+            <h2>A clear route from application to accreditation</h2>
+            <p>
+              Although details differ between programs, the general process is the same for every
+              candidate organization — and you are supported at each stage.
+            </p>
+          </div>
+
+          <div className="ax-grid four" style={{ marginBottom: "28px" }}>
+            {SUPPORT.map((s, i) => (
+              <article className="ax-card reveal" key={s.title} style={{ transitionDelay: `${i * 60}ms` }}>
+                <div className="ax-card-top">
+                  <span className="ax-ico ax-card-ico" aria-hidden="true">
+                    <Icon name={s.icon} size={24} />
+                  </span>
+                  <span className="ax-card-no" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+                <span className="ax-card-rule" aria-hidden="true" />
+              </article>
+            ))}
+          </div>
+
+          <div className="ax-split top">
+            <div className="ax-steps-panel reveal">
+              <h3>The accreditation process</h3>
+              <ol className="ax-steps">
+                {PROCESS.map((step, i) => (
+                  <li className="ax-step" key={step.title}>
+                    <span className="ax-step-num" aria-hidden="true">
+                      {i + 1}
+                    </span>
+                    <div className="ax-step-body">
+                      <b>{step.title}</b>
+                      <span>{step.text}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <span className="ax-pill">
+                <span className="ax-ico" aria-hidden="true">
+                  <Icon name="globe" size={16} />
+                </span>
+                Assessments delivered on-site, hybrid or virtually
+              </span>
+            </div>
+
+            <aside className="ax-panel reveal">
+              <span className="ax-ico ax-panel-ico" aria-hidden="true">
+                <Icon name="doc" size={28} />
+              </span>
+              <h3>Start your application</h3>
+              <p>
+                Tell us about your organization, the standards you work to and the locations you
+                operate in. Application forms for every accreditation program are available in the
+                AAA document library.
+              </p>
+              <Link href="/apply" className="ax-btn ax-btn-blue">
+                Apply for accreditation <Icon name="arrow" size={15} />
+              </Link>
+              <p className="ax-panel-note">
+                Not sure which program applies? Request a quote and an accreditation specialist will
+                scope it with you.
+              </p>
+              <ul className="ax-docs">
+                <li className="ax-docs-title">Useful next steps</li>
+                <li>
+                  <Link href="/documents">
+                    <span className="ax-ico" aria-hidden="true">
+                      <Icon name="doc" size={16} strokeWidth={2} />
+                    </span>
+                    Application forms &amp; requirements
+                    <i>Library</i>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/quote">
+                    <span className="ax-ico" aria-hidden="true">
+                      <Icon name="clipboard" size={16} strokeWidth={2} />
+                    </span>
+                    Request a tailored quotation
+                    <i>Form</i>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq">
+                    <span className="ax-ico" aria-hidden="true">
+                      <Icon name="search" size={16} strokeWidth={2} />
+                    </span>
+                    Frequently asked questions
+                    <i>FAQ</i>
+                  </Link>
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      {/* ====================== 06 · Success stories ======================= */}
+      <section className="ax-section" id="clients">
+        <div className="container">
+          <div className="ax-head center reveal">
             <span className="eyebrow">Success stories</span>
             <h2>Be part of our accredited network</h2>
             <p>
@@ -298,50 +585,65 @@ export default function HomePage() {
               credibility through AAA accreditation.
             </p>
           </div>
-          <div className="sme-orgs-grid reveal">
-            {ORGS.map((o) => (
-              <article className="sme-org" key={o.name}>
-                <div className="sme-org-mono">{o.mono}</div>
-                <h3>{o.name}</h3>
-                <p>{o.loc}</p>
-              </article>
-            ))}
+
+          <div className="hx-strip reveal">
+            <p className="hx-strip-lead">
+              Accredited organizations in <b>{FACTS.countriesLabel}</b>, assessed by a panel of{" "}
+              <b>{FACTS.assessors}</b> assessors and experts
+            </p>
+            <ul className="hx-orgs">
+              {ORGS.map((o) => (
+                <li className="hx-org" key={o.name}>
+                  <span className="hx-org-mono" aria-hidden="true">
+                    {o.mono}
+                  </span>
+                  <b>{o.name}</b>
+                  <span>{o.loc}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="sme-testi-row">
+
+          <div className="hx-testis">
             {TESTIMONIALS.map((t, i) => (
-              <figure className="sme-testi reveal" key={t.name + i} style={{ transitionDelay: `${i * 70}ms` }}>
-                <span className="sme-testi-mark" aria-hidden="true">
-                  &ldquo;
+              <figure className="hx-testi reveal" key={t.name} style={{ transitionDelay: `${i * 70}ms` }}>
+                <span className="hx-testi-mark" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30">
+                    <path d="M9.6 6.4v3.2c-1.7.5-2.6 1.6-2.7 3.4H9.6V18H3.9v-5c0-3.9 1.9-6.1 5.7-6.6zm10.5 0v3.2c-1.7.5-2.6 1.6-2.7 3.4h2.7V18h-5.7v-5c0-3.9 1.9-6.1 5.7-6.6z" />
+                  </svg>
                 </span>
                 <blockquote>{t.quote}</blockquote>
                 <figcaption>
                   {t.logo && (
-                    <span className="sme-testi-logo" aria-hidden="true">
+                    <span className="hx-testi-logo" aria-hidden="true">
                       <Image src={t.logo} alt="" width={120} height={40} sizes="120px" />
                     </span>
                   )}
-                  <strong>{t.name}</strong>
-                  <span>{t.org}</span>
+                  <span className="hx-testi-who">
+                    <strong>{t.name}</strong>
+                    <span>{t.org}</span>
+                  </span>
                 </figcaption>
               </figure>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: "44px" }} className="reveal">
-            <Link href="/quote" className="btn btn-primary">
-              Get a Quote <Icon name="arrow" size={14} className="arrow" />
+
+          <div className="ax-actions center">
+            <Link href="/directory/accredited-organizations" className="ax-btn ax-btn-ghost-navy">
+              Explore accredited organizations <Icon name="arrow" size={15} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 7. Gallery */}
-      <section className="sme-gallery" id="gallery">
+      {/* =========================== 07 · Gallery ========================== */}
+      <section className="ax-section cream" id="gallery">
         <div className="container">
-          <div className="sme-head reveal">
+          <div className="ax-head center reveal">
             <span className="eyebrow">Gallery</span>
             <h2>Excellence in action</h2>
             <p>
-              Moments from AAA accreditation assessments, certification ceremonies, and engagements
+              Moments from AAA accreditation assessments, certification ceremonies and engagements
               with organizations worldwide.
             </p>
           </div>
@@ -349,79 +651,138 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. Leadership team */}
-      <section className="sme-team" id="team">
+      {/* ============================ 08 · Team =========================== */}
+      <section className="ax-section navy" id="team">
         <div className="container">
-          <div className="sme-head light reveal">
+          <div className="ax-head center reveal">
             <span className="eyebrow">Leadership team</span>
             <h2>Meet our team</h2>
             <p>
               Dedicated professionals committed to elevating standards worldwide. Hover over a card
-              to read each bio.
+              to read each biography.
             </p>
           </div>
           <HomeTeam />
         </div>
       </section>
 
-      {/* 9. Contact + quote request */}
-      <section className="sme-contact" id="contact">
-        <span className="sme-contact-corner" />
+      {/* ============================ 09 · News =========================== */}
+      <section className="ax-section" id="news">
         <div className="container">
-          <div className="sme-contact-layout">
-            <div className="sme-contact-info reveal">
-              <span className="eyebrow">Get in touch</span>
-              <h2>Ready to start your accreditation journey?</h2>
-              <p>
-                Tell us about your organization and our team will scope your accreditation
-                pathway — the applicable standards, the process, and a tailored quotation.
-              </p>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="sme-consult">
-                <span className="sme-consult-ico">
-                  <Icon name="cert" size={22} />
-                </span>
+          <div className="ax-head center reveal">
+            <span className="eyebrow">AAA news</span>
+            <h2>News &amp; events from the accreditation community</h2>
+          </div>
+          <Insights />
+          <div className="ax-actions center">
+            <Link href="/news" className="ax-btn ax-btn-ghost-navy">
+              View all news <Icon name="arrow" size={15} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================ 10 · FAQ ============================ */}
+      <section className="ax-section cream" id="faq">
+        <div className="container">
+          <div className="ax-head center reveal">
+            <span className="eyebrow">FAQ</span>
+            <h2>Frequently asked questions</h2>
+            <p>The questions organizations ask most often before they apply for accreditation.</p>
+          </div>
+          <div className="ax-faq-list">
+            {FAQ.map((item, i) => (
+              <details className="ax-faq-item" key={item.q} open={i === 0}>
+                <summary>
+                  <span>{item.q}</span>
+                  <span className="ax-faq-plus" aria-hidden="true" />
+                </summary>
+                <div className="ax-faq-a">
+                  <p>{item.a}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+          <div className="ax-actions center">
+            <Link href="/faq" className="ax-btn ax-btn-ghost-navy">
+              Read all FAQs <Icon name="arrow" size={15} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ====================== 11 · Contact & quote ====================== */}
+      <section className="ax-section navy hx-navy" id="contact">
+        <span className="ax-close-corner" aria-hidden="true" />
+        <div className="container">
+          <div className="ax-split top">
+            <div className="reveal">
+              <div className="ax-head">
+                <span className="eyebrow">Get in touch</span>
+                <h2>Ready to start your accreditation journey?</h2>
+                <p>
+                  Tell us about your organization and our team will scope your accreditation
+                  pathway — the applicable standards, the process and a tailored quotation.
+                </p>
+              </div>
+
+              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="hx-consult">
+                <i aria-hidden="true">
+                  <Icon name="cert" size={20} />
+                </i>
                 <span>
                   <strong>Book a free 30-minute consultation</strong>
                   <em>Talk to an accreditation specialist. No obligation.</em>
                 </span>
-                <Icon name="arrow" size={16} className="arrow" />
+                <Icon name="arrow" size={16} />
               </a>
-              <div className="sme-contact-list">
-                {CONTACT.map((c) =>
-                  c.href ? (
-                    <a
-                      className="sme-contact-item"
-                      key={c.label}
-                      href={c.href}
-                      {...(c.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    >
-                      <span className="ico">
-                        <Icon name={c.icon} size={18} />
-                      </span>
+
+              <ul className="hx-contacts">
+                {CONTACT_ITEMS.map((c) => {
+                  const body = (
+                    <>
+                      <i aria-hidden="true">
+                        <Icon name={c.icon} size={17} />
+                      </i>
                       <span>
                         <strong>{c.label}</strong>
                         {c.value}
                       </span>
-                    </a>
-                  ) : (
-                    <div className="sme-contact-item" key={c.label}>
-                      <span className="ico">
-                        <Icon name={c.icon} size={18} />
-                      </span>
-                      <span>
-                        <strong>{c.label}</strong>
-                        {c.value}
-                      </span>
-                    </div>
-                  )
-                )}
+                    </>
+                  );
+                  return (
+                    <li key={c.label}>
+                      {c.href ? (
+                        <a
+                          className="hx-contact-item"
+                          href={c.href}
+                          {...(c.href.startsWith("http")
+                            ? { target: "_blank", rel: "noopener noreferrer" }
+                            : {})}
+                        >
+                          {body}
+                        </a>
+                      ) : (
+                        <div className="hx-contact-item">{body}</div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="ax-related" style={{ justifyContent: "flex-start" }}>
+                <span>Explore:</span>
+                <Link href={PROGRAMS.healthcare.href}>Healthcare</Link>
+                <Link href={PROGRAMS.cab.href}>Conformity assessment bodies</Link>
+                <Link href={PROGRAMS.training.href}>Training &amp; education</Link>
+                <Link href={PROGRAMS.sme.href}>SMEs</Link>
               </div>
             </div>
 
-            <ApplyForm />
+            <QuoteForm />
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

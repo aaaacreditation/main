@@ -1,0 +1,453 @@
+/* =========================================================================
+   AAA PUBLIC REGISTER — page-local styles for /directory/accredited-organizations
+   -------------------------------------------------------------------------
+   Every rule is scoped under `.dxp`, which only this route renders. Built on
+   the shared `.ax-*` design system (app/aaa-ds.css); this file adds only the
+   register's search/filter chrome, its cards and its detail dialog.
+
+   Tokens only: navy #173d73 / #244f93 / #0b2d50 / #061a2c, gold #b38a2e /
+   #8e6b18 / #f4e7c6, and the --ink-* neutrals.
+   ========================================================================= */
+
+/* ============================== Toolbar ================================= */
+.dxp .dx-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--ax-border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+
+.dxp .dx-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--ink-200);
+  border-radius: 12px;
+  background: var(--ink-50);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.dxp .dx-search:focus-within {
+  border-color: var(--aaa-blue);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(23, 61, 115, 0.1);
+}
+.dxp .dx-search > svg { flex: none; color: var(--ink-400); transition: color 0.2s ease; }
+.dxp .dx-search:focus-within > svg { color: var(--aaa-blue); }
+.dxp .dx-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--ink-900);
+  outline: none;
+}
+.dxp .dx-search input::placeholder { color: var(--ink-400); }
+.dxp .dx-clear {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ink-100);
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink-500);
+  cursor: pointer;
+}
+.dxp .dx-clear:hover { background: var(--ink-200); color: var(--ink-800); }
+
+.dxp .dx-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 34px 0 14px;
+  border: 1px solid var(--ink-200);
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.dxp .dx-select:focus-within { border-color: var(--aaa-blue); box-shadow: 0 0 0 4px rgba(23, 61, 115, 0.1); }
+.dxp .dx-select > svg { flex: none; color: var(--aaa-blue); }
+.dxp .dx-select select {
+  appearance: none;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-900);
+  outline: none;
+  cursor: pointer;
+}
+.dxp .dx-caret {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--ink-400);
+  border-bottom: 2px solid var(--ink-400);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.dxp .dx-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--ink-200);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.25s ease;
+}
+.dxp .dx-toggle svg { color: var(--ink-400); transition: color 0.2s ease; }
+.dxp .dx-toggle:hover { border-color: var(--aaa-blue-100); color: var(--aaa-blue); }
+.dxp .dx-toggle:hover svg { color: var(--aaa-blue); }
+.dxp .dx-toggle.on {
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
+  box-shadow: 0 14px 28px -16px rgba(23, 61, 115, 0.7);
+}
+.dxp .dx-toggle.on svg { color: var(--aaa-gold-100); }
+
+/* ============================ Focus chips =============================== */
+.dxp .dx-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 18px; }
+.dxp .dx-chips-label {
+  margin-right: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+.dxp .dx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--ax-border);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, transform 0.2s var(--ease-out);
+}
+.dxp .dx-chip:hover { transform: translateY(-2px); border-color: var(--aaa-gold); color: var(--aaa-gold-700); }
+.dxp .dx-chip b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-400); }
+.dxp .dx-chip.on {
+  border-color: transparent;
+  color: var(--aaa-blue-950);
+  background: linear-gradient(135deg, #faf3e0, var(--aaa-gold-100));
+  box-shadow: 0 12px 26px -18px rgba(142, 107, 24, 0.9);
+}
+.dxp .dx-chip.on b { color: var(--aaa-gold-700); }
+.dxp .dx-chips-note {
+  width: 100%;
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+/* ============================ Result meta =============================== */
+.dxp .dx-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 26px 2px 18px;
+  font-size: 14px;
+  color: var(--ink-600);
+}
+.dxp .dx-meta strong { font-weight: 600; color: var(--aaa-blue); }
+.dxp .dx-reset {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+  border-bottom: 1px solid rgba(23, 61, 115, 0.3);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.dxp .dx-reset:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
+
+.dxp .dx-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 64px 24px;
+  border: 1px dashed var(--ink-200);
+  border-radius: 18px;
+  background: var(--ax-cream);
+  text-align: center;
+}
+.dxp .dx-empty svg { color: var(--ink-300); }
+.dxp .dx-empty h3 { margin: 8px 0 0; font-size: 18px; font-weight: 600; color: var(--aaa-blue); }
+.dxp .dx-empty p { margin: 0; font-size: 14px; color: var(--ink-600); }
+
+/* ============================== Cards =================================== */
+.dxp .dx-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+.dxp .dx-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  padding: 22px 22px 20px;
+  border: 1px solid var(--ax-border);
+  border-top: 3px solid rgba(23, 61, 115, 0.16);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.dxp .dx-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(179, 138, 46, 0.5);
+  border-top-color: var(--aaa-gold);
+  box-shadow: var(--ax-shadow);
+}
+.dxp .dx-card:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 3px; }
+
+.dxp .dx-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.dxp .dx-mono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background: linear-gradient(160deg, var(--aaa-blue-900), var(--aaa-blue) 70%, var(--aaa-blue-500));
+  box-shadow: 0 12px 22px -14px rgba(23, 61, 115, 0.9);
+}
+.dxp .dx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(150deg, #faf3e0, #f4e7c6);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.dxp .dx-card h3 {
+  margin: 18px 0 6px;
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.34;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue);
+}
+.dxp .dx-loc {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-500);
+}
+.dxp .dx-loc svg { flex: none; color: var(--aaa-gold-700); }
+.dxp .dx-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-600);
+}
+.dxp .dx-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.dxp .dx-more svg { transition: transform 0.2s ease; }
+.dxp .dx-card:hover .dx-more svg { transform: translateX(4px); }
+
+/* ============================== Dialog ================================== */
+.dxp .dx-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(6, 26, 44, 0.72);
+  backdrop-filter: blur(6px);
+  animation: dx-fade 0.22s ease both;
+}
+@keyframes dx-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.dxp .dx-modal-card {
+  position: relative;
+  width: min(660px, 100%);
+  max-height: min(86vh, 780px);
+  overflow-y: auto;
+  padding: clamp(26px, 3vw, 38px);
+  border-radius: 22px;
+  background: linear-gradient(170deg, #fff 62%, var(--aaa-blue-50));
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.65);
+  animation: dx-rise 0.3s var(--ease-out) both;
+}
+@keyframes dx-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+.dxp .dx-modal-x {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--ink-200);
+  border-radius: 50%;
+  background: #fff;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink-600);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.dxp .dx-modal-x:hover { border-color: var(--aaa-blue); color: var(--aaa-blue); }
+
+.dxp .dx-modal-head { display: flex; align-items: center; gap: 16px; }
+.dxp .dx-modal-head .dx-mono { width: 58px; height: 58px; border-radius: 16px; font-size: 19px; }
+.dxp .dx-modal-logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 58px;
+  height: 58px;
+  padding: 8px;
+  border: 1px solid var(--ink-200);
+  border-radius: 16px;
+  background: #fff;
+}
+.dxp .dx-modal-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.dxp .dx-modal-card h2 {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--aaa-blue);
+}
+.dxp .dx-modal-card .dx-loc { margin-top: 7px; font-size: 13px; }
+.dxp .dx-modal-desc {
+  margin: 22px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink-100);
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--ink-600);
+}
+
+.dxp .dx-record {
+  margin-top: 22px;
+  padding: 20px 22px;
+  border: 1px solid rgba(179, 138, 46, 0.3);
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 12px;
+  background: #fdf9ef;
+}
+.dxp .dx-record-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.dxp .dx-record dl { display: grid; gap: 10px; margin: 0; }
+.dxp .dx-record dl > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+.dxp .dx-record dt {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+.dxp .dx-record dd { margin: 0; font-size: 14px; font-weight: 500; color: var(--aaa-blue-950); }
+
+.dxp .dx-modal-note { margin: 18px 0 0; font-size: 12px; line-height: 1.6; color: var(--ink-500); }
+.dxp .dx-modal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .dxp .dx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dxp .dx-tools { grid-template-columns: minmax(0, 1fr) auto; }
+  .dxp .dx-toggle { grid-column: 1 / -1; justify-content: center; }
+}
+
+@media (max-width: 720px) {
+  .dxp .dx-grid { grid-template-columns: 1fr; }
+  .dxp .dx-tools { grid-template-columns: 1fr; }
+  .dxp .dx-select { padding-right: 30px; }
+  .dxp .dx-select select { width: 100%; }
+  .dxp .dx-modal { padding: 14px; }
+  .dxp .dx-record dl > div { grid-template-columns: 1fr; gap: 2px; }
+  .dxp .dx-modal-actions .ax-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dxp .dx-card,
+  .dxp .dx-chip,
+  .dxp .dx-toggle { transition: none; }
+  .dxp .dx-modal,
+  .dxp .dx-modal-card { animation: none; }
+}
+
+/* The DS pill is a static badge; here it doubles as a link to ADCP. */
+.dxp a.ax-pill { transition: border-color 0.2s ease, background 0.2s ease; }
+.dxp a.ax-pill:hover { border-color: rgba(244, 231, 198, 0.55); background: rgba(255, 255, 255, 0.13); }

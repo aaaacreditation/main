@@ -1,0 +1,174 @@
+/* =========================================================================
+   ABOUT ACCREDITATION — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything /about-accreditation needs on top of the shared
+   `.ax-*` design system (app/aaa-ds.css). Nothing here is global: every rule
+   is scoped under `.aax`, which only this route puts on <main>:
+
+       <main className="axp aax"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
+   ========================================================================= */
+
+/* ====================== The definition, pulled out ====================== */
+.aax .aax-def {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(32px, 4vw, 52px);
+  border: 1px solid var(--ax-border);
+  border-left: 4px solid var(--aaa-gold);
+  border-radius: 6px 22px 22px 6px;
+  background: linear-gradient(150deg, #fff 55%, #fdf9ef);
+  box-shadow: var(--ax-shadow);
+}
+.aax .aax-def-mark {
+  width: 38px;
+  height: 38px;
+  color: var(--aaa-gold);
+}
+.aax .aax-def p {
+  margin: 16px 0 0;
+  font-size: clamp(19px, 2.1vw, 27px);
+  font-weight: 500;
+  line-height: 1.46;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue-950);
+  text-wrap: pretty;
+}
+.aax .aax-def cite {
+  display: block;
+  margin-top: 20px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+
+/* ==================== Accreditation vs certification ==================== */
+.aax .aax-vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+
+.aax .aax-vs-card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 2.8vw, 34px);
+  border: 1px solid var(--ax-border);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.aax .aax-vs-card.lead {
+  color: #fff;
+  border-color: transparent;
+  background:
+    radial-gradient(circle at 88% 4%, rgba(36, 79, 147, 0.5), transparent 44%),
+    linear-gradient(160deg, var(--aaa-blue-900), var(--aaa-blue-950) 82%);
+  box-shadow: var(--ax-shadow);
+}
+.aax .aax-vs-tag {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+  background: #faf3e0;
+  border: 1px solid rgba(179, 138, 46, 0.3);
+}
+.aax .aax-vs-card.lead .aax-vs-tag {
+  color: var(--aaa-blue-950);
+  background: linear-gradient(135deg, #f4e7c6, #d9bd76);
+  border-color: transparent;
+}
+.aax .aax-vs-card h3 {
+  margin: 16px 0 0;
+  font-size: clamp(20px, 2vw, 25px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--aaa-blue);
+}
+.aax .aax-vs-card.lead h3 { color: #fff; }
+.aax .aax-vs-card > p { margin: 12px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-600); }
+.aax .aax-vs-card.lead > p { color: rgba(255, 255, 255, 0.78); }
+
+.aax .aax-vs-facts { margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--ink-100); display: grid; gap: 13px; }
+.aax .aax-vs-card.lead .aax-vs-facts { border-top-color: rgba(255, 255, 255, 0.14); }
+.aax .aax-vs-facts div { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+.aax .aax-vs-facts dt {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.aax .aax-vs-card.lead .aax-vs-facts dt { color: var(--aaa-gold-100); }
+.aax .aax-vs-facts dd { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-700); }
+.aax .aax-vs-card.lead .aax-vs-facts dd { color: rgba(255, 255, 255, 0.84); }
+
+/* ========================= Benefits by audience ========================= */
+.aax .aax-benefit { border-top: 3px solid var(--aaa-gold); }
+.aax .aax-benefit h3 { margin-top: 14px; }
+
+/* ============================ Program grid ============================== */
+.aax .aax-programs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.aax a.aax-program {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 18px;
+  border: 1px solid var(--ax-border);
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  color: inherit;
+  transition: transform 0.25s var(--ease-out), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.aax a.aax-program:hover {
+  transform: translateY(-3px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.aax .aax-program-ico {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 11px;
+  color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+}
+.aax .aax-program-txt { min-width: 0; }
+.aax .aax-program-txt b {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--aaa-blue);
+}
+.aax .aax-program-txt span {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-500);
+}
+.aax .aax-program svg { flex: none; color: var(--aaa-gold-700); transition: transform 0.2s ease; }
+.aax a.aax-program:hover svg { transform: translateX(3px); }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 980px) {
+  .aax .aax-vs { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .aax .aax-programs { grid-template-columns: 1fr; }
+  .aax .aax-vs-facts div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aax a.aax-program { transition: none; }
+}

@@ -1,0 +1,1229 @@
+/* =========================================================================
+   HOMEPAGE — bespoke rules, all scoped under `.homex`
+   -------------------------------------------------------------------------
+   Aug 2026. The homepage is built from the shared `.ax-*` design system
+   (app/aaa-ds.css). Everything below is the remainder the system does not cover — the certificate hero visual, the standards marquee, program
+   photo cards, the map card, story cards, gallery, team grid, news cards and
+   the quote form.
+
+   Rules:
+   • Every selector starts with `.homex` so nothing leaks to another route.
+   • Colours come from the brand tokens only: --aaa-blue / --aaa-blue-500 /
+     --aaa-blue-950 / --aaa-gold / --aaa-gold-700 / --aaa-gold-100 and the
+     --ink-* neutrals. No new hexes.
+   ========================================================================= */
+
+.homex {
+  --hx-line: rgba(23, 61, 115, 0.14);
+  /* #024985 — the blue the client specified for the hero overlay. Held as raw
+     channels so the scrim can vary its alpha per gradient stop. Scoped to the
+     hero tint only; the site's brand navy remains --aaa-blue (#173d73). */
+  --hx-hero-tint: 2, 73, 133;
+}
+
+/* ============================ 01 · Hero banner ==========================
+   Sept 2026. The client's BizGen "demo one" banner, running background video
+   behind a LIGHT scrim: copy held to the left half, and a two-tier headline
+   whose second line is oversized and underlined with a solid brand bar.
+
+   Because the scrim is light, every piece of hero type is re-coloured here
+   from the shared `.ax-hero` white down to navy / ink so it keeps WCAG AA
+   contrast. All of it is scoped to `.homex`, so the dark `.ax-hero` the inner
+   pages use is untouched.
+   ======================================================================== */
+
+.homex .ax-hero {
+  /* Painted under the video so the section never flashes empty before the
+     first frame arrives, and stays correct if the file fails to load. */
+  background: var(--aaa-blue-950) url("/video/home-hero.jpg") center / cover no-repeat;
+}
+/* Keep the faint grid, dialled back — it reads as texture over footage. */
+.homex .ax-hero::before { opacity: 0.1; }
+
+.homex .hx-hero-video {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Sits a touch back from full saturation so the copy stays the focal point. */
+  filter: saturate(0.92);
+}
+
+/* Scrim in the client's hero blue (#024985) — deepest behind the copy on the
+   left and easing toward the right so the skyline still reads through it.
+   Tuning note: this carries the hero's contrast on its own, so raise the
+   left-hand stops if the headline ever needs more separation. */
+.homex .hx-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(var(--hx-hero-tint), 0.95) 0%,
+      rgba(var(--hx-hero-tint), 0.9) 32%,
+      rgba(var(--hx-hero-tint), 0.74) 56%,
+      rgba(var(--hx-hero-tint), 0.58) 78%,
+      rgba(var(--hx-hero-tint), 0.5) 100%
+    ),
+    /* Deeper at the foot so the hero settles into the section below. */
+    linear-gradient(180deg, transparent 55%, rgba(1, 34, 62, 0.55) 100%);
+}
+
+/* Readers who ask for less motion get the poster frame instead of the loop. */
+@media (prefers-reduced-motion: reduce) {
+  .homex .hx-hero-video { display: none; }
+}
+
+/* Kicker: a plain uppercase label over a hairline, not the pill the inner
+   pages use. */
+.homex .ax-hero-badge {
+  padding: 0 0 15px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0;
+  background: none;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+}
+
+.homex .ax-hero h1 {
+  margin-top: 26px;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+.homex .ax-hero h1 em {
+  position: relative;
+  display: block;
+  /* `min-content` sizes the accent to its longest word, so it stacks one word
+     per line and the underline bar below ends flush with the text instead of
+     running on to the full column width. */
+  width: min-content;
+  margin-top: 8px;
+  padding-bottom: 16px;
+  font-size: clamp(42px, 5.6vw, 82px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  /* The lighter brand gold, not --aaa-gold: on the #024985 scrim #b38a2e
+     measures 2.87:1, just under the 3:1 WCAG AA floor for large text, while
+     #c39a3d clears it at 3.49:1. */
+  color: var(--aaa-gold-400);
+}
+.homex .ax-hero h1 em::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--aaa-gold-400);
+}
+.homex .ax-hero-lead { max-width: 52ch; font-size: 16px; }
+
+/* Stat tiles get a little more body over moving footage than they need over a
+   flat gradient, so the frame behind them never shows through the text. */
+.homex .ax-hero .ax-stat {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* The overlaying header is ~197px tall and this hero opens with a pill badge
+   rather than the smaller breadcrumb row the program pages use, so it needs a
+   little extra clearance. Below 721px the header is static, so the shared
+   `.ax-hero-grid` value applies unchanged. */
+@media (min-width: 721px) {
+  .homex .ax-hero-grid { padding-top: clamp(212px, 15vw, 236px); }
+}
+
+/* The Why-section photo is a wide on-site shot; keep the assessors in frame. */
+.homex .ax-photo img { object-position: center 42%; }
+
+/* ======================= 02 · Standards marquee band ==================== */
+
+.homex .hx-band {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(6, 26, 44, 0.5);
+}
+.homex .hx-band-inner {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 17px 32px;
+}
+.homex .hx-band-label {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.homex .hx-mq {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.homex .hx-mq-track {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  width: max-content;
+  animation: hx-marquee 38s linear infinite;
+}
+.homex .hx-mq-item {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.66);
+}
+.homex .hx-mq-item::after {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 34px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: var(--aaa-gold);
+  opacity: 0.6;
+}
+@keyframes hx-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ========================= 03 · Program cards =========================== */
+
+.homex .hx-progs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.homex .hx-prog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--ax-border);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.homex .hx-prog:hover {
+  transform: translateY(-6px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.homex .hx-prog-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 7;
+  background: var(--aaa-blue-950);
+}
+.homex .hx-prog-media img {
+  object-fit: cover;
+  transition: transform 1s var(--ease-out);
+}
+.homex .hx-prog:hover .hx-prog-media img { transform: scale(1.05); }
+.homex .hx-prog-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 44, 0.1) 30%, rgba(6, 26, 44, 0.78));
+}
+.homex .hx-prog-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--aaa-blue-950);
+  background: linear-gradient(135deg, #f4e7c6, #d9bd76);
+}
+.homex .hx-prog-media h3 {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  left: 18px;
+  z-index: 2;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  color: #fff;
+  text-wrap: balance;
+}
+.homex .hx-prog-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 18px 20px 20px;
+}
+.homex .hx-prog-body > p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-600);
+}
+.homex .hx-prog-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.homex .hx-prog-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: 1px solid var(--ink-200);
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--aaa-blue);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.homex .hx-prog-links a:hover { border-color: var(--aaa-blue); background: var(--aaa-blue-50); }
+.homex .hx-prog-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.homex .hx-prog-go svg { transition: transform 0.2s ease; }
+.homex .hx-prog:hover .hx-prog-go svg { transform: translateX(4px); }
+
+/* ====================== 04 · Global recognition map ===================== */
+
+.homex .hx-globe {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(28px, 3.4vw, 48px);
+  align-items: start;
+}
+.homex .hx-map {
+  overflow: hidden;
+  border: 1px solid var(--ax-border);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: var(--ax-shadow);
+}
+.homex .hx-map-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--ink-100);
+}
+.homex .hx-map-head h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+}
+.homex .hx-map-head p {
+  margin: 7px 0 0;
+  max-width: 52ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-600);
+}
+.homex .hx-map-badge {
+  flex: none;
+  padding: 7px 12px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+  background: #fdf9ef;
+}
+.homex .hx-map-body { padding: 12px 20px 20px; }
+
+/* ==================== 05 · Accredited network & stories ================= */
+
+.homex .hx-testis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.homex .hx-testi {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 26px 24px 24px;
+  border: 1px solid var(--ax-border);
+  border-top: 3px solid var(--aaa-gold);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
+}
+.homex .hx-testi:hover { transform: translateY(-5px); box-shadow: var(--ax-shadow); }
+.homex .hx-testi-mark {
+  width: 30px;
+  height: 30px;
+  color: var(--aaa-gold);
+}
+.homex .hx-testi blockquote {
+  flex: 1;
+  margin: 14px 0 20px;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.65;
+  color: var(--aaa-blue-950);
+}
+.homex .hx-testi figcaption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink-100);
+}
+.homex .hx-testi-logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 60px;
+  height: 42px;
+  overflow: hidden;
+  border: 1px solid var(--ink-200);
+  border-radius: 8px;
+  background: #fff;
+}
+.homex .hx-testi-logo img { width: auto; max-width: 100%; height: auto; max-height: 34px; object-fit: contain; }
+.homex .hx-testi-who strong { display: block; font-size: 14px; font-weight: 600; color: var(--aaa-blue); }
+.homex .hx-testi-who span { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-600); }
+
+/* ============================ 06 · Gallery ============================== */
+
+.homex .hx-gal {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.homex .hx-gal-item {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  border: 1px solid var(--ax-border);
+  border-radius: 16px;
+  background: var(--aaa-blue-950);
+}
+.homex .hx-gal-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease-out);
+}
+.homex .hx-gal-item:hover img { transform: scale(1.06); }
+.homex .hx-gal-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(6, 26, 44, 0.82));
+}
+.homex .hx-gal-ph {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(150deg, var(--aaa-blue), var(--aaa-blue-950));
+}
+.homex .hx-gal-ph b {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.34);
+}
+.homex .hx-gal-ph span { font-size: 11.5px; color: rgba(255, 255, 255, 0.5); }
+.homex .hx-gal-cap {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  left: 16px;
+  z-index: 2;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+.homex .hx-gal-cap::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin-bottom: 8px;
+  border-radius: 2px;
+  background: var(--aaa-gold);
+}
+
+/* ============================== 07 · Team =============================== */
+
+.homex .hx-team-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+.homex .hx-team-tab {
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.homex .hx-team-tab:hover { color: #fff; border-color: rgba(255, 255, 255, 0.42); }
+.homex .hx-team-tab.on {
+  color: var(--aaa-blue);
+  background: #fff;
+  border-color: #fff;
+}
+.homex .hx-team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.homex .hx-team-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.homex .hx-team-card img,
+.homex .hx-team-ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: top center;
+  background: rgba(255, 255, 255, 0.06);
+}
+.homex .hx-team-ph {
+  display: grid;
+  place-items: center;
+  font-size: clamp(30px, 3.4vw, 42px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(140deg, var(--aaa-blue), var(--aaa-blue-950));
+}
+.homex .hx-team-info { padding: 16px 18px 18px; }
+.homex .hx-team-info h3 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.28;
+  color: #fff;
+}
+.homex .hx-team-info span {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--aaa-gold-100);
+}
+.homex .hx-team-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 22px;
+  background: linear-gradient(160deg, rgba(6, 26, 44, 0.97), rgba(11, 45, 80, 0.98));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.homex .hx-team-card:hover .hx-team-overlay,
+.homex .hx-team-card:focus-within .hx-team-overlay { opacity: 1; pointer-events: auto; }
+.homex .hx-team-overlay strong { font-size: 15px; font-weight: 600; color: #fff; }
+.homex .hx-team-overlay em {
+  display: block;
+  margin-top: 3px;
+  font-style: normal;
+  font-size: 11.5px;
+  color: var(--aaa-gold-100);
+}
+.homex .hx-team-overlay i {
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin: 12px 0;
+  border-radius: 2px;
+  background: var(--aaa-gold);
+}
+.homex .hx-team-overlay p {
+  margin: 0;
+  overflow-y: auto;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+/* ============================== 08 · News =============================== */
+
+.homex .hx-news {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.homex .hx-news-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--ax-border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.homex .hx-news-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.homex .hx-news-img {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(140deg, var(--aaa-blue), var(--aaa-blue-950));
+}
+.homex .hx-news-img img { width: 100%; height: 100%; object-fit: cover; }
+.homex .hx-news-img .ph {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+.homex .hx-news-body { display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px; }
+.homex .hx-news-cat {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.homex .hx-news-body h3 {
+  margin: 10px 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: var(--aaa-blue);
+}
+.homex .hx-news-body p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: var(--ink-600);
+}
+.homex .hx-news-meta {
+  margin-top: auto;
+  padding-top: 16px;
+  font-size: 11.5px;
+  color: var(--ink-500);
+}
+
+/* ========================= 09 · Contact & form ========================== */
+
+/* The navy contact band carries the gold corner ornament, so it needs its own
+   positioning context (.ax-section does not create one). */
+.homex .hx-navy { position: relative; overflow: hidden; }
+
+
+.homex .hx-consult {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 26px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s var(--ease-out);
+}
+.homex .hx-consult:hover {
+  border-color: rgba(244, 231, 198, 0.55);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
+}
+.homex .hx-consult i {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(244, 231, 198, 0.35);
+  border-radius: 12px;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.2);
+}
+.homex .hx-consult strong { display: block; font-size: 14.5px; font-weight: 600; color: #fff; }
+.homex .hx-consult em {
+  display: block;
+  margin-top: 3px;
+  font-style: normal;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.homex .hx-consult > svg { flex: none; margin-left: auto; color: var(--aaa-gold-100); }
+
+.homex .hx-contacts {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.homex .hx-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+.homex .hx-contact-item i {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  color: var(--aaa-gold-100);
+  background: rgba(255, 255, 255, 0.06);
+}
+.homex .hx-contact-item strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+}
+.homex a.hx-contact-item:hover { color: #fff; }
+
+/* Quote form card (sits on the navy contact band) */
+.homex .hx-form {
+  padding: clamp(24px, 3vw, 34px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 34px 74px -34px rgba(0, 0, 0, 0.7);
+}
+.homex .hx-form h3 {
+  margin: 0;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+}
+.homex .hx-form > p {
+  margin: 8px 0 22px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-600);
+}
+.homex .hx-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.homex .hx-field { display: flex; flex-direction: column; gap: 6px; }
+.homex .hx-field.full { grid-column: 1 / -1; }
+.homex .hx-field label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+.homex .hx-field input,
+.homex .hx-field select,
+.homex .hx-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.homex .hx-field textarea { min-height: 88px; resize: vertical; }
+.homex .hx-field select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+.homex .hx-field input::placeholder,
+.homex .hx-field textarea::placeholder { color: var(--ink-400); }
+.homex .hx-field input:focus,
+.homex .hx-field select:focus,
+.homex .hx-field textarea:focus {
+  border-color: var(--aaa-blue);
+  box-shadow: 0 0 0 4px rgba(23, 61, 115, 0.1);
+}
+.homex .hx-form-foot { grid-column: 1 / -1; margin-top: 4px; }
+.homex .hx-form-foot .ax-btn { width: 100%; }
+.homex .hx-form-note {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  text-align: center;
+  color: var(--ink-500);
+}
+.homex .hx-form-err {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid #f2c6c2;
+  border-left: 3px solid var(--aaa-red);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--aaa-red-deep);
+  background: var(--aaa-red-soft);
+}
+.homex .hx-form-done { text-align: center; padding: 12px 0 4px; }
+.homex .hx-form-done i {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 16px;
+  border: 1px solid rgba(179, 138, 46, 0.32);
+  border-radius: 50%;
+  color: var(--aaa-gold-700);
+  background: linear-gradient(150deg, #faf3e0, #f4e7c6);
+}
+.homex .hx-form-done strong { display: block; font-size: 18px; font-weight: 600; color: var(--aaa-blue); }
+.homex .hx-form-done p { margin: 8px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--ink-600); }
+.homex .hx-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* ============================= Responsive =============================== */
+
+@media (max-width: 1240px) {
+  .homex .hx-orgs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .homex .hx-team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1100px) {
+  .homex .hx-globe { grid-template-columns: 1fr; }
+  .homex .hx-testis { grid-template-columns: 1fr; }
+  .homex .hx-news { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 980px) {
+  .homex .hx-band-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .homex .hx-mq { width: 100%; }
+  .homex .hx-progs { grid-template-columns: 1fr; }
+  .homex .hx-team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .homex .hx-gal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .homex .hx-band-inner { padding: 15px 20px; }
+  .homex .hx-orgs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .homex .hx-news { grid-template-columns: 1fr; }
+  .homex .hx-gal { grid-template-columns: 1fr; }
+  .homex .hx-form-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 460px) {
+  .homex .hx-team-grid { grid-template-columns: 1fr; }
+  .homex .hx-orgs { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homex .hx-mq-track { animation: none; }
+  .homex .hx-prog-media img,
+  .homex .hx-gal-item img { transition: none; }
+}
+
+/* =================== 03 · Programs — reference service cards =============
+   Sept 2026. Rebuilt to the client's BizGen "demo one" services block:
+   a dark rounded panel inset from the viewport edges, holding white cards
+   whose top strip pairs a square icon plate with the programme photograph,
+   an outlined ghost numeral beneath the plate, and an outlined "Explore"
+   button. Written from scratch against the reference's proportions — none of
+   the template's own CSS is used — and recoloured to AAA navy + gold.
+   ======================================================================== */
+
+.homex .hx-svc {
+  margin: 0 clamp(10px, 2.2vw, 30px);
+  padding: clamp(52px, 5.4vw, 88px) 0;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(36, 79, 147, 0.42), transparent 30%),
+    radial-gradient(circle at 86% 24%, rgba(179, 138, 46, 0.12), transparent 26%),
+    linear-gradient(140deg, var(--aaa-blue-950) 0%, #0b2138 55%, #0e2a47 100%);
+}
+.homex .hx-svc .ax-head h2,
+.homex .hx-svc .ax-head p { color: #fff; }
+.homex .hx-svc .ax-head p { color: rgba(255, 255, 255, 0.74); }
+.homex .hx-svc .ax-head .eyebrow { color: var(--aaa-gold-100); }
+
+/* The reference runs three cards; AAA has four programmes, so they sit four
+   across on desktop rather than leaving an orphan on a second row. */
+.homex .hx-svc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: clamp(38px, 4vw, 62px);
+}
+
+.homex .hx-svc-item {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #fff;
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s ease;
+}
+.homex .hx-svc-item:hover { transform: translateY(-6px); box-shadow: 0 38px 70px -34px rgba(0, 0, 0, 0.6); }
+
+/* Top strip: icon plate over its numeral on the left, photograph filling the
+   rest — the reference's `service-top-area`. */
+.homex .hx-svc-top { display: flex; align-items: flex-start; }
+.homex .hx-svc-iconcol { flex: none; width: 86px; }
+.homex .hx-svc-plate {
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+  transition: background 0.35s ease, color 0.35s ease;
+}
+.homex .hx-svc-item:hover .hx-svc-plate { color: #fff; background: var(--aaa-blue); }
+
+/* Outlined numeral, sitting under the plate exactly as the reference does. */
+.homex .hx-svc-no {
+  display: block;
+  margin-top: 24px;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  color: rgba(23, 61, 115, 0.16);
+  user-select: none;
+}
+@supports (-webkit-text-stroke: 1px #000) {
+  .homex .hx-svc-no {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(23, 61, 115, 0.2);
+    transition: -webkit-text-stroke-color 0.35s ease;
+  }
+  .homex .hx-svc-item:hover .hx-svc-no { -webkit-text-stroke-color: rgba(179, 138, 46, 0.6); }
+}
+
+.homex .hx-svc-photo {
+  position: relative;
+  flex: 1;
+  align-self: stretch;
+  min-height: 190px;
+  overflow: hidden;
+}
+.homex .hx-svc-photo img { object-fit: cover; transition: transform 0.9s var(--ease-out); }
+.homex .hx-svc-item:hover .hx-svc-photo img { transform: scale(1.06); }
+.homex .hx-svc-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--aaa-blue-950);
+  background: var(--aaa-gold-100);
+}
+
+.homex .hx-svc-body { display: flex; flex-direction: column; flex: 1; padding: 28px 30px 32px; }
+.homex .hx-svc-body h3 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+  transition: color 0.25s ease;
+}
+.homex .hx-svc-item:hover .hx-svc-body h3 { color: var(--aaa-gold-700); }
+.homex .hx-svc-body p { margin: 12px 0 22px; font-size: 14px; line-height: 1.68; color: var(--ink-600); }
+
+/* Outlined "Read More" button from the reference, with its rotating arrow. */
+.homex .hx-svc-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 11px 22px;
+  border: 1px solid var(--ink-200);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.homex .hx-svc-go svg { transform: rotate(-45deg); transition: transform 0.25s var(--ease-out); }
+.homex .hx-svc-go:hover { color: #fff; background: var(--aaa-blue); border-color: var(--aaa-blue); }
+.homex .hx-svc-go:hover svg { transform: rotate(0deg); }
+
+/* Four across → two at tablet width → one on phones. */
+@media (max-width: 1180px) {
+  .homex .hx-svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+}
+@media (max-width: 700px) {
+  .homex .hx-svc-grid { grid-template-columns: minmax(0, 1fr); }
+  .homex .hx-svc-body { padding: 24px 22px 26px; }
+}
+
+/* ================= 06 · Accredited network — reference logo strip ========
+   The reference's brand band: a solid navy panel with rounded corners, a
+   single centred line of copy, and a row of white cards sitting on top of it.
+   Ours carries accredited organisations rather than client logos.
+   ======================================================================== */
+
+.homex .hx-strip {
+  padding: clamp(34px, 3.4vw, 48px) clamp(20px, 3vw, 44px);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(179, 138, 46, 0.16), transparent 30%),
+    linear-gradient(135deg, var(--aaa-blue) 0%, var(--aaa-blue-500) 60%, var(--aaa-blue) 100%);
+}
+.homex .hx-strip-lead {
+  margin: 0 0 clamp(22px, 2.4vw, 32px);
+  font-size: clamp(16px, 1.7vw, 20px);
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  color: #fff;
+}
+.homex .hx-strip-lead b { color: var(--aaa-gold-100); font-weight: 700; }
+
+.homex .hx-orgs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.homex .hx-org {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 22px 14px;
+  border-radius: 12px;
+  text-align: center;
+  background: #fff;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
+}
+.homex .hx-org:hover { transform: translateY(-5px); box-shadow: 0 24px 44px -26px rgba(0, 0, 0, 0.55); }
+.homex .hx-org-mono {
+  display: grid;
+  place-items: center;
+  min-width: 46px;
+  height: 46px;
+  padding: 0 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+}
+.homex .hx-org b {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--aaa-blue);
+}
+.homex .hx-org > span:last-child { font-size: 11.5px; line-height: 1.4; color: var(--ink-500); }
+
+@media (max-width: 980px) {
+  .homex .hx-orgs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .homex .hx-orgs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ================== 02 · Why AAA — reference "Why Choose Us" =============
+   Sept 2026. Rebuilt to the reference's why-choose block: copy on the left,
+   and on the right a column of cards that zig-zag horizontally, each with a
+   rounded brand icon plate straddling its left edge. The wrapper carries left
+   padding equal to the plate's overhang plus the stagger, so nothing spills
+   out of the column.
+   ======================================================================== */
+
+.homex .hx-why {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* The on-site assessment photograph becomes a faint section backdrop, the way
+   the reference dresses this band, rather than a card in the layout. */
+.homex .hx-why::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.06;
+  background: url("/about/assessment.jpg") center / cover no-repeat;
+  -webkit-mask-image: linear-gradient(100deg, transparent 40%, #000 100%);
+  mask-image: linear-gradient(100deg, transparent 40%, #000 100%);
+}
+
+.homex .hx-why-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(36px, 5vw, 76px);
+  align-items: center;
+}
+
+/* Trust line under the copy — the reference's "Trusted by …" row. */
+.homex .hx-why-trust {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--hx-line);
+}
+.homex .hx-why-trust b {
+  display: block;
+  font-size: clamp(26px, 2.6vw, 34px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--aaa-gold-700);
+}
+.homex .hx-why-trust span {
+  display: block;
+  max-width: 26ch;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink-700);
+}
+
+.homex .hx-why-list {
+  display: grid;
+  gap: 20px;
+  margin: 0;
+  padding: 0 0 0 34px;
+  list-style: none;
+}
+.homex .hx-why-item { position: relative; }
+/* The zig-zag: odd cards pull left, even cards sit at the column edge. */
+@media (min-width: 981px) {
+  .homex .hx-why-item:nth-child(odd) { margin-left: -34px; margin-right: 34px; }
+}
+.homex .hx-why-card {
+  padding: 26px 28px 26px 56px;
+  border: 1px solid var(--ax-border);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 10px 48px rgba(7, 29, 52, 0.08);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.homex .hx-why-item:hover .hx-why-card {
+  transform: translateY(-4px);
+  border-color: rgba(179, 138, 46, 0.45);
+  box-shadow: 0 24px 60px -22px rgba(7, 29, 52, 0.3);
+}
+.homex .hx-why-ico {
+  position: absolute;
+  top: 50%;
+  left: -34px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
+  box-shadow: 0 16px 30px -14px rgba(23, 61, 115, 0.85);
+  transform: translateY(-50%);
+  transition: background 0.3s ease, transform 0.3s var(--ease-out);
+}
+.homex .hx-why-item:hover .hx-why-ico {
+  background: linear-gradient(145deg, var(--aaa-gold), var(--aaa-gold-700));
+  transform: translateY(-50%) scale(1.06);
+}
+.homex .hx-why-card h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+}
+.homex .hx-why-card p { margin: 0; font-size: 14px; line-height: 1.68; color: var(--ink-600); }
+
+@media (max-width: 980px) {
+  .homex .hx-why-split { grid-template-columns: minmax(0, 1fr); }
+}
+/* Narrow columns: the plate moves to the card's top-left corner. */
+@media (max-width: 560px) {
+  .homex .hx-why-list { padding-left: 0; }
+  .homex .hx-why-card { padding: 52px 20px 24px; }
+  .homex .hx-why-ico { top: -16px; left: 20px; width: 58px; height: 58px; transform: none; }
+  .homex .hx-why-item:hover .hx-why-ico { transform: scale(1.06); }
+}

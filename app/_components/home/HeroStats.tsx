@@ -2,11 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-interface Stat {
-  num: string; // e.g. "$5.7T", "40%+", "53+"
-  label: string;
-}
+export type Stat = { num: string; label: string };
 
+/** Split "200+" into prefix / value / suffix so the number can be animated. */
 function parseStat(raw: string) {
   const m = raw.match(/^([^0-9]*)([\d.,]+)(.*)$/);
   if (!m) return { prefix: "", value: 0, suffix: raw, decimals: 0 };
@@ -17,9 +15,12 @@ function parseStat(raw: string) {
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
-/** Hero metric rail — counts each figure up once it scrolls into view. */
-export default function HeroStats({ stats }: { stats: Stat[] }) {
-  const ref = useRef<HTMLDivElement>(null);
+/**
+ * Hero metric rail — renders the shared `.ax-stats` primitive and counts each
+ * figure up once it scrolls into view. Figures come from lib/facts.ts.
+ */
+export default function HeroStats({ stats }: { stats: readonly Stat[] }) {
+  const ref = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     const root = ref.current;
@@ -35,7 +36,7 @@ export default function HeroStats({ stats }: { stats: Stat[] }) {
         el.textContent = el.dataset.count || "";
         return;
       }
-      const dur = 1600;
+      const dur = 1500;
       let start = 0;
       const frame = (now: number) => {
         if (!start) start = now;
@@ -44,8 +45,7 @@ export default function HeroStats({ stats }: { stats: Stat[] }) {
           requestAnimationFrame(frame);
           return;
         }
-        const v = value * easeOut(t);
-        el.textContent = `${prefix}${v.toFixed(decimals)}${suffix}`;
+        el.textContent = `${prefix}${(value * easeOut(t)).toFixed(decimals)}${suffix}`;
         if (t < 1) requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
@@ -55,7 +55,7 @@ export default function HeroStats({ stats }: { stats: Stat[] }) {
       (entries) => {
         entries.forEach((e) => {
           if (!e.isIntersecting) return;
-          nums.forEach((el, i) => run(el, i * 140));
+          nums.forEach((el, i) => run(el, i * 130));
           obs.disconnect();
         });
       },
@@ -66,15 +66,13 @@ export default function HeroStats({ stats }: { stats: Stat[] }) {
   }, []);
 
   return (
-    <div className="hero2-stats" ref={ref}>
+    <ul className="ax-stats three" ref={ref} aria-label="AAA at a glance">
       {stats.map((s) => (
-        <div className="hero2-stat" key={s.label}>
-          <span className="hero2-stat-num" data-count={s.num}>
-            {s.num}
-          </span>
-          <span className="hero2-stat-label">{s.label}</span>
-        </div>
+        <li className="ax-stat" key={s.label}>
+          <b data-count={s.num}>{s.num}</b>
+          <span>{s.label}</span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

@@ -4,12 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Icon from "./Icon";
+import { CAB_SCHEMES, CONTACT, PROGRAMS as P, SOCIAL } from "../../lib/facts";
 
+/*
+ * Aug 2026: nav labels now come from lib/facts.ts so the ISO/IEC 17021-1
+ * program carries its renamed title ("Management Systems Certification Bodies
+ * Accreditation") everywhere at once. The mega-menu also gained a second
+ * column listing the eight conformity-assessment schemes — the live site only
+ * links to those from the footer, which left the scheme pages with almost no
+ * internal links pointing at them.
+ */
 const PROGRAMS = [
-  { href: "/programs/healthcare", label: "Healthcare Accreditation", std: "ISQua EEA Recognized" },
-  { href: "/programs/conformity-assessment-bodies", label: "Conformity Assessment Bodies Accreditation", std: "7 Programs" },
-  { href: "/programs/training-education", label: "Training & Education Providers Accreditation", std: "Worldwide" },
-  { href: "/programs/smes-accreditation-program", label: "SMEs Accreditation Program", std: "Funding-Ready in 30 Days" },
+  { href: P.healthcare.href, label: P.healthcare.label, std: P.healthcare.standard },
+  { href: P.cab.href, label: P.cab.label, std: P.cab.standard },
+  { href: P.training.href, label: P.training.label, std: P.training.standard },
+  { href: P.sme.href, label: P.sme.label, std: P.sme.standard },
+  { href: P.school.href, label: P.school.label, std: P.school.standard },
 ];
 
 const ABOUT = [
@@ -42,12 +52,24 @@ function NavLinks() {
       <span className="nav-item">
         <Link href="/programs/healthcare" className="has-caret">Accreditation Programs</Link>
         <span className="nav-dropdown mega">
-          {PROGRAMS.map((i) => (
-            <Link key={i.href} href={i.href}>
-              <span className="mega-label">{i.label}</span>
-              <span className="mega-std">{i.std}</span>
-            </Link>
-          ))}
+          <span className="mega-col">
+            <span className="mega-head">Programs</span>
+            {PROGRAMS.map((i) => (
+              <Link key={i.href} href={i.href}>
+                <span className="mega-label">{i.label}</span>
+                <span className="mega-std">{i.std}</span>
+              </Link>
+            ))}
+          </span>
+          <span className="mega-col">
+            <span className="mega-head">Conformity assessment schemes</span>
+            {CAB_SCHEMES.map((i) => (
+              <Link key={i.href} href={i.href}>
+                <span className="mega-label">{i.shortLabel}</span>
+                <span className="mega-std">{i.standard}</span>
+              </Link>
+            ))}
+          </span>
         </span>
       </span>
       <span className="nav-item">
@@ -95,6 +117,8 @@ export default function Header() {
                 </span>
                 <span className="dot" />
                 <span>International accreditation accepted globally</span>
+                <span className="dot" />
+                <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>
               </div>
               <div className="utility-right">
                 <Link href="/apply">Apply</Link>
@@ -102,15 +126,23 @@ export default function Header() {
                 <Link href="/documents">Documents</Link>
                 <Link href="/contact">Contact</Link>
                 <span className="utility-divider" />
-                <a href="#" aria-label="LinkedIn"><Icon name="linkedin" size={14} /></a>
-                <a href="#" aria-label="Twitter"><Icon name="twitter" size={14} /></a>
-                <a href="#" aria-label="YouTube"><Icon name="youtube" size={14} /></a>
+                {SOCIAL.map((s) => (
+                  <a
+                    key={s.name}
+                    href={s.href}
+                    aria-label={`AAA on ${s.name}`}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                  >
+                    <Icon name={s.icon} size={14} />
+                  </a>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Centered logo */}
+        {/* Logo row — logo left, contact blocks and primary CTA right */}
         <div className="header-main">
           <div className="container">
             <Link href="/" className="brand" aria-label="American Accreditation Association — home">
@@ -124,6 +156,26 @@ export default function Header() {
               />
             </Link>
 
+            <div className="header-info">
+              <a className="hinfo" href={`mailto:${CONTACT.email}`}>
+                <span className="hinfo-ico"><Icon name="mail" size={18} /></span>
+                <span className="hinfo-txt">
+                  <span className="hinfo-label">Send us a message</span>
+                  <strong>{CONTACT.email}</strong>
+                </span>
+              </a>
+              <a className="hinfo" href={CONTACT.phoneHref}>
+                <span className="hinfo-ico"><Icon name="phone" size={18} /></span>
+                <span className="hinfo-txt">
+                  <span className="hinfo-label">Call our team</span>
+                  <strong>{CONTACT.phone}</strong>
+                </span>
+              </a>
+              <Link href="/quote" className="btn btn-primary hinfo-cta">
+                Get a Quote <Icon name="arrow" size={14} className="arrow" />
+              </Link>
+            </div>
+
             <button
               className={"menu-toggle" + (menuOpen ? " open" : "")}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -135,15 +187,15 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Centered primary nav */}
+        {/* Primary nav — dark bar that floats over the top of the hero */}
         <div className="header-nav">
           <div className="container">
             <NavLinks />
 
             <div className="header-actions">
               <button className="search-btn" aria-label="Search"><Icon name="search" size={16} /></button>
-              <Link href="/quote" className="btn btn-primary">
-                Get a Quote <Icon name="arrow" size={14} className="arrow" />
+              <Link href="/apply" className="nav-apply">
+                Apply <Icon name="arrow" size={13} className="arrow" />
               </Link>
             </div>
           </div>
@@ -201,6 +253,12 @@ export default function Header() {
           <summary>Membership</summary>
           {MEMBERSHIP.map((i) => (
             <Link key={i.href} href={i.href}>{i.label}</Link>
+          ))}
+        </details>
+        <details className="mm-group">
+          <summary>Conformity assessment schemes</summary>
+          {CAB_SCHEMES.map((i) => (
+            <Link key={i.href} href={i.href}>{i.shortLabel}</Link>
           ))}
         </details>
         <div className="mm-links">

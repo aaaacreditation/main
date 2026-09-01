@@ -1,0 +1,255 @@
+/* =========================================================================
+   AAA DOCUMENT LIBRARY — page-local styles
+   -------------------------------------------------------------------------
+   Aug 2026. Everything /documents needs on top of the shared `.ax-*` design
+   system (app/aaa-ds.css). Nothing here is global: every rule is scoped under
+   `.dlx`, which only this route puts on <main>:
+
+       <main className="axp dlx"> … </main>
+
+   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
+   ========================================================================= */
+
+/* ============================ File-type badge =========================== */
+.dlx .dlx-type {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--aaa-blue-100);
+  background: var(--aaa-blue-50);
+  color: var(--aaa-blue);
+}
+/* PDFs are the readable, always-available reference documents. */
+.dlx .dlx-type.pdf {
+  border-color: rgba(179, 138, 46, 0.32);
+  background: linear-gradient(150deg, #faf3e0, #f4e7c6);
+  color: var(--aaa-gold-700);
+}
+/* Editable Word forms an applicant fills in and returns. */
+.dlx .dlx-type.doc,
+.dlx .dlx-type.docx {
+  border-color: var(--aaa-blue-100);
+  background: var(--aaa-blue-50);
+  color: var(--aaa-blue);
+}
+
+/* =============================== Doc rows =============================== */
+.dlx .dlx-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+
+.dlx .dlx-row {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--ax-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.25s var(--ease-out), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.dlx .dlx-row:hover {
+  transform: translateY(-3px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.dlx .dlx-row-body { min-width: 0; }
+.dlx .dlx-row-ttl {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--aaa-blue);
+}
+.dlx .dlx-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--ink-500);
+}
+.dlx .dlx-src {
+  padding: 3px 8px;
+  border: 1px solid var(--ink-200);
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-600);
+  background: var(--ink-50);
+}
+.dlx .dlx-src.aaa { border-color: rgba(23, 61, 115, 0.22); color: var(--aaa-blue); background: var(--aaa-blue-50); }
+.dlx .dlx-dot { color: var(--ink-300); }
+
+.dlx .dlx-get {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 10px 15px;
+  border: 1px solid var(--ink-200);
+  border-radius: 9px;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.dlx .dlx-row:hover .dlx-get { border-color: var(--aaa-blue); background: var(--aaa-blue-50); }
+.dlx .dlx-get svg { transition: transform 0.2s ease; }
+.dlx .dlx-row:hover .dlx-get svg { transform: translateY(2px); }
+
+/* ========================== Core-document cards ========================= */
+.dlx .dlx-core { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.dlx a.dlx-core-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 20px 20px;
+  border: 1px solid var(--ax-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #fff 60%, var(--aaa-blue-50));
+  box-shadow: var(--ax-shadow-sm);
+  color: inherit;
+  transition: transform 0.3s var(--ease-out), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.dlx a.dlx-core-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.dlx .dlx-core-card b {
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue);
+}
+.dlx .dlx-core-card p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink-600); }
+.dlx .dlx-core-card i {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.dlx a.dlx-core-card:hover i svg { transform: translateY(2px); }
+.dlx .dlx-core-card i svg { transition: transform 0.2s ease; }
+
+/* ============================ Program index ============================= */
+.dlx .dlx-index {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dlx .dlx-index a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 100%;
+  padding: 13px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #fff;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s var(--ease-out);
+}
+.dlx .dlx-index a:hover {
+  transform: translateY(-3px);
+  border-color: rgba(244, 231, 198, 0.55);
+  background: rgba(255, 255, 255, 0.1);
+}
+.dlx .dlx-index a em {
+  flex: none;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--aaa-gold-100);
+}
+
+/* ====================== Per-program group headings ====================== */
+.dlx .dlx-group { padding-top: clamp(30px, 3.4vw, 46px); border-top: 1px solid var(--ink-100); }
+.dlx .dlx-group:first-of-type { padding-top: 0; border-top: 0; }
+.dlx .dlx-group + .dlx-group { margin-top: clamp(30px, 3.4vw, 46px); }
+
+.dlx .dlx-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 24px;
+  margin-bottom: 20px;
+}
+.dlx .dlx-group-head h3 {
+  margin: 8px 0 0;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--aaa-blue);
+}
+.dlx .dlx-group-head p { margin: 8px 0 0; max-width: 58ch; font-size: 14px; line-height: 1.65; color: var(--ink-600); }
+.dlx .dlx-group-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+  border-bottom: 1px solid rgba(179, 138, 46, 0.4);
+  padding-bottom: 3px;
+}
+.dlx .dlx-group-link:hover { color: var(--aaa-blue); border-color: var(--aaa-blue); }
+.dlx .dlx-group-link svg { transition: transform 0.2s ease; }
+.dlx .dlx-group-link:hover svg { transform: translateX(3px); }
+
+/* Reminder that the core requirement set also applies to this program. */
+.dlx .dlx-also { margin-top: 14px; }
+
+/* ============================= Responsive =============================== */
+@media (max-width: 1100px) {
+  .dlx .dlx-core { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dlx .dlx-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .dlx .dlx-core,
+  .dlx .dlx-index { grid-template-columns: 1fr; }
+  .dlx .dlx-row {
+    grid-template-columns: 46px minmax(0, 1fr);
+    row-gap: 14px;
+  }
+  .dlx .dlx-get { grid-column: 1 / -1; justify-content: center; }
+  .dlx .dlx-group-head { align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dlx .dlx-row,
+  .dlx a.dlx-core-card,
+  .dlx .dlx-index a { transition: none; }
+}

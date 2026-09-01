@@ -1,0 +1,257 @@
+/* =========================================================================
+   /programs/training-education — page-local styles.
+
+   Everything here is scoped under `.tepx` so nothing leaks site-wide. This
+   file only covers what the shared `.ax-*` design system (app/aaa-ds.css)
+   does not: the advisor lead form, the accredited-provider story cards and
+   the ADCP credential panel. Palette + type come from the brand tokens.
+   ========================================================================= */
+
+/* The advisor card overlaps the hero, so the hero needs the extra bottom
+   room the shared `.ax-hero-grid.overlap` modifier gives — applied here
+   because PageHero has no prop for it. */
+.tepx .ax-hero-grid {
+  padding-bottom: clamp(124px, 11vw, 168px);
+}
+
+/* ----------------------------------------------------- Advisor lead form */
+.tepx-advisor {
+  position: relative;
+  z-index: 3;
+  padding: 0 0 clamp(40px, 4vw, 56px);
+  background: #fff;
+}
+.tepx-advisor-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.74fr) minmax(0, 1.26fr);
+  gap: clamp(26px, 3.5vw, 48px);
+  margin-top: clamp(-96px, -7vw, -70px);
+  padding: clamp(26px, 3.5vw, 40px) clamp(26px, 3.6vw, 46px);
+  overflow: hidden;
+  border: 1px solid rgba(23, 61, 115, 0.2);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 40px 90px -40px rgba(7, 29, 52, 0.6);
+}
+.tepx-advisor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, var(--aaa-blue) 100%);
+}
+.tepx-advisor-copy h2 {
+  margin: 12px 0 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  color: var(--aaa-blue);
+  text-wrap: balance;
+}
+.tepx-advisor-copy > p {
+  margin: 12px 0 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-600);
+}
+
+.tepx-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.tepx-field { display: flex; flex-direction: column; gap: 6px; }
+.tepx-field.full,
+.tepx-form-err.full { grid-column: 1 / -1; }
+.tepx-field label { font-size: 12.5px; font-weight: 500; color: var(--aaa-blue); }
+.tepx-field input,
+.tepx-field select,
+.tepx-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--ink-200);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tepx-field textarea { min-height: 84px; line-height: 1.6; resize: vertical; }
+.tepx-field input::placeholder,
+.tepx-field textarea::placeholder { color: var(--ink-400); }
+.tepx-field input:focus,
+.tepx-field select:focus,
+.tepx-field textarea:focus {
+  outline: none;
+  border-color: var(--aaa-blue);
+  box-shadow: 0 0 0 3px rgba(23, 61, 115, 0.14);
+}
+.tepx-form-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 18px;
+  margin-top: 4px;
+}
+.tepx-form-note { max-width: 46ch; margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-500); }
+.tepx-form-err {
+  margin: 0;
+  padding: 10px 13px;
+  border: 1px solid #f2c6c2;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #b3261e;
+  background: #fdf0ef;
+}
+.tepx-form-done { padding: 26px 8px; text-align: center; }
+.tepx-form-done .tick {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(145deg, #c39a3d, var(--aaa-gold) 55%, var(--aaa-gold-700));
+}
+.tepx-form-done .tick svg { width: 27px; height: 27px; }
+.tepx-form-done strong { display: block; margin-bottom: 8px; font-size: 19px; color: var(--aaa-blue); }
+.tepx-form-done p { max-width: 52ch; margin: 0 auto; font-size: 13.5px; line-height: 1.7; color: var(--ink-600); }
+
+/* -------------------------------------------- Accredited-provider stories */
+.tepx-stories { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tepx-story {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 20px;
+  border: 1px solid var(--ax-border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.tepx-story:hover {
+  transform: translateY(-6px);
+  border-color: rgba(179, 138, 46, 0.5);
+  box-shadow: var(--ax-shadow);
+}
+.tepx-story-logo {
+  display: grid;
+  place-items: center;
+  height: 54px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border: 1px solid var(--ink-100);
+  border-radius: 12px;
+  background: var(--ink-50);
+}
+.tepx-story-logo img { max-width: 100%; height: auto; max-height: 38px; width: auto; object-fit: contain; }
+.tepx-story blockquote {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.68;
+  color: var(--ink-700);
+}
+.tepx-story-who { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--ink-100); }
+.tepx-story-who strong { display: block; font-size: 15px; font-weight: 600; color: var(--aaa-blue); }
+.tepx-story-who span { display: block; margin-top: 3px; font-size: 12px; line-height: 1.5; color: var(--ink-500); }
+
+/* Two named testimonials from the client's live page, shown side by side. */
+.tepx-voices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 22px; }
+.tepx-voice { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 20px; align-items: start; }
+.tepx-voice blockquote {
+  margin: 0;
+  font-size: clamp(16px, 1.5vw, 19px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue-950);
+}
+.tepx-voice-person { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-600); }
+.tepx-voice-person b { display: block; font-size: 15px; color: var(--aaa-blue); }
+
+/* The ADCP feature cards are white cards sitting on a navy section, so the
+   design system's "checks on dark" rule would paint them white-on-white.
+   Put them back to the light-surface treatment. */
+.tepx .ax-section.navy .ax-card .ax-checks li { color: var(--ink-600); font-size: 13.5px; }
+.tepx .ax-section.navy .ax-card .ax-checks li::before {
+  border-color: var(--aaa-blue-100);
+  background: var(--aaa-blue-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23173d73' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / 10px no-repeat;
+}
+
+/* --------------------------------------------------- ADCP credential card */
+.tepx-adcp-panel {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 3vw, 32px);
+  border: 1px solid rgba(244, 231, 198, 0.28);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+}
+.tepx-adcp-panel span.kicker {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.tepx-adcp-panel strong {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.tepx-adcp-url {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(6, 26, 44, 0.55);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.78);
+}
+.tepx-adcp-url i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--aaa-gold);
+  box-shadow: 0 0 0 4px rgba(179, 138, 46, 0.24);
+}
+
+/* -------------------------------------------------------------- Guides -- */
+.tepx-guides { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+
+/* ---------------------------------------------------------- Responsive -- */
+@media (max-width: 1100px) {
+  .tepx-stories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .tepx-advisor-card { grid-template-columns: 1fr; gap: 26px; }
+  .tepx-voices { grid-template-columns: 1fr; }
+  .tepx-guides { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .tepx-advisor-card { margin-top: -80px; padding: 24px 20px; }
+  .tepx-form-grid { grid-template-columns: 1fr; }
+  .tepx-form-foot { flex-direction: column; align-items: stretch; }
+  .tepx-form-foot .ax-btn { width: 100%; }
+  .tepx-form-note { max-width: none; text-align: center; }
+  .tepx-stories { grid-template-columns: 1fr; }
+  .tepx-voice { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tepx-story { transition: none; }
+}
