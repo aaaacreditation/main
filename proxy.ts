@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GATED_HOST } from "./lib/gating";
 
 /*
  * The sme.aaa-accreditation.org subdomain went live before the rest of the
@@ -10,8 +11,6 @@ import { NextRequest, NextResponse } from "next/server";
  * unaffected, so the rest of the site can keep being built and reviewed.
  * DELETE THIS FILE when the full site launches.
  */
-
-const GATED_HOST = "sme.aaa-accreditation.org";
 
 const ALLOWED_PREFIXES = [
   "/programs/smes-accreditation-program", // the live page

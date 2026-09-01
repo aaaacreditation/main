@@ -4,6 +4,7 @@ import Link from "next/link";
 import Icon from "../../_components/Icon";
 import { CASE_STUDIES } from "../../_data/case-studies";
 import ReadinessLauncher from "./ReadinessLauncher";
+import BareChrome from "./BareChrome";
 import "./sme.css";
 
 export const metadata: Metadata = {
@@ -258,6 +259,10 @@ const FAQ = [
 export default function Page() {
   return (
     <main className="smex">
+      {/* TEMPORARY: hides the site header/footer on sme.aaa-accreditation.org
+          only. Remove together with proxy.ts when the full site launches. */}
+      <BareChrome />
+
       {/* Section 1 — Hero */}
       <section className="smex-hero lpx-hero lpx-hero--nav">
         <div className="container lpx-hero-inner">
