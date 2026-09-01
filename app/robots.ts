@@ -12,6 +12,23 @@ import { SITE_URL } from "../lib/seo";
 export default function robots(): MetadataRoute.Robots {
   const disallow = ["/admin", "/api/", "/lp/", "/about/components"];
 
+  /*
+   * Client-review and staging deployments must never be indexed: they serve
+   * the same pages as the live site, so search engines would treat them as
+   * duplicate content competing with aaa-accreditation.org.
+   *
+   * Vercel adds `X-Robots-Tag: noindex` to PREVIEW deployments on its own, but
+   * NOT to a production deployment — and a separate demo project's own
+   * production build on *.vercel.app is exactly that. Set NOINDEX=true in
+   * that project's environment variables to close it off.
+   *
+   * Opt-in by design: with the variable unset this behaves exactly as before,
+   * so the live site and the SME subdomain are unaffected.
+   */
+  if (process.env.NOINDEX === "true") {
+    return { rules: [{ userAgent: "*", disallow: "/" }] };
+  }
+
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow },
