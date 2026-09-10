@@ -215,7 +215,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--ax-border);
-  border-radius: 20px;
+  border-radius: var(--ax-radius);
   background: #fff;
   box-shadow: var(--ax-shadow-sm);
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s ease, border-color 0.35s ease;
@@ -384,8 +384,8 @@
   padding: 26px 24px 24px;
   border: 1px solid var(--ax-border);
   border-top: 3px solid var(--aaa-gold);
-  border-radius: 18px;
-  background: #fff;
+  border-radius: var(--ax-radius);
+  background: var(--ax-card-bg);
   box-shadow: var(--ax-shadow-sm);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
 }
@@ -528,7 +528,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
+  border-radius: var(--ax-radius);
   background: rgba(255, 255, 255, 0.05);
 }
 .homex .hx-team-card img,
@@ -612,8 +612,8 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--ax-border);
-  border-radius: 18px;
-  background: #fff;
+  border-radius: var(--ax-radius);
+  background: var(--ax-card-bg);
   box-shadow: var(--ax-shadow-sm);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
 }
@@ -649,7 +649,7 @@
 }
 .homex .hx-news-body h3 {
   margin: 10px 0 8px;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.35;
   letter-spacing: -0.015em;
@@ -926,8 +926,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 20px;
-  background: #fff;
+  border-radius: var(--ax-radius);
+  background: var(--ax-card-bg);
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s ease;
 }
 .homex .hx-svc-item:hover { transform: translateY(-6px); box-shadow: 0 38px 70px -34px rgba(0, 0, 0, 0.6); }
@@ -947,25 +947,21 @@
 }
 .homex .hx-svc-item:hover .hx-svc-plate { color: #fff; background: var(--aaa-blue); }
 
-/* Outlined numeral, sitting under the plate exactly as the reference does. */
+/* Ghost numeral under the plate — flat translucent figure, matching the SME
+   reference cards (the outlined stroke version was retired Sept 2026). */
 .homex .hx-svc-no {
   display: block;
   margin-top: 24px;
-  font-size: 38px;
-  font-weight: 800;
+  font-size: 40px;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: -0.03em;
   text-align: center;
   color: rgba(23, 61, 115, 0.16);
   user-select: none;
+  transition: color 0.35s ease;
 }
-@supports (-webkit-text-stroke: 1px #000) {
-  .homex .hx-svc-no {
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(23, 61, 115, 0.2);
-    transition: -webkit-text-stroke-color 0.35s ease;
-  }
-  .homex .hx-svc-item:hover .hx-svc-no { -webkit-text-stroke-color: rgba(179, 138, 46, 0.6); }
-}
+.homex .hx-svc-item:hover .hx-svc-no { color: rgba(179, 138, 46, 0.42); }
 
 .homex .hx-svc-photo {
   position: relative;
@@ -994,7 +990,7 @@
 .homex .hx-svc-body { display: flex; flex-direction: column; flex: 1; padding: 28px 30px 32px; }
 .homex .hx-svc-body h3 {
   margin: 0;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.02em;
@@ -1002,7 +998,7 @@
   transition: color 0.25s ease;
 }
 .homex .hx-svc-item:hover .hx-svc-body h3 { color: var(--aaa-gold-700); }
-.homex .hx-svc-body p { margin: 12px 0 22px; font-size: 14px; line-height: 1.68; color: var(--ink-600); }
+.homex .hx-svc-body p { margin: 12px 0 22px; font-size: 13.5px; line-height: 1.7; color: var(--ink-600); }
 
 /* Outlined "Read More" button from the reference, with its rotating arrow. */
 .homex .hx-svc-go {
@@ -1177,8 +1173,8 @@
 .homex .hx-why-card {
   padding: 26px 28px 26px 56px;
   border: 1px solid var(--ax-border);
-  border-radius: 15px;
-  background: #fff;
+  border-radius: var(--ax-radius);
+  background: var(--ax-card-bg);
   box-shadow: 0 10px 48px rgba(7, 29, 52, 0.08);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, border-color 0.3s ease;
 }
@@ -1196,7 +1192,7 @@
   place-items: center;
   width: 68px;
   height: 68px;
-  border-radius: 12px;
+  border-radius: 50%;
   color: #fff;
   background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
   box-shadow: 0 16px 30px -14px rgba(23, 61, 115, 0.85);
@@ -1209,13 +1205,13 @@
 }
 .homex .hx-why-card h3 {
   margin: 0 0 8px;
-  font-size: 19px;
+  font-size: 18.5px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.35;
   letter-spacing: -0.02em;
   color: var(--aaa-blue);
 }
-.homex .hx-why-card p { margin: 0; font-size: 14px; line-height: 1.68; color: var(--ink-600); }
+.homex .hx-why-card p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-600); }
 
 @media (max-width: 980px) {
   .homex .hx-why-split { grid-template-columns: minmax(0, 1fr); }
