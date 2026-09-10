@@ -174,9 +174,10 @@ the existing primitives. What was adopted:
   `.ax-btn:has(path[d^="M5 12h14"])` so buttons carrying a download / document / shield icon
   keep the plain nudge.
 - **Centred kickers** get a matching rule on the trailing side (— OUR SERVICES —).
-- **Cards**: radius 20px, icon plate flips to a solid brand fill on hover, numerals render as
-  an outlined watermark (`-webkit-text-stroke`, with a flat-tint `@supports` fallback).
-- **`.ax-reason`** is now a stacked card with its numeral on a rounded plate hanging over the
+- **Cards**: icon plate flips to a solid brand fill on hover. *(The 20px radius and the
+  outlined `-webkit-text-stroke` numerals from this pass were superseded by the SME
+  alignment below.)*
+- **`.ax-reason`** is now a stacked card with its numeral on a plate hanging over the
   left edge. `.ax-reasons` carries `padding-left: 26px` equal to that overhang so the plate
   never spills out of its column — keep them in step if either changes.
 - **Home hero** (`app/home.css`, scoped `.homex`): full-bleed photograph behind a navy scrim,
@@ -187,6 +188,30 @@ the existing primitives. What was adopted:
 **The SMEs Accreditation page was explicitly excluded.** It is safe because it uses only its
 own `.smex-*` classes from the frozen `sme.css` — it shares the Header and Footer (which did
 change) but not one `.ax-*` rule. Verify that still holds before touching `aaa-ds.css`.
+
+### Sept 10 2026 — type + card alignment to the SME page
+
+The client asked for the site's **fonts and cards to match the SMEs Accreditation page**
+while keeping the BizGen site treatment (header, hero layout, arrow buttons, kicker rules,
+footer). `aaa-ds.css` and `home.css` were re-tuned to the measured values of `sme.css`:
+
+- **Type**: `.ax-head h2` / `.ax-close-inner h2` use SME tracking and leading
+  (`letter-spacing: -0.045em`, `line-height: 1.04`); `.ax-hero h1` is
+  `clamp(38px, 4.5vw, 60px)`. Card titles are 18.5px / 1.35; card copy 13.5px / 1.7; FAQ
+  question 16px, answer 15px. Figures use weight 700, titles 600 — never 800.
+- **Card tokens**: `--ax-radius: 16px` (cards, tiles, reasons, metrics),
+  `--ax-radius-lg: 22px` (panels, quotes, steps), `--ax-card-bg` (white → `#f5f8fc`
+  surface), `--ax-navy-bg` (the SME navy gradient), `--ax-ring` / `--ax-ring-gold`.
+- **Icon holders are thin-ring circles** (`.ax-card-ico`, `.ax-tile-ico`, home
+  `.hx-why-ico`): 46px, 1.5px navy ring on light surfaces, gold ring on navy; they fill solid
+  brand on hover. `.ax-panel-ico` is the SME form seal (46px, radius 13px, gold tint).
+- **Ghost numerals are flat** (`.ax-card-no`, home `.hx-svc-no`): 40px / 700, navy at 16%
+  (white at 22% on navy), warming to gold on hover. The outlined-stroke version is retired.
+- **`.ax-metric` is the SME stat card**: centred navy tile, bold figure, 34px gold rule,
+  light label. It is meant for white sections beside copy.
+- **`.ax-card.navy`** is the SME pillar card (navy gradient, gold-ring icon, translucent
+  numeral, white title) — opt-in; cards inside `.ax-section.navy` stay white.
+- Photos, section rhythm and the two frozen reference stylesheets were not touched.
 
 Rules:
 - New page-specific CSS goes in a **page-local file** (e.g. `app/foo/foo.css`), with every rule
@@ -216,6 +241,13 @@ Rules:
 
 ## Tech Stack Conventions
 - Next.js (App Router) — keep components in `app/_components/` when shared.
+- Motion (added Sept 10 2026): `gsap` + `@gsap/react` for scroll choreography (ScrollTrigger
+  reveals, parallax, counters, loops) and `framer-motion` for component-level interaction
+  (accordions, magnetic buttons, springy entrances). First used on
+  `app/programs/training-education/` — see `TepaMotion.tsx` for the pattern: hidden resting
+  states live in page CSS on `[data-reveal]`, GSAP only ever animates *to* the visible state,
+  and `prefers-reduced-motion` restores everything in CSS with no JS. Animate `y`, not
+  `yPercent`, when the hidden state is a CSS percentage transform (GSAP reads it as px).
 - Tailwind CSS — extend the theme to expose `brand` color and Poppins font; do not hardcode `#173d73` in components, use `bg-brand` / `text-brand` (or the `--aaa-*` CSS tokens in globals.css) instead.
 - Global styles live in `app/globals.css`.
 

@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 
-type Status = "idle" | "sending" | "ok" | "error";
-
 /**
- * "Speak with an accreditation advisor" — the lead form for the Training &
- * Education Providers program page.
+ * Hero enquiry form for the Training & Education Providers page.
  *
- * The page previously carried a decorative form whose submit button was a
- * `type="button"` with no handler, so every enquiry from the (paid) TEPA
- * traffic was silently dropped. This posts to the shared /api/leads endpoint
- * with a distinct `source` so training leads can be filtered in the admin
- * Content Studio.
+ * Fields follow the client's TEPA developer package (Sept 2026): name,
+ * organization, email, phone, country, a read-only program field and a free
+ * message. Posts to the shared /api/leads endpoint with the same `source` as
+ * before, so nothing downstream changes.
  */
 export default function AdvisorForm() {
-  const [status, setStatus] = useState<Status>("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [error, setError] = useState("");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -24,7 +20,7 @@ export default function AdvisorForm() {
 
     const fd = new FormData(e.currentTarget);
     const country = String(fd.get("country") || "").trim();
-    const courses = String(fd.get("courses") || "").trim();
+    const message = String(fd.get("message") || "").trim();
 
     const payload = {
       contact: String(fd.get("contact") || "").trim(),
@@ -32,12 +28,7 @@ export default function AdvisorForm() {
       email: String(fd.get("email") || "").trim(),
       phone: String(fd.get("phone") || "").trim(),
       sector: "Training & education provider",
-      message: [
-        country && `Country: ${country}`,
-        courses && `Courses / requested accreditation scope:\n${courses}`,
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
+      message: [country && `Country: ${country}`, message].filter(Boolean).join("\n\n"),
       source: "training-education-advisor",
       website: String(fd.get("website") || ""), // honeypot
     };
@@ -67,10 +58,10 @@ export default function AdvisorForm() {
             <path d="m5 12 5 5L20 7" />
           </svg>
         </span>
-        <strong>Request received</strong>
+        <strong>Enquiry received</strong>
         <p>
-          Thank you — an AAA accreditation advisor will review the courses you deliver and get
-          back to you with the requirements, documents and next steps.
+          Thank you. An AAA accreditation advisor will review your details and contact you to
+          discuss the most suitable next steps.
         </p>
       </div>
     );
@@ -99,12 +90,12 @@ export default function AdvisorForm() {
             id="tep-organization"
             name="organization"
             required
-            placeholder="Training centre or institution"
+            placeholder="Organization name"
             autoComplete="organization"
           />
         </div>
         <div className="tepx-field">
-          <label htmlFor="tep-email">Email</label>
+          <label htmlFor="tep-email">Email address</label>
           <input
             id="tep-email"
             name="email"
@@ -115,20 +106,24 @@ export default function AdvisorForm() {
           />
         </div>
         <div className="tepx-field">
-          <label htmlFor="tep-phone">Phone or WhatsApp</label>
-          <input id="tep-phone" name="phone" placeholder="Including country code" autoComplete="tel" />
+          <label htmlFor="tep-phone">Phone number</label>
+          <input id="tep-phone" name="phone" type="tel" placeholder="Including country code" autoComplete="tel" />
         </div>
-        <div className="tepx-field full">
+        <div className="tepx-field">
           <label htmlFor="tep-country">Country</label>
-          <input id="tep-country" name="country" placeholder="Where you deliver your courses" autoComplete="country-name" />
+          <input id="tep-country" name="country" placeholder="Country" autoComplete="country-name" />
+        </div>
+        <div className="tepx-field">
+          <label htmlFor="tep-program">Program</label>
+          <input id="tep-program" name="program" value="Training & Education Provider" readOnly />
         </div>
         <div className="tepx-field full">
-          <label htmlFor="tep-courses">Courses you want accredited</label>
+          <label htmlFor="tep-message">Message</label>
           <textarea
-            id="tep-courses"
-            name="courses"
+            id="tep-message"
+            name="message"
             rows={3}
-            placeholder="Subjects, delivery format (classroom, workshop, e-learning) and roughly how many learners you train each year"
+            placeholder="Tell us briefly about your organization and what you would like to know"
           />
         </div>
 
@@ -138,19 +133,15 @@ export default function AdvisorForm() {
           </p>
         )}
 
-        <div className="tepx-form-foot">
-          <button className="ax-btn ax-btn-gold" type="submit" disabled={status === "sending"}>
-            {status === "sending" ? "Sending…" : "Request Information"}
-            {status !== "sending" && (
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 12h14M13 5l7 7-7 7" />
-              </svg>
-            )}
-          </button>
-          <p className="tepx-form-note">
-            No obligation. Your details are used only to respond to your accreditation enquiry.
-          </p>
-        </div>
+        <button className="ax-btn ax-btn-blue" type="submit" disabled={status === "sending"}>
+          {status === "sending" ? "Sending…" : "Submit Enquiry"}
+          {status !== "sending" && (
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          )}
+        </button>
+        <p className="tepx-form-note">Your information will be used only to respond to your accreditation enquiry.</p>
       </div>
     </form>
   );
