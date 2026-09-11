@@ -14,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+/* Closing "Book a Meeting" button — client-requested booking page (Sept 2026). */
+const MEETING = "https://calendly.com/aaa-accreditation4/new-meeting";
 const APPLICATION_FORM = "/documents/AAA-SME-Accreditation-Application-Form.docx";
 
 function LineIcon({ children }: { children: React.ReactNode }) {
@@ -667,7 +669,7 @@ export default function Page() {
               <Link href="/apply" className="smex-btn smex-btn-gold">
                 Apply for Accreditation <Icon name="arrow" size={16} />
               </Link>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
+              <a href={MEETING} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
                 Book a Meeting
               </a>
               <a
