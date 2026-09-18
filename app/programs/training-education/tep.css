@@ -14,7 +14,6 @@
    visible state; if motion is reduced the media query below restores them. */
 .tepx [data-reveal] { opacity: 0; transform: translateY(26px); will-change: transform, opacity; }
 .tepx [data-reveal="pop"] { transform: scale(0.4); }
-.tepx [data-reveal="row"] { transform: translateX(-16px); }
 .tepx .tepx-hero-photo[data-reveal] { transform: translateY(26px) scale(0.96); }
 .tepx .tepx-hero .ax-crumbs,
 .tepx .tepx-hero-kicker,
@@ -28,7 +27,6 @@
   margin: -0.08em -0.04em -0.16em;
 }
 .tepx-word > span { display: inline-block; transform: translateY(110%); will-change: transform; }
-.tepx-ul,
 .tepx-steps-line { transform: scaleX(0); transform-origin: left center; }
 .tepx-step-no,
 .tepx-step-card { opacity: 0; transform: translateY(20px); }
@@ -36,14 +34,12 @@
 @media (prefers-reduced-motion: reduce) {
   .tepx [data-reveal],
   .tepx [data-reveal="pop"],
-  .tepx [data-reveal="row"],
   .tepx .tepx-hero-photo[data-reveal],
   .tepx .tepx-hero .ax-crumbs,
   .tepx .tepx-hero-kicker,
   .tepx .ax-head .eyebrow,
   .tepx .ax-close-inner .eyebrow,
   .tepx-word > span,
-  .tepx-ul,
   .tepx-steps-line,
   .tepx-step-no,
   .tepx-step-card { opacity: 1; transform: none; }
@@ -62,12 +58,12 @@
 }
 
 /* ---------------------------------------------------------------- Hero -- */
-/* Copy | photo | advisor form, side by side on wide screens. The shared
-   `.ax-hero-grid` still supplies the header clearance; only the columns
-   change here. */
+/* Copy | photo, side by side on wide screens (the advisor form moved down to
+   section 2 on Sept 18 2026). The shared `.ax-hero-grid` still supplies the
+   header clearance; only the columns change here. */
 .tepx .tepx-hero-grid {
-  grid-template-columns: minmax(0, 1.04fr) minmax(280px, 0.6fr) minmax(340px, 0.82fr);
-  gap: clamp(24px, 2.6vw, 36px);
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.7fr);
+  gap: clamp(36px, 5vw, 72px);
   align-items: center;
   padding-bottom: clamp(56px, 6vw, 84px);
 }
@@ -139,24 +135,10 @@
   font-size: 12px;
   letter-spacing: 0.16em;
 }
-/* The title is long, so it runs one size down from the shared hero scale. */
+/* The title is long, so it runs one size down from the shared hero scale. It
+   is a single white run — the gold, underlined "Providers" was dropped on
+   Sept 18 2026. */
 .tepx .tepx-hero h1 { max-width: none; margin-top: 22px; font-size: clamp(34px, 3.3vw, 44px); }
-.tepx .tepx-hero h1 em {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 8px;
-  font-style: normal;
-  color: var(--aaa-gold-400);
-}
-.tepx-ul {
-  position: absolute;
-  right: 0.04em;
-  bottom: 0;
-  left: 0.04em;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--aaa-gold-400);
-}
 .tepx .tepx-hero .ax-hero-lead { max-width: 56ch; }
 
 .tepx-hero-points {
@@ -188,7 +170,7 @@
 
 .tepx-hero-photo.ax-hero-photo {
   width: 100%;
-  max-width: 360px;
+  max-width: 400px;
   aspect-ratio: 0.78 / 1;
   justify-self: center;
   border-radius: 22px 22px 64px 22px;
@@ -196,18 +178,20 @@
 .tepx-hero-photo img { object-position: center 30%; }
 .tepx-hero-photo .ax-cap strong { font-size: 14px; }
 
-/* Advisor form card */
-.tepx-hero-form {
+/* Advisor form card — sits beside the 2 × 2 value cards in section 2, so it
+   carries a hairline and a softer shadow than it did on the navy hero. */
+.tepx-advisor {
   position: relative;
   z-index: 2;
   overflow: hidden;
-  padding: clamp(20px, 2vw, 26px) clamp(18px, 2vw, 24px) 20px;
+  padding: clamp(22px, 2.2vw, 30px) clamp(20px, 2.2vw, 28px) 24px;
+  border: 1px solid var(--ax-border);
   border-radius: var(--ax-radius-lg);
   color: var(--ink-800);
   background: #fff;
-  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 30px 60px -36px rgba(6, 26, 44, 0.35);
 }
-.tepx-hero-form::before {
+.tepx-advisor::before {
   content: "";
   position: absolute;
   top: 0;
@@ -216,10 +200,10 @@
   height: 4px;
   background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, var(--aaa-blue));
 }
-.tepx-hero-form .eyebrow { font-size: 11px; font-weight: 600; color: var(--aaa-gold-700); }
-.tepx-hero-form .eyebrow::before { height: 2px; background: var(--aaa-gold); }
+.tepx-advisor .eyebrow { font-size: 11px; font-weight: 600; color: var(--aaa-gold-700); }
+.tepx-advisor .eyebrow::before { height: 2px; background: var(--aaa-gold); }
 /* globals.css caps every h2 with !important; the form title is a card title. */
-.tepx-hero-form h2 {
+.tepx-advisor h2 {
   margin: 8px 0 0;
   font-size: 20px !important;
   font-weight: 600;
@@ -227,7 +211,7 @@
   letter-spacing: -0.02em;
   color: var(--aaa-blue);
 }
-.tepx-hero-form > p { margin: 6px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-600); }
+.tepx-advisor > p { margin: 6px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-600); }
 
 .tepx-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin-top: 16px; }
 .tepx-field { display: flex; flex-direction: column; gap: 5px; }
@@ -355,10 +339,21 @@
 .tepx-subhead p { max-width: 56ch; margin: 0; font-size: 14px; line-height: 1.65; color: var(--ink-600); }
 
 /* ------------------------------------------------- Why matters cards -- */
-/* The lead card is navy so the row has a focal point instead of four
-   identical tiles. */
-.tepx-values .ax-card-no { font-size: 44px; }
-.tepx-values .ax-card.navy .ax-card-rule::after {
+/* Four value cards in a 2 × 2 grid on the left, the advisor enquiry card on
+   the right. The card grid stretches to the form's height so the two blocks
+   share a baseline (the card rule has `margin-top: auto`, so it stays pinned
+   to the foot of each card). All four use the SME page's navy card style
+   (`.ax-card.navy`), as do the "What we evaluate" cards further down. */
+.tepx-why {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.64fr);
+  gap: clamp(24px, 3vw, 40px);
+  align-items: stretch;
+}
+.ax-head + .tepx-why { margin-top: clamp(30px, 3.4vw, 46px); }
+.tepx-values .ax-card-no,
+.tepx-eval .ax-card-no { font-size: 44px; }
+.tepx .ax-card.navy .ax-card-rule::after {
   background: linear-gradient(90deg, var(--aaa-gold-100), rgba(244, 231, 198, 0.35) 50%, transparent 85%);
 }
 
@@ -445,6 +440,7 @@
   padding-top: 18px;
   border-top: 1px solid var(--ink-100);
 }
+.tepx-stats.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tepx-stats > div + div { padding-left: 12px; border-left: 1px solid var(--ink-100); }
 .tepx-stats b {
   display: block;
@@ -492,8 +488,8 @@
   height: 72px;
   border-radius: 50%;
   color: #fff;
-  background: linear-gradient(135deg, var(--aaa-gold-400), var(--aaa-gold) 45%, var(--aaa-gold-700));
-  box-shadow: 0 0 0 10px rgba(179, 138, 46, 0.22), 0 18px 36px -12px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(135deg, var(--aaa-red), var(--aaa-red-deep));
+  box-shadow: 0 0 0 10px rgba(193, 18, 47, 0.22), 0 18px 36px -12px rgba(0, 0, 0, 0.6);
   transform: translate(-50%, -50%);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
 }
@@ -501,7 +497,7 @@
 .tepx-video-ring {
   position: absolute;
   inset: 0;
-  border: 2px solid rgba(244, 231, 198, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.85);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -510,18 +506,10 @@
 .tepx-video-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* ------------------------------------------------- What we evaluate -- */
-.tepx-eval-split {
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: clamp(36px, 5vw, 72px);
-  align-items: start;
-}
-.tepx-eval-copy .ax-photo { max-width: 520px; margin-top: 30px; aspect-ratio: 4 / 3; }
-.tepx-eval-list { display: grid; gap: 14px; }
-.tepx-eval.ax-card { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 18px; align-items: start; padding: 22px 24px; }
-.tepx-eval.ax-card h3 { margin: 4px 0 0; }
-.tepx-eval.ax-card h3::after { content: ""; display: block; width: 34px; height: 2px; margin: 10px 0 0; border-radius: 2px; background: var(--aaa-gold); }
-.tepx-eval.ax-card p { margin-top: 10px; }
+/* Four navy cards in a row under a centred head. The document-review photo
+   and the copy | list split were dropped on Sept 18 2026; the cards share the
+   "Why matters" styling above. */
+.ax-head.center .tepx-focus { margin-right: auto; margin-left: auto; }
 
 /* -------------------------------------------------- Exclusive benefits */
 .tepx-benefits { display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(300px, 0.78fr); gap: 18px; align-items: stretch; }
@@ -572,65 +560,10 @@
 }
 .tepx-adcp > .ax-btn { align-self: flex-start; margin-top: 22px; }
 
-/* Illustrative Certification Management Hub — an abstract mock, not a
-   screenshot. Swap for the approved production capture when supplied. */
-.tepx-hub {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 560px);
-  margin-top: 22px;
-  overflow: hidden;
-  border-radius: 14px;
-  color: var(--ink-800);
-  background: #fff;
-  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
-}
-.tepx-hub-bar {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 14px;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.8);
-  background: var(--aaa-blue-950);
-}
-.tepx-hub-bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.26); }
-.tepx-hub-bar i:first-child { background: var(--aaa-gold); }
-.tepx-hub-bar span { margin-left: 6px; }
-.tepx-hub-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 12px 14px 0; }
-.tepx-hub-stats div { padding: 8px 10px; border: 1px solid var(--ink-100); border-radius: 8px; background: var(--ink-50); }
-.tepx-hub-stats b { display: block; font-size: 16px; font-weight: 700; line-height: 1.1; color: var(--aaa-blue); }
-.tepx-hub-stats span { display: block; margin-top: 2px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-500); }
-.tepx-hub-rows { padding: 8px 14px 14px; }
-.tepx-hub-row {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 0.7fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-top: 1px solid var(--ink-100);
-}
-.tepx-hub-row:first-child { border-top: 0; }
-.tepx-hub-row i { display: block; height: 8px; border-radius: 4px; background: var(--ink-100); }
-.tepx-hub-row i:first-child { background: var(--aaa-blue-100); }
-.tepx-hub-row em {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-style: normal;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-  background: var(--aaa-gold-50);
-}
-.tepx-hub-row em::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--aaa-gold); }
+/* Real Certification Management Hub screenshot (transparent PNG supplied by
+   the client, Sept 18 2026) — replaces the abstract hub mock. */
+.tepx-hub-shot { position: relative; z-index: 1; width: min(100%, 640px); margin: 24px 0 0; }
+.tepx-hub-shot img { display: block; width: 100%; height: auto; filter: drop-shadow(0 26px 40px rgba(0, 0, 0, 0.45)); }
 
 .tepx-side { display: grid; grid-auto-rows: 1fr; gap: 14px; }
 .tepx-side .ax-card { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 18px; align-items: center; padding: 22px; }
@@ -645,6 +578,7 @@
   background: linear-gradient(160deg, #fff 55%, var(--aaa-blue-50));
 }
 .tepx-side-media img { width: 64px; height: 64px; object-fit: contain; }
+.tepx-side-media.badge img { width: 76px; height: 76px; }
 .tepx-side-media.cert img { width: 84px; height: 84px; object-fit: cover; object-position: left top; }
 .tepx-side-media .ax-card-ico { width: 52px; height: 52px; padding: 13px; margin: 0; }
 .tepx-side .ax-card h3 { margin: 0; font-size: 16px; line-height: 1.3; }
@@ -714,14 +648,30 @@
 .tepx-step-card h3::after { content: ""; display: block; width: 28px; height: 2px; margin: 10px auto 0; border-radius: 2px; background: var(--aaa-gold); }
 .tepx-step-card p { margin: 10px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-600); }
 
-.tepx-docs.ax-docs {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: clamp(28px, 3vw, 38px);
-  padding-top: 22px;
-  border-top: 1px solid var(--ink-100);
+/* Directory card — replaces the three "Application & requirements" document
+   links (Sept 18 2026): a centred screenshot of the accredited-organization
+   directory with a link to the real thing. */
+.tepx-dir {
+  width: min(100%, 700px);
+  margin: clamp(28px, 3vw, 38px) auto 0;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-card-bg);
+  box-shadow: var(--ax-shadow-sm);
 }
-.tepx-docs .ax-docs-title { grid-column: 1 / -1; }
+.tepx-dir img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.tepx-dir figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  padding: 14px 6px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-600);
+}
 
 /* ------------------------------------------------------------- FAQ --- */
 .tepx-quick { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: clamp(26px, 3vw, 36px); }
@@ -790,8 +740,6 @@
 
 /* ------------------------------------------------------- Responsive --- */
 @media (max-width: 1180px) {
-  .tepx .tepx-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(260px, 0.66fr); }
-  .tepx-hero-form { grid-column: 1 / -1; width: 100%; max-width: 780px; justify-self: center; }
   .tepx-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 14px; }
   .tepx-steps-line { display: none; }
   .tepx-quick { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -801,16 +749,15 @@
 @media (max-width: 980px) {
   .tepx .tepx-hero-grid { grid-template-columns: 1fr; gap: 36px; }
   .tepx-hero-photo.ax-hero-photo { max-width: 560px; aspect-ratio: 1.3 / 1; }
+  .tepx-why { grid-template-columns: 1fr; }
+  .tepx-advisor { width: 100%; max-width: 780px; justify-self: center; }
   .tepx-proof { grid-template-columns: 1fr; }
-  .tepx-eval-split { grid-template-columns: 1fr; gap: 32px; }
-  .tepx-eval-copy .ax-photo { display: none; }
   .tepx-side { grid-template-columns: 1fr; }
-  .tepx-docs.ax-docs { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .tepx .tepx-hero h1 { font-size: clamp(30px, 8.6vw, 40px); }
   .tepx-hero-photo.ax-hero-photo { aspect-ratio: 1 / 1; border-radius: 20px 20px 54px 20px; }
-  .tepx-hero-form { padding: 22px 18px; }
+  .tepx-advisor { padding: 22px 18px; }
   .tepx-form-grid { grid-template-columns: 1fr; }
   .tepx-magnetic { width: 100%; }
   .tepx-magnetic .ax-btn { width: 100%; }
@@ -822,11 +769,12 @@
   .tepx-quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tepx-subhead p { max-width: none; }
   .tepx-head-row > a { width: 100%; }
-  .tepx-eval.ax-card { grid-template-columns: 1fr; gap: 12px; }
+  .tepx-stats.three > div:last-child { grid-column: 1 / -1; }
   .tepx-adcp .ax-checks { grid-template-columns: 1fr; }
   .tepx-side .ax-card { grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 18px; }
   .tepx-side-media { width: 64px; height: 64px; border-radius: 14px; }
   .tepx-side-media img { width: 52px; height: 52px; }
+  .tepx-side-media.badge img,
   .tepx-side-media.cert img { width: 64px; height: 64px; }
   .tepx-wm-text { display: none; }
 }

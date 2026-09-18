@@ -35,7 +35,6 @@ export default function TepaMotion({ children }: { children: React.ReactNode }) 
           .timeline({ defaults: { ease } })
           .to(q(".tepx-hero .ax-crumbs, .tepx-hero-kicker"), { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 })
           .to(heroWords, { y: 0, duration: 0.9, stagger: 0.06 }, "-=0.3")
-          .to(q(".tepx-ul"), { scaleX: 1, duration: 0.7, ease: "power2.inOut" }, "-=0.45")
           .to(heroBits, { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.09 }, "-=0.55");
 
         // Wave bands roll slowly across the foot of the hero, each at its own
@@ -86,7 +85,7 @@ export default function TepaMotion({ children }: { children: React.ReactNode }) 
           (el) =>
             !inHero(el) &&
             !el.closest(".ax-head, .ax-close-inner, .tepx-steps") &&
-            !["pop", "line", "row"].includes(el.getAttribute("data-reveal") || "")
+            !["pop", "line"].includes(el.getAttribute("data-reveal") || "")
         );
         ScrollTrigger.batch(generic, {
           start: "top 88%",
@@ -120,7 +119,9 @@ export default function TepaMotion({ children }: { children: React.ReactNode }) 
             ease: "power2.out",
             scrollTrigger: { trigger: el, start: "top 90%", once: true },
             onUpdate: () => {
-              el.textContent = prefix + n.v.toFixed(decimals) + suffix;
+              // Grouped so "5,000+" counts up with its comma, not as "5000+".
+              const v = n.v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+              el.textContent = prefix + v + suffix;
             },
           });
         });
@@ -133,19 +134,6 @@ export default function TepaMotion({ children }: { children: React.ReactNode }) 
             .to(q(".tepx-steps-line"), { scaleX: 1, duration: 1.4, ease: "power2.inOut" })
             .to(q('.tepx-step [data-reveal="pop"]'), { opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: "back.out(1.8)" }, "<0.1")
             .to(q(".tepx-step-no, .tepx-step-card"), { opacity: 1, y: 0, duration: 0.6, stagger: 0.06 }, "-=0.8");
-        }
-
-        /* ------------------------------------------- ADCP hub rows */
-        const hub = q(".tepx-hub")[0];
-        if (hub) {
-          gsap.to(q('[data-reveal="row"]'), {
-            opacity: 1,
-            x: 0,
-            duration: 0.5,
-            stagger: 0.12,
-            ease,
-            scrollTrigger: { trigger: hub, start: "top 85%", once: true },
-          });
         }
 
         /* ------------------------------------------- Watermarks drift */

@@ -6,10 +6,11 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 /**
  * Two-column FAQ with animated open/close. Uses the shared `.ax-faq-*`
  * look, but a button + measured height instead of <details> so the answer
- * unfolds rather than snapping.
+ * unfolds rather than snapping. Every item starts closed (client request,
+ * Sept 18 2026).
  */
 export default function FaqAccordion({ items }: { items: { q: string; a: string }[] }) {
-  const [open, setOpen] = useState<number | null>(0);
+  const [open, setOpen] = useState<number | null>(null);
   const reduce = useReducedMotion();
 
   return (
