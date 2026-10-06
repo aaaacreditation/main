@@ -137,7 +137,7 @@ const PROGRAMS: Group[] = [
     heading: "Testing & calibration laboratories",
     blurb:
       "For laboratories seeking accreditation to ISO/IEC 17025, including the AAA policies on proficiency testing, traceability and measurement uncertainty.",
-    program: { href: "/programs/iso-17025", label: "ISO/IEC 17025 program" },
+    program: { href: "/programs/testing-laboratories", label: "ISO/IEC 17025 program" },
     docs: [
       {
         ttl: "Application form — testing / calibration laboratories",
@@ -542,7 +542,7 @@ function DocGroup({ group }: { group: Group }) {
 
 export default function Page() {
   return (
-    <main className="axp dlx">
+    <div className="axp dlx">
       <JsonLd
         schema={[breadcrumbSchema([{ name: "Documents", path: "/documents" }]), faqSchema(FAQ)]}
       />
@@ -727,6 +727,6 @@ export default function Page() {
           { href: "/impartiality-policy", label: "Impartiality policy" },
         ]}
       />
-    </main>
+    </div>
   );
 }

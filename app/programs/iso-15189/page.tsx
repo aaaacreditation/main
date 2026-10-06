@@ -1,149 +1,263 @@
-import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
-import ProgramPage from "../../_components/ProgramPage";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
+import SchemePage from "../_scheme/SchemePage";
+import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import type { SchemeData } from "../_scheme/types";
+import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { PROGRAMS } from "@/lib/facts";
 
-const PATH = "/programs/iso-15189";
+const PATH = PROGRAMS.iso15189.href;
+const IMG = "/images/site/cab-15189";
 
-export const metadata: Metadata = pageMeta({
+export const metadata = pageMeta({
   title: "Medical Laboratories Accreditation (ISO 15189)",
   description:
-    "AAA accredits public and private medical laboratories to ISO 15189 — quality and competence across the pre-examination, examination and post-examination phases.",
+    "ISO 15189 accreditation for medical laboratories: independent recognition of the quality and competence behind accurate, reliable diagnostic services.",
   path: PATH,
   keywords: [
     "ISO 15189 accreditation",
     "medical laboratory accreditation",
-    "clinical laboratory accreditation",
-    "pathology laboratory quality",
+    "ISO 15189:2022",
+    "clinical laboratory quality",
+    "point-of-care testing accreditation",
   ],
 });
 
-const DOCUMENTS = [
-  {
-    label: "Application form for accreditation of medical labs",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2023/03/Application-form-for-accreditation-of-medical-labs.doc",
-    meta: "DOC",
+const DATA: SchemeData = {
+  slug: "iso15189",
+  path: PATH,
+  crumb: PROGRAMS.iso15189.shortLabel,
+  hero: {
+    standard: "ISO 15189:2022",
+    title: PROGRAMS.iso15189.label,
+    lead: "Demonstrate technical competence and confidence in your medical laboratory through ISO 15189 accreditation. AAA recognizes laboratories that consistently deliver accurate, reliable, and patient-focused diagnostic services while meeting international best practices.",
+    image: `${IMG}/aaa-iso-15189-accredited-medical-laborat-0cfb8208.webp`,
+    imageAlt: "AAA ISO 15189 accredited medical laboratory",
+    caption: "Global Medical City team celebrating their ISO 15189 accreditation with AAA.",
+    stats: heroStats(["Countries Served", "Assessors & Experts", "Accreditation Validity", "Recognition"], "Global"),
   },
-  {
-    label: "General requirements for accreditation",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2021/12/General-requirements-for-accreditation-V2.pdf",
-    meta: "PDF",
+  suitability: {
+    title: "Is ISO 15189 Accreditation Right for Your Medical Laboratory?",
+    paragraphs: [
+      "ISO 15189 is the internationally recognized standard specifying requirements for quality and competence in medical laboratories. It is designed for laboratories that provide examination services used in the diagnosis, prevention, monitoring, and treatment of disease.",
+      "Accreditation demonstrates that your laboratory has competent personnel, appropriate examination procedures, suitable equipment, effective quality controls, reliable reporting processes, and management systems necessary to provide consistent and clinically reliable results. ISO 15189:2022 also applies to point-of-care testing.",
+    ],
+    label: "Suitable for laboratories performing",
+    tiles: [
+      { icon: "flask", title: "Clinical Chemistry" },
+      { icon: "heart-pulse", title: "Hematology" },
+      { icon: "microscope", title: "Microbiology" },
+      { icon: "shield", title: "Immunology & Serology" },
+      { icon: "search-check", title: "Molecular Diagnostics" },
+      { icon: "layers", title: "Histopathology & Cytology" },
+      { icon: "activity", title: "Blood Transfusion / Immunohematology" },
+      { icon: "plus", title: "Point-of-Care Testing" },
+    ],
   },
-  {
-    label: "Requirements for use of accreditation symbols",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Requirements-for-use-of-accreditation-symbols.pdf",
-    meta: "PDF",
+  benefits: {
+    title: "Why ISO 15189 Accreditation Matters",
+    items: [
+      {
+        icon: "badge-check",
+        title: "Demonstrate Medical Laboratory Competence",
+        text: "Provide independent evidence that your laboratory has competent personnel, appropriate procedures, equipment, quality controls, and management systems necessary to produce reliable examination results.",
+      },
+      {
+        icon: "stethoscope",
+        title: "Strengthen Confidence in Patient Results",
+        text: "Increase confidence among clinicians, patients, hospitals, regulators, and healthcare organizations that laboratory results are accurate, reliable, and suitable for clinical decision-making.",
+      },
+      {
+        icon: "shield-check",
+        title: "Support Patient Safety",
+        text: "Strengthen controls throughout the examination process—from patient preparation and sample collection through examination, reporting, and interpretation—to reduce errors that may affect patient care.",
+      },
+      {
+        icon: "hospital",
+        title: "Support Regulatory & Healthcare Requirements",
+        text: "Meet accreditation expectations established by healthcare systems, hospitals, regulators, procurement authorities, insurers, and other organizations that depend on reliable medical laboratory services.",
+      },
+    ],
+    image: {
+      src: `${IMG}/global-medical-city-medical-laboratory-t-818d486a.webp`,
+      alt: "Global Medical City medical laboratory team with AAA recognition award",
+      width: 2000,
+      height: 1334,
+    },
+    captionTitle: "Accreditation in Practice",
+    caption:
+      "Independent accreditation recognizing quality, competence, and excellence in medical laboratory services.",
   },
-  {
-    label: "Requirements for accreditation of multi-site conformity assessment bodies",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Requirements-for-Accreditation-of-multi-site-conformity-assessment-bodies-.pdf",
-    meta: "PDF",
+  areas: {
+    intro:
+      "AAA evaluates the management, technical, quality, and patient-related controls needed to produce reliable medical laboratory results.",
+    tiles: [
+      {
+        icon: "building",
+        title: "Governance & Management System",
+        text: "Organizational responsibilities, leadership, documented systems, quality objectives, risk management, records, and continual improvement.",
+      },
+      {
+        icon: "users",
+        title: "Personnel Competence",
+        text: "Qualifications, training, experience, authorization, competency evaluation, and continued professional development.",
+      },
+      {
+        icon: "clipboard",
+        title: "Pre-Examination Processes",
+        text: "Patient preparation, requests, specimen collection, identification, transportation, reception, handling, and acceptance criteria.",
+      },
+      {
+        icon: "microscope",
+        title: "Examination Methods & Validation",
+        text: "Method selection, verification or validation, reference intervals, biological reference values, and technical implementation.",
+      },
+      {
+        icon: "settings",
+        title: "Equipment, Reagents & Consumables",
+        text: "Equipment selection, calibration, maintenance, verification, reagents, consumables, inventory controls, and technical suitability.",
+      },
+      {
+        icon: "chart",
+        title: "Quality Assurance of Results",
+        text: "Internal quality control, external quality assessment, proficiency testing, comparisons, and monitoring of examination performance.",
+      },
+      {
+        icon: "file-text",
+        title: "Post-Examination & Reporting",
+        text: "Result review, authorization, reporting, critical-result communication, amended reports, interpretation, and retention of information.",
+      },
+      {
+        icon: "shield-check",
+        title: "Patient Safety, Risk & Improvement",
+        text: "Nonconforming work, risk management, complaints, corrective actions, internal audits, quality indicators, and continual improvement.",
+      },
+    ],
   },
-];
-
-const FAQ = [
-  {
-    q: "How does ISO 15189 differ from ISO/IEC 17025?",
-    a: "Both standards address quality and technical competence, but ISO 15189 is written for medical laboratories and follows the whole patient pathway. It covers the pre-examination phase — the request, patient and sample identification, collection and transport — as well as the examination itself and the post-examination phase, including release of results, reporting to clinicians and the communication of critical results.",
+  process: {
+    title: "Accreditation Process & Application",
+    steps: [
+      {
+        title: "Submit Your Application",
+        text: "Define the requested medical laboratory scope, including examination disciplines, methods, locations, and services.",
+      },
+      {
+        title: "Document Review",
+        text: "AAA reviews management-system documentation, procedures, personnel information, quality controls, examination methods, equipment arrangements, and the requested scope.",
+      },
+      {
+        title: "Accreditation Assessment",
+        text: "Qualified technical assessors evaluate the laboratory against ISO 15189 requirements and the requested medical laboratory scope.",
+      },
+      {
+        title: "Corrective Actions",
+        text: "Where findings are identified, the laboratory submits corrective actions together with supporting evidence for review.",
+      },
+      {
+        title: "Independent Accreditation Decision",
+        text: "Assessment findings and supporting evidence are independently reviewed before an accreditation decision is made.",
+      },
+      {
+        title: "Accreditation Granted",
+        text: "Successful medical laboratories receive an accreditation certificate and approved scope, valid for three years.",
+      },
+    ],
+    application: {
+      text: "Complete the application form to provide information about your laboratory, medical examination disciplines, methods, locations, personnel, and proposed accreditation scope.",
+      href: DOC.appMedical,
+      note: "Additional technical requirements and supporting information will be provided by the AAA accreditation team as applicable to your requested scope.",
+    },
+    resourcesTitle: "Supporting Documents",
+    resources: COMMON_DOCS,
   },
-  {
-    q: "Which examinations can be included in the scope?",
-    a: "Accreditation is granted for a defined scope, which lists the examinations, the disciplines they belong to and the sites at which they are performed. Typical disciplines include clinical chemistry, haematology, microbiology, immunology, molecular diagnostics, histopathology and cytology. A laboratory may start with part of its repertoire and extend the scope later.",
+  testimonial: {
+    title: "Hear From an AAA-Accredited Medical Laboratory",
+    intro:
+      "Discover how AAA accreditation has supported medical laboratories in strengthening technical competence, improving confidence in examination results, and reinforcing quality across patient-care services.",
+    media: { kind: "video", id: "zpzh6QtLdSI", title: "Global Medical City testimonial" },
+    story: {
+      title: "Global Medical City · Egypt",
+      text: "Learn how Global Medical City strengthened confidence in its laboratory services through ISO 15189 accreditation and why the team chose AAA as its accreditation partner.",
+    },
+    highlights: [
+      {
+        icon: "award",
+        title: "Improved Laboratory Quality",
+        text: "International accreditation strengthens confidence in laboratory quality management and technical competence.",
+      },
+      {
+        icon: "heart-pulse",
+        title: "Greater Patient Confidence",
+        text: "Reliable laboratory services support clinicians and improve confidence in patient care.",
+      },
+      {
+        icon: "globe",
+        title: "International Recognition",
+        text: "ISO 15189 accreditation demonstrates compliance with internationally recognized requirements for medical laboratories.",
+      },
+    ],
   },
-  {
-    q: "Is point-of-care testing covered?",
-    a: "The current edition of ISO 15189 brings point-of-care testing within its scope where that testing is performed under the governance of the medical laboratory. Assessment then looks at operator training and authorization, device management and quality control, and how results generated outside the laboratory reach the patient record.",
+  faq: {
+    intro: "Common questions about ISO 15189 medical laboratory accreditation.",
+    items: [
+      {
+        q: "What is ISO 15189?",
+        a: "ISO 15189 specifies requirements for quality and competence in medical laboratories and is used to assess or recognize laboratory competence.",
+      },
+      {
+        q: "What types of medical laboratories can apply?",
+        a: "Medical laboratories operating in clinical chemistry, hematology, microbiology, immunology, molecular diagnostics, pathology, cytology, blood transfusion, and other diagnostic areas may apply.",
+      },
+      {
+        q: "Does ISO 15189 apply to point-of-care testing?",
+        a: "Yes. ISO 15189:2022 is also applicable to point-of-care testing.",
+      },
+      {
+        q: "Can a newly established medical laboratory apply?",
+        a: "Yes. A newly established laboratory may apply once it has implemented its management system and can demonstrate operational capability, competent personnel, effective examination procedures, equipment controls, and quality-assurance activities.",
+      },
+      {
+        q: "Is proficiency testing required?",
+        a: "Participation in proficiency testing, external quality assessment, or other suitable comparison activities may be required where relevant and available for the examinations included within the requested scope.",
+      },
+      {
+        q: "Can multiple disciplines and locations be included?",
+        a: "Yes. Multiple examination disciplines and laboratory locations may be included, subject to assessment of the activities, personnel, equipment, management controls, and services performed.",
+      },
+      {
+        q: "How long is accreditation valid?",
+        a: "AAA accreditation is valid for three years, subject to continued compliance with accreditation requirements and completion of applicable surveillance or reassessment activities.",
+      },
+      {
+        q: "How do I begin?",
+        a: "Complete the accreditation application form or contact the AAA team to discuss your laboratory disciplines, examination services, locations, and proposed accreditation scope.",
+      },
+    ],
   },
-  {
-    q: "What is assessed in the pre-examination phase?",
-    a: "The information required on a request, unambiguous identification of the patient and the primary sample, instructions for collection, handling and transport, acceptance and rejection criteria, and the arrangements for samples referred to other laboratories. Most errors reported in laboratory medicine originate before the examination begins, which is why this phase is examined closely.",
+  cta: {
+    title: "Ready to Apply for ISO 15189 Accreditation?",
+    text: "Take the next step toward independent recognition of your medical laboratory’s quality and technical competence. Our team is ready to guide you through the accreditation process and help define the appropriate scope for your laboratory.",
   },
-  {
-    q: "Do we need internal quality control and external comparison?",
-    a: "Yes. The laboratory must ensure the validity of its results through internal quality control appropriate to each examination, and through interlaboratory comparison — proficiency testing where a suitable scheme exists. Results of both must be reviewed and acted on, not simply filed.",
-  },
-];
+  related: relatedFor(PATH),
+};
 
 export default function Page() {
   return (
     <>
       <JsonLd
         schema={[
-          breadcrumbSchema([
-            { name: "Programs", path: "/programs/conformity-assessment-bodies" },
-            { name: "Medical Laboratories Accreditation", path: PATH },
-          ]),
+          breadcrumbSchema(crumbsFor(PROGRAMS.iso15189.label, PATH)),
           serviceSchema({
-            name: "Medical Laboratories Accreditation (ISO 15189)",
+            name: `${PROGRAMS.iso15189.label} (ISO 15189)`,
             description:
-              "Accreditation of public and private medical laboratories against ISO 15189, covering the pre-examination, examination and post-examination phases of the patient pathway.",
+              "Accreditation of medical laboratories against ISO 15189, covering governance, personnel competence, pre-examination, examination and post-examination processes, quality assurance and patient safety.",
             path: PATH,
             standard: "ISO 15189",
-            audience: "Medical and clinical laboratories",
+            audience: "Medical laboratories",
           }),
-          faqSchema(FAQ),
+          faqSchema(DATA.faq.items),
         ]}
       />
-      <ProgramPage
-        title="Medical Laboratories Accreditation"
-        standard="ISO 15189"
-        intro="Use of accreditation for medical examinations helps improve the quality of service rendered to the patient, and contributes to the efficiency of the healthcare system by ensuring the reliability of results."
-        hero="/sectors/healthcare.jpg"
-        heroCaption={{
-          kicker: "AAA accreditation",
-          title: "Medical laboratories",
-          chip: "ISO 15189",
-        }}
-        metrics={[
-          { v: "ISO 15189", k: "Anchor standard" },
-          { v: "Patient pathway", k: "Scope of assessment" },
-          { v: "3 years", k: "Accreditation cycle" },
-          { v: "Annual", k: "Surveillance" },
-        ]}
-        overview={[
-          "Use of accreditation for medical examinations helps improve the quality of service rendered to the patient. Accreditation contributes to the efficiency of the healthcare system by ensuring the reliability of results.",
-          "It concerns many medical-technical procedures used for the purposes of prevention, screening, and diagnosis. In this way, accreditation guarantees the harmonized and optimum quality of the biomedical examinations conducted throughout the country by public or private laboratories.",
-          "ISO 15189 specifies requirements for quality and competence in medical laboratories. Unlike a purely technical standard, it follows the examination through the whole patient pathway: the pre-examination phase, where the request is made and the sample is collected and transported; the examination phase, where the method is selected, verified and controlled; and the post-examination phase, where results are reviewed, released, reported and — when they are critical — communicated without delay.",
-          "Assessment is carried out by assessors with laboratory-medicine experience, who look at the same evidence a clinician relies on: that the right sample was identified, examined by a competent person on controlled equipment, and reported in a way the requester can act on.",
-        ]}
-        whoFor={[
-          "Hospital and clinical laboratories serving inpatient and outpatient services",
-          "Pathology laboratories across clinical chemistry, haematology, microbiology, immunology, histopathology, cytology and molecular diagnostics",
-          "Private and commercial diagnostic laboratories, including those in diagnostic and imaging centres",
-          "Reference and referral laboratories receiving samples from other laboratories",
-          "Public health and screening laboratories supporting prevention and early detection programmes",
-          "Point-of-care testing services operating under the governance of a medical laboratory",
-        ]}
-        scopeHeading="What the assessment covers"
-        scope={[
-          "Patient-focused quality, ethical conduct and risk management — arrangements that put the interests and safety of the patient first, supported by internal audit and management review.",
-          "Competence of personnel — qualification, induction, training, authorization and continuing competence assessment for each examination performed.",
-          "Accommodation and environmental conditions — facilities suitable for the work, including biosafety, storage and control of access.",
-          "Equipment, reagents and consumables — selection, acceptance testing, calibration, maintenance, inventory control and adverse-incident reporting.",
-          "Pre-examination processes — request information, patient and sample identification, collection instructions, transport conditions, and acceptance or rejection criteria.",
-          "Examination processes — selection, verification and validation of methods, measurement uncertainty, biological reference intervals, and point-of-care testing performed under laboratory governance.",
-          "Ensuring the quality of results — internal quality control designed for each examination, plus interlaboratory comparison and proficiency testing, with review of the outcomes.",
-          "Post-examination processes — review and authorization of results, reporting and release, communication of critical or alert results, and retention, storage and safe disposal of samples.",
-        ]}
-
-        benefits={[
-          "Improves the quality of service rendered to the patient, and the reliability of the results clinicians act on",
-          "Harmonized and optimum quality of biomedical examinations across public and private laboratories",
-          "Independent evidence for hospitals, insurers, referring clinicians and health authorities that the laboratory is competent",
-          "Structured control of the pre-examination phase, where most laboratory errors originate",
-          "A means of demonstrating your competence to your clients, and a passport to tenders that require accredited laboratories",
-          "Annual surveillance that keeps methods, quality control and reporting under continuous review",
-        ]}
-        documents={DOCUMENTS}
-        documentsHeading="Documents related to the accreditation of medical laboratories"
-        faq={FAQ}
-        related={[
-          { href: "/programs/conformity-assessment-bodies", label: "All conformity assessment programs" },
-          { href: "/programs/healthcare", label: "Healthcare Accreditation" },
-          { href: "/programs/iso-17025", label: "Testing & Calibration Laboratories (ISO/IEC 17025)" },
-          { href: "/programs/iso-17043", label: "Proficiency Testing Providers (ISO/IEC 17043)" },
-        ]}
-      />
+      <SchemePage data={DATA} />
     </>
   );
 }

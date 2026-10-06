@@ -213,6 +213,41 @@ footer). `aaa-ds.css` and `home.css` were re-tuned to the measured values of `sm
   numeral, white title) — opt-in; cards inside `.ax-section.navy` stay white.
 - Photos, section rhythm and the two frozen reference stylesheets were not touched.
 
+### Oct 2026 — client-structure rebuild ("every card is the SME blue card")
+
+The client supplied the whole site as static HTML (content + section structure). Pages were
+rebuilt on that structure in this design system. Rules that came with it:
+
+- **Every card is the SME blue card.** Use `NavyCard` (`app/_components/site/NavyCard.tsx`) →
+  `.ax-card.navy.ax-blue` in `aaa-ds.css`: navy gradient, animated conic border track (steel-blue
+  ring, two red accents, `@property --ax-spin`), gold-ring icon, ghost numeral, gold rule. The
+  description is visible by default (no hover-only text, no flip cards). Grids: `.ax-blue-grid`
+  (+`.two` `.four` `.five`). Card grids sit on white or `.cream` sections. Forms, tables, logo
+  plates, callout strips and FAQ accordions stay light.
+- Kit: `NavyCard`, `SectionHead`, `Stat` (count-up from a `FACTS` string), `Glyph` (the only
+  icon set for new cards) in `app/_components/site/`. `PageHero` takes `imageAlt`; `CTA` opens
+  `http(s)` targets in a new tab.
+- Pages render `<div className="axp …">` — `SiteChrome` already provides the single `<main>`.
+- **Header = the client's "Main Navigation Menu" file** (supersedes the Sept three-tier BizGen
+  header): thin navy utility bar (Contact Us · Login / Client Portal) over ONE white row —
+  seal + navy three-line wordmark, Home · Accreditation Programs · About AAA · Academy &
+  Community · Accredited Directory · Resources (simple dropdown lists), search, gold "Apply for
+  Accreditation". `.sh2*` rules in `aaa-ds.css`; 1440px shell; `--header-h` is 118px. The
+  full-colour `AAA-Logo.png` has white lettering, so it is only used on dark surfaces (footer).
+  Off-site/unconfirmed nav targets live in `EXTERNAL` in `lib/facts.ts`.
+- **Hero v2** (`PageHero` → `.ax-hero.v2` in `aaa-ds.css`; Mobbin refs: Okta, Legora, PayPal
+  leadership, Deel): the photo bleeds to the right edge as a tall panel with a curved
+  bottom-left corner + gold arc and a glass caption (hidden <640px); copy on deep navy over a
+  slow pre-blurred aura; gold-line kicker; h1 `clamp(40px, 4.7vw, 70px)`, auto-stepping down for
+  long titles (`data-size` lg/xl); glass stat row with count-up (`Stat countOnLoad`). Motion is
+  CSS-only: copy blocks rise via `.axh-in` + `--d` stagger, photo clip-path wipe (starts 34%
+  open, 0.75s — the photo is the LCP) then settle + slow breathe. Home and About Accreditation
+  reuse the same keyframes; TEPA keeps its GSAP hero; SME is untouched.
+- ISO/IEC 17025 is split into `/programs/testing-laboratories` and
+  `/programs/calibration-laboratories` (`/programs/iso-17025` redirects to Testing). The eight
+  scheme pages render through `app/programs/_scheme/SchemePage.tsx` from typed data.
+- `breadcrumbSchema()` always prepends Home — don't pass it.
+
 Rules:
 - New page-specific CSS goes in a **page-local file** (e.g. `app/foo/foo.css`), with every rule
   scoped under a page-only class, imported by that page. Never grow `app/globals.css`.

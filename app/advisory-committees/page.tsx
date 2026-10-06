@@ -50,7 +50,7 @@ type Cluster = {
 const CLUSTERS: Cluster[] = [
   {
     program: "Laboratories Accreditation",
-    href: "/programs/iso-17025",
+    href: "/programs/testing-laboratories",
     standard: "ISO/IEC 17025 · ISO 15189",
     icon: (
       <>
@@ -219,7 +219,7 @@ const FAQ = [
 
 export default function Page() {
   return (
-    <main className="axp atcx">
+    <div className="axp atcx">
       <JsonLd
         schema={[
           breadcrumbSchema([
@@ -529,6 +529,6 @@ export default function Page() {
           { href: "/documents", label: "Document library" },
         ]}
       />
-    </main>
+    </div>
   );
 }

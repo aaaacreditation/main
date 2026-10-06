@@ -1,0 +1,545 @@
+/* ==========================================================================
+   Conformity-assessment scheme pages — Oct 2026 client-structure rebuild.
+   Shared by the eight scheme routes through app/programs/_scheme/SchemePage.
+   Every rule is scoped under `.schx`. Cards are the shared NavyCard
+   (`.ax-blue`); headings, buttons, notes and FAQ come from app/aaa-ds.css.
+   ========================================================================== */
+
+/* Small label used above tile grids and the process rail */
+.schx .schx-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 22px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.schx .schx-label span {
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--aaa-gold);
+}
+
+/* ------------------------ 02 Who should apply ------------------------- */
+.schx .schx-suit {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+  align-items: start;
+  gap: clamp(36px, 5vw, 72px);
+}
+.schx .schx-suit.solo { grid-template-columns: 1fr; }
+.schx .schx-suit.solo .schx-suit-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 64px);
+}
+.schx .schx-suit .ax-prose { margin-top: 24px; }
+.schx .schx-suit.solo .ax-prose { margin-top: 0; }
+.schx .schx-suit-grid { margin-top: 0; }
+.schx #who-should-apply .container + .container { margin-top: clamp(40px, 4.6vw, 64px); }
+
+/* Advisor form panel (navy, sticky beside the suitability copy) */
+.schx .schx-advisor {
+  position: sticky;
+  top: 110px;
+  overflow: hidden;
+  padding: clamp(24px, 2.6vw, 32px);
+  border-radius: var(--ax-radius-lg);
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.schx .schx-advisor::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.schx .schx-advisor-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+.schx .schx-advisor-head .ax-card-ico { flex: none; color: #fff; border-color: var(--ax-ring-gold); background: transparent; }
+.schx .schx-advisor-head h3 { margin: 2px 0 6px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; color: #fff; }
+.schx .schx-advisor-head p { margin: 0; font-size: 14px; line-height: 1.6; color: rgba(255, 255, 255, 0.78); }
+
+.schx .schx-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.schx .schx-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.schx .schx-field { display: flex; flex-direction: column; gap: 6px; }
+.schx .schx-field.full { grid-column: 1 / -1; }
+.schx .schx-field label { font-size: 12.5px; font-weight: 500; color: var(--aaa-gold-100); }
+.schx .schx-field input,
+.schx .schx-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.schx .schx-field textarea { resize: vertical; min-height: 84px; }
+.schx .schx-field input::placeholder,
+.schx .schx-field textarea::placeholder { color: rgba(255, 255, 255, 0.5); }
+.schx .schx-field input:focus,
+.schx .schx-field textarea:focus {
+  outline: none;
+  border-color: var(--aaa-gold);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(179, 138, 46, 0.28);
+}
+.schx .schx-form .ax-btn { margin-top: 18px; justify-content: center; }
+.schx .schx-form .ax-btn:disabled { opacity: 0.5; cursor: progress; }
+.schx .schx-form-err {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #f2c6c2;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #b3261e;
+  background: #fdf0ef;
+}
+.schx .schx-form-done { padding: 22px; border: 1px solid rgba(244, 231, 198, 0.3); border-radius: 14px; background: rgba(255, 255, 255, 0.06); }
+.schx .schx-form-done strong { display: block; font-size: 17px; color: #fff; }
+.schx .schx-form-done p { margin: 8px 0 0; font-size: 14px; line-height: 1.65; color: rgba(255, 255, 255, 0.8); }
+
+/* ---------------------------- 03 Benefits ----------------------------- */
+.schx .schx-benefits {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(28px, 3.6vw, 52px);
+  margin-top: clamp(30px, 3.4vw, 46px);
+}
+.schx .schx-figure {
+  position: sticky;
+  top: 110px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: #fff;
+  box-shadow: var(--ax-shadow);
+}
+.schx .schx-figure-img { overflow: hidden; }
+.schx .schx-figure-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 520px;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease-out);
+}
+.schx .schx-figure:hover .schx-figure-img img { transform: scale(1.04); }
+.schx .schx-figure figcaption {
+  padding: 18px 22px 20px;
+  border-top: 3px solid var(--aaa-gold);
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-600);
+}
+.schx .schx-figure figcaption strong { display: block; margin-bottom: 4px; font-size: 15.5px; font-weight: 600; color: var(--aaa-blue); }
+.schx .schx-figure-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(26px, 3vw, 36px);
+  border: 0;
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.schx .schx-figure-panel .ax-card-ico { color: #fff; border-color: var(--ax-ring-gold); background: transparent; }
+.schx .schx-figure-panel strong { font-size: 20px; font-weight: 600; color: #fff; }
+.schx .schx-figure-panel p { margin: 0; font-size: 14.5px; line-height: 1.75; color: rgba(255, 255, 255, 0.82); }
+
+/* ------------------------- 04 Assessment areas ------------------------ */
+.schx .schx-note { max-width: 920px; margin: clamp(28px, 3vw, 40px) auto 0; align-items: flex-start; }
+.schx .schx-note svg { flex: none; margin-top: 2px; color: var(--aaa-gold-700); }
+
+/* ------------------------- 05 Process rail ---------------------------- */
+.schx .schx-process {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  align-items: start;
+  gap: clamp(32px, 4.4vw, 64px);
+  margin-top: clamp(30px, 3.4vw, 46px);
+}
+.schx .schx-rail { position: relative; margin: 0; padding: 0; list-style: none; counter-reset: none; }
+.schx .schx-rail::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 26px;
+  left: 25px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--aaa-gold), var(--aaa-blue-100) 70%, var(--aaa-blue));
+}
+.schx .schx-rail li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.schx .schx-rail li + li { margin-top: 14px; }
+.schx .schx-rail-no {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 3px solid var(--ax-cream);
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: 0 0 0 1.5px var(--ax-ring-gold), 0 14px 26px -16px rgba(7, 29, 52, 0.8);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.schx .schx-rail li:last-child .schx-rail-no {
+  color: var(--aaa-blue-950);
+  background: linear-gradient(135deg, var(--aaa-gold-100), var(--aaa-gold));
+}
+.schx .schx-rail-card {
+  padding: 16px 20px 18px;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius);
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+  transition: transform 0.3s var(--ease-out), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.schx .schx-rail li:hover .schx-rail-card {
+  transform: translateX(4px);
+  border-color: rgba(179, 138, 46, 0.45);
+  box-shadow: var(--ax-shadow);
+}
+.schx .schx-rail li:hover .schx-rail-no { background: linear-gradient(135deg, var(--aaa-gold), var(--aaa-gold-700)); color: #fff; }
+.schx .schx-rail-step {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.schx .schx-rail-card h4 { margin: 4px 0 6px; font-size: 17px; font-weight: 600; line-height: 1.3; color: var(--aaa-blue); }
+.schx .schx-rail-card p { margin: 0; font-size: 14px; line-height: 1.68; color: var(--ink-600); }
+
+/* Side column: application card + resources */
+.schx .schx-side { position: sticky; top: 110px; display: grid; gap: 20px; }
+.schx .schx-app {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 2.8vw, 34px);
+  border-radius: var(--ax-radius-lg);
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.schx .schx-app::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.schx .schx-app-ico {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  padding: 11px;
+  border: 1.5px solid var(--ax-ring-gold);
+  border-radius: 14px;
+  color: var(--aaa-gold-100);
+}
+.schx .schx-app-ico svg { width: 100%; height: 100%; }
+.schx .schx-app h3 { margin: 18px 0 0; font-size: clamp(20px, 1.9vw, 24px); font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+.schx .schx-app > p { margin: 12px 0 0; font-size: 14.5px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); }
+.schx .schx-app .ax-btn { margin-top: 22px; }
+.schx .schx-app .schx-app-note {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.schx .schx-docs {
+  padding: clamp(22px, 2.4vw, 28px);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.schx .schx-docs h3 { margin: 0 0 14px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: var(--aaa-blue); }
+.schx .schx-docs ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.schx .schx-docs a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--ink-200);
+  border-radius: 12px;
+  background: var(--ax-cream);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--aaa-blue);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s var(--ease-out);
+}
+.schx .schx-docs a > svg { color: var(--aaa-gold-700); }
+.schx .schx-docs a:hover { border-color: var(--aaa-blue); background: var(--aaa-blue-50); transform: translateX(3px); }
+.schx .schx-docs a:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
+.schx .schx-docs a i {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ink-500);
+}
+
+/* --------------------------- 06 Testimonials -------------------------- */
+.schx .schx-tm {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 56px);
+}
+.schx .schx-tm-media { min-width: 0; }
+.schx .schx-video {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ax-radius-lg);
+  background: var(--aaa-blue-950);
+  box-shadow: var(--ax-shadow);
+  cursor: pointer;
+}
+.schx .schx-video img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease-out); }
+.schx .schx-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 44, 0.1), rgba(6, 26, 44, 0.6));
+}
+.schx button.schx-video:hover img { transform: scale(1.04); }
+.schx button.schx-video:focus-visible { outline: 3px solid var(--aaa-gold); outline-offset: 3px; }
+.schx .schx-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.schx .schx-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, var(--aaa-gold), var(--aaa-gold-700));
+  box-shadow: 0 0 0 10px rgba(179, 138, 46, 0.25), 0 20px 40px -14px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s var(--ease-out);
+}
+.schx .schx-video-play svg { width: 28px; height: 28px; margin-left: 4px; }
+.schx button.schx-video:hover .schx-video-play { transform: translate(-50%, -50%) scale(1.08); }
+.schx .schx-video-label {
+  position: absolute;
+  bottom: 18px;
+  left: 20px;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.schx .schx-tm-photo {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--ax-radius-lg);
+  background: var(--aaa-blue-950);
+  box-shadow: var(--ax-shadow);
+}
+.schx .schx-tm-photo img { display: block; width: 100%; height: auto; max-height: 560px; object-fit: cover; }
+.schx .schx-tm-photo figcaption {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  padding: 11px 14px;
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 8px;
+  background: rgba(6, 26, 44, 0.8);
+  backdrop-filter: blur(8px);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #fff;
+}
+
+.schx .schx-plate {
+  display: grid;
+  place-items: center;
+  padding: 18px 24px;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius);
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.schx .schx-plate img { display: block; width: 100%; max-width: 100%; height: auto; }
+.schx .schx-tm-logo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  min-height: 100%;
+  padding: clamp(26px, 3vw, 40px);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.schx .schx-tm-logo .schx-plate { border: 0; }
+.schx .schx-tm-logo p { margin: 0; font-size: 13.5px; font-weight: 500; color: var(--aaa-gold-100); }
+
+.schx .schx-story h3 { margin: 0 0 10px; font-size: clamp(20px, 2vw, 24px); font-weight: 600; letter-spacing: -0.02em; color: var(--aaa-blue); }
+.schx .schx-story p { margin: 0; font-size: 15.5px; line-height: 1.75; color: var(--ink-600); }
+.schx .schx-story + .schx-quote { margin-top: 24px; }
+
+.schx .schx-quote {
+  position: relative;
+  margin: 0;
+  padding: clamp(24px, 3vw, 36px);
+  border: 1px solid var(--ax-border);
+  border-left: 4px solid var(--aaa-gold);
+  border-radius: var(--ax-radius-lg);
+  background: linear-gradient(160deg, #fff 55%, var(--aaa-blue-50));
+  box-shadow: 0 24px 60px -40px rgba(7, 29, 52, 0.5);
+}
+.schx .schx-quote-mark { display: block; color: var(--aaa-gold); }
+.schx .schx-quote blockquote {
+  margin: 12px 0 20px;
+  font-size: clamp(17px, 1.6vw, 21px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+  color: var(--aaa-blue-950);
+}
+.schx .schx-quote.compact blockquote { font-size: clamp(16px, 1.4vw, 18.5px); }
+.schx .schx-quote figcaption strong { display: block; font-size: 16px; font-weight: 600; color: var(--aaa-blue); }
+.schx .schx-quote figcaption span { display: block; margin-top: 3px; font-size: 13.5px; color: var(--ink-600); }
+
+.schx .schx-highlights { margin-top: clamp(28px, 3vw, 40px); }
+.schx .schx-highlights .ax-card.navy.ax-blue { min-height: 0; }
+
+.schx .schx-clients {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(24px, 3.4vw, 48px);
+  margin-top: clamp(36px, 4vw, 56px);
+  padding: clamp(24px, 3vw, 36px);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-cream);
+}
+.schx .schx-clients h3 { margin: 0 0 10px; font-size: clamp(18px, 1.7vw, 21px); font-weight: 600; letter-spacing: -0.01em; color: var(--aaa-blue); }
+.schx .schx-clients p { margin: 0; font-size: 14.5px; line-height: 1.72; color: var(--ink-600); }
+
+.schx .schx-second {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 3vw, 40px);
+  max-width: 980px;
+  margin: clamp(36px, 4vw, 56px) auto 0;
+}
+.schx .schx-second-photo {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  box-shadow: 0 0 0 6px #fff, 0 0 0 8px rgba(179, 138, 46, 0.55), var(--ax-shadow);
+}
+.schx .schx-second-photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+
+/* ------------------------------ Responsive ---------------------------- */
+@media (max-width: 1100px) {
+  .schx .schx-benefits { grid-template-columns: 1fr; }
+  .schx .schx-figure { position: static; max-width: 640px; }
+}
+@media (max-width: 980px) {
+  .schx .schx-suit,
+  .schx .schx-suit.solo .schx-suit-copy,
+  .schx .schx-process,
+  .schx .schx-tm,
+  .schx .schx-clients { grid-template-columns: 1fr; }
+  .schx .schx-advisor,
+  .schx .schx-side { position: static; }
+}
+@media (max-width: 640px) {
+  .schx .schx-form-grid { grid-template-columns: 1fr; }
+  .schx .schx-second { grid-template-columns: 1fr; justify-items: center; }
+  .schx .schx-second-photo { width: min(220px, 70%); }
+  .schx .schx-rail::before { left: 20px; }
+  .schx .schx-rail li { grid-template-columns: 42px minmax(0, 1fr); gap: 12px; }
+  .schx .schx-rail-no { width: 42px; height: 42px; font-size: 13.5px; }
+  .schx .schx-rail-card { padding: 14px 16px 16px; }
+  .schx .schx-docs a { grid-template-columns: auto minmax(0, 1fr); }
+  .schx .schx-docs a i { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .schx .schx-rail li:hover .schx-rail-card,
+  .schx .schx-figure:hover .schx-figure-img img,
+  .schx button.schx-video:hover img { transform: none; }
+}
+
+/* Oct 2026 review: the client wants every card in the SME blue-card style, so
+   the process step cards and testimonial quotes move onto the navy surface. */
+.schx .schx-rail-card,
+.schx .schx-quote {
+  border: 1.5px solid transparent;
+  background:
+    var(--ax-navy-bg) padding-box,
+    linear-gradient(135deg, rgba(179, 138, 46, 0.7), #33598e 40%, #33598e 70%, rgba(193, 18, 47, 0.55)) border-box;
+  box-shadow: var(--ax-navy-shadow);
+}
+.schx .schx-quote { border-left-width: 1.5px; }
+.schx .schx-quote::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  border-radius: var(--ax-radius-lg) var(--ax-radius-lg) 0 0;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.schx .schx-rail li:hover .schx-rail-card { border-color: transparent; box-shadow: 0 34px 66px -30px rgba(7, 29, 52, 0.7); }
+.schx .schx-rail-card h4 { color: #fff; }
+.schx .schx-rail-card p { color: rgba(255, 255, 255, 0.8); }
+.schx .schx-rail-card .schx-rail-step { color: var(--aaa-gold-100); }
+.schx .schx-quote blockquote { color: #fff; }
+.schx .schx-quote figcaption strong { color: var(--aaa-gold-100); }
+.schx .schx-quote figcaption span { color: rgba(255, 255, 255, 0.72); }

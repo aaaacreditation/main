@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Icon from "./Icon";
 import SealRosette from "./SealRosette";
-import { CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
+import { CAB_SCHEMES, CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
 
 /**
  * Site footer.
@@ -13,32 +13,21 @@ import { CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
  * four social icons pointed at `href="#"`.
  */
 
-const PROGRAM_LINKS = [
-  PROGRAMS.healthcare,
-  PROGRAMS.training,
-  PROGRAMS.sme,
-  PROGRAMS.school,
-  PROGRAMS.iso17021,
-  PROGRAMS.iso17065,
-  PROGRAMS.iso17024,
-  PROGRAMS.iso17020,
-  PROGRAMS.iso17025,
-  PROGRAMS.iso15189,
-  PROGRAMS.iso17043,
-  PROGRAMS.astm,
-];
+// Oct 2026: mirrors the client's site structure — the four primary programs,
+// then the eight conformity-assessment programs in hub order.
+const PROGRAM_LINKS = [PROGRAMS.training, PROGRAMS.healthcare, PROGRAMS.cab, PROGRAMS.sme, ...CAB_SCHEMES];
 
 const ABOUT_LINKS = [
   { href: "/about", label: "About AAA" },
+  { href: "/governance-leadership", label: "Governance & Leadership" },
+  { href: "/partnerships", label: "Recognition & Partnerships" },
   { href: "/about-accreditation", label: "About Accreditation" },
-  { href: "/partnerships", label: "Partnerships" },
-  { href: "/advisory-committees", label: "Advisory Committees" },
-  { href: "/impartiality-policy", label: "Impartiality Policy" },
-  { href: "/news", label: "AAA News" },
-  { href: "/documents", label: "Documents" },
-  { href: "/membership", label: "Membership" },
+  { href: "/impartiality-policy", label: "Impartiality & Independence" },
+  { href: "/membership/organizational", label: "Organizational Membership" },
+  { href: "/membership/individual", label: "Individual Membership" },
   { href: "/directory/accredited-organizations", label: "Accredited Organizations" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/news", label: "News & Announcements" },
+  { href: "/documents", label: "Documents" },
 ];
 
 export default function Footer() {

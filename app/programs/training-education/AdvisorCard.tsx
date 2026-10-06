@@ -3,9 +3,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * The advisor enquiry card in "Why Accreditation Matters". It rises in on a
- * soft spring the first time it scrolls into view (it lived in the hero and
- * slid in on load until Sept 18 2026).
+ * The advisor enquiry card — third column of the hero (client's final TEPA
+ * order, Oct 2026: "Hero + enquiry form"). It rises in on a soft spring the
+ * first time it comes into view.
  */
 export default function AdvisorCard({ children }: { children: React.ReactNode }) {
   const reduce = useReducedMotion();

@@ -3,86 +3,159 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Icon from "./Icon";
-import { CAB_SCHEMES, CONTACT, PROGRAMS as P, SOCIAL } from "../../lib/facts";
+import { EXTERNAL, PROGRAMS as P } from "../../lib/facts";
 
 /*
- * Aug 2026: nav labels now come from lib/facts.ts so the ISO/IEC 17021-1
- * program carries its renamed title ("Management Systems Certification Bodies
- * Accreditation") everywhere at once. The mega-menu also gained a second
- * column listing the eight conformity-assessment schemes — the live site only
- * links to those from the footer, which left the scheme pages with almost no
- * internal links pointing at them.
+ * Oct 2026: rebuilt on the client's "Main Navigation Menu" file — a thin navy
+ * utility bar (Contact Us · Login / Client Portal) over ONE white row holding
+ * the logo, the six-item menu with simple dropdowns, search and the gold
+ * "Apply for Accreditation" button. Replaces the three-tier BizGen header
+ * (utility strip → logo/contact row → dark nav bar). `--header-h` in
+ * aaa-ds.css is the height heroes pad against; keep it in step with this.
  */
-const PROGRAMS = [
-  { href: P.healthcare.href, label: P.healthcare.label, std: P.healthcare.standard },
-  { href: P.cab.href, label: P.cab.label, std: P.cab.standard },
-  { href: P.training.href, label: P.training.label, std: P.training.standard },
-  { href: P.sme.href, label: P.sme.label, std: P.sme.standard },
-  { href: P.school.href, label: P.school.label, std: P.school.standard },
+type NavItem = { href: string; label: string; external?: boolean };
+
+const GROUPS: { label: string; href: string; items: NavItem[] }[] = [
+  {
+    label: "Accreditation Programs",
+    href: "/programs",
+    items: [
+      { href: P.training.href, label: "Training & Education Providers" },
+      { href: P.healthcare.href, label: "Healthcare Organizations" },
+      { href: P.cab.href, label: "Conformity Assessment Bodies" },
+      { href: P.sme.href, label: "SMEs Accreditation" },
+    ],
+  },
+  {
+    label: "About AAA",
+    href: "/about",
+    items: [
+      { href: "/about", label: "About AAA" },
+      { href: "/governance-leadership", label: "Governance & Leadership" },
+      { href: "/partnerships", label: "Recognition & Partnerships" },
+      { href: "/about-accreditation", label: "About Accreditation" },
+      { href: "/impartiality-policy", label: "Impartiality & Independence" },
+    ],
+  },
+  {
+    label: "Academy & Community",
+    href: "/membership",
+    items: [
+      { href: EXTERNAL.academy, label: "AAA Academy" },
+      { href: "/membership/organizational", label: "Organizational Membership" },
+      { href: "/membership/individual", label: "Individual Membership" },
+    ],
+  },
+  {
+    label: "Accredited Directory",
+    href: "/directory",
+    items: [
+      { href: "/directory/accredited-organizations", label: "Accredited Organizations" },
+      { href: EXTERNAL.accreditedPersonnel, label: "Accredited Personnel", external: true },
+      { href: "/directory", label: "Verification Portal" },
+    ],
+  },
+  {
+    label: "Resources",
+    href: "/news",
+    items: [
+      { href: EXTERNAL.successStories, label: "Success Stories", external: true },
+      { href: "/news", label: "Articles" },
+      { href: "/news", label: "News & Announcements" },
+    ],
+  },
 ];
 
-const ABOUT = [
-  { href: "/about", label: "About AAA" },
-  { href: "/about-accreditation", label: "About Accreditation" },
-  { href: "/news", label: "AAA News" },
-  { href: "/advisory-committees", label: "Advisory Technical Committees" },
-  { href: "/impartiality-policy", label: "Safeguarding Impartiality Policy" },
-  { href: "/partnerships", label: "National & International Partnership" },
-  { href: "/faq", label: "FAQ" },
-];
-
-const MEMBERSHIP = [
-  { href: "/membership", label: "Membership Overview" },
-  { href: "/membership/individual", label: "Individual Membership" },
-  { href: "/membership/organizational", label: "Organizational Membership" },
-];
+function NavA({ item }: { item: NavItem }) {
+  return item.external ? (
+    <a href={item.href} target="_blank" rel="noopener noreferrer">
+      {item.label}
+    </a>
+  ) : (
+    <Link href={item.href}>{item.label}</Link>
+  );
+}
 
 function NavLinks() {
+  const pathname = usePathname();
+  // Dropdowns open on hover/focus (CSS). After a click the pointer is still
+  // over the item and the link keeps focus, so the panel would stay open on
+  // the new page: mark the item closed until the pointer leaves it.
+  const [closed, setClosed] = useState<string | null>(null);
+
+  const close = (label: string) => {
+    setClosed(label);
+    (document.activeElement as HTMLElement | null)?.blur();
+  };
+
+  // Any route change (link, back/forward) closes whatever is open.
+  useEffect(() => {
+    (document.activeElement as HTMLElement | null)?.blur();
+  }, [pathname]);
+
   return (
-    <nav className="nav">
-      <span className="nav-item">
-        <Link href="/about" className="has-caret">About</Link>
-        <span className="nav-dropdown">
-          {ABOUT.map((i) => (
-            <Link key={i.href} href={i.href}>{i.label}</Link>
-          ))}
-        </span>
-      </span>
-      <span className="nav-item">
-        <Link href="/programs/healthcare" className="has-caret">Accreditation Programs</Link>
-        <span className="nav-dropdown mega">
-          <span className="mega-col">
-            <span className="mega-head">Programs</span>
-            {PROGRAMS.map((i) => (
-              <Link key={i.href} href={i.href}>
-                <span className="mega-label">{i.label}</span>
-                <span className="mega-std">{i.std}</span>
-              </Link>
-            ))}
-          </span>
-          <span className="mega-col">
-            <span className="mega-head">Conformity assessment schemes</span>
-            {CAB_SCHEMES.map((i) => (
-              <Link key={i.href} href={i.href}>
-                <span className="mega-label">{i.shortLabel}</span>
-                <span className="mega-std">{i.standard}</span>
-              </Link>
+    <nav
+      className="nav"
+      aria-label="Main navigation"
+      onKeyDown={(e) => {
+        if (e.key !== "Escape") return;
+        const item = (e.target as HTMLElement).closest<HTMLElement>(".nav-item");
+        if (item?.dataset.label) close(item.dataset.label);
+      }}
+    >
+      <Link href="/">Home</Link>
+      {GROUPS.map((g) => (
+        <span
+          className={"nav-item" + (closed === g.label ? " nav-closed" : "")}
+          key={g.label}
+          data-label={g.label}
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest("a")) close(g.label);
+          }}
+          onMouseLeave={() => closed === g.label && setClosed(null)}
+        >
+          <Link href={g.href} className="has-caret" aria-haspopup="true">{g.label}</Link>
+          <span className="nav-dropdown">
+            {g.items.map((i) => (
+              <NavA key={i.label} item={i} />
             ))}
           </span>
         </span>
-      </span>
-      <span className="nav-item">
-        <Link href="/membership" className="has-caret">Membership</Link>
-        <span className="nav-dropdown">
-          {MEMBERSHIP.map((i) => (
-            <Link key={i.href} href={i.href}>{i.label}</Link>
-          ))}
-        </span>
-      </span>
-      <Link href="/directory/accredited-organizations">Accredited Organizations</Link>
-      <Link href="/news">News</Link>
+      ))}
     </nav>
+  );
+}
+
+/* Seal + three-line wordmark, as in the client's menu file. The full-colour
+   logo PNG has white lettering made for dark surfaces (it stays in the dark
+   footer); on this white row the words are set in navy with the logo's red
+   initials. */
+function Brand({ size = 56, tabbable = true }: { size?: number; tabbable?: boolean }) {
+  return (
+    <Link href="/" className="brand sh2-brand" aria-label="American Accreditation Association — home" tabIndex={tabbable ? 0 : -1}>
+      <Image src="/logo/aaalog.png" alt="" width={size} height={Math.round((size * 671) / 710)} priority className="sh2-seal" />
+      <span className="sh2-wordmark" aria-hidden="true">
+        <span><b>A</b>merican</span>
+        <span><b>A</b>ccreditation</span>
+        <span><b>A</b>ssociation</span>
+      </span>
+    </Link>
+  );
+}
+
+function MenuToggle({ open, onToggle, tabbable = true }: { open: boolean; onToggle: () => void; tabbable?: boolean }) {
+  return (
+    <button
+      className={"menu-toggle" + (open ? " open" : "")}
+      aria-label={open ? "Close menu" : "Open menu"}
+      aria-expanded={open}
+      onClick={onToggle}
+      tabIndex={tabbable ? 0 : -1}
+    >
+      <span className="bars" />
+    </button>
   );
 }
 
@@ -98,136 +171,52 @@ export default function Header() {
   }, [menuOpen]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 220);
+    const onScroll = () => setScrolled(window.scrollY > 160);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const toggle = () => setMenuOpen((o) => !o);
+
   return (
     <>
-      <header className="site-header">
-        {/* Top utility strip */}
+      <header className="site-header sh2">
         <div className="utility-bar">
-          <div className="container">
-            <div className="row">
-              <div className="utility-left">
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                  <Icon name="pin" size={12} /> Tysons Corner, Virginia, USA
-                </span>
-                <span className="dot" />
-                <span>International accreditation accepted globally</span>
-                <span className="dot" />
-                <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>
-              </div>
-              <div className="utility-right">
-                <Link href="/apply">Apply</Link>
-                <Link href="/about-accreditation">AAA Academy</Link>
-                <Link href="/documents">Documents</Link>
-                <Link href="/contact">Contact</Link>
-                <span className="utility-divider" />
-                {SOCIAL.map((s) => (
-                  <a
-                    key={s.name}
-                    href={s.href}
-                    aria-label={`AAA on ${s.name}`}
-                    target="_blank"
-                    rel="noopener noreferrer me"
-                  >
-                    <Icon name={s.icon} size={14} />
-                  </a>
-                ))}
-              </div>
-            </div>
+          <div className="container sh2-utility">
+            <Link href="/contact">Contact Us</Link>
+            <Link href={EXTERNAL.clientPortal}>Login / Client Portal</Link>
           </div>
         </div>
 
-        {/* Logo row — logo left, contact blocks and primary CTA right */}
-        <div className="header-main">
-          <div className="container">
-            <Link href="/" className="brand" aria-label="American Accreditation Association — home">
-              <Image
-                src="/logo/AAA-Logo.png"
-                alt="American Accreditation Association"
-                width={350}
-                height={120}
-                priority
-                className="brand-logo"
-              />
-            </Link>
-
-            <div className="header-info">
-              <a className="hinfo" href={`mailto:${CONTACT.email}`}>
-                <span className="hinfo-ico"><Icon name="mail" size={18} /></span>
-                <span className="hinfo-txt">
-                  <span className="hinfo-label">Send us a message</span>
-                  <strong>{CONTACT.email}</strong>
-                </span>
-              </a>
-              <a className="hinfo" href={CONTACT.phoneHref}>
-                <span className="hinfo-ico"><Icon name="phone" size={18} /></span>
-                <span className="hinfo-txt">
-                  <span className="hinfo-label">Call our team</span>
-                  <strong>{CONTACT.phone}</strong>
-                </span>
-              </a>
-              <Link href="/quote" className="btn btn-primary hinfo-cta">
-                Get a Quote <Icon name="arrow" size={14} className="arrow" />
-              </Link>
-            </div>
-
-            <button
-              className={"menu-toggle" + (menuOpen ? " open" : "")}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((o) => !o)}
-            >
-              <span className="bars" />
-            </button>
-          </div>
-        </div>
-
-        {/* Primary nav — dark bar that floats over the top of the hero */}
-        <div className="header-nav">
-          <div className="container">
+        <div className="sh2-main">
+          <div className="container sh2-row">
+            <Brand />
             <NavLinks />
-
-            <div className="header-actions">
-              <button className="search-btn" aria-label="Search"><Icon name="search" size={16} /></button>
-              <Link href="/apply" className="nav-apply">
-                Apply <Icon name="arrow" size={13} className="arrow" />
+            <div className="sh2-actions">
+              <button className="sh2-search" aria-label="Search">
+                <Icon name="search" size={18} />
+              </button>
+              <Link href="/apply" className="sh2-apply">
+                Apply for Accreditation
               </Link>
             </div>
+            <MenuToggle open={menuOpen} onToggle={toggle} />
           </div>
         </div>
       </header>
 
-      {/* Compact sticky bar — slides in once the tall header scrolls away */}
-      <div className={"header-compact" + (scrolled ? " show" : "")} aria-hidden={!scrolled}>
-        <div className="container">
-          <Link href="/" className="hc-brand" aria-label="American Accreditation Association — home" tabIndex={scrolled ? 0 : -1}>
-            <Image
-              src="/logo/AAA-Logo.png"
-              alt=""
-              width={146}
-              height={45}
-              className="hc-logo"
-            />
-          </Link>
+      {/* Same single row, pinned once the page scrolls past the header */}
+      <div className={"header-compact sh2-compact" + (scrolled ? " show" : "")} aria-hidden={!scrolled}>
+        <div className="container sh2-row">
+          <Brand size={46} tabbable={scrolled} />
           <NavLinks />
-          <div className="hc-actions">
-            <Link href="/quote" className="btn hc-cta" tabIndex={scrolled ? 0 : -1}>
-              Get a Quote <Icon name="arrow" size={13} className="arrow" />
+          <div className="sh2-actions">
+            <Link href="/apply" className="sh2-apply" tabIndex={scrolled ? 0 : -1}>
+              Apply for Accreditation
             </Link>
-            <button
-              className={"menu-toggle" + (menuOpen ? " open" : "")}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((o) => !o)}
-            >
-              <span className="bars" />
-            </button>
           </div>
+          <MenuToggle open={menuOpen} onToggle={toggle} tabbable={scrolled} />
         </div>
       </div>
 
@@ -237,41 +226,25 @@ export default function Header() {
           if ((e.target as HTMLElement).closest("a")) setMenuOpen(false);
         }}
       >
-        <details className="mm-group" open>
-          <summary>Accreditation Programs</summary>
-          {PROGRAMS.map((i) => (
-            <Link key={i.href} href={i.href}>{i.label}</Link>
-          ))}
-        </details>
-        <details className="mm-group">
-          <summary>About</summary>
-          {ABOUT.map((i) => (
-            <Link key={i.href} href={i.href}>{i.label}</Link>
-          ))}
-        </details>
-        <details className="mm-group">
-          <summary>Membership</summary>
-          {MEMBERSHIP.map((i) => (
-            <Link key={i.href} href={i.href}>{i.label}</Link>
-          ))}
-        </details>
-        <details className="mm-group">
-          <summary>Conformity assessment schemes</summary>
-          {CAB_SCHEMES.map((i) => (
-            <Link key={i.href} href={i.href}>{i.shortLabel}</Link>
-          ))}
-        </details>
         <div className="mm-links">
-          <Link href="/directory/accredited-organizations">Accredited Organizations</Link>
-          <Link href="/news">News</Link>
-          <Link href="/documents">Documents</Link>
-          <Link href="/apply">Apply</Link>
+          <Link href="/">Home</Link>
+        </div>
+        {GROUPS.map((g) => (
+          <details className="mm-group" key={g.label}>
+            <summary>{g.label}</summary>
+            {g.items.map((i) => (
+              <NavA key={i.label} item={i} />
+            ))}
+          </details>
+        ))}
+        <div className="mm-links">
+          <Link href="/contact">Contact Us</Link>
+          <Link href={EXTERNAL.clientPortal}>Login / Client Portal</Link>
         </div>
         <div className="mm-ctas">
-          <Link href="/quote" className="btn btn-primary">
-            Get a Quote <Icon name="arrow" size={14} className="arrow" />
+          <Link href="/apply" className="btn btn-primary sh2-apply">
+            Apply for Accreditation
           </Link>
-          <Link href="/contact" className="btn btn-ghost">Contact</Link>
         </div>
       </div>
     </>

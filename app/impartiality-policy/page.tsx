@@ -1,486 +1,326 @@
 import Link from "next/link";
-import Icon from "../_components/Icon";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
-import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import NavyCard from "../_components/site/NavyCard";
+import SectionHead from "../_components/site/SectionHead";
+import Glyph, { type GlyphName } from "../_components/site/Glyph";
+import { pageMeta, breadcrumbSchema } from "@/lib/seo";
 import "./impartiality-policy.css";
 
+/*
+ * Impartiality & Independence — rebuilt Oct 2026 on the client's final
+ * cumulative package (Hero → Why Impartiality Matters → How AAA Safeguards
+ * Impartiality → Confidentiality & Information Protection → Complaints &
+ * Appeals → Final CTA), in the AAA design system with the SME blue card.
+ * Complaint / appeal / procedure links go to /contact until dedicated pages
+ * exist.
+ */
+
 export const metadata = pageMeta({
-  title: "Safeguarding Impartiality Policy",
+  title: "Impartiality & Independence",
   description:
-    "AAA's policy on impartiality, transparency, objectivity and independence — how risks to impartiality are identified, evaluated, treated and monitored.",
+    "How AAA protects impartiality and independence: conflict of interest management, independent oversight, confidentiality, and fair complaints and appeals.",
   path: "/impartiality-policy",
   keywords: [
-    "impartiality policy",
     "accreditation impartiality",
+    "accreditation independence",
     "conflict of interest accreditation body",
-    "AAA governance",
+    "accreditation complaints and appeals",
+    "AAA impartiality policy",
   ],
 });
 
-function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {children}
-    </svg>
-  );
-}
+const IMG = "/images/site/impartiality";
 
-const VALUES: { title: string; text: string }[] = [
+const WHY: { icon: GlyphName; title: string; text: string }[] = [
   {
-    title: "Impartiality",
-    text: "Decisions are taken on evidence against published requirements — not on relationships, revenue or reputation.",
-  },
-  {
-    title: "Transparency",
-    text: "Requirements, policies and the routes for complaint and appeal are published and open to every stakeholder.",
-  },
-  {
+    icon: "target",
     title: "Objectivity",
-    text: "Assessment findings rest on what the evidence shows, and are reviewed independently before a decision.",
+    text: "Decisions are based on evidence and applicable accreditation requirements.",
   },
   {
+    icon: "scale",
     title: "Independence",
-    text: "AAA does not consult for the bodies it accredits, and does not perform the conformity assessment work they perform.",
+    text: "Accreditation activities are protected from inappropriate influence or competing interests.",
+  },
+  {
+    icon: "check-circle",
+    title: "Confidence",
+    text: "Stakeholders can place greater trust in accreditation when decisions are made fairly and consistently.",
   },
 ];
 
-const MECHANISMS: { label: string; icon: React.ReactNode }[] = [
+const SAFEGUARDS: { icon: GlyphName; title: string; text: string }[] = [
   {
-    label: "Internal audits",
-    icon: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <path d="M14 2v6h6M9 15l2 2 4-4" />
-      </>
-    ),
+    icon: "shield",
+    title: "Conflict of Interest Management",
+    text: "Potential conflicts of interest are identified and managed to help prevent personal, professional, commercial, or other interests from compromising the objectivity of accreditation activities.",
   },
   {
-    label: "External audits",
-    icon: (
-      <>
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </>
-    ),
+    icon: "route",
+    title: "Separation of Assessment and Decision-Making",
+    text: "Accreditation decisions are subject to independent review and are appropriately separated from assessment activities, helping ensure that decisions are not made solely by those who conducted the assessment.",
   },
   {
-    label: "Management reviews",
-    icon: (
-      <>
-        <path d="M3 3v18h18" />
-        <path d="m7 15 3.5-4 3 2.5L20 7" />
-      </>
-    ),
+    icon: "file-check",
+    title: "Evidence-Based Accreditation Decisions",
+    text: "Accreditation decisions are based on assessment evidence, applicable requirements, documented findings, and established decision-making processes.",
   },
   {
-    label: "Complaints & satisfaction surveys",
-    icon: (
-      <>
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        <path d="M8 9h8M8 13h5" />
-      </>
-    ),
+    icon: "user-check",
+    title: "Competent & Objective Personnel",
+    text: "Assessors, technical experts, and other personnel involved in accreditation activities are expected to have appropriate competence for their assigned roles and to perform those roles objectively and professionally.",
   },
 ];
 
-const CYCLE: { verb: string; text: string }[] = [
-  { verb: "Analyze", text: "Every identified risk to impartiality is analyzed in the context of the activity and the relationships that give rise to it." },
-  { verb: "Evaluate", text: "Risks are evaluated to establish their significance and whether any residual risk remains after treatment." },
-  { verb: "Treat", text: "Controls are applied to bring identified risks within an acceptable level of risk." },
-  { verb: "Monitor", text: "Treated risks stay under monitoring, so a control that stops working is caught rather than assumed." },
-];
-
-/**
- * The six commitments, verbatim from the AAA Safeguarding Impartiality Policy.
- * The short headings are labels for navigation — the policy text is unchanged.
- */
-const MEASURES: { title: string; text: string }[] = [
+const CONFIDENTIALITY: { icon: GlyphName; title: string; text: string }[] = [
   {
-    title: "Conflicts of interest are managed, not tolerated",
-    text: "Manages conflict of interest and any potential conflict of interest in our decision-making processes.",
+    icon: "lock",
+    title: "Confidential Handling",
+    text: "Information obtained during accreditation activities is treated as confidential and handled with appropriate care.",
   },
   {
-    title: "No consultancy, no conformity assessment work",
-    text: "Avoids the provision of services that affect its impartiality, such as consultancy services or suggesting the use of consultants, and does not participate in or offer any conformity assessment services that conformity assessment bodies perform.",
+    icon: "target",
+    title: "Purpose-Limited Use",
+    text: "Information is used only for legitimate accreditation activities and related organizational responsibilities.",
   },
   {
-    title: "Non-discriminatory access to accreditation",
-    text: "Is non-discriminatory, where its services are offered to all conformity assessment bodies (CABs) in a fair and equitable manner regardless of size, membership of any association or groups, the number of organizations already accredited, or whether from the public sector or private sector, provided that the application is within the scope of accreditation as offered.",
+    icon: "key",
+    title: "Controlled Access",
+    text: "Access to confidential information is limited to personnel, assessors, experts, and decision-makers who require it for their assigned roles.",
   },
   {
-    title: "An impartial complaints and appeals procedure",
-    text: "Ensures an impartial complaints and appeals procedure which is open to all stakeholders.",
-  },
-  {
-    title: "Training that stays generic",
-    text: "Avoids compromising its impartiality and status in training service delivery, by offering generic training courses which do not give specific advice for the development of an organization's operations, and furthermore, not offering training courses as a precondition or guarantee of accreditation.",
-  },
-  {
-    title: "Support for developing accreditation bodies only",
-    text: "Only offers support, training and twinning opportunities to other developing accreditation bodies in terms of meeting the necessary criteria for obtaining international recognition.",
+    icon: "eye",
+    title: "Responsible Disclosure",
+    text: "Confidential information is not disclosed to third parties unless authorized, required by applicable obligations, or necessary within the accreditation process.",
   },
 ];
 
-const FAQ = [
-  {
-    q: "What is AAA's impartiality policy?",
-    a: "Safeguarding impartiality, transparency, objectivity and independence of all AAA operations and accreditation activities is paramount to instilling confidence and trust in the integrity of AAA services to its clients and stakeholders. Top management of AAA undertakes to uphold these values.",
-  },
-  {
-    q: "How does AAA identify risks to its impartiality?",
-    a: "AAA continuously evaluates the risks to impartiality arising from its activities and from any conflicts arising from its or its personnel's relationships and interactions with other organizations, through various mechanisms such as internal and external audits, management reviews, complaints and customer satisfaction surveys.",
-  },
-  {
-    q: "What happens if a risk to impartiality cannot be mitigated?",
-    a: "AAA analyzes, evaluates, treats and monitors all identified risks, and determines whether any residual risks are within an acceptable level of risk. Accreditation shall not be provided in areas where an unacceptable level of risk is identified, and which cannot be mitigated to an acceptable level.",
-  },
-  {
-    q: "Does AAA provide consultancy to the organizations it accredits?",
-    a: "No. AAA avoids the provision of services that affect its impartiality, such as consultancy services or suggesting the use of consultants, and does not participate in or offer any conformity assessment services that conformity assessment bodies perform.",
-  },
-  {
-    q: "Does AAA offer training to applicants?",
-    a: "AAA avoids compromising its impartiality and status in training service delivery by offering generic training courses which do not give specific advice for the development of an organization's operations. Training courses are never offered as a precondition or guarantee of accreditation.",
-  },
-  {
-    q: "Can anyone complain or appeal against an AAA decision?",
-    a: "Yes. AAA ensures an impartial complaints and appeals procedure which is open to all stakeholders.",
-  },
-];
-
-export default function Page() {
+export default function ImpartialityPage() {
   return (
-    <main className="axp impx">
+    <div className="axp imp">
       <JsonLd
-        schema={[
-          breadcrumbSchema([
-            { name: "Safeguarding Impartiality Policy", path: "/impartiality-policy" },
-          ]),
-          faqSchema(FAQ),
-        ]}
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "About AAA", path: "/about" },
+          { name: "Impartiality & Independence", path: "/impartiality-policy" },
+        ])}
       />
 
+      {/* 01 — Hero */}
       <PageHero
-        image="/about/leadership.jpg"
-        eyebrow="Impartiality"
-        badge="Policy · Upheld by top management"
+        eyebrow="Our Commitment"
+        crumbs={[{ label: "About AAA", href: "/about" }, { label: "Impartiality & Independence" }]}
         title={
           <>
-            Safeguarding <em>impartiality.</em>
+            Impartiality &amp; <span className="imp-gold">Independence</span>
           </>
         }
-        intro="An accreditation body is only worth the independence behind its decisions. This is the policy that governs AAA's impartiality, transparency, objectivity and independence — and what happens when a risk to any of them cannot be brought to an acceptable level."
-        crumbs={[{ label: "Safeguarding Impartiality Policy" }]}
-        caption={{
-          kicker: "AAA top management",
-          title: "Undertaking to uphold impartiality, transparency, objectivity and independence",
-          chip: "Public policy",
-        }}
-        meta={[
-          { k: "Policy owner", v: "Top management" },
-          { k: "Scope", v: "All operations" },
-          { k: "Risk review", v: "Continuous" },
-          { k: "Appeals open to", v: "All stakeholders" },
-        ]}
+        intro={
+          <>
+            <span className="imp-tagline">
+              Protecting the integrity, objectivity, and credibility of every accreditation decision.
+            </span>
+            At the American Accreditation Association (AAA), we are committed to independent, fair, and evidence-based
+            accreditation, free from undue influence, conflicts of interest, or commercial, financial, or other
+            pressures.
+          </>
+        }
+        image={`${IMG}/impartiality-independence-hero.webp`}
+        imageAlt="Symbolic balance scale representing integrity, objectivity, independence, fairness, transparency and trust"
         actions={
           <>
-            <a href="#commitments" className="ax-btn ax-btn-gold">
-              Read the six commitments <Icon name="arrow" size={14} />
+            <a href="#how-aaa-safeguards-impartiality" className="ax-btn ax-btn-gold imp-jump">
+              How AAA Safeguards Impartiality <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </a>
-            <Link href="/contact" className="ax-btn ax-btn-ghost">
-              Raise a complaint or appeal
-            </Link>
+            <a href="#complaints-appeals" className="ax-btn ax-btn-ghost imp-jump">
+              Complaints &amp; Appeals <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </a>
           </>
         }
       />
 
-      {/* 01 — Policy statement */}
-      <section className="ax-section" id="statement">
+      {/* 02 — Why impartiality matters */}
+      <section className="ax-section" id="why-impartiality-matters">
         <div className="container">
-          <div className="ax-split top">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">Policy statement</span>
-                <h2>The undertaking, in AAA&rsquo;s own words.</h2>
-              </div>
-              <span className="ax-rule" aria-hidden="true" />
-              <p style={{ marginTop: 24 }}>
-                Impartiality is not a section of the AAA management system that sits alongside the
-                rest of it. It is the condition on which every accreditation decision depends: if
-                the assessment could have gone another way because of a relationship, a fee or a
-                favour, the accreditation is worthless to the client and to everyone relying on it.
+          <SectionHead
+            center
+            eyebrow="Why It Matters"
+            title="Confidence Depends on Independent Judgment"
+            intro="Impartiality is fundamental to credible accreditation because stakeholders must be able to trust that assessments and decisions are made objectively, consistently, and on the basis of evidence."
+          />
+          <div className="imp-why">
+            <div className="imp-why-lead reveal">
+              <span className="imp-why-mark" aria-hidden="true">
+                <Glyph name="scale" />
+              </span>
+              <p className="imp-why-big">
+                Accreditation only has value when assessment and decision-making are objective, evidence-based, and free
+                from inappropriate influence.
               </p>
               <p>
-                This policy applies to all AAA operations and accreditation activities, and is
-                upheld by AAA top management.
+                Impartiality helps ensure that accreditation decisions are based on applicable requirements and verified
+                evidence rather than commercial interests, personal relationships, financial considerations, or other
+                pressures.
               </p>
-              <div className="ax-actions">
-                <Link href="/advisory-committees" className="ax-btn ax-btn-ghost-navy">
-                  Technical governance <Icon name="arrow" size={14} />
-                </Link>
-              </div>
             </div>
-
-            <figure className="ax-quote reveal">
-              <span className="ax-ico ax-quote-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9.6 6.4v3.2c-1.7.5-2.6 1.6-2.7 3.4H9.6V18H3.9v-5c0-3.9 1.9-6.1 5.7-6.6zm10.5 0v3.2c-1.7.5-2.6 1.6-2.7 3.4h2.7V18h-5.7v-5c0-3.9 1.9-6.1 5.7-6.6z" />
-                </svg>
-              </span>
-              <blockquote>
-                Safeguarding impartiality, transparency, objectivity and independence of all AAA
-                operations and accreditation activities are paramount to instilling confidence and
-                trust in the integrity of AAA services to its clients and stakeholders. Top
-                management of AAA undertakes to uphold these values.
-              </blockquote>
-              <figcaption className="ax-quote-person">
-                <strong>AAA Safeguarding Impartiality Policy</strong>
-                <span>American Accreditation Association · Tysons Corner, Virginia</span>
-              </figcaption>
-            </figure>
+            <div className="imp-why-cards">
+              {WHY.map((w, i) => (
+                <NavyCard key={w.title} icon={w.icon} no={String(i + 1).padStart(2, "0")} title={w.title}>
+                  <p>{w.text}</p>
+                </NavyCard>
+              ))}
+            </div>
           </div>
-
-          <ul className="impx-values reveal" style={{ marginTop: "clamp(30px, 3.4vw, 46px)" }}>
-            {VALUES.map((v) => (
-              <li className="impx-value" key={v.title}>
-                <b>{v.title}</b>
-                <span>{v.text}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 02 — Risk management */}
-      <section className="ax-section navy" id="risk">
-        <div className="container">
-          <div className="ax-head reveal">
-            <span className="eyebrow">Managing the risk</span>
-            <h2>Risks to impartiality are looked for, not waited for.</h2>
-            <p>
-              AAA continuously evaluates the risks to impartiality arising from its activities and
-              from any conflicts arising from its or its personnel&rsquo;s relationships and
-              interactions with other organizations.
-            </p>
-          </div>
-
-          <span className="ax-label">
-            Where the evidence comes from
-          </span>
-          <ul className="impx-mechs reveal">
-            {MECHANISMS.map((m) => (
-              <li className="impx-mech" key={m.label}>
-                <span className="ax-ico" aria-hidden="true">
-                  <LineIcon>{m.icon}</LineIcon>
-                </span>
-                {m.label}
-              </li>
-            ))}
-          </ul>
-
-          <span className="ax-label">
-            What happens to every risk identified
-          </span>
-          <ol className="impx-cycle reveal">
-            {CYCLE.map((c) => (
-              <li key={c.verb}>
-                <b>{c.verb}</b>
-                <span>{c.text}</span>
-              </li>
-            ))}
-          </ol>
-
-          <div className="ax-note red impx-alert reveal">
-            <span className="ax-ico" aria-hidden="true">
-              <LineIcon strokeWidth={2}>
-                <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
-                <path d="M12 9v4M12 17h.01" />
-              </LineIcon>
-            </span>
+          <p className="ax-note gold reveal imp-note">
+            <Glyph name="badge-check" size={22} className="imp-note-ico" />
             <span>
-              <strong>The rule that has teeth</strong>
-              AAA analyzes, evaluates, treats and monitors all identified risks, and determines
-              whether any residual risks are within an acceptable level of risk.{" "}
-              <strong className="impx-alert-rule">
-                Accreditation shall not be provided in areas where an unacceptable level of risk is
-                identified, and which cannot be mitigated to an acceptable level.
-              </strong>
+              <strong>Impartiality supports the credibility of accreditation.</strong>
+              It helps ensure that organizations are evaluated against the same applicable requirements without
+              favoritism, bias, or undue influence.
             </span>
-          </div>
+          </p>
         </div>
       </section>
 
-      {/* 03 — The six commitments */}
-      <section className="ax-section" id="commitments">
+      {/* 03 — How AAA safeguards impartiality */}
+      <section className="ax-section cream" id="how-aaa-safeguards-impartiality">
         <div className="container">
-          <div className="ax-head reveal">
-            <span className="eyebrow">How this is achieved</span>
-            <h2>Six commitments applied to every policy and procedure.</h2>
-            <p>
-              This will be achieved by applying AAA&rsquo;s policies and procedures in a manner
-              that:
-            </p>
-            <span className="ax-rule" aria-hidden="true" />
-          </div>
-
-          <ol className="ax-reasons">
-            {MEASURES.map((m, i) => (
-              <li className="ax-reason reveal" key={m.title}>
-                <span className="ax-reason-num" aria-hidden="true">
-                  {i + 1}
+          <SectionHead
+            center
+            eyebrow="Our Safeguards"
+            title="How AAA Safeguards Impartiality"
+            intro="AAA applies governance, oversight, and operational safeguards designed to protect accreditation activities from conflicts of interest, inappropriate influence, and other risks to impartiality."
+          />
+          <div className="imp-safe">
+            <article className="imp-oversight ax-card navy ax-blue reveal">
+              <div className="imp-oversight-top">
+                <span className="ax-card-ico imp-oversight-ico">
+                  <Glyph name="scale" />
                 </span>
-                <div>
-                  <h3>{m.title}</h3>
-                  <p>{m.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* 04 — Complaints & appeals */}
-      <section className="ax-section cream" id="appeals">
-        <div className="container">
-          <div className="ax-split top">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">Complaints &amp; appeals</span>
-                <h2>Open to all stakeholders — not only to applicants.</h2>
-                <p>
-                  An impartial complaints and appeals procedure is one of the six commitments
-                  above, and it is deliberately not limited to the organizations AAA accredits.
-                  Anyone with a stake in an accredited service can use it.
-                </p>
+                <span className="ax-blue-tag">Independent Oversight</span>
               </div>
-              <ul className="ax-checks">
-                <li>Complaints and appeals are handled through a procedure open to all stakeholders</li>
-                <li>Complaints feed the continuous evaluation of risks to impartiality</li>
-                <li>
-                  Customer satisfaction surveys and management reviews are treated as impartiality
-                  evidence, not just service feedback
-                </li>
-              </ul>
-            </div>
-
-            <aside className="ax-panel reveal">
-              <span className="ax-ico ax-panel-ico" aria-hidden="true">
-                <LineIcon>
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  <path d="M8 9h8M8 13h5" />
-                </LineIcon>
-              </span>
-              <h3>Raise a complaint or appeal</h3>
+              <span className="imp-oversight-kicker">Advisory Committee</span>
+              <h3>Oversight of Impartiality</h3>
               <p>
-                Contact the AAA team with the organization concerned, the accreditation scope, and
-                what you would like reviewed. Complaints about impartiality are handled through the
-                same impartial procedure as any other.
+                AAA&apos;s Advisory Committee has responsibility for supporting the impartiality of accreditation
+                activities. The Committee provides an additional level of oversight by considering matters that may
+                affect impartiality and helping ensure that accreditation activities remain objective and independent.
               </p>
-              <Link href="/contact" className="ax-btn ax-btn-blue">
-                Contact AAA <Icon name="arrow" size={14} />
-              </Link>
-              <p className="ax-panel-note">
-                American Accreditation Association · 8609 Westwood Center Drive, Tysons Corner, VA
-                22182, USA · +1 (571) 601 2616 · info@aaa-accreditation.org
-              </p>
-              <ul className="ax-docs">
-                <li className="ax-docs-title">Related documents</li>
-                <li>
-                  <a
-                    href="https://aaa-accreditation.org/wp-content/uploads/2021/12/General-requirements-for-accreditation-V2.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <path d="M14 2v6h6" />
-                      </LineIcon>
-                    </span>
-                    General requirements for accreditation
-                    <i>PDF</i>
-                  </a>
-                </li>
-                <li>
-                  <Link href="/advisory-committees">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M6 21v-1a6 6 0 0 1 12 0v1" />
-                      </LineIcon>
-                    </span>
-                    Advisory Technical Committees
-                    <i>Governance</i>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <rect x="4" y="11" width="16" height="10" rx="2" />
-                        <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                      </LineIcon>
-                    </span>
-                    Privacy Policy
-                    <i>Legal</i>
-                  </Link>
-                </li>
-              </ul>
-            </aside>
+              <span className="ax-card-rule" aria-hidden="true" />
+            </article>
+            <div className="ax-blue-grid two">
+              {SAFEGUARDS.map((s, i) => (
+                <NavyCard key={s.title} icon={s.icon} no={String(i + 1).padStart(2, "0")} title={s.title}>
+                  <p>{s.text}</p>
+                </NavyCard>
+              ))}
+            </div>
           </div>
+          <p className="ax-note reveal imp-note">
+            <Glyph name="shield-check" size={22} className="imp-note-ico" />
+            <span>
+              <strong>Impartiality is protected through both governance and operational controls.</strong>
+              These safeguards work together to support fair, consistent, and credible accreditation activities.
+            </span>
+          </p>
         </div>
       </section>
 
-      {/* 05 — FAQ */}
-      <section className="ax-section" id="faq">
+      {/* 04 — Confidentiality & information protection */}
+      <section className="ax-section" id="confidentiality-information-protection">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">FAQ</span>
-            <h2>Impartiality, answered.</h2>
+          <SectionHead
+            center
+            eyebrow="Confidentiality"
+            title="Protecting Information Entrusted to AAA"
+            intro="Accreditation activities may require organizations to share operational, technical, commercial, and organizational information. AAA is committed to handling this information responsibly and protecting its confidentiality throughout the accreditation process."
+          />
+          <div className="imp-conf">
+            <aside className="imp-conf-panel reveal">
+              <span className="imp-conf-ico" aria-hidden="true">
+                <Glyph name="lock" />
+              </span>
+              <p>
+                Information received through accreditation activities is handled with care and accessed only as needed
+                for legitimate accreditation purposes.
+              </p>
+              <span className="imp-conf-foot">Confidentiality</span>
+            </aside>
+            <div className="ax-blue-grid two">
+              {CONFIDENTIALITY.map((c, i) => (
+                <NavyCard key={c.title} icon={c.icon} no={String(i + 1).padStart(2, "0")} title={c.title}>
+                  <p>{c.text}</p>
+                </NavyCard>
+              ))}
+            </div>
           </div>
-          <div className="ax-faq-list single">
-            {FAQ.map((item, i) => (
-              <details className="ax-faq-item reveal" key={item.q} open={i === 0}>
-                <summary>
-                  <span>{item.q}</span>
-                  <span className="ax-faq-plus" aria-hidden="true" />
-                </summary>
-                <div className="ax-faq-a">
-                  <p>{item.a}</p>
-                </div>
-              </details>
-            ))}
+          <p className="ax-note gold reveal imp-note">
+            <Glyph name="file-text" size={22} className="imp-note-ico" />
+            <span>
+              <strong>Where disclosure is required by law or other binding obligations,</strong>
+              AAA will handle such disclosure in accordance with the applicable requirements.
+            </span>
+          </p>
+        </div>
+      </section>
+
+      {/* 05 — Complaints & appeals */}
+      <section className="ax-section cream" id="complaints-appeals">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Accountability"
+            title="A Clear Process for Concerns and Appeals"
+            intro="AAA maintains defined processes for handling complaints and appeals to support fairness, transparency, and accountability in its accreditation activities."
+          />
+          <div className="ax-blue-grid two imp-ca">
+            <NavyCard icon="message" no="01" title="Complaints" href="/contact" cta="Submit a Complaint">
+              <p>
+                Complaints provide a formal way to raise concerns about AAA services, conduct, accreditation activities,
+                or other matters that require review.
+              </p>
+              <p>
+                Complaints are reviewed through an established process designed to ensure concerns are considered
+                objectively and addressed appropriately.
+              </p>
+            </NavyCard>
+            <NavyCard icon="refresh" no="02" title="Appeals" href="/contact" cta="Submit an Appeal">
+              <p>
+                Appeals provide a structured mechanism for organizations seeking formal reconsideration of an
+                accreditation decision.
+              </p>
+              <p>
+                Appeal requests are reviewed in accordance with the applicable procedure and are handled in a manner
+                intended to support fairness and independence.
+              </p>
+            </NavyCard>
+          </div>
+          <div className="imp-ca-foot reveal">
+            <p>
+              <Glyph name="scale" size={20} className="imp-note-ico" />
+              <span>
+                <strong>Protecting impartiality in review.</strong> Complaints and appeals are handled in a manner
+                intended to ensure that those involved in reviewing the matter are appropriately independent from the
+                issue being considered.
+              </span>
+            </p>
+            <Link href="/contact" className="ax-btn ax-btn-blue">
+              View Complaints &amp; Appeals Procedure <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
           </div>
         </div>
       </section>
 
+      {/* 06 — Final CTA */}
       <CTA
-        eyebrow="Independent by design"
-        title={
-          <>
-            Accreditation you can <em>rely on.</em>
-          </>
-        }
-        text="Independence is what makes an accreditation certificate mean something. Tell us about your organization and our team will scope your accreditation journey."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/contact", label: "Contact AAA" }}
-        related={[
-          { href: "/about-accreditation", label: "About accreditation" },
-          { href: "/advisory-committees", label: "Advisory committees" },
-          { href: "/documents", label: "Document library" },
-          { href: "/privacy", label: "Privacy policy" },
-        ]}
+        eyebrow="Questions or Concerns?"
+        title="We're Here to Help"
+        text="If you have questions about AAA's impartiality, confidentiality, complaints, appeals, or accreditation processes, our team can provide guidance and direct you to the appropriate information or procedure."
+        primary={{ href: "/contact", label: "Contact AAA" }}
+        secondary={{ href: "/impartiality-policy#complaints-appeals", label: "View Complaints & Appeals" }}
       />
-    </main>
+    </div>
   );
 }

@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Healthcare Accreditation Standards — Oct 2026 client-structure rebuild.
+   Scoped under `.hcs`. Cards are the shared NavyCard (`.ax-blue`).
+   ========================================================================== */
+
+.hcs .hcs-gold { color: var(--aaa-gold); }
+
+/* --------------------------- Framework panels ------------------------- */
+.hcs .hcs-framework {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 40px);
+}
+.hcs .hcs-panel {
+  padding: clamp(20px, 2.4vw, 28px);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-cream);
+}
+.hcs .hcs-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--ax-border);
+}
+.hcs .hcs-panel-ico {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  padding: 11px;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700));
+}
+.hcs .hcs-panel-ico svg { display: block; width: 100%; height: 100%; }
+.hcs .hcs-panel-range {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-700);
+}
+.hcs .hcs-panel-head h3 {
+  margin: 2px 0 0;
+  font-size: clamp(19px, 1.8vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--aaa-blue);
+}
+.hcs .hcs-chapters,
+.hcs .hcs-dev {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hcs .hcs-chapters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hcs .hcs-chapters > li,
+.hcs .hcs-dev > li { display: flex; }
+.hcs .hcs-chapters .ax-card,
+.hcs .hcs-dev .ax-card { width: 100%; }
+
+/* -------------------------- Development journey ----------------------- */
+.hcs .hcs-dev {
+  position: relative;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+.hcs .hcs-dev .ax-card.navy.ax-blue.compact h3 { font-size: 15px; }
+
+.hcs .ax-card.navy.ax-blue.hcs-feedback {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px 26px;
+  min-height: 0;
+  margin-top: clamp(32px, 4vw, 48px);
+  padding: clamp(24px, 3vw, 34px);
+}
+.hcs .ax-card.navy.ax-blue.hcs-feedback:hover { transform: none; }
+.hcs .ax-card.ax-blue.hcs-feedback h3 { margin: 0 0 6px; font-size: clamp(18px, 1.8vw, 22px); }
+.hcs .hcs-feedback p { max-width: 64ch; font-size: 14.5px; }
+.hcs .hcs-feedback-btn { white-space: nowrap; }
+.hcs .hcs-back { margin: 26px 0 0; text-align: center; }
+.hcs .hcs-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+}
+.hcs .hcs-back a svg { transform: rotate(180deg); }
+.hcs .hcs-back a:hover { text-decoration: underline; }
+
+/* ------------------------------ Responsive ---------------------------- */
+@media (max-width: 1100px) {
+  .hcs .hcs-framework { grid-template-columns: 1fr; }
+  .hcs .hcs-chapters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hcs .hcs-dev { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .hcs .hcs-chapters,
+  .hcs .hcs-dev { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hcs .ax-card.navy.ax-blue.hcs-feedback { grid-template-columns: 1fr; }
+  .hcs .hcs-feedback-btn { justify-self: start; }
+}
+@media (max-width: 480px) {
+  .hcs .hcs-chapters,
+  .hcs .hcs-dev { grid-template-columns: 1fr; }
+  .hcs .hcs-feedback-btn { white-space: normal; word-break: break-all; }
+}

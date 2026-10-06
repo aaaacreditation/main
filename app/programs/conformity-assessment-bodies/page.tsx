@@ -1,559 +1,558 @@
-import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import CTA from "../../_components/CTA";
-import Icon from "../../_components/Icon";
-import type { IconName } from "../../_components/Icon";
-import JsonLd from "../../_components/JsonLd";
+import Image from "next/image";
 import PageHero from "../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
+import JsonLd from "../../_components/JsonLd";
+import NavyCard from "../../_components/site/NavyCard";
+import SectionHead from "../../_components/site/SectionHead";
+import Stat from "../../_components/site/Stat";
+import Glyph, { type GlyphName } from "../../_components/site/Glyph";
+import { CAB_SCHEMES, CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
+import { pageMeta, breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import AdvisorForm from "./AdvisorForm";
+import CabVideo from "./CabVideo";
 import "./cab.css";
 
-const PATH = "/programs/conformity-assessment-bodies";
+/*
+ * Conformity Assessment Bodies hub — rebuilt Oct 2026 on the client's final
+ * "Home page for CABs" package: Hero (+ advisor form) → Choose Your Program
+ * (8 cards) → Why Accreditation Matters → Why Choose AAA (stats) → How
+ * Accreditation Works → Testimonials (video) → FAQ → Final CTA. Every card is
+ * the shared NavyCard; stats come from lib/facts.
+ */
 
-export const metadata: Metadata = pageMeta({
+const PATH = PROGRAMS.cab.href;
+const IMG = "/images/site/cab-hub";
+
+const DESCRIPTION =
+  "AAA accredits testing and calibration laboratories, inspection bodies, certification bodies, medical laboratories and proficiency testing providers worldwide.";
+
+export const metadata = pageMeta({
   title: "Conformity Assessment Bodies Accreditation",
-  description:
-    "AAA accredits inspection bodies, laboratories and certification bodies to ISO/IEC 17020, 17021-1, 17024, 17025, 17043, 17065, ISO 15189 and the Halal schemes.",
+  description: DESCRIPTION,
   path: PATH,
   keywords: [
     "conformity assessment body accreditation",
+    "CAB accreditation",
     "ISO/IEC 17025 accreditation",
     "ISO/IEC 17020 accreditation",
+    "ISO/IEC 17021-1 accreditation",
+    "ISO/IEC 17024 accreditation",
     "ISO 15189 accreditation",
-    "Halal accreditation",
+    "ISO/IEC 17065 accreditation",
+    "ISO/IEC 17043 accreditation",
   ],
 });
 
 /* ------------------------------------------------------------------ data */
 
-type Scheme = {
-  icon: IconName;
-  title: string;
-  standard: string;
-  href: string;
-  desc: string;
-};
-
-const SCHEMES: Scheme[] = [
-  {
-    icon: "search",
-    title: "Inspection Bodies Accreditation",
-    standard: "ISO/IEC 17020",
-    href: "/programs/iso-17020",
-    desc: "For Type A, B and C bodies that examine materials, products, installations, plant, processes or services and report on their conformity.",
-  },
-  {
-    icon: "cert",
-    title: "Management Systems Certification Bodies Accreditation",
-    standard: "ISO/IEC 17021-1",
-    href: "/programs/iso-17021",
-    desc: "For bodies certifying management systems — audit programmes, competence of audit teams, certification decisions and the surveillance cycle.",
-  },
-  {
-    icon: "shield",
-    title: "Personnel Certification Bodies Accreditation",
-    standard: "ISO/IEC 17024",
-    href: "/programs/iso-17024",
-    desc: "For bodies certifying individuals through documented schemes, with examinations designed to be fair, valid, reliable and secure.",
-  },
+/** Client copy + icon for each program, in CAB_SCHEMES order. */
+const PROGRAM_COPY: { icon: GlyphName; text: string }[] = [
   {
     icon: "flask",
-    title: "Testing & Calibration Laboratories Accreditation",
-    standard: "ISO/IEC 17025",
-    href: "/programs/iso-17025",
-    desc: "For testing and calibration laboratories: methods, equipment, metrological traceability to the SI and evaluation of measurement uncertainty.",
+    text: "For laboratories performing testing or sampling activities that require technically valid, reliable, and traceable results.",
   },
   {
-    icon: "medical",
-    title: "Medical Laboratories Accreditation",
-    standard: "ISO 15189",
-    href: "/programs/iso-15189",
-    desc: "For clinical, pathology and reference laboratories, across the pre-examination, examination and post-examination phases of the patient pathway.",
+    icon: "gauge",
+    text: "For laboratories performing calibration activities to establish measurement accuracy, traceability, and confidence in results.",
   },
   {
-    icon: "industry",
-    title: "Product Certification Bodies Accreditation",
-    standard: "ISO/IEC 17065",
-    href: "/programs/iso-17065",
-    desc: "For bodies certifying products, processes and services against public or private schemes that support market access.",
+    icon: "search-check",
+    text: "For organizations examining products, equipment, installations, processes, or services against specified requirements.",
+  },
+  {
+    icon: "certificate",
+    text: "For bodies certifying management systems such as quality, environmental, information security, or occupational health and safety systems.",
+  },
+  {
+    icon: "id-card",
+    text: "For organizations certifying the competence of individuals against defined requirements or certification schemes.",
+  },
+  {
+    icon: "microscope",
+    text: "For laboratories providing medical examination services that support diagnosis, screening, treatment, and patient care.",
+  },
+  {
+    icon: "package",
+    text: "For bodies certifying products, processes, or services, including applicable Halal certification programs.",
   },
   {
     icon: "chart",
-    title: "Proficiency Testing Providers Accreditation",
-    standard: "ISO/IEC 17043",
-    href: "/programs/iso-17043",
-    desc: "For providers that design proficiency testing schemes and evaluate laboratory performance against criteria set before the round begins.",
-  },
-  {
-    icon: "globe",
-    title: "Halal Certification Bodies Accreditation",
-    standard: "Halal",
-    href: "/programs/iso-17065",
-    desc: "For bodies certifying products and services as halal to OIC/SMIIC 2, S 2055-2:2021 and GSO 2055-2:2021, alongside ISO/IEC 17065.",
+    text: "For organizations designing and operating proficiency testing schemes that help laboratories evaluate and improve their performance.",
   },
 ];
 
-/* Benefits copy is the client's own "Benefits of Accreditation" text. */
-const AUDIENCES: { icon: IconName; label: string; items: string[] }[] = [
+const PROGRAM_CARDS = CAB_SCHEMES.map((s, i) => ({ ...s, ...PROGRAM_COPY[i] }));
+const PROGRAM_COUNT = String(CAB_SCHEMES.length);
+
+const HERO_CHIPS = [
+  "Laboratories",
+  "Inspection Bodies",
+  "Certification Bodies",
+  "Medical Laboratories",
+  "Proficiency Testing Providers",
+];
+
+const MATTERS: { icon: GlyphName; title: string; text: string }[] = [
+  {
+    icon: "badge-check",
+    title: "Demonstrate Technical Competence",
+    text: "Show clients, regulators, and other stakeholders that your organization has the qualified personnel, methods, equipment, and systems needed to perform its accredited activities.",
+  },
+  {
+    icon: "handshake",
+    title: "Strengthen Confidence",
+    text: "Build greater trust in your inspection, testing, calibration, certification, medical laboratory, or proficiency testing services.",
+  },
+  {
+    icon: "check-circle",
+    title: "Support Reliable Results",
+    text: "Demonstrate that your conformity assessment activities are performed consistently and that the results or decisions issued by your organization can be relied upon.",
+  },
+  {
+    icon: "trending-up",
+    title: "Improve Market Access",
+    text: "Support participation in tenders, supply chains, regulated sectors, and markets where accredited conformity assessment services are required or preferred.",
+  },
+];
+
+const WHY_AAA: { icon: GlyphName; title: string; text: string }[] = [
   {
     icon: "globe",
-    label: "To industry and trade",
-    items: [
-      "Accreditation facilitates trade",
-      "Eliminates the need for repetitive testing, certification, and inspection",
-    ],
+    title: "International Experience",
+    text: "Supporting conformity assessment bodies across multiple countries and technical sectors.",
+  },
+  {
+    icon: "certificate",
+    title: "International Standards",
+    text: "Providing accreditation against internationally recognized conformity assessment standards.",
+  },
+  {
+    icon: "user-check",
+    title: "Experienced Technical Assessors",
+    text: "Assessment teams are selected according to the applicable standard and requested technical scope.",
   },
   {
     icon: "scale",
-    label: "To regulators",
-    items: [
-      "Accreditation provides a reliable and impartial basis for sound decision-making",
-    ],
+    title: "Independent Accreditation Decisions",
+    text: "Accreditation decisions are made independently from the assessment process to support impartiality.",
   },
   {
-    icon: "cert",
-    label: "To conformity assessment service providers",
-    items: [
-      "A means of demonstrating your competence to your clients",
-      "An effective marketing tool and a passport to submit tenders to contractors that require independently verified conformity assessment service providers",
-    ],
+    icon: "route",
+    title: "Clear & Efficient Process",
+    text: "A structured accreditation pathway with clear guidance from application through accreditation.",
   },
   {
-    icon: "check",
-    label: "To users of accredited services and consumers",
-    items: [
-      "Your guarantee of reliable and comparable conformity assessment results",
-      "Accreditation increases the reliability of products",
-    ],
+    icon: "message",
+    title: "Responsive Support",
+    text: "Our team is available to answer questions and guide organizations throughout the accreditation journey.",
   },
 ];
 
-const COMMON = [
+const STATS = [
+  { v: FACTS.countriesPlus, k: "Countries Served Worldwide" },
+  { v: FACTS.organizations, k: "Accredited Organizations" },
+  { v: FACTS.assessors, k: "Assessors & Experts" },
+  { v: PROGRAM_COUNT, k: "CAB Accreditation Programs" },
+  { v: FACTS.certificates, k: "Accredited Certificates" },
+];
+
+const STEPS = [
   {
-    t: "Impartiality",
-    d: "Every standard in this family starts in the same place: can the body reach a conclusion that is not shaped by who is paying for it? Assessment examines ownership, governance, financing and personnel, the risks to impartiality those create, and the safeguards applied to each one.",
+    t: "Select the Appropriate Program",
+    d: "Identify the accreditation program and international standard that match your organization’s conformity assessment activities.",
   },
   {
-    t: "Competence",
-    d: "Qualification criteria, training, authorization and ongoing monitoring for everyone whose judgement affects a result — inspectors, analysts, examiners, auditors, and the people who take the final decision.",
+    t: "Submit Your Application",
+    d: "Provide the required information about your organization, activities, locations, and proposed scope of accreditation.",
   },
   {
-    t: "Controlled processes",
-    d: "Documented methods and procedures applied consistently, with the facilities, equipment and measurement traceability that each activity requires, and validation where a method is non-standard.",
+    t: "Document Review",
+    d: "AAA reviews the submitted documentation to confirm readiness and identify any areas requiring clarification before the assessment.",
   },
   {
-    t: "Records and reporting",
-    d: "Results must be traceable back to what was actually done. Assessment covers technical records, authorized signatories, and the content of reports, certificates and scope statements.",
+    t: "Accreditation Assessment",
+    d: "Qualified assessors evaluate your organization against the applicable accreditation requirements and technical scope.",
   },
   {
-    t: "Management system and appeals",
-    d: "Internal audit, management review and corrective action, together with impartial routes for anyone who wants to complain about the body or appeal a decision it has taken.",
+    t: "Address Assessment Findings",
+    d: "Where findings are identified, your organization is given the opportunity to submit corrective actions and supporting evidence.",
+  },
+  {
+    t: "Independent Accreditation Decision",
+    d: "The assessment results are reviewed independently before a formal accreditation decision is made.",
+  },
+  {
+    t: "Accreditation Awarded",
+    d: "Successful organizations receive an accreditation certificate together with the approved scope of accreditation.",
   },
 ];
 
-const PROCESS = [
-  {
-    t: "Application",
-    d: "Submit the application form for your activity, setting out the scope you want accredited, the sites involved and your supporting documentation.",
-  },
-  {
-    t: "Document review",
-    d: "AAA reviews the submission against the anchor standard and the general requirements, then confirms the assessment plan, the team and the fees.",
-  },
-  {
-    t: "Assessment",
-    d: "Qualified assessors evaluate conformity on site, remotely or in a hybrid arrangement, including witnessing your people carrying out real work where the standard requires it.",
-  },
-  {
-    t: "Corrective action",
-    d: "Any findings are addressed by your team, and evidence that the correction was effective is reviewed and accepted before the file moves on.",
-  },
-  {
-    t: "Accreditation decision",
-    d: "An independent decision panel — separate from the assessment team — grants accreditation and issues the certificate and the scope schedule.",
-  },
-  {
-    t: "Surveillance and reassessment",
-    d: "Annual surveillance keeps the accreditation live across the three-year cycle, followed by a full reassessment before renewal.",
-  },
-];
-
-const GENERAL_DOCS = [
-  {
-    label: "General requirements for accreditation",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2021/12/General-requirements-for-accreditation-V2.pdf",
-    meta: "PDF",
-  },
-  {
-    label: "Requirements for use of accreditation symbols",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Requirements-for-use-of-accreditation-symbols.pdf",
-    meta: "PDF",
-  },
-  {
-    label: "Requirements for accreditation of multi-site conformity assessment bodies",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Requirements-for-Accreditation-of-multi-site-conformity-assessment-bodies-.pdf",
-    meta: "PDF",
-  },
+const IMPACTS: { icon: GlyphName; t: string; d: string }[] = [
+  { icon: "user-check", t: "Technical Expertise", d: "Assessment supported by knowledgeable subject-matter experts." },
+  { icon: "handshake", t: "Strong Collaboration", d: "A professional and collaborative accreditation experience." },
+  { icon: "trending-up", t: "Greater Credibility", d: "Accreditation reinforced confidence and supported future growth." },
 ];
 
 const FAQ = [
   {
-    q: "What is the difference between certification and accreditation?",
-    a: "Certification is a statement about an organization, a product or a person, issued by a certification body. Accreditation is a statement about that body: independent confirmation that it is competent, impartial and consistent in the work it performs. AAA accredits conformity assessment bodies — the certificates their clients hold are issued by those bodies, not by AAA.",
+    q: "What is a conformity assessment body?",
+    a: "A conformity assessment body is an organization that performs activities such as testing, calibration, inspection, certification, medical laboratory services, or proficiency testing.",
   },
   {
-    q: "Which standard applies to my organization?",
-    a: "It follows the activity. Examining items or installations and reporting on their conformity is inspection (ISO/IEC 17020). Certifying management systems is ISO/IEC 17021-1, certifying people is ISO/IEC 17024, and certifying products, processes or services is ISO/IEC 17065. Testing and calibration laboratories work to ISO/IEC 17025, medical laboratories to ISO 15189, and organizations running interlaboratory comparisons to ISO/IEC 17043.",
+    q: "Which accreditation program applies to my organization?",
+    a: "The applicable program depends on your organization's activities. Each accreditation program is based on a specific international standard relevant to those activities.",
   },
   {
-    q: "Can one organization hold more than one accreditation?",
-    a: "Yes. Many bodies hold two or more — for example inspection and testing, or management system and product certification. Each activity is assessed against its own standard and carries its own scope, and the body must be able to show that combining the activities does not compromise impartiality.",
+    q: "Can an organization apply for more than one accreditation program?",
+    a: "Yes. Organizations that perform different conformity assessment activities may apply for multiple accreditation programs, provided they satisfy the applicable requirements for each requested scope.",
   },
   {
-    q: "How long does accreditation last?",
-    a: "AAA accreditation is granted for a three-year cycle with annual surveillance assessments, followed by a full reassessment before the cycle is renewed. Changes to your scope, key personnel or sites are notified to AAA and may lead to an extension-to-scope assessment.",
+    q: "How is the accreditation scope defined?",
+    a: "The scope identifies the specific activities, methods, products, services, sectors, or standards covered by the accreditation and is evaluated as part of the assessment.",
   },
   {
-    q: "We operate from several sites — how is that handled?",
-    a: "Multi-site arrangements are assessed against AAA's Requirements for accreditation of multi-site conformity assessment bodies, published alongside the general requirements. Read it before applying, because it affects how you describe your sites on the application form and how the assessment is planned.",
+    q: "Can organizations outside the United States apply?",
+    a: "Yes. AAA provides accreditation services to conformity assessment bodies in countries around the world.",
+  },
+  {
+    q: "How are assessors selected?",
+    a: "Assessment teams are selected according to the applicable accreditation standard, the organization's activities, and the requested technical scope.",
+  },
+  {
+    q: "How long does accreditation remain valid?",
+    a: "AAA accreditation is valid for three years, subject to continued compliance with AAA accreditation requirements and successful completion of any required surveillance or reassessment activities.",
+  },
+  {
+    q: "How are accreditation fees calculated?",
+    a: "Fees depend on the selected accreditation program, technical scope, number of locations, complexity of activities, and assessment requirements. A tailored quotation is provided after reviewing your application.",
+  },
+  {
+    q: "Where can I find the requirements and application documents?",
+    a: "The relevant requirements, application forms, and supporting documents are available on each individual accreditation program page.",
+  },
+  {
+    q: "How do I begin?",
+    a: "Select the accreditation program that best matches your organization's activities or contact the AAA team for guidance if you are unsure which accreditation standard applies.",
   },
 ];
 
-/* ---------------------------------------------------------------- page */
+const TRUST = ["International accreditation services", "Technical guidance", "Support from enquiry to application"];
 
-export default function Page() {
+const VIDEO_ID = "GPGwbCsk7CY";
+const VIDEO_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
+
+/* ------------------------------------------------------------------ page */
+
+export default function CabHubPage() {
   return (
-    <div className="cabx">
+    <div className="axp cabh">
       <JsonLd
         schema={[
           breadcrumbSchema([
-            { name: "Conformity Assessment Bodies Accreditation", path: PATH },
+            { name: "Accreditation Programs", path: "/programs" },
+            { name: PROGRAMS.cab.label, path: PATH },
           ]),
+          faqSchema(FAQ),
           serviceSchema({
-            name: "Conformity Assessment Bodies Accreditation",
-            description:
-              "AAA accreditation programs for inspection bodies, management system, personnel and product certification bodies, testing, calibration and medical laboratories, proficiency testing providers and Halal certification bodies.",
+            name: PROGRAMS.cab.label,
+            description: DESCRIPTION,
             path: PATH,
+            standard: CAB_SCHEMES.map((s) => s.standard)
+              .filter((s, i, a) => a.indexOf(s) === i)
+              .join(", "),
             audience: "Conformity assessment bodies",
           }),
-          faqSchema(FAQ),
         ]}
       />
 
+      {/* 01 — Hero */}
       <PageHero
-        image="/home/conformity.jpg"
-        eyebrow="Accreditation Programs"
-        badge="Conformity Assessment Bodies"
+        eyebrow="Conformity Assessment Bodies"
+        crumbs={[{ href: "/programs", label: "Programs" }, { label: "Conformity Assessment Bodies" }]}
         title={
           <>
-            Conformity assessment bodies <em>accreditation.</em>
+            Accreditation for <span className="cabh-gold">Conformity Assessment Bodies</span>
           </>
         }
-        intro="Accreditation for the inspection bodies, laboratories and certification bodies whose results the rest of the economy relies on — each assessed against the ISO/IEC standard written for its activity."
-        crumbs={[{ label: "Conformity Assessment Bodies" }]}
-        caption={{
-          kicker: "AAA accreditation",
-          title: "Competence, impartiality, consistency",
-          chip: "8 schemes",
-        }}
+        intro="AAA accredits organizations that perform conformity assessment activities, including testing, calibration, inspection, certification, medical laboratory services, and proficiency testing, in accordance with internationally recognized standards."
+        image={`${IMG}/aaa-accredited-conformity-assessment-bod-416d3d2d.webp`}
+        imageAlt="AAA accredited conformity assessment body holding its accreditation certificate"
+        caption={{ kicker: "Conformity Assessment Bodies", title: "AAA Accredited Conformity Assessment Body" }}
         actions={
           <>
-            <Link href="/apply" className="ax-btn ax-btn-gold">
-              Apply for Accreditation <Icon name="arrow" size={14} />
-            </Link>
-            <Link href="#programs" className="ax-btn ax-btn-ghost">
-              Browse the programs
-            </Link>
+            <ul className="cabh-chips" aria-label="Organizations AAA accredits">
+              {HERO_CHIPS.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+            <a href="#choose-your-program" className="ax-btn ax-btn-gold">
+              Find Your Accreditation Program <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </a>
+            <a href={CONTACT.consultationUrl} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
+              Book a Free Consultation
+            </a>
           </>
         }
         meta={[
-          { k: "Accreditation schemes", v: "8" },
-          { k: "Accredited organizations", v: "200+" },
-          { k: "Countries served", v: "58+" },
-          { k: "Assessors & experts", v: "100+" },
+          { v: FACTS.countriesPlus, k: "Countries Served Worldwide" },
+          { v: PROGRAM_COUNT, k: "Accreditation Programs" },
+          { v: "Multiple", k: "International Standards" },
         ]}
       />
 
-      {/* --------------------------------------------------- What it means -- */}
-      <section className="ax-section" id="what-it-is">
+      {/* Advisor form — overlaps the hero */}
+      <section className="cabh-advisor" aria-labelledby="cabh-advisor-h">
         <div className="container">
-          <div className="ax-split top wide-left">
-            <div>
-              <div className="ax-head">
-                <span className="eyebrow">The short version</span>
-                <h2>What conformity assessment accreditation is</h2>
-                <span className="ax-rule" />
-              </div>
-              <div className="ax-prose" style={{ marginTop: 24 }}>
-                <p>
-                  Accreditation is a formal process by which a recognized body evaluates and
-                  certifies that an institution meets predefined and established quality
-                  standards. The accreditation process aims to enhance service quality, and
-                  ensure safety through compliance with global standards.
-                </p>
-                <p>
-                  <strong>Conformity assessment</strong> is the umbrella term for the activities
-                  that establish whether something meets a requirement — testing it, calibrating
-                  the instruments used to measure it, inspecting it, or certifying a product, a
-                  management system or a person. Accreditation sits one layer above: an
-                  independent judgement of whether the body doing that work is competent,
-                  impartial and consistent.
-                </p>
-                <p>
-                  That distinction matters commercially. A certificate is only as good as the
-                  body that issued it, which is why regulators, purchasers and tender conditions
-                  increasingly ask not just for a certificate but for one issued under
-                  accreditation.
-                </p>
-                <p>
-                  Internationally, accreditation bodies work to ISO/IEC 17011, and each
-                  conformity assessment activity has its own anchor standard: ISO/IEC 17020 for
-                  inspection, ISO/IEC 17021-1 for management systems certification, ISO/IEC 17024
-                  for certification of persons, ISO/IEC 17025 for testing and calibration,
-                  ISO 15189 for medical laboratories, ISO/IEC 17065 for product certification and
-                  ISO/IEC 17043 for proficiency testing. AAA is a third-party accreditation body
-                  that delivers accreditation services according to these international
-                  standards.
-                </p>
-              </div>
+          <div className="cabh-advisor-card reveal">
+            <div className="cabh-advisor-intro">
+              <span className="cabh-seal" aria-hidden="true">
+                <Glyph name="message" />
+              </span>
+              <h2 id="cabh-advisor-h">Speak with an Accreditation Advisor</h2>
+              <p>
+                Tell us about your organization and activities, and our team will help identify the most suitable
+                accreditation program.
+              </p>
+            </div>
+            <AdvisorForm />
+          </div>
+        </div>
+      </section>
+
+      {/* 02 — Choose your program */}
+      <section className="ax-section" id="choose-your-program">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Conformity Assessment Programs"
+            title="Choose Your Accreditation Program"
+            intro="Select the accreditation program that best matches your organization’s activities. Each program is based on a specific international standard and designed for a particular type of conformity assessment body."
+          />
+          <div className="ax-blue-grid four">
+            {PROGRAM_CARDS.map((p) => (
+              <NavyCard key={p.href} icon={p.icon} tag={p.standard} title={p.shortLabel} href={p.href} cta="Learn More">
+                <p>{p.text}</p>
+              </NavyCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 03 — Why accreditation matters */}
+      <section className="ax-section cream" id="why-accreditation-matters">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Benefits of Accreditation"
+            title="Why Accreditation Matters"
+            intro="Accreditation provides independent recognition that your organization is competent to perform its conformity assessment activities consistently and impartially."
+          />
+          <div className="ax-blue-grid four">
+            {MATTERS.map((m, i) => (
+              <NavyCard key={m.title} icon={m.icon} no={String(i + 1).padStart(2, "0")} title={m.title}>
+                <p>{m.text}</p>
+              </NavyCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 04 — Why choose AAA */}
+      <section className="ax-section" id="why-choose-aaa">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="International Experience. Technical Expertise."
+            title="Why Choose AAA?"
+            intro="Organizations around the world choose AAA for its international experience, technical expertise, impartial accreditation process, and commitment to internationally recognized standards."
+          />
+
+          <div className="cabh-why">
+            <figure className="ax-photo cabh-why-photo reveal">
+              <Image
+                src={`${IMG}/representatives-of-an-aaa-accredited-org-a5ac85f7.jpg`}
+                alt="Representatives of an AAA accredited organization holding their accreditation certificate"
+                fill
+                sizes="(max-width: 980px) 90vw, 440px"
+              />
+              <figcaption>
+                Supporting Conformity Assessment Bodies Worldwide
+                <span>Real organizations. Independent assessment. International accreditation services.</span>
+              </figcaption>
+            </figure>
+
+            <ul className="cabh-why-list">
+              {WHY_AAA.map((w) => (
+                <li key={w.title} className="reveal">
+                  <span className="ax-card-ico">
+                    <Glyph name={w.icon} />
+                  </span>
+                  <div>
+                    <h3>{w.title}</h3>
+                    <p>{w.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <ul className="ax-metrics cabh-metrics" aria-label="AAA in numbers">
+            {STATS.map((s) => (
+              <li key={s.k} className="ax-metric reveal">
+                <b>
+                  <Stat value={s.v} />
+                </b>
+                <span>{s.k}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 05 — How accreditation works */}
+      <section className="ax-section cream" id="how-accreditation-works">
+        <div className="container cabh-process">
+          <div className="cabh-process-copy">
+            <SectionHead
+              eyebrow="A Structured Accreditation Journey"
+              title="How Accreditation Works"
+              intro="AAA follows a structured accreditation process designed to assess your organization against the applicable international standard and requested scope of accreditation."
+            />
+            <p className="ax-note reveal">
+              The assessment approach, required evidence, timeframe, and technical activities depend on the selected
+              accreditation program and requested scope.
+            </p>
+          </div>
+
+          <div className="ax-steps-panel cabh-steps reveal">
+            <ol className="ax-steps">
+              {STEPS.map((s, i) => (
+                <li className="ax-step" key={s.t}>
+                  <span className="ax-step-num">{i + 1}</span>
+                  <span className="ax-step-body">
+                    <em>Step {i + 1}</em>
+                    <b>{s.t}</b>
+                    <span>{s.d}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 — Testimonials */}
+      <section className="ax-section" id="accredited-organizations">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Real Accreditation Experiences"
+            title="Hear From Our Accredited Organizations"
+            intro="Discover how AAA accreditation has supported certification bodies through technical expertise, professional collaboration, and stronger credibility."
+          />
+
+          <div className="cabh-story">
+            <div className="reveal">
+              <CabVideo
+                id={VIDEO_ID}
+                title="Lazarus Alliance — AAA accreditation experience"
+                poster={`${IMG}/michael-peters-ceo-of-lazarus-alliance-s-7faa5977.webp`}
+                alt="Michael Peters, CEO of Lazarus Alliance, speaking about the AAA accreditation experience"
+                label="Watch the Lazarus Alliance Story"
+                sub="AAA Accredited Certification Body · Arizona, United States"
+              />
             </div>
 
-            <aside className="ax-panel">
-              <span className="ax-panel-ico ax-ico">
-                <Icon name="clipboard" size={28} />
+            <div className="ax-quote cabh-quote reveal">
+              <span className="ax-quote-mark" aria-hidden="true">
+                <Glyph name="quote" size={40} />
               </span>
-              <h3>Not sure which program applies?</h3>
-              <p>
-                Tell us what your organization actually does — what you examine, test, certify
-                or compare — and we will confirm the applicable standard, the scope you can
-                apply for and what the assessment will involve.
-              </p>
-              <Link href="/contact" className="ax-btn ax-btn-blue">
-                Talk to an assessor <Icon name="arrow" size={14} />
-              </Link>
-              <p className="ax-panel-note">
-                Ready to move? <Link href="/quote" className="ax-link">Request a quote</Link> or{" "}
-                <Link href="/apply" className="ax-link">start an application</Link>.
-              </p>
-
-              <ul className="ax-docs">
-                <li className="ax-docs-title">Applies to every program</li>
-                {GENERAL_DOCS.map((d) => (
-                  <li key={d.label}>
-                    <a href={d.href}>
-                      <span className="ax-ico">
-                        <Icon name="doc" size={16} />
-                      </span>
-                      {d.label}
-                      <i>{d.meta}</i>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------ Scheme directory -- */}
-      <section className="ax-section fade" id="programs">
-        <div className="container">
-          <div className="ax-head center">
-            <span className="eyebrow">Program directory</span>
-            <h2>Choose the accreditation path that matches your activity</h2>
-            <p>
-              Eight accreditation schemes across seven programs. Each one is assessed against
-              the relevant international standard, with the competence, impartiality, reporting
-              and surveillance requirements tailored to the service being accredited.
-            </p>
-          </div>
-
-          <div className="ax-grid four">
-            {SCHEMES.map((s) => (
-              <Link className="ax-card cabx-scheme" href={s.href} key={s.title}>
-                <div className="ax-card-top">
-                  <span className="ax-card-ico ax-ico">
-                    <Icon name={s.icon} size={22} />
-                  </span>
-                  <span className="cabx-std">{s.standard}</span>
-                </div>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
-                <span className="ax-card-rule" />
-                <span className="ax-card-go">
-                  Explore program <Icon name="arrow" size={13} />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------- Benefits -- */}
-      <section className="ax-section cream" id="benefits">
-        <div className="container">
-          <div className="ax-head center">
-            <span className="eyebrow">Benefits of accreditation</span>
-            <h2>Who accreditation is worth something to</h2>
-            <p>
-              Accreditation is rarely bought for its own sake. It earns its place because four
-              different audiences get something concrete from it.
-            </p>
-          </div>
-
-          <div className="ax-grid four">
-            {AUDIENCES.map((a) => (
-              <article className="ax-card cabx-audience" key={a.label}>
-                <div className="ax-card-top">
-                  <span className="ax-card-ico ax-ico light">
-                    <Icon name={a.icon} size={22} />
-                  </span>
-                </div>
-                <h3>{a.label}</h3>
-                <ul className="ax-checks">
-                  {a.items.map((i) => (
-                    <li key={i}>{i}</li>
-                  ))}
-                </ul>
-                <span className="ax-card-rule" />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* --------------------------------------------- What gets assessed -- */}
-      <section className="ax-section fade-up" id="assessed">
-        <div className="container">
-          <div className="ax-split">
-            <div>
-              <div className="ax-head">
-                <span className="eyebrow">Common ground</span>
-                <h2>What every AAA accreditation assesses</h2>
-                <span className="ax-rule" />
-                <p>
-                  The technical requirements differ by standard, but five themes run through all
-                  eight schemes. If you are preparing an application, these are the areas worth
-                  looking at first.
-                </p>
+              <blockquote>
+                The AAA team is very technically precise, with strong subject-matter expertise and great
+                collaboration. I do not hesitate to endorse AAA to prospective customers.
+              </blockquote>
+              <div className="ax-quote-person">
+                <strong>Michael Peters</strong>
+                <span>CEO, Lazarus Alliance</span>
+                <span className="cabh-quote-org">AAA Accredited Certification Body · United States</span>
               </div>
 
-              <ol className="ax-reasons">
-                {COMMON.map((c, i) => (
-                  <li className="ax-reason" key={c.t}>
-                    <span className="ax-reason-num" aria-hidden="true">
-                      {i + 1}
-                    </span>
+              <ul className="cabh-impacts">
+                {IMPACTS.map((m) => (
+                  <li key={m.t}>
+                    <Glyph name={m.icon} size={20} />
                     <div>
-                      <h3>{c.t}</h3>
-                      <p>{c.d}</p>
+                      <strong>{m.t}</strong>
+                      <span>{m.d}</span>
                     </div>
                   </li>
                 ))}
-              </ol>
-            </div>
-
-            <figure className="ax-photo cabx-figure">
-              <Image
-                src="/about/team-committee.jpg"
-                alt="An AAA accreditation decision panel reviewing an assessment file"
-                fill
-                sizes="(max-width: 980px) 100vw, 520px"
-              />
-              <span className="ax-photo-badge">Independent decision</span>
-              <figcaption>
-                Accreditation decisions are taken separately from the assessment team.
-                <span>Assessment · review · decision · surveillance</span>
-              </figcaption>
-            </figure>
-          </div>
-        </div>
-      </section>
-
-      {/* -------------------------------------------------------- Process -- */}
-      <section className="ax-section" id="process">
-        <div className="container">
-          <div className="ax-head center">
-            <span className="eyebrow">How it works</span>
-            <h2>The accreditation process</h2>
-            <p>
-              The route is the same for every program in this family. What changes is the
-              anchor standard your organization is assessed against and the scope you apply for.
-            </p>
-          </div>
-
-          <div className="ax-split wide-left top">
-            <div className="ax-steps-panel">
-              <h3>Step by step</h3>
-              <ol className="ax-steps">
-                {PROCESS.map((s, i) => (
-                  <li className="ax-step" key={s.t}>
-                    <span className="ax-step-num">{i + 1}</span>
-                    <span className="ax-step-body">
-                      <b>{s.t}</b>
-                      <span>{s.d}</span>
-                    </span>
-                  </li>
-                ))}
-              </ol>
-              <span className="ax-pill">
-                <span className="ax-ico">
-                  <Icon name="shield" size={14} />
-                </span>
-                Accreditation is valid for 3 years, with annual surveillance
-              </span>
-            </div>
-
-            <div className="ax-panel">
-              <span className="ax-panel-ico ax-ico">
-                <Icon name="doc" size={28} />
-              </span>
-              <h3>Before you apply</h3>
-              <p>
-                Each program has its own application form and, where one exists, a checklist
-                against the anchor standard. Three documents apply to every program in this
-                family — read them first.
-              </p>
-              <ul className="ax-docs">
-                {GENERAL_DOCS.map((d) => (
-                  <li key={d.label}>
-                    <a href={d.href}>
-                      <span className="ax-ico">
-                        <Icon name="doc" size={16} />
-                      </span>
-                      {d.label}
-                      <i>{d.meta}</i>
-                    </a>
-                  </li>
-                ))}
               </ul>
-              <p className="ax-panel-note">
-                Program-specific forms are on each program page, and the full library is in{" "}
-                <Link href="/documents" className="ax-link">Documents</Link>.
-              </p>
+
+              <div className="cabh-quote-actions">
+                <a href={VIDEO_URL} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-blue sm">
+                  Watch the Full Story <Glyph name="play" size={14} strokeWidth={2} />
+                </a>
+                <Link href="/news" className="ax-btn ax-btn-ghost-navy sm">
+                  Read the Success Story
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="cabh-second reveal">
+            <div className="cabh-second-photo">
+              <Image
+                src={`${IMG}/christiano-baros-of-kcertification-holdi-977c68f7.webp`}
+                alt="Christiano Baros of KCertification holding an AAA accreditation certificate"
+                width={1380}
+                height={863}
+                sizes="(max-width: 720px) 90vw, 260px"
+              />
+            </div>
+            <div className="cabh-second-copy">
+              <span className="cabh-second-kicker">Another Accredited Organization’s Experience</span>
+              <blockquote>
+                We began the process seeking a reliable partner to accredit our services, and from start to finish,
+                everything was handled with professionalism.
+              </blockquote>
+              <div className="cabh-second-person">
+                <strong>Christiano Baros</strong>
+                <span>CEO, KCertification · São Paulo, Brazil</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ FAQ -- */}
+      {/* 07 — FAQ */}
       <section className="ax-section cream" id="faq">
         <div className="container">
-          <div className="ax-head center">
-            <span className="eyebrow">Questions</span>
-            <h2>Frequently asked questions</h2>
-            <p>Common questions about accreditation for conformity assessment bodies.</p>
-          </div>
-          <div className="ax-faq-list">
+          <SectionHead
+            center
+            eyebrow="Frequently Asked Questions"
+            title="Questions About CAB Accreditation"
+            intro="Find answers to common questions about conformity assessment body accreditation, eligibility, accreditation scope, and how to begin."
+          />
+          <div className="ax-faq-list cabh-faq">
             {FAQ.map((f) => (
-              <details className="ax-faq-item" key={f.q}>
+              <details className="ax-faq-item reveal" key={f.q}>
                 <summary>
                   {f.q}
                   <span className="ax-faq-plus" aria-hidden="true" />
                 </summary>
                 <div className="ax-faq-a">
-                  <p>{f.a}</p>
+                  <p>
+                    {f.q === "How long does accreditation remain valid?" ? (
+                      <>
+                        AAA accreditation is valid for <strong>three years</strong>, subject to continued compliance
+                        with AAA accreditation requirements and successful completion of any required surveillance or
+                        reassessment activities.
+                      </>
+                    ) : (
+                      f.a
+                    )}
+                  </p>
                 </div>
               </details>
             ))}
@@ -561,19 +560,40 @@ export default function Page() {
         </div>
       </section>
 
-      <CTA
-        eyebrow="Next step"
-        title="Ready to have your conformity assessment work accredited?"
-        text="Tell us what your organization does, the scope you want accredited and the sites involved. We will confirm the applicable standard and requirements, then come back with a tailored quote."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/quote", label: "Request a Quote" }}
-        related={[
-          { href: "/programs/iso-17021", label: "Management Systems Certification Bodies" },
-          { href: "/programs/iso-17025", label: "Testing & Calibration Laboratories" },
-          { href: "/programs/iso-15189", label: "Medical Laboratories" },
-          { href: "/documents", label: "Documents" },
-        ]}
-      />
+      {/* 08 — Final CTA */}
+      <section className="ax-close" id="cta">
+        <span className="ax-close-corner" aria-hidden="true" />
+        <div className="container">
+          <div className="ax-close-inner reveal">
+            <span className="eyebrow">Take the Next Step</span>
+            <h2>Ready to Find the Right Accreditation Program?</h2>
+            <p>
+              Whether you already know the accreditation standard you need or would like guidance in selecting the
+              most appropriate program, our team is here to help.
+            </p>
+            <div className="ax-close-actions">
+              <a href="#choose-your-program" className="ax-btn ax-btn-gold">
+                Explore Accreditation Programs <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </a>
+              <a href={CONTACT.consultationUrl} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
+                Book a Free Consultation
+              </a>
+            </div>
+            <ul className="cabh-trust">
+              {TRUST.map((t) => (
+                <li key={t}>
+                  <Glyph name="check" size={14} strokeWidth={2.4} />
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <p className="cabh-guidance">
+              Not sure which program is right for you? Our accreditation team will help identify the most suitable
+              standard and accreditation pathway for your organization.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

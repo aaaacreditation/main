@@ -287,7 +287,7 @@ const SECTIONS: Section[] = [
 
 export default function Page() {
   return (
-    <main className="axp pvx">
+    <div className="axp pvx">
       <JsonLd schema={breadcrumbSchema([{ name: "Privacy Policy", path: "/privacy" }])} />
 
       <PageHero
@@ -429,6 +429,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

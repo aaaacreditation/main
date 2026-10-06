@@ -1,190 +1,170 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Icon, { type IconName } from "../_components/Icon";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
+import NavyCard from "../_components/site/NavyCard";
+import SectionHead from "../_components/site/SectionHead";
+import Glyph, { type GlyphName } from "../_components/site/Glyph";
 import { pageMeta, breadcrumbSchema, SITE_URL } from "../../lib/seo";
-import { CAB_SCHEMES, FACTS, PROGRAMS } from "../../lib/facts";
+import { FACTS, PROGRAMS } from "../../lib/facts";
 
 /**
- * `/programs` index.
- *
- * This URL 404'd until Aug 2026 even though it is the obvious parent of every
- * `/programs/*` page — visitors trimming the URL, and crawlers inferring the
- * hierarchy, both hit a dead end. It now lists every accreditation program AAA
- * offers, in one place.
+ * `/programs` index — the destination of every "Explore Accreditation
+ * Programs" button. Oct 2026: rebuilt on the client's program structure (four
+ * primary pathways from the homepage, eight conformity-assessment programs
+ * from the CAB hub), using the client's own card copy and the SME blue card.
  */
 
 export const metadata: Metadata = pageMeta({
   title: "Accreditation Programs",
-  description: `Every accreditation program offered by the American Accreditation Association — healthcare, conformity assessment bodies, training providers, schools and SMEs, across ${FACTS.countriesLabel}.`,
+  description: `Accreditation programs from the American Accreditation Association for education and training, healthcare, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
   path: "/programs",
 });
 
-const SECTORS: {
-  icon: IconName;
-  href: string;
-  label: string;
-  standard: string;
-  text: string;
-}[] = [
+const PRIMARY: { icon: GlyphName; href: string; title: string; text: string }[] = [
   {
-    icon: "shield",
-    href: PROGRAMS.healthcare.href,
-    label: PROGRAMS.healthcare.label,
-    standard: PROGRAMS.healthcare.standard,
-    text: "Accreditation for hospitals, clinics, laboratories and healthcare facilities against standards assessed by ISQua's External Evaluation Association.",
-  },
-  {
-    icon: "clipboard",
-    href: PROGRAMS.cab.href,
-    label: PROGRAMS.cab.label,
-    standard: PROGRAMS.cab.standard,
-    text: "Accreditation of certification bodies, inspection bodies, laboratories and proficiency testing providers against the ISO/IEC 17000 series.",
-  },
-  {
-    icon: "scale",
+    icon: "graduation",
     href: PROGRAMS.training.href,
-    label: PROGRAMS.training.label,
-    standard: PROGRAMS.training.standard,
-    text: "Independent recognition for training organizations, course providers and continuing-education programs delivering to international learners.",
+    title: "Education & Training",
+    text: "Accreditation for training providers, academies, educational institutions and learning organizations seeking to strengthen credibility and demonstrate quality.",
   },
   {
-    icon: "globe",
+    icon: "heart-pulse",
+    href: PROGRAMS.healthcare.href,
+    title: "Healthcare",
+    text: "Accreditation for healthcare organizations seeking to improve quality, safety, performance and confidence across clinical and support services.",
+  },
+  {
+    icon: "shield-check",
+    href: PROGRAMS.cab.href,
+    title: "Conformity Assessment",
+    text: "Accreditation for certification bodies, inspection bodies, laboratories and other conformity assessment organizations operating against international standards.",
+  },
+  {
+    icon: "trending-up",
     href: PROGRAMS.sme.href,
-    label: PROGRAMS.sme.label,
-    standard: PROGRAMS.sme.standard,
-    text: "An independent accreditation and Business Readiness Score that turns an SME's operational and financial health into evidence lenders and partners trust.",
-  },
-  {
-    icon: "clipboard",
-    href: PROGRAMS.school.href,
-    label: PROGRAMS.school.label,
-    standard: PROGRAMS.school.standard,
-    text: "Whole-school accreditation covering governance, curriculum, teaching and learning, student services and continual improvement.",
+    title: "SMEs",
+    text: "A structured accreditation pathway for small and medium enterprises committed to stronger systems, continuous improvement and business readiness.",
   },
 ];
 
-export default function ProgramsIndexPage() {
+const CAB: { icon: GlyphName; p: { href: string; shortLabel: string; standard: string }; text: string }[] = [
+  {
+    icon: "flask",
+    p: PROGRAMS.testingLabs,
+    text: "For laboratories performing testing or sampling activities that require technically valid, reliable, and traceable results.",
+  },
+  {
+    icon: "gauge",
+    p: PROGRAMS.calibrationLabs,
+    text: "For laboratories performing calibration activities to establish measurement accuracy, traceability, and confidence in results.",
+  },
+  {
+    icon: "search-check",
+    p: PROGRAMS.iso17020,
+    text: "For organizations examining products, equipment, installations, processes, or services against specified requirements.",
+  },
+  {
+    icon: "file-check",
+    p: PROGRAMS.iso17021,
+    text: "For bodies certifying management systems such as quality, environmental, information security, or occupational health and safety systems.",
+  },
+  {
+    icon: "id-card",
+    p: PROGRAMS.iso17024,
+    text: "For organizations certifying the competence of individuals against defined requirements or certification schemes.",
+  },
+  {
+    icon: "microscope",
+    p: PROGRAMS.iso15189,
+    text: "For laboratories providing medical examination services that support diagnosis, screening, treatment, and patient care.",
+  },
+  {
+    icon: "package",
+    p: PROGRAMS.iso17065,
+    text: "For bodies certifying products, processes, or services, including applicable Halal certification programs.",
+  },
+  {
+    icon: "chart",
+    p: PROGRAMS.iso17043,
+    text: "For organizations designing and operating proficiency testing schemes that help laboratories evaluate and improve their performance.",
+  },
+];
+
+const itemList = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "AAA accreditation programs",
+  itemListElement: [...PRIMARY.map((p) => ({ name: p.title, href: p.href })), ...CAB.map((c) => ({ name: c.p.shortLabel, href: c.p.href }))].map(
+    (p, i) => ({ "@type": "ListItem", position: i + 1, name: p.name, url: `${SITE_URL}${p.href}` })
+  ),
+};
+
+export default function ProgramsPage() {
   return (
     <div className="axp">
-      <JsonLd
-        schema={[
-          breadcrumbSchema([{ name: "Accreditation Programs", path: "/programs" }]),
-          {
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            name: "AAA accreditation programs",
-            itemListElement: [...SECTORS, ...CAB_SCHEMES].map((p, i) => ({
-              "@type": "ListItem",
-              position: i + 1,
-              name: p.label,
-              url: `${SITE_URL}${p.href}`,
-            })),
-          },
-        ]}
-      />
+      <JsonLd schema={[breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Accreditation Programs", path: "/programs" }]), itemList]} />
 
       <PageHero
-        image="/hero.jpg"
         eyebrow="Accreditation Programs"
-        badge="Accreditation Programs"
-        title={
-          <>
-            Every AAA accreditation <em>program</em>
-          </>
-        }
-        intro="AAA accredits organizations against internationally recognized standards — in healthcare, conformity assessment, education and training, and small and medium enterprises. Choose the program that matches your organization."
         crumbs={[{ label: "Accreditation Programs" }]}
-        caption={{ kicker: "American Accreditation Association", title: "Recognized worldwide" }}
-        meta={[
-          { k: "Sector programs", v: "5" },
-          { k: "Conformity schemes", v: String(CAB_SCHEMES.length) },
-          { k: "Countries served", v: FACTS.countriesPlus },
-          { k: "Accredited organizations", v: FACTS.organizations },
-        ]}
+        title="Find the Right Accreditation Program"
+        intro="Choose the pathway that matches your organization type and quality objectives. AAA provides accreditation across education, healthcare, conformity assessment and SME sectors."
         actions={
           <>
-            <Link href="/apply" className="ax-btn ax-btn-gold">
-              Apply for Accreditation <Icon name="arrow" size={14} />
+            <Link href="/contact" className="ax-btn ax-btn-gold">
+              Talk to an Accreditation Expert <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
-            <Link href="/quote" className="ax-btn ax-btn-ghost">
-              Request a Quote
+            <Link href="/apply" className="ax-btn ax-btn-ghost">
+              Apply for Accreditation
             </Link>
           </>
         }
+        meta={[
+          { k: "Countries", v: FACTS.countriesPlus },
+          { k: "Accredited organizations", v: FACTS.organizations },
+          { k: "Assessors & experts", v: FACTS.assessors },
+        ]}
       />
 
-      {/* ------------------------------------------------ Sector programs -- */}
-      <section className="ax-section">
+      <section className="ax-section" id="pathways">
         <div className="container">
-          <div className="ax-head">
-            <span className="eyebrow">By sector</span>
-            <h2>Sector accreditation programs</h2>
-            <p>
-              Each program applies the requirements of its anchor standard to a specific kind of
-              organization. If you are unsure which fits, tell us what you do and we will confirm
-              the applicable scheme before you apply.
-            </p>
-            <span className="ax-rule" />
-          </div>
-
-          <div className="ax-grid" style={{ marginTop: 34 }}>
-            {SECTORS.map((s, i) => (
-              <Link className="ax-card" href={s.href} key={s.href}>
-                <div className="ax-card-top">
-                  <span className="ax-card-ico ax-ico">
-                    <Icon name={s.icon} size={22} />
-                  </span>
-                  <span className="ax-card-no">{String(i + 1).padStart(2, "0")}</span>
-                </div>
-                <h3>{s.label}</h3>
-                <p>{s.text}</p>
-                <span className="ax-card-go">
-                  {s.standard} <Icon name="arrow" size={13} />
-                </span>
-              </Link>
+          <SectionHead center eyebrow="Accreditation Pathways" title="Four Accreditation Pathways" />
+          <div className="ax-blue-grid four">
+            {PRIMARY.map((p, i) => (
+              <NavyCard key={p.href} icon={p.icon} no={String(i + 1).padStart(2, "0")} title={p.title} href={p.href} cta="Explore Program">
+                <p>{p.text}</p>
+              </NavyCard>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ------------------------------------ Conformity assessment schemes */}
-      <section className="ax-section cream">
+      <section className="ax-section cream" id="conformity-assessment">
         <div className="container">
-          <div className="ax-head">
-            <span className="eyebrow">By standard</span>
-            <h2>Conformity assessment schemes</h2>
-            <p>
-              Accreditation of the bodies that themselves certify, inspect or test — assessed
-              against the relevant standard in the ISO/IEC 17000 series.
-            </p>
-            <span className="ax-rule" />
-          </div>
-
-          <div className="ax-grid four tight" style={{ marginTop: 34 }}>
-            {CAB_SCHEMES.map((s) => (
-              <Link className="ax-tile" href={s.href} key={s.href}>
-                <span className="ax-tile-ico ax-ico">
-                  <Icon name="shield" size={20} />
-                </span>
-                <span>
-                  <b>{s.shortLabel}</b>
-                  <span>{s.standard}</span>
-                </span>
-              </Link>
+          <SectionHead
+            center
+            eyebrow="Conformity Assessment Programs"
+            title="Choose Your Accreditation Program"
+            intro="Select the accreditation program that best matches your organization’s activities. Each program is based on a specific international standard and designed for a particular type of conformity assessment body."
+          />
+          <div className="ax-blue-grid four">
+            {CAB.map((c) => (
+              <NavyCard key={c.p.href} icon={c.icon} tag={c.p.standard} title={c.p.shortLabel} href={c.p.href}>
+                <p>{c.text}</p>
+              </NavyCard>
             ))}
           </div>
         </div>
       </section>
 
       <CTA
-        eyebrow="Not sure which program?"
-        title="Tell us what your organization does"
-        text="Describe your activities, your intended scope and the countries you operate in. We will confirm the applicable program and requirements, then come back with a tailored quote."
-        primary={{ href: "/quote", label: "Request a Quote" }}
-        secondary={{ href: "/contact", label: "Talk to an assessor" }}
+        eyebrow="Not sure where to start?"
+        title="Not sure which program is right for your organization?"
+        text="Speak with the AAA team and we will guide you toward the most suitable accreditation pathway."
+        primary={{ href: "/contact", label: "Talk to an Accreditation Expert" }}
+        secondary={{ href: "/apply", label: "Apply for Accreditation" }}
       />
     </div>
   );

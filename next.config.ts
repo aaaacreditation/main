@@ -49,7 +49,7 @@ const LEGACY_PAGES: Record<string, string> = {
   "/personnel-certification-bodies-accreditation-iso-iec-17024": "/programs/iso-17024",
   "/product-certification-bodies-accreditation-iso-iec-17065-and-halal": "/programs/iso-17065",
   "/inspection-bodies-accreditation-iso-iec-17020": "/programs/iso-17020",
-  "/testing-calibration-laboratories-17025-accreditation-bodies": "/programs/iso-17025",
+  "/testing-calibration-laboratories-17025-accreditation-bodies": "/programs/testing-laboratories",
   "/medical-laboratories-accreditation-iso-15189": "/programs/iso-15189",
   "/proficiency-testing-providers-accreditation-iso-iec-17043": "/programs/iso-17043",
   "/training-providers-accreditation-astm-e-2659": "/programs/astm-e2659",
@@ -149,6 +149,10 @@ const nextConfig: NextConfig = {
 
     return [
       ...pages,
+
+      // Oct 2026: ISO/IEC 17025 split into Testing and Calibration Laboratories
+      // pages per the client's CAB hub; the combined page now lands on Testing.
+      { source: "/programs/iso-17025", destination: "/programs/testing-laboratories", permanent: true },
 
       // WordPress archive pagination and the single author archive.
       { source: "/news/page/:n", destination: "/news", permanent: true },

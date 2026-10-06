@@ -1,779 +1,389 @@
 import Link from "next/link";
-import Icon from "../_components/Icon";
-import PageHero from "../_components/PageHero";
+import Image from "next/image";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
-import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import NavyCard from "../_components/site/NavyCard";
+import SectionHead from "../_components/site/SectionHead";
+import Glyph, { type GlyphName } from "../_components/site/Glyph";
+import { pageMeta, breadcrumbSchema } from "@/lib/seo";
 import "./about-accreditation.css";
 
+/*
+ * About Accreditation — rebuilt Oct 2026 on the client's final cumulative
+ * package (Hero → What Is Accreditation? + What Accreditation Delivers →
+ * Accreditation vs Certification → How the Accreditation Process Works →
+ * Final CTA), rendered in the AAA design system.
+ *
+ * Approved decisions applied: no testimonial section on this page (kept
+ * educational and non-repetitive); final CTA = Explore Accreditation Programs
+ * + Contact AAA.
+ *
+ * The hero is hand-built on the `.ax-hero` primitives instead of PageHero so
+ * the AAA accreditation symbol can be shown whole (contain, not cover) and
+ * keep its alt text.
+ */
+
 export const metadata = pageMeta({
-  title: "What Is Accreditation?",
+  title: "About Accreditation",
   description:
-    "What accreditation is, how it differs from certification, who accredits the accreditors, and why it matters to buyers, regulators and the bodies assessed.",
+    "What accreditation is, what it delivers, how it differs from certification, and how the AAA accreditation process works from application to renewal.",
   path: "/about-accreditation",
   keywords: [
     "what is accreditation",
     "accreditation vs certification",
-    "ISO/IEC 17011",
-    "ILAC IAF",
-    "conformity assessment",
+    "accreditation process",
     "benefits of accreditation",
+    "accreditation scope",
+    "American Accreditation Association",
   ],
 });
 
-const STANDARDS_PDF =
-  "https://aaa-accreditation.org/wp-content/uploads/2024/11/AAA-Accreditation-Standards-v-1.pdf";
-const GENERAL_REQUIREMENTS =
-  "https://aaa-accreditation.org/wp-content/uploads/2021/12/General-requirements-for-accreditation-V2.pdf";
-
-function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {children}
-    </svg>
-  );
-}
-
-const BENEFITS: { audience: string; title: string; text: string; icon: React.ReactNode }[] = [
+const DELIVERS: { icon: GlyphName; title: string; text: string }[] = [
   {
-    audience: "Industry & trade",
-    title: "Fewer repeat tests, easier trade",
-    text: "Accreditation facilitates trade and eliminates the need for repetitive testing, certification and inspection.",
-    icon: (
-      <>
-        <path d="M3 21h18M6 21V9l6-5 6 5v12" />
-        <path d="M10 21v-6h4v6" />
-      </>
-    ),
+    icon: "check-circle",
+    title: "Builds Trust",
+    text: "Provides stakeholders with greater confidence through independent assessment.",
   },
   {
-    audience: "Regulators",
-    title: "An impartial basis for decisions",
-    text: "Accreditation provides a reliable and impartial basis for sound decision-making.",
-    icon: (
-      <>
-        <path d="M12 3v18M8 21h8M2 8h20" />
-        <path d="M5 8l-3 6a3 3 0 0 0 6 0L5 8zM19 8l-3 6a3 3 0 0 0 6 0l-3-6z" />
-      </>
-    ),
+    icon: "award",
+    title: "Demonstrates Quality & Competence",
+    text: "Shows that defined requirements have been evaluated within the accredited scope.",
   },
   {
-    audience: "Conformity assessment providers",
-    title: "Proof of competence, and a passport to tenders",
-    text: "For testing, calibration and medical laboratories, certification bodies and inspection bodies, accreditation is a means of demonstrating competency to clients. It is an effective marketing tool and a passport to submit tenders to contractors that require independently verified conformity assessment service providers.",
-    icon: (
-      <>
-        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-        <rect x="9" y="3" width="6" height="4" rx="1" />
-        <path d="m9 14 2 2 4-4" />
-      </>
-    ),
+    icon: "trending-up",
+    title: "Strengthens Performance",
+    text: "Encourages organizations to review systems, identify gaps, and improve consistency.",
   },
   {
-    audience: "Users & consumers",
-    title: "Results you can compare and rely on",
-    text: "Accreditation is your guarantee of reliable and comparable conformity assessment results, and it increases the reliability of products.",
-    icon: (
-      <>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
+    icon: "shield-check",
+    title: "Supports Risk Management",
+    text: "Promotes structured controls, accountability, and attention to areas that may affect quality or performance.",
+  },
+  {
+    icon: "refresh",
+    title: "Encourages Continual Improvement",
+    text: "Supports an ongoing approach to maintaining requirements and improving organizational effectiveness.",
   },
 ];
 
-const PROGRAMS: { name: string; standard: string; href: string; icon: React.ReactNode }[] = [
+const ROWS = ["Purpose", "Focus", "Outcome", "Examples"] as const;
+
+const COMPARE: { key: string; icon: GlyphName; label: string; rows: Record<(typeof ROWS)[number], string> }[] = [
   {
-    name: "Healthcare Accreditation",
-    standard: "AAA Accreditation Standards · ISQua EEA assessed",
-    href: "/programs/healthcare",
-    icon: (
-      <>
-        <path d="M12 21s-7-4.35-9.33-8.5A5.5 5.5 0 0 1 12 6.5a5.5 5.5 0 0 1 9.33 6C19 16.65 12 21 12 21z" />
-        <path d="M12 10v5M9.5 12.5h5" />
-      </>
-    ),
+    key: "accreditation",
+    icon: "award",
+    label: "Accreditation",
+    rows: {
+      Purpose:
+        "Provides independent recognition that an organization or body meets defined accreditation requirements within a specified scope.",
+      Focus:
+        "Assesses competence and conformity with the requirements applicable to the accreditation program and scope.",
+      Outcome: "Accreditation is granted for a defined scope when applicable accreditation requirements are met.",
+      Examples:
+        "Healthcare organizations, training and education providers, laboratories, inspection bodies, certification bodies, and other organizations covered by accreditation programs.",
+    },
   },
   {
-    name: "Training Providers Accreditation",
-    standard: "ASTM E2659",
-    href: "/programs/training-education",
-    icon: (
-      <>
-        <path d="M22 10 12 5 2 10l10 5 10-5z" />
-        <path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5" />
-      </>
-    ),
-  },
-  {
-    name: "Schools Accreditation",
-    standard: "AAA school standards",
-    href: "/programs/school-accreditation",
-    icon: (
-      <>
-        <path d="M3 21h18M5 21V8l7-5 7 5v13" />
-        <path d="M9 21v-6h6v6M10 11h4" />
-      </>
-    ),
-  },
-  {
-    name: "Testing & Calibration Laboratories",
-    standard: "ISO/IEC 17025",
-    href: "/programs/iso-17025",
-    icon: (
-      <>
-        <path d="M9 2v7L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5-10V2" />
-        <path d="M8 2h8M7 15h10" />
-      </>
-    ),
-  },
-  {
-    name: "Medical Laboratories",
-    standard: "ISO 15189",
-    href: "/programs/iso-15189",
-    icon: (
-      <>
-        <rect x="3" y="4" width="18" height="16" rx="2" />
-        <path d="M12 8v8M8 12h8" />
-      </>
-    ),
-  },
-  {
-    name: "Personnel Certification Bodies",
-    standard: "ISO/IEC 17024",
-    href: "/programs/iso-17024",
-    icon: (
-      <>
-        <circle cx="12" cy="8" r="4" />
-        <path d="M6 21v-1a6 6 0 0 1 12 0v1" />
-      </>
-    ),
-  },
-  {
-    name: "Management Systems Certification Bodies Accreditation",
-    standard: "ISO/IEC 17021-1",
-    href: "/programs/iso-17021",
-    icon: (
-      <>
-        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        <path d="m14.5 17.5 2 2 4-4" />
-      </>
-    ),
-  },
-  {
-    name: "Product Certification Bodies",
-    standard: "ISO/IEC 17065",
-    href: "/programs/iso-17065",
-    icon: (
-      <>
-        <path d="m21 16-9 5-9-5V8l9-5 9 5z" />
-        <path d="m3 8 9 5 9-5M12 13v8" />
-      </>
-    ),
-  },
-  {
-    name: "Inspection Bodies",
-    standard: "ISO/IEC 17020",
-    href: "/programs/iso-17020",
-    icon: (
-      <>
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </>
-    ),
-  },
-  {
-    name: "Proficiency Testing Providers",
-    standard: "ISO/IEC 17043",
-    href: "/programs/iso-17043",
-    icon: (
-      <>
-        <path d="M3 3v18h18" />
-        <path d="m7 15 3.5-4 3 2.5L20 7" />
-      </>
-    ),
+    key: "certification",
+    icon: "certificate",
+    label: "Certification",
+    rows: {
+      Purpose:
+        "Provides independent confirmation that specified requirements have been met for a management system, product, service, process, or person.",
+      Focus: "Assesses conformity with the requirements of the relevant certification standard or scheme.",
+      Outcome: "Certification is granted when the applicable certification requirements are met.",
+      Examples: "ISO 9001 management system certification, product certification, and personnel certification.",
+    },
   },
 ];
 
-const STAGES: { title: string; text: string }[] = [
+const STEPS: { icon: GlyphName; title: string; text: string }[] = [
   {
+    icon: "clipboard",
     title: "Application",
-    text: "You send the accreditation application form to AAA and pay the application fees. AAA issues a letter confirming that your accreditation is in process.",
+    text: "The organization submits its application and defines the proposed accreditation scope.",
   },
   {
-    title: "Document review",
-    text: "AAA reviews your application and related documents and sends you a Document Review Compliance Report. You revise your documents according to the review results if needed.",
+    icon: "file-text",
+    title: "Document Review",
+    text: "Relevant documentation is reviewed against the applicable accreditation requirements.",
   },
   {
+    icon: "search-check",
     title: "Assessment",
-    text: "AAA defines the assessment dates and the assessment team, conducts the assessment visit, and sends an assessment report that includes a recommendation for accreditation.",
+    text: "Qualified assessors evaluate conformity with the applicable requirements through the appropriate assessment activities.",
   },
   {
-    title: "Decision",
-    text: "You implement corrective actions if needed, and the accreditation committee reviews the file and takes the accreditation decision.",
+    icon: "wrench",
+    title: "Findings & Corrective Action",
+    text: "Where findings are identified, the organization addresses them and provides the required evidence.",
+  },
+  {
+    icon: "gavel",
+    title: "Accreditation Decision",
+    text: "Assessment results are independently reviewed and an accreditation decision is made.",
+  },
+  {
+    icon: "repeat",
+    title: "Monitoring & Renewal",
+    text: "Accreditation is maintained through the applicable monitoring, reassessment, and renewal requirements.",
   },
 ];
 
-const FAQ = [
-  {
-    q: "What is accreditation?",
-    a: "Accreditation is a formal process by which a recognized body evaluates and certifies that an institution meets predefined and established quality standards. The accreditation process aims to enhance service quality and ensure safety through compliance with global standards.",
-  },
-  {
-    q: "What is the difference between accreditation and certification?",
-    a: "In conformity-assessment terms, certification applies to a product, process, service, management system or person: a certification body attests that the thing conforms to a specified standard. Accreditation applies one level up — to the organization itself. It is formal recognition that a laboratory, inspection body, certification body, healthcare organization or training provider is competent and impartial in the work it performs. In short: certification says the output conforms; accreditation says the organization producing that output is competent to say so.",
-  },
-  {
-    q: "Who accredits the accreditation bodies?",
-    a: "ILAC and IAF are the international organizations for accreditation bodies operating in accordance with ISO/IEC 17011 and involved in the accreditation of conformity assessment bodies, including laboratories, inspection bodies and certification bodies. In healthcare, ISQua — the International Society for Quality in Health Care — performs external evaluation of accreditation standards and of the organizations that set them.",
-  },
-  {
-    q: "What is ISO/IEC 17011?",
-    a: "ISO/IEC 17011 is the international standard that sets out the requirements accreditation bodies themselves operate to. It is the reference framework used by ILAC and IAF for the accreditation of conformity assessment bodies such as laboratories, inspection bodies and certification bodies.",
-  },
-  {
-    q: "Is AAA internationally recognized?",
-    a: "AAA is an institutional member of the International Society for Quality in Health Care (ISQua), which has been working to improve the quality and safety of health care worldwide for over 30 years. The AAA Accreditation Standards for Healthcare Facilities have been assessed and accredited by ISQua EEA against the Guidelines and Principles for the Development of Health and Social Care Standards, 5th Edition.",
-  },
-  {
-    q: "Which organizations can apply to AAA for accreditation?",
-    a: "AAA accredits healthcare organizations, training providers, schools, testing and calibration laboratories (ISO/IEC 17025), medical laboratories (ISO 15189), personnel certification bodies (ISO/IEC 17024), management systems certification bodies (ISO/IEC 17021-1), product certification bodies (ISO/IEC 17065), inspection bodies (ISO/IEC 17020) and proficiency testing providers (ISO/IEC 17043). AAA serves organizations in 58 countries.",
-  },
-  {
-    q: "How does the AAA accreditation process work?",
-    a: "Although there may be certain differences from one application to another, the general process remains the same for all candidate bodies and follows four stages: Application, Document Review, Assessment and Decision.",
-  },
-];
-
-export default function Page() {
+export default function AboutAccreditationPage() {
   return (
-    <main className="axp aax">
+    <div className="axp acc">
       <JsonLd
-        schema={[
-          breadcrumbSchema([{ name: "About Accreditation", path: "/about-accreditation" }]),
-          faqSchema(FAQ),
-        ]}
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "About AAA", path: "/about" },
+          { name: "About Accreditation", path: "/about-accreditation" },
+        ])}
       />
 
-      <PageHero
-        image="/home/conformity.jpg"
-        eyebrow="About Accreditation"
-        badge="Explainer · Conformity assessment"
-        title={
-          <>
-            What accreditation is — and why it <em>matters.</em>
-          </>
-        }
-        intro="Accreditation is a formal process by which a recognized body evaluates and certifies that an institution meets predefined and established quality standards. This page explains what that means, how accreditation differs from certification, and who holds the accreditors to account."
-        crumbs={[{ label: "About Accreditation" }]}
-        caption={{
-          kicker: "Conformity assessment",
-          title: "Competence, impartiality and consistency — independently verified",
-          chip: "ISO/IEC 17011 framework",
-        }}
-        meta={[
-          { k: "Reference framework", v: "ISO/IEC 17011" },
-          { k: "International bodies", v: "ILAC · IAF" },
-          { k: "AAA programs", v: "10" },
-          { k: "Countries served", v: "58" },
-        ]}
-        actions={
-          <>
-            <Link href="/apply" className="ax-btn ax-btn-gold">
-              Apply for Accreditation <Icon name="arrow" size={14} />
-            </Link>
-            <Link href="/documents" className="ax-btn ax-btn-ghost">
-              Read the requirements
-            </Link>
-          </>
-        }
-      />
-
-      {/* 01 — The definition */}
-      <section className="ax-section" id="definition">
+      {/* 01 — Hero */}
+      <section className="ax-hero v2 acc-hero">
+        <div className="axh-aura" aria-hidden="true">
+          <span />
+          <span />
+        </div>
         <div className="container">
-          <div className="ax-split top">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">The definition</span>
-                <h2>Accreditation, plainly stated.</h2>
-              </div>
-              <span className="ax-rule" aria-hidden="true" />
-              <p style={{ marginTop: 24 }}>
-                Accreditation exists to answer one question that no organization can credibly
-                answer about itself: <strong>is this body competent, impartial and consistent
-                in the work it performs?</strong> An accreditation body answers it from the
-                outside, against published standards, on the basis of evidence gathered during an
-                assessment.
-              </p>
-              <p>
-                AAA is a third-party accreditation body that delivers accreditation services
-                according to various international standards. It is authorized by the State
-                Corporation Commission of the Commonwealth of Virginia to transact its business
-                under Title 13.1 of the Code of Virginia and to offer a full range of
-                comprehensive accreditation services.
-              </p>
-              <ul className="ax-checks">
-                <li>Evaluated against predefined, published quality standards</li>
-                <li>Performed by a recognized third party, not by the organization itself</li>
-                <li>Evidence-based: document review followed by on-site assessment</li>
-                <li>Decided independently of the team that carried out the assessment</li>
-              </ul>
-            </div>
+          <div className="ax-hero-grid">
+            <div className="ax-hero-copy">
+              <nav className="ax-crumbs axh-in" style={{ "--d": 0 } as React.CSSProperties} aria-label="Breadcrumb">
+                <Link href="/">Home</Link>
+                <span aria-hidden="true">/</span>
+                <Link href="/about">About AAA</Link>
+                <span aria-hidden="true">/</span>
+                <strong>About Accreditation</strong>
+              </nav>
 
-            <div className="aax-def reveal">
-              <span className="ax-ico aax-def-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9.6 6.4v3.2c-1.7.5-2.6 1.6-2.7 3.4H9.6V18H3.9v-5c0-3.9 1.9-6.1 5.7-6.6zm10.5 0v3.2c-1.7.5-2.6 1.6-2.7 3.4h2.7V18h-5.7v-5c0-3.9 1.9-6.1 5.7-6.6z" />
-                </svg>
+              <span className="ax-hero-badge axh-in" style={{ "--d": 1 } as React.CSSProperties}>
+                <i aria-hidden="true" />
+                About Accreditation
               </span>
-              <p>
-                Accreditation is a formal process by which a recognized body evaluates and
-                certifies that an institution meets predefined and established quality standards.
-                The accreditation process aims to enhance service quality and ensure safety
-                through compliance with global standards.
-              </p>
-              <cite>American Accreditation Association</cite>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 02 — Accreditation vs certification */}
-      <section className="ax-section cream" id="vs-certification">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Often confused</span>
-            <h2>Accreditation is not certification.</h2>
-            <p>
-              The two words are used interchangeably in everyday speech, but in conformity
-              assessment they sit at different levels. One assesses the output; the other assesses
-              the organization producing it.
-            </p>
-          </div>
+              <h1 className="axh-in" style={{ "--d": 2 } as React.CSSProperties}>About Accreditation</h1>
 
-          <div className="aax-vs" style={{ marginTop: "clamp(30px, 3.4vw, 46px)" }}>
-            <article className="aax-vs-card lead reveal">
-              <span className="aax-vs-tag">Accreditation</span>
-              <h3>Recognition of the organization</h3>
-              <p>
-                Formal recognition that a body — a laboratory, an inspection body, a certification
-                body, a healthcare organization, a training provider or a school — is competent
-                and impartial in the work it performs, granted by a third-party accreditation body
-                such as AAA.
-              </p>
-              <dl className="aax-vs-facts">
-                <div>
-                  <dt>Applies to</dt>
-                  <dd>The organization and its defined scope of activity</dd>
-                </div>
-                <div>
-                  <dt>Answers</dt>
-                  <dd>&ldquo;Is this body competent and impartial?&rdquo;</dd>
-                </div>
-                <div>
-                  <dt>Granted by</dt>
-                  <dd>An accreditation body</dd>
-                </div>
-                <div>
-                  <dt>Framework</dt>
-                  <dd>ISO/IEC 17011 and the standard for the activity being accredited</dd>
-                </div>
-              </dl>
-            </article>
-
-            <article className="aax-vs-card reveal">
-              <span className="aax-vs-tag">Certification</span>
-              <h3>Attestation about the output</h3>
-              <p>
-                Attestation that a product, process, service, management system or person conforms
-                to a specified standard — for example ISO 9001 certification of a management
-                system, or certification of an individual&rsquo;s competence against a scheme.
-              </p>
-              <dl className="aax-vs-facts">
-                <div>
-                  <dt>Applies to</dt>
-                  <dd>A product, process, service, system or person</dd>
-                </div>
-                <div>
-                  <dt>Answers</dt>
-                  <dd>&ldquo;Does this conform to the standard?&rdquo;</dd>
-                </div>
-                <div>
-                  <dt>Granted by</dt>
-                  <dd>A certification body</dd>
-                </div>
-                <div>
-                  <dt>Framework</dt>
-                  <dd>The scheme or standard being certified against</dd>
-                </div>
-              </dl>
-            </article>
-          </div>
-
-          <div className="ax-note gold reveal" style={{ marginTop: 20 }}>
-            <span>
-              <strong>Where the two meet</strong>
-              A certification body issues certificates; an accreditation body accredits the
-              certification body. That is exactly what AAA does under{" "}
-              <Link href="/programs/iso-17021">
-                Management Systems Certification Bodies Accreditation (ISO/IEC 17021-1)
-              </Link>{" "}
-              — so the certificates that body issues carry independently verified competence
-              behind them.
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* 03 — Who accredits the accreditors */}
-      <section className="ax-section navy" id="framework">
-        <div className="container">
-          <div className="ax-split top">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">The international framework</span>
-                <h2>Who accredits the accreditors?</h2>
-                <p>
-                  Accreditation bodies are not a law unto themselves. They work to a published
-                  standard of their own, and they are subject to external evaluation.
-                </p>
-              </div>
-              <ul className="ax-checks" style={{ marginTop: 26 }}>
-                <li>
-                  <strong style={{ color: "#fff" }}>ILAC</strong>&nbsp;and&nbsp;
-                  <strong style={{ color: "#fff" }}>IAF</strong>&nbsp;are the international
-                  organizations for accreditation bodies operating in accordance with ISO/IEC
-                  17011 and involved in the accreditation of conformity assessment bodies —
-                  including laboratories, inspection bodies and certification bodies.
-                </li>
-                <li>
-                  <strong style={{ color: "#fff" }}>ISO/IEC 17011</strong>&nbsp;is the reference
-                  standard for the accreditation bodies themselves — the requirements they operate
-                  to when assessing others.
-                </li>
-                <li>
-                  <strong style={{ color: "#fff" }}>ISQua</strong>&nbsp;— the International Society
-                  for Quality in Health Care — has been working to improve the quality and safety
-                  of health care worldwide for over 30 years through education, knowledge sharing,
-                  external evaluation, and support for health systems around the world. AAA is an
-                  institutional member.
-                </li>
-              </ul>
-            </div>
-
-            <div className="ax-steps-panel reveal">
-              <h3>AAA&rsquo;s external recognition</h3>
-              <ol className="ax-steps">
-                <li className="ax-step">
-                  <span className="ax-step-num" aria-hidden="true">
-                    1
-                  </span>
-                  <div className="ax-step-body">
-                    <b>ISQua institutional membership</b>
-                    <span>
-                      AAA is an institutional member of the International Society for Quality in
-                      Health Care.
-                    </span>
-                  </div>
-                </li>
-                <li className="ax-step">
-                  <span className="ax-step-num" aria-hidden="true">
-                    2
-                  </span>
-                  <div className="ax-step-body">
-                    <b>Standards assessed by ISQua EEA</b>
-                    <span>
-                      The AAA Accreditation Standards for Healthcare Facilities have been assessed
-                      and accredited by ISQua EEA against the Guidelines and Principles for the
-                      Development of Health and Social Care Standards, 5th Edition.
-                    </span>
-                  </div>
-                </li>
-                <li className="ax-step">
-                  <span className="ax-step-num" aria-hidden="true">
-                    3
-                  </span>
-                  <div className="ax-step-body">
-                    <b>Standards built with the sector</b>
-                    <span>
-                      AAA accreditation programs were created according to the international
-                      requirements of ISQua and in consultation with 174 international healthcare
-                      experts.
-                    </span>
-                  </div>
-                </li>
-                <li className="ax-step">
-                  <span className="ax-step-num" aria-hidden="true">
-                    4
-                  </span>
-                  <div className="ax-step-body">
-                    <b>Impartiality held open to scrutiny</b>
-                    <span>
-                      AAA publishes its Safeguarding Impartiality Policy and operates an impartial
-                      complaints and appeals procedure open to all stakeholders.
-                    </span>
-                  </div>
-                </li>
-              </ol>
-              <span className="ax-pill">
-                <span className="ax-ico" aria-hidden="true">
-                  <LineIcon strokeWidth={2}>
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <path d="m9 12 2 2 4-4" />
-                  </LineIcon>
+              <p className="ax-hero-lead axh-in" style={{ "--d": 3 } as React.CSSProperties}>
+                <span className="acc-tagline">
+                  Understanding how accreditation builds confidence in quality, competence, and performance.
                 </span>
-                Read the{" "}
-                <Link href="/impartiality-policy" style={{ color: "var(--aaa-gold-100)" }}>
-                  Safeguarding Impartiality Policy
+                Accreditation provides independent assurance that an organization operates in accordance with defined
+                standards and demonstrates the competence, systems, and practices required within its scope.
+              </p>
+
+              <div className="ax-actions axh-in" style={{ "--d": 4 } as React.CSSProperties}>
+                <Link href="/programs" className="ax-btn ax-btn-gold">
+                  Explore Accreditation Programs <Glyph name="arrow-right" size={14} strokeWidth={2} />
                 </Link>
-              </span>
+                <Link href="/contact" className="ax-btn ax-btn-ghost">
+                  Contact AAA
+                </Link>
+              </div>
+
+              <ul className="acc-chips axh-in" style={{ "--d": 5 } as React.CSSProperties} aria-label="What accreditation stands for">
+                <li>
+                  <Glyph name="check-circle" size={16} /> Independent Assessment
+                </li>
+                <li>
+                  <Glyph name="file-check" size={16} /> Evidence-Based Decisions
+                </li>
+                <li>
+                  <Glyph name="target" size={16} /> Greater Confidence
+                </li>
+              </ul>
+            </div>
+
+            <div className="ax-hero-visual acc-hero-visual axh-in" style={{ "--d": 3 } as React.CSSProperties}>
+              <figure className="acc-symbol">
+                <Image
+                  src="/images/site/about-accreditation/aaa-accreditation-symbol.webp"
+                  alt="AAA Accredited Organization symbol"
+                  width={1772}
+                  height={1181}
+                  sizes="(max-width: 980px) 90vw, 560px"
+                  priority
+                />
+              </figure>
             </div>
           </div>
         </div>
+        <span className="axh-rule" aria-hidden="true" />
       </section>
 
-      {/* 04 — Benefits */}
-      <section className="ax-section" id="benefits">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Why it matters</span>
-            <h2>The benefits of accreditation, by audience.</h2>
-            <p>
-              Accreditation is not a badge. It removes duplicated work, gives regulators something
-              defensible to rely on, opens tenders, and lets buyers compare results across borders.
+      {/* 02 — What is accreditation + what it delivers */}
+      <section className="ax-section" id="what-is-accreditation">
+        <div className="container acc-what">
+          <div className="acc-what-copy">
+            <SectionHead
+              eyebrow="What Is Accreditation?"
+              title="Independent Recognition of Quality and Competence"
+              intro="Accreditation provides a structured, independent way to evaluate whether an organization meets defined requirements and demonstrates the competence and systems expected within its scope."
+            />
+            <div className="ax-prose reveal">
+              <p>
+                Accreditation is a structured and independent evaluation process used to determine whether an
+                organization meets defined requirements and demonstrates the competence, systems, and practices necessary
+                to operate effectively within its accredited scope.
+              </p>
+              <p>
+                It provides stakeholders with greater confidence that the organization has been assessed against
+                established criteria through a formal and impartial process.
+              </p>
+            </div>
+            <blockquote className="acc-pull reveal">
+              <strong>Accreditation is more than a certificate.</strong>
+              <span>
+                It represents independent assessment, evidence-based evaluation, and an ongoing commitment to meeting
+                applicable requirements and continual improvement.
+              </span>
+            </blockquote>
+            <p className="ax-note reveal acc-scope-note">
+              <Glyph name="lightbulb" size={18} />
+              <span>
+                Accreditation applies to a defined scope and does not automatically mean that every activity performed
+                by an organization is accredited.
+              </span>
             </p>
           </div>
 
-          <div className="ax-grid four">
-            {BENEFITS.map((b, i) => (
-              <article
-                className="ax-card aax-benefit reveal"
-                key={b.audience}
-                style={{ transitionDelay: `${i * 55}ms` }}
-              >
-                <div className="ax-card-top">
-                  <span className="ax-ico ax-card-ico" aria-hidden="true">
-                    <LineIcon>{b.icon}</LineIcon>
+          <aside className="acc-delivers reveal" aria-labelledby="acc-delivers-h">
+            <div className="acc-delivers-head">
+              <span className="acc-kicker">Why Accreditation Matters</span>
+              <h3 id="acc-delivers-h">What Accreditation Delivers</h3>
+            </div>
+            <ul className="acc-delivers-list">
+              {DELIVERS.map((d) => (
+                <li key={d.title}>
+                  <span className="ax-card-ico">
+                    <Glyph name={d.icon} />
                   </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
+                  <div>
+                    <b>{d.title}</b>
+                    <span>{d.text}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      {/* 03 — Accreditation vs certification */}
+      <section className="ax-section cream" id="accreditation-vs-certification">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Accreditation vs Certification"
+            title="Understanding the Difference"
+            intro="The terms are often confused, but they serve different purposes."
+          />
+
+          <div className="acc-compare reveal">
+            <span className="acc-vs" aria-hidden="true">
+              vs
+            </span>
+            {COMPARE.map((c) => (
+              <article key={c.key} className={`acc-col acc-col-${c.key}`}>
+                <header className="acc-col-head">
+                  <span className="ax-card-ico">
+                    <Glyph name={c.icon} />
                   </span>
-                </div>
-                <span className="ax-label" style={{ marginTop: 16, marginBottom: 0 }}>
-                  {b.audience}
-                </span>
-                <h3>{b.title}</h3>
-                <p>{b.text}</p>
-                <span className="ax-card-rule" aria-hidden="true" />
+                  <h3>{c.label}</h3>
+                </header>
+                <dl>
+                  {ROWS.map((r) => (
+                    <div key={r} className="acc-row">
+                      <dt>{r}</dt>
+                      <dd>{c.rows[r]}</dd>
+                    </div>
+                  ))}
+                </dl>
               </article>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* 05 — Programs */}
-      <section className="ax-section cream" id="programs">
-        <div className="container">
-          <div className="ax-head reveal">
-            <span className="eyebrow">What AAA accredits</span>
-            <h2>Ten accreditation programs, all built on international standards.</h2>
-            <p>
-              AAA&rsquo;s services span healthcare, education and the full range of conformity
-              assessment bodies. Each program has its own standard, its own scope definition and
-              its own application pack.
-            </p>
-            <span className="ax-rule" aria-hidden="true" />
-          </div>
-
-          <div className="aax-programs" style={{ marginTop: "clamp(30px, 3.4vw, 46px)" }}>
-            {PROGRAMS.map((p, i) => (
-              <Link
-                className="aax-program reveal"
-                href={p.href}
-                key={p.href}
-                style={{ transitionDelay: `${i * 35}ms` }}
-              >
-                <span className="ax-ico aax-program-ico" aria-hidden="true">
-                  <LineIcon>{p.icon}</LineIcon>
-                </span>
-                <span className="aax-program-txt">
-                  <b>{p.name}</b>
-                  <span>{p.standard}</span>
-                </span>
-                <Icon name="arrow" size={14} />
-              </Link>
-            ))}
-          </div>
-
-          <div className="ax-actions reveal">
-            <Link href="/documents" className="ax-btn ax-btn-ghost-navy">
-              <Icon name="doc" size={14} /> Browse the document library
-            </Link>
-            <Link href="/apply" className="ax-btn ax-btn-blue">
-              Apply for Accreditation <Icon name="arrow" size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 06 — How it works */}
-      <section className="ax-section" id="process">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">How it works</span>
-            <h2>Four stages, the same for every applicant.</h2>
-            <p>
-              Although there may be certain differences from one application to another, the
-              general process remains the same for all candidate bodies.
-            </p>
-          </div>
-
-          <div className="ax-split top">
-            <div className="ax-steps-panel reveal">
-              <h3>The accreditation route</h3>
-              <ol className="ax-steps">
-                {STAGES.map((s, i) => (
-                  <li className="ax-step" key={s.title}>
-                    <span className="ax-step-num" aria-hidden="true">
-                      {i + 1}
-                    </span>
-                    <div className="ax-step-body">
-                      <b>{s.title}</b>
-                      <span>{s.text}</span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <span className="ax-pill">
-                <span className="ax-ico" aria-hidden="true">
-                  <LineIcon strokeWidth={2}>
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v5l3 2" />
-                  </LineIcon>
-                </span>
-                Accredited organizations are registered in the ADCP
-              </span>
-            </div>
-
-            <aside className="ax-panel reveal">
-              <span className="ax-ico ax-panel-ico" aria-hidden="true">
-                <LineIcon>
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <path d="M14 2v6h6M12 12v6M9 15l3 3 3-3" />
-                </LineIcon>
-              </span>
-              <h3>Read before you apply</h3>
+          <div className="ax-blue-grid two acc-roles">
+            <NavyCard icon="landmark" title="AAA's Role">
               <p>
-                Every requirement AAA assesses against is published. Start with the general
-                requirements and the AAA Accreditation Standards, then pick up the application form
-                for your program.
+                The American Accreditation Association provides accreditation to organizations across different sectors
+                and programs, within defined accreditation scopes.
               </p>
-              <Link href="/apply" className="ax-btn ax-btn-blue">
-                Start an application <Icon name="arrow" size={14} />
-              </Link>
-              <p className="ax-panel-note">
-                Not sure which program fits? Tell us your sector and the countries you operate in
-                and an advisor will scope it with you.
+            </NavyCard>
+            <NavyCard icon="target" title="Accreditation Applies to a Defined Scope">
+              <p>
+                An organization&apos;s accreditation should not be interpreted as covering activities, services,
+                programs, or areas outside its approved accreditation scope.
               </p>
-              <ul className="ax-docs">
-                <li className="ax-docs-title">Core documents</li>
-                <li>
-                  <a href={GENERAL_REQUIREMENTS} target="_blank" rel="noopener noreferrer">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <path d="M14 2v6h6" />
-                      </LineIcon>
-                    </span>
-                    General requirements for accreditation
-                    <i>PDF</i>
-                  </a>
-                </li>
-                <li>
-                  <a href={STANDARDS_PDF} target="_blank" rel="noopener noreferrer">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <path d="M14 2v6h6" />
-                      </LineIcon>
-                    </span>
-                    AAA Accreditation Standards
-                    <i>PDF</i>
-                  </a>
-                </li>
-                <li>
-                  <Link href="/documents">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <rect x="3" y="4" width="18" height="16" rx="2" />
-                        <path d="M3 10h18M8 15h8" />
-                      </LineIcon>
-                    </span>
-                    All application forms &amp; policies
-                    <i>Library</i>
-                  </Link>
-                </li>
-              </ul>
-            </aside>
+            </NavyCard>
           </div>
         </div>
       </section>
 
-      {/* 07 — FAQ */}
-      <section className="ax-section cream" id="faq">
+      {/* 04 — How the accreditation process works */}
+      <section className="ax-section" id="accreditation-process">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">FAQ</span>
-            <h2>Accreditation, answered.</h2>
+          <SectionHead
+            center
+            eyebrow="The Accreditation Journey"
+            title="How the Accreditation Process Works"
+            intro="While the exact process may vary by accreditation program and scope, the journey generally follows a structured sequence from application through ongoing monitoring and renewal."
+          />
+
+          <div className="acc-prestep reveal">
+            <span className="acc-prestep-ico" aria-hidden="true">
+              <Glyph name="compass" />
+            </span>
             <p>
-              The questions organizations and buyers most often ask about what accreditation is and
-              what it is worth.
+              <strong>Not sure where to start?</strong> Our accreditation team can help you identify the program and
+              pathway that best fits your organization.
             </p>
+            <Link href="/contact" className="ax-btn ax-btn-ghost-navy sm">
+              Contact AAA <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
           </div>
-          <div className="ax-faq-list single">
-            {FAQ.map((item, i) => (
-              <details className="ax-faq-item reveal" key={item.q} open={i === 0}>
-                <summary>
-                  <span>{item.q}</span>
-                  <span className="ax-faq-plus" aria-hidden="true" />
-                </summary>
-                <div className="ax-faq-a">
-                  <p>{item.a}</p>
-                </div>
-              </details>
+
+          <ol className="acc-rail">
+            {STEPS.map((s, i) => (
+              <li key={s.title} className="acc-rail-step">
+                <span className="acc-rail-node" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <NavyCard compact icon={s.icon} title={s.title}>
+                  <p>{s.text}</p>
+                </NavyCard>
+              </li>
             ))}
-          </div>
+          </ol>
+
+          <p className="ax-note gold reveal acc-ongoing">
+            <Glyph name="refresh" size={18} />
+            <span>
+              <strong>Accreditation is an ongoing commitment.</strong>
+              Maintaining accreditation requires continued conformity with applicable requirements and participation in
+              the monitoring and renewal activities relevant to the accreditation program.
+            </span>
+          </p>
         </div>
       </section>
 
+      {/* 05 — Final CTA */}
       <CTA
-        eyebrow="International accreditation"
-        title={
+        eyebrow="Take the Next Step"
+        title="Ready to Begin Your Accreditation Journey?"
+        text={
           <>
-            International accreditation, <em>accepted globally.</em>
+            Explore AAA accreditation programs or speak with our team to identify the accreditation pathway that best
+            fits your organization, sector, and scope.
+            <span className="acc-cta-note">
+              Our team can help you understand the appropriate program, application requirements, and next steps.
+            </span>
           </>
         }
-        text="Tell us your sector, the standards that apply and the countries you operate in. Our team will scope your accreditation and come back with a tailored quote."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/contact", label: "Speak with an advisor" }}
-        related={[
-          { href: "/documents", label: "Document library" },
-          { href: "/faq", label: "FAQ" },
-          { href: "/partnerships", label: "Partnerships" },
-          { href: "/advisory-committees", label: "Advisory committees" },
-        ]}
+        primary={{ href: "/programs", label: "Explore Accreditation Programs" }}
+        secondary={{ href: "/contact", label: "Contact AAA" }}
       />
-    </main>
+    </div>
   );
 }

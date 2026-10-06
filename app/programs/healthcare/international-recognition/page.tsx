@@ -90,7 +90,7 @@ const FAQS: { q: string; a: string }[] = [
 
 export default function Page() {
   return (
-    <main className="axp hcx">
+    <div className="axp hcx">
       <JsonLd
         schema={[
           breadcrumbSchema([
@@ -354,6 +354,6 @@ export default function Page() {
         secondary={{ href: "/contact", label: "Talk to the healthcare team" }}
         related={hcRelated(SELF)}
       />
-    </main>
+    </div>
   );
 }

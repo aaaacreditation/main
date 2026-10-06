@@ -163,7 +163,7 @@ const FAQ: { q: string; a: string }[] = [
 
 export default function Page() {
   return (
-    <main className="axp qtx">
+    <div className="axp qtx">
       <JsonLd
         schema={[breadcrumbSchema([{ name: "Get a Quote", path: "/quote" }]), faqSchema(FAQ)]}
       />
@@ -431,6 +431,6 @@ export default function Page() {
           { href: "/faq", label: "Full FAQ" },
         ]}
       />
-    </main>
+    </div>
   );
 }

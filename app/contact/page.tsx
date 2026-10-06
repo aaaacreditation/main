@@ -247,7 +247,7 @@ const contactPageSchema = {
 
 export default function Page() {
   return (
-    <main className="axp ctx">
+    <div className="axp ctx">
       <JsonLd
         schema={[
           breadcrumbSchema([{ name: "Contact", path: "/contact" }]),
@@ -471,6 +471,6 @@ export default function Page() {
           { href: "/directory/accredited-organizations", label: "Accredited organizations" },
         ]}
       />
-    </main>
+    </div>
   );
 }

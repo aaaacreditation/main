@@ -25,9 +25,13 @@ export const FACTS = {
   organizations: "200+",
   organizationsLabel: "200+ accredited organizations",
 
-  /** Assessors and technical experts on the AAA panel. */
-  assessors: "100+",
-  assessorsLabel: "100+ assessors & experts",
+  /** Assessors and technical experts on the AAA panel (client site content, Oct 2026). */
+  assessors: "287",
+  assessorsLabel: "287 assessors & experts",
+
+  /** Accredited certificates issued under AAA-accredited bodies (client site content, Oct 2026). */
+  certificates: "20,162",
+  certificatesLabel: "20,162 accredited certificates",
 
   /** AAA's healthcare standards are assessed by ISQua's External Evaluation Association. */
   recognition: "ISQua EEA assessed",
@@ -82,7 +86,7 @@ export const PROGRAMS = {
   cab: {
     href: "/programs/conformity-assessment-bodies",
     label: "Conformity Assessment Bodies Accreditation",
-    standard: "7 Programs",
+    standard: "8 Programs",
   },
   training: {
     href: "/programs/training-education",
@@ -123,6 +127,18 @@ export const PROGRAMS = {
     shortLabel: "Testing & Calibration Laboratories",
     standard: "ISO/IEC 17025",
   },
+  testingLabs: {
+    href: "/programs/testing-laboratories",
+    label: "Testing Laboratories Accreditation",
+    shortLabel: "Testing Laboratories",
+    standard: "ISO/IEC 17025",
+  },
+  calibrationLabs: {
+    href: "/programs/calibration-laboratories",
+    label: "Calibration Laboratories Accreditation",
+    shortLabel: "Calibration Laboratories",
+    standard: "ISO/IEC 17025",
+  },
   iso15189: {
     href: "/programs/iso-15189",
     label: "Medical Laboratories Accreditation",
@@ -149,14 +165,33 @@ export const PROGRAMS = {
   },
 } as const;
 
-/** The eight conformity-assessment schemes, in the order the hub lists them. */
+/**
+ * The eight conformity-assessment programs, in the order the client's CAB hub
+ * lists them (Oct 2026 site package). ISO/IEC 17025 is split into Testing and
+ * Calibration Laboratories; ASTM E2659 is not part of the client's hub and is
+ * reachable from the sitemap only.
+ */
 export const CAB_SCHEMES = [
-  PROGRAMS.iso17021,
-  PROGRAMS.iso17065,
-  PROGRAMS.iso17024,
+  PROGRAMS.testingLabs,
+  PROGRAMS.calibrationLabs,
   PROGRAMS.iso17020,
-  PROGRAMS.iso17025,
+  PROGRAMS.iso17021,
+  PROGRAMS.iso17024,
   PROGRAMS.iso15189,
+  PROGRAMS.iso17065,
   PROGRAMS.iso17043,
-  PROGRAMS.astm,
 ] as const;
+
+/**
+ * Off-site destinations used by the main navigation. Items marked TODO have no
+ * confirmed URL from the client yet (Oct 2026) and point at the closest
+ * on-site page until one is supplied.
+ */
+export const EXTERNAL = {
+  successStories: "https://casestudies-alpha.vercel.app/",
+  accreditedPersonnel: "https://adcp.aaa-accreditation.org",
+  /** TODO(client): AAA Academy URL. */
+  academy: "/about-accreditation",
+  /** TODO(client): client portal login URL. */
+  clientPortal: "/contact",
+} as const;

@@ -233,7 +233,7 @@ const SCHEMA_FAQS = GROUPS.flatMap((g) =>
 
 export default function Page() {
   return (
-    <main className="axp faqx">
+    <div className="axp faqx">
       <JsonLd
         schema={[breadcrumbSchema([{ name: "FAQ", path: "/faq" }]), faqSchema(SCHEMA_FAQS)]}
       />
@@ -436,6 +436,6 @@ export default function Page() {
           { href: "/membership", label: "Membership" },
         ]}
       />
-    </main>
+    </div>
   );
 }

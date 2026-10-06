@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import Icon from "../../_components/Icon";
 import JsonLd from "../../_components/JsonLd";
+import Glyph from "../../_components/site/Glyph";
+import NavyCard from "../../_components/site/NavyCard";
 import { CONTACT, FACTS } from "../../../lib/facts";
 import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
 import AdvisorCard from "./AdvisorCard";
@@ -16,41 +17,29 @@ import VideoEmbed from "./VideoEmbed";
 import "./tep.css";
 
 /* -------------------------------------------------------------------------
-   Sept 2026 rebuild to the client's "TEPA Website Developer Package v3"
-   (section order, card counts and copy are the client's, verbatim). Rendered
-   with the site's `.ax-*` design system rather than the package's own CSS so
-   it matches the home page.
-
-   Sept 18 2026 (client's second pass): the package's three-element hero
-   (copy | photo | form) was dropped. The hero is now copy | photo with a
-   plain white title; the advisor enquiry form sits in section 2 beside the
-   four value cards, which run 2 × 2 in the SME page's navy card style. "What
-   We Evaluate" lost its photo and two-column split — four navy cards under a
-   centred head. The Landmark card carries figures instead of check points and
-   its button now points at the client's case-study site. In "Why Choose AAA"
-   the four reason cards are navy, the ADCP block shows a real Certification
-   Management Hub screenshot instead of the abstract mock, the Symbol card
-   carries the gold Accredited Organization badge and the Directory card the
-   AAA logo. The three document links under the process steps gave way to a
-   centred screenshot of the accredited-organization directory, and the FAQ
-   items all start closed.
+   Oct 2026 — brought onto the client's FINAL TEPA handover package
+   (`client/wesbite html/TEPA`, README = approved decisions). Copy is the
+   client's, verbatim; the Sept 2026 GSAP / Framer Motion scaffolding is kept.
 
    Final page order (README):
-     1 Hero · 2 Why Accreditation Matters + enquiry form · 3 Accreditation in
-     Practice · 4 What We Evaluate · 5 Why Choose AAA · 6 How Accreditation
-     Works · 7 FAQ · 8 Final CTA
+     1 Hero + enquiry form · 2 Why Accreditation Matters · 3 Accreditation in
+     Practice (Monarch story + metrics | Landmark video + case study) ·
+     4 What We Evaluate · 5 Why Choose AAA · 6 How Accreditation Works ·
+     7 FAQ · 8 Final CTA
 
-   Motion: `data-reveal` marks anything TepaMotion (GSAP + ScrollTrigger)
-   brings in on scroll; `<SplitWords>` lets headings arrive word by word.
-   Framer Motion runs the advisor form card, magnetic buttons, FAQ and play
-   button.
+   Every card is the SME blue card: `<NavyCard>` from the kit, or the same
+   `.ax-card.navy.ax-blue` classes where a card needs its own markup (proof
+   cards, benefit cards, process steps). Kit cards reveal through the global
+   `.reveal` observer so their hover lift is never pinned by an inline GSAP
+   transform; everything else marked `data-reveal` is driven by TepaMotion.
    ------------------------------------------------------------------------- */
 
 const PATH = "/programs/training-education";
+const IMG = "/images/site/tepa";
 
 export const metadata: Metadata = pageMeta({
   title: "Training & Education Providers Accreditation",
-  description: `AAA accreditation for training and education providers: independent recognition that builds credibility, learner confidence and growth. Valid 3 years, ${FACTS.countriesPlus} countries.`,
+  description: `AAA accreditation for training and education providers: independent recognition that builds credibility, learner trust and growth. Valid ${FACTS.cycleYears} years, ${FACTS.countriesPlus} countries.`,
   path: PATH,
   keywords: [
     "training provider accreditation",
@@ -63,85 +52,48 @@ export const metadata: Metadata = pageMeta({
 
 const APPLY = "/apply";
 const ADCP_URL = "https://adcp.aaa-accreditation.org";
-/* The client's case-study site does not publish a Monarch page yet — the
-   README asks for this to be pointed at the production case-study URL once
-   it exists. Until then it goes to the accredited-organizations directory. */
-const MONARCH_STORY = "/directory/accredited-organizations";
-/* The client's case-study site. The Landmark card used to deep-link to its
-   own story; since Sept 18 2026 the button invites readers to browse all of
-   them, so it goes to the site root (the only listing it publishes so far). */
-const CASE_STUDIES = "https://casestudies-alpha.vercel.app/";
+/* No production case study exists for Monarch yet (the client's case-study
+   site 404s for it) — per the build rules a success-story link without a
+   client URL goes to /news until the README's production URL is supplied. */
+const MONARCH_STORY = "/news";
+const LANDMARK_STORY =
+  "https://casestudies-alpha.vercel.app/case-studies/landmark-management-partner-story-of-success-and-innovation";
 const LANDMARK_VIDEO_ID = "C193YkDYYVU";
 
-function LineIcon({ children }: { children: React.ReactNode }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {children}
-    </svg>
-  );
-}
+const Arrow = () => <Glyph name="arrow-right" size={14} strokeWidth={2} />;
 
 /* 2 — Why Accreditation Matters */
-const VALUES: { title: string; text: string; icon: React.ReactNode }[] = [
+const VALUES = [
   {
+    icon: "shield-check",
     title: "Demonstrate Quality",
     text: "Show that your organization meets established accreditation requirements.",
-    icon: (
-      <>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <path d="m9 12 2 2 4-4" />
-      </>
-    ),
   },
   {
+    icon: "users",
     title: "Build Confidence",
     text: "Increase trust among learners, employers, partners, and other stakeholders.",
-    icon: (
-      <>
-        <path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9.5" cy="7" r="4" />
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-      </>
-    ),
   },
   {
+    icon: "trending-up",
     title: "Stand Out",
     text: "Differentiate your organization in a competitive education and training sector.",
-    icon: (
-      <>
-        <path d="m3 17 6-6 4 4 8-8" />
-        <path d="M14 7h7v7" />
-      </>
-    ),
   },
   {
+    icon: "chart",
     title: "Support Growth",
     text: "Strengthen your reputation and create opportunities to attract more learners and expand your reach.",
-    icon: (
-      <>
-        <path d="M6 20v-4M12 20V10M18 20V4" />
-        <path d="M3 20h18" />
-      </>
-    ),
   },
-];
+] as const;
 
 /* 3 — Accreditation in Practice */
 type Metric = { v: string; k: string; count?: { to: string; suffix?: string; decimals?: string } };
 
-/* Figures on a hairline strip inside the proof cards; TepaMotion counts every
+/* Figures on a hairline strip inside the Monarch card; TepaMotion counts every
    `data-count` up from zero when it scrolls into view. */
-function Stats({ items, className = "" }: { items: Metric[]; className?: string }) {
+function Stats({ items }: { items: Metric[] }) {
   return (
-    <div className={"tepx-stats" + (className ? " " + className : "")}>
+    <div className="tepx-stats">
       {items.map((m) => (
         <div key={m.k}>
           <b data-count={m.count?.to} data-suffix={m.count?.suffix} data-decimals={m.count?.decimals}>
@@ -175,181 +127,94 @@ const LANDMARK = {
   kicker: "Video Testimonial",
   meta: "Training & Education Provider · Cairo, Egypt",
   copy: "Landmark Management Partners is featured by AAA as a training and education provider in Cairo and as a pioneer in pharmaceutical training. Watch the organization’s testimonial to hear directly about its experience with AAA accreditation.",
-  metrics: [
-    { v: "34", k: "Years of Experience in Pharmaceutical Training", count: { to: "34" } },
-    { v: "5,000+", k: "Individuals Certified", count: { to: "5000", suffix: "+" } },
-    { v: "9", k: "Programs Accredited", count: { to: "9" } },
-  ] as Metric[],
+  points: ["Real accredited organization", "Pharmaceutical training", "First-hand accreditation experience"],
 };
 
 /* 4 — What We Evaluate */
-const EVALUATE: { title: string; text: string; icon: React.ReactNode }[] = [
+const EVALUATE = [
   {
+    icon: "building",
     title: "Your Organization",
     text: "How your organization is structured and managed to deliver quality learning programs.",
-    icon: (
-      <>
-        <path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" />
-        <path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4" />
-      </>
-    ),
   },
   {
+    icon: "user-check",
     title: "Your Learning Team",
     text: "The qualifications and expertise of the people delivering your learning programs.",
-    icon: (
-      <>
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="m16 11 2 2 4-4" />
-      </>
-    ),
   },
   {
+    icon: "book",
     title: "Your Learning Programs",
     text: "How your programs are designed, delivered, and aligned with their intended learning outcomes.",
-    icon: (
-      <>
-        <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" />
-        <path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" />
-      </>
-    ),
   },
   {
+    icon: "certificate",
     title: "Learner Assessment & Certificates",
     text: "How learners are assessed and how certificates are awarded.",
-    icon: (
-      <>
-        <circle cx="12" cy="9" r="6" />
-        <path d="m9.5 9 1.8 1.8L15 7.3" />
-        <path d="M8.5 14.3 7 22l5-3 5 3-1.5-7.7" />
-      </>
-    ),
   },
-];
+] as const;
 
 /* 5 — Why Choose AAA */
-const WHY: { title: string; text: string; icon: React.ReactNode }[] = [
+const WHY = [
   {
+    icon: "globe",
     title: "International Reach",
     text: `Supporting accredited organizations across more than ${FACTS.countries} countries worldwide.`,
-    icon: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
-      </>
-    ),
   },
   {
+    icon: "scale",
     title: "Independent Assessment",
     text: "Objective assessments conducted with fairness, consistency, and impartiality.",
-    icon: (
-      <>
-        <path d="M12 3v18M7 21h10M3 7h18" />
-        <path d="M6 7 3 14a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z" />
-      </>
-    ),
   },
   {
+    icon: "user-check",
     title: "Experienced Assessors",
     text: "Qualified professionals with practical experience in education and training.",
-    icon: (
-      <>
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="m16 11 2 2 4-4" />
-      </>
-    ),
   },
   {
+    icon: "handshake",
     title: "Supportive Approach",
     text: "A clear and transparent process that helps organizations demonstrate quality.",
-    icon: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="4" />
-        <path d="m5.6 5.6 3.5 3.5M14.9 14.9l3.5 3.5M5.6 18.4l3.5-3.5M14.9 9.1l3.5-3.5" />
-      </>
-    ),
   },
-];
+] as const;
 
 const ADCP_CHECKS = ["Secure organization access", "Credential management", "QR verification", "Greater graduate visibility"];
 
 /* 6 — How Accreditation Works */
-const STEPS: { title: string; text: string; icon: React.ReactNode }[] = [
+const STEPS = [
   {
+    icon: "file-text",
     title: "Submit Your Application",
     text: "Complete the accreditation application and provide the general information about your organization and the programs you wish to have accredited.",
-    icon: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <path d="M14 2v6h6M12 18v-6M9 15h6" />
-      </>
-    ),
   },
   {
+    icon: "folder",
     title: "Submit Required Information",
     text: "Provide the supporting information required for assessment. AAA reviews your organization and learning programs against the applicable requirements.",
-    icon: (
-      <>
-        <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.2 3.6A2 2 0 0 0 7.5 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z" />
-        <path d="M12 17v-6M9 14l3-3 3 3" />
-      </>
-    ),
   },
   {
+    icon: "search-check",
     title: "Accreditation Assessment",
     text: "AAA assessors evaluate your submitted information and evidence remotely through a structured document review.",
-    icon: (
-      <>
-        <circle cx="11" cy="11" r="7" />
-        <path d="m21 21-4.3-4.3M8 11h6M11 8v6" />
-      </>
-    ),
   },
   {
+    icon: "message",
     title: "Assessment Findings",
     text: "You receive the assessment findings and, where required, have the opportunity to address identified issues before completion of the assessment.",
-    icon: (
-      <>
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        <path d="M8 9h8M8 13h5" />
-      </>
-    ),
   },
   {
+    icon: "gavel",
     title: "Accreditation Decision",
     text: "An independent accreditation decision is made based on the assessment results and supporting evidence.",
-    icon: (
-      <>
-        <path d="m14 13-7.5 7.5a2.1 2.1 0 0 1-3-3L11 10" />
-        <path d="m16 16 6-6M8 8l6-6M9 7l8 8M21 11l-8-8" />
-      </>
-    ),
   },
   {
+    icon: "award",
     title: "Accreditation Awarded",
     text: "Successful organizations receive an accreditation certificate valid for three years and may use the AAA Accreditation Symbol in accordance with the applicable requirements.",
-    icon: (
-      <>
-        <circle cx="12" cy="8" r="6" />
-        <path d="M15.5 13 17 22l-5-3-5 3 1.5-9" />
-      </>
-    ),
   },
-];
+] as const;
 
-/* 7 — FAQ */
-const QUICK: { icon: "cert" | "globe" | "search" | "shield" | "check" | "clipboard"; title: string; text: string }[] = [
-  { icon: "cert", title: `${FACTS.cycleYears}-Year Validity`, text: "AAA accreditation is awarded for a three-year accreditation cycle." },
-  { icon: "globe", title: "International Availability", text: "Organizations may apply from any country." },
-  { icon: "search", title: "Remote Assessment", text: "The assessment is conducted remotely through a review of your submitted documentation." },
-  { icon: "shield", title: "Accreditation Symbol", text: "Accredited organizations may use the AAA Accreditation Symbol in accordance with the applicable requirements." },
-  { icon: "check", title: "Directory Listing", text: "Successful applicants are listed in the AAA Accredited Organization Directory." },
-  { icon: "clipboard", title: "ADCP Access", text: "Accredited organizations receive access to the American Directory of Competent Personnel." },
-];
-
+/* 7 — FAQ (client order: eligibility → process → cost/validity → benefits → next steps) */
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Who can apply for this accreditation?",
@@ -427,7 +292,7 @@ export default function Page() {
         ]}
       />
 
-      {/* 01 — Hero: copy | photo */}
+      {/* 01 — Hero: copy | photo | enquiry form */}
       <section className="ax-hero tepx-hero" id="top">
         <div className="tepx-hero-bg" aria-hidden="true">
           <Image src="/home/training.jpg" alt="" fill priority sizes="100vw" />
@@ -441,11 +306,11 @@ export default function Page() {
             <div className="ax-hero-copy">
               <nav className="ax-crumbs" aria-label="Breadcrumb">
                 <Link href="/">Home</Link>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                <span className="tepx-crumb">
                   <span aria-hidden="true">/</span>
                   <Link href="/programs">Programs</Link>
                 </span>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                <span className="tepx-crumb">
                   <span aria-hidden="true">/</span>
                   <strong>Training &amp; Education Providers</strong>
                 </span>
@@ -473,7 +338,7 @@ export default function Page() {
                 ].map((p) => (
                   <li key={p}>
                     <span className="ax-ico">
-                      <Icon name="check" size={12} />
+                      <Glyph name="check" size={12} strokeWidth={2.6} />
                     </span>
                     {p}
                   </li>
@@ -483,7 +348,7 @@ export default function Page() {
               <div className="ax-actions" data-reveal>
                 <Magnetic>
                   <Link href={APPLY} className="ax-btn ax-btn-gold">
-                    Apply for Accreditation <Icon name="arrow" size={14} />
+                    Apply for Accreditation <Arrow />
                   </Link>
                 </Magnetic>
                 <Magnetic strength={0.18}>
@@ -501,25 +366,33 @@ export default function Page() {
 
             <figure className="ax-hero-photo tepx-hero-photo" data-reveal>
               <Image
-                src="/programs/training-education/hero-accredited-provider.jpg"
+                src={`${IMG}/hero-accredited-provider.webp`}
                 alt="Representatives of an AAA-accredited training and education provider holding their accreditation certificate"
                 fill
                 priority
-                sizes="(max-width: 980px) 100vw, 360px"
+                sizes="(max-width: 980px) 100vw, 300px"
               />
               <figcaption>
                 <span className="ax-cap">
-                  <span>Accredited provider</span>
                   <strong>Real AAA-accredited training &amp; education provider</strong>
                 </span>
               </figcaption>
             </figure>
+
+            <AdvisorCard>
+              <h2>Speak with an Accreditation Advisor</h2>
+              <p>
+                Share a few details about your organization and our team will contact you to
+                discuss the most suitable next steps.
+              </p>
+              <AdvisorForm />
+            </AdvisorCard>
           </div>
         </div>
       </section>
 
-      {/* 02 — Why Accreditation Matters: 2 × 2 value cards | advisor form */}
-      <section className="ax-section tepx-wm" id="why-accreditation-matters">
+      {/* 02 — Why Accreditation Matters */}
+      <section className="ax-section cream tepx-wm" id="why-accreditation-matters">
         <span className="tepx-wm-text" aria-hidden="true">
           AAA
         </span>
@@ -534,77 +407,48 @@ export default function Page() {
               to quality and helps strengthen confidence in your learning programs.
             </p>
           </div>
-          <div className="tepx-why">
-            <div className="ax-grid two tepx-values">
-              {VALUES.map((v, i) => (
-                <article className="ax-card navy" key={v.title} data-reveal>
-                  <div className="ax-card-top">
-                    <span className="ax-card-ico ax-ico">
-                      <LineIcon>{v.icon}</LineIcon>
-                    </span>
-                    <span className="ax-card-no" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <h3>{v.title}</h3>
-                  <p>{v.text}</p>
-                  <span className="ax-card-rule" aria-hidden="true" />
-                </article>
-              ))}
-            </div>
-
-            <AdvisorCard>
-              <span className="eyebrow">Talk to us</span>
-              <h2>Speak with an Accreditation Advisor</h2>
-              <p>
-                Share a few details about your organization and our team will contact you to
-                discuss the most suitable next steps.
-              </p>
-              <AdvisorForm />
-            </AdvisorCard>
+          <div className="ax-blue-grid four">
+            {VALUES.map((v, i) => (
+              <NavyCard key={v.title} icon={v.icon} no={String(i + 1).padStart(2, "0")} title={v.title}>
+                <p>{v.text}</p>
+              </NavyCard>
+            ))}
           </div>
         </div>
       </section>
 
       {/* 03 — Accreditation in Practice */}
-      <section className="ax-section cream" id="accreditation-in-practice">
+      <section className="ax-section" id="accreditation-in-practice">
         <div className="container">
-          <div className="tepx-head-row">
-            <div className="ax-head">
-              <span className="eyebrow">Real-World Success &amp; Client Experience</span>
-              <h2>
-                <SplitWords text="Accreditation in Practice" />
-              </h2>
-              <p data-reveal>
-                See how AAA accreditation supports real training and education providers — from
-                measurable business outcomes to the experience of working through the
-                accreditation journey.
-              </p>
-            </div>
-            <Link href="/directory/accredited-organizations" className="ax-btn ax-btn-ghost-navy" data-reveal>
-              See accredited organizations <Icon name="arrow" size={14} />
-            </Link>
+          <div className="ax-head center">
+            <span className="eyebrow">Real-World Success &amp; Client Experience</span>
+            <h2>
+              <SplitWords text="Accreditation in Practice" />
+            </h2>
+            <p data-reveal>
+              See how AAA accreditation supports real training and education providers — from
+              measurable business outcomes to the experience of working through the
+              accreditation journey.
+            </p>
           </div>
 
           <div className="tepx-proof">
-            <article className="tepx-proof-card" data-reveal>
+            <article className="ax-card navy ax-blue reveal tepx-proof-card">
               <div className="tepx-proof-media">
                 <Image
-                  src="/programs/training-education/monarch-master-injectors.jpg"
+                  src={`${IMG}/monarch-master-injectors.webp`}
                   alt="Monarch Master Injectors training session"
                   fill
-                  sizes="(max-width: 980px) 100vw, 600px"
+                  sizes="(max-width: 980px) 100vw, 580px"
                 />
                 <span className="tepx-proof-label">{MONARCH.label}</span>
               </div>
               <div className="tepx-proof-body">
-                <span className="ax-label">{MONARCH.kicker}</span>
+                <span className="ax-blue-tag">{MONARCH.kicker}</span>
                 <h3>{MONARCH.name}</h3>
                 <blockquote className="tepx-proof-quote">
-                  <svg className="ax-quote-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M6.5 6A4.5 4.5 0 0 0 2 10.5V18h7v-7H5.5A2.5 2.5 0 0 1 8 8.5V6zm11 0a4.5 4.5 0 0 0-4.5 4.5V18h7v-7h-3.5a2.5 2.5 0 0 1 2.5-2.5V6z" />
-                  </svg>
-                  {MONARCH.quote}
+                  <Glyph name="quote" size={26} className="tepx-quote-mark" />
+                  <p>{MONARCH.quote}</p>
                 </blockquote>
                 <p className="tepx-proof-person">
                   <b>{MONARCH.person}</b>
@@ -612,14 +456,14 @@ export default function Page() {
                 </p>
                 <Stats items={MONARCH.metrics} />
                 <div className="tepx-proof-cta">
-                  <Link href={MONARCH_STORY} className="ax-btn ax-btn-blue">
-                    Read the Full Success Story <Icon name="arrow" size={14} />
+                  <Link href={MONARCH_STORY} className="ax-btn ax-btn-white">
+                    Read the Full Success Story <Arrow />
                   </Link>
                 </div>
               </div>
             </article>
 
-            <article className="tepx-proof-card" data-reveal>
+            <article className="ax-card navy ax-blue reveal tepx-proof-card">
               <div className="tepx-proof-media">
                 <VideoEmbed
                   id={LANDMARK_VIDEO_ID}
@@ -629,14 +473,18 @@ export default function Page() {
                 />
               </div>
               <div className="tepx-proof-body">
-                <span className="ax-label">{LANDMARK.kicker}</span>
+                <span className="ax-blue-tag">{LANDMARK.kicker}</span>
                 <h3>{LANDMARK.name}</h3>
                 <p className="tepx-proof-meta">{LANDMARK.meta}</p>
                 <p className="tepx-proof-copy">{LANDMARK.copy}</p>
-                <Stats items={LANDMARK.metrics} className="three" />
+                <ul className="ax-checks tepx-proof-points">
+                  {LANDMARK.points.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
                 <div className="tepx-proof-cta">
-                  <a href={CASE_STUDIES} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost-navy">
-                    View More Customer Success Stories <Icon name="arrow" size={14} />
+                  <a href={LANDMARK_STORY} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
+                    View Landmark Success Story <Arrow />
                   </a>
                 </div>
               </div>
@@ -645,8 +493,8 @@ export default function Page() {
         </div>
       </section>
 
-      {/* 04 — What We Evaluate: four navy cards under a centred head */}
-      <section className="ax-section" id="what-we-evaluate">
+      {/* 04 — What We Evaluate During Accreditation */}
+      <section className="ax-section cream" id="what-we-evaluate">
         <div className="container">
           <div className="ax-head center">
             <span className="eyebrow">Our Assessment Focus</span>
@@ -657,37 +505,21 @@ export default function Page() {
               Our assessment focuses on the key elements that contribute to delivering
               high-quality learning programs.
             </p>
-            <span className="tepx-focus" data-reveal>
-              <span className="ax-ico">
-                <Icon name="clipboard" size={16} />
-              </span>
-              Our assessment focuses on four key areas
-            </span>
           </div>
-          <div className="ax-grid four tepx-eval">
+          <div className="ax-blue-grid four">
             {EVALUATE.map((e, i) => (
-              <article className="ax-card navy" key={e.title} data-reveal>
-                <div className="ax-card-top">
-                  <span className="ax-card-ico ax-ico">
-                    <LineIcon>{e.icon}</LineIcon>
-                  </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3>{e.title}</h3>
+              <NavyCard key={e.title} icon={e.icon} no={String(i + 1).padStart(2, "0")} title={e.title}>
                 <p>{e.text}</p>
-                <span className="ax-card-rule" aria-hidden="true" />
-              </article>
+              </NavyCard>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 05 — Why Choose AAA */}
-      <section className="ax-section cream" id="why-aaa">
+      {/* 05 — Why Choose AAA? */}
+      <section className="ax-section" id="why-aaa">
         <div className="container">
-          <div className="ax-head">
+          <div className="ax-head center">
             <span className="eyebrow">A Distinctive Accreditation Experience</span>
             <h2>
               <SplitWords text="Why Choose AAA?" />
@@ -702,20 +534,11 @@ export default function Page() {
           <div className="tepx-subhead" data-reveal>
             <h3>Why Organizations Choose AAA</h3>
           </div>
-          <div className="ax-grid four">
+          <div className="ax-blue-grid four">
             {WHY.map((w, i) => (
-              <article className="ax-card navy" key={w.title} data-reveal>
-                <div className="ax-card-top">
-                  <span className="ax-card-ico ax-ico">
-                    <LineIcon>{w.icon}</LineIcon>
-                  </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3>{w.title}</h3>
+              <NavyCard key={w.title} icon={w.icon} no={String(i + 1).padStart(2, "0")} title={w.title}>
                 <p>{w.text}</p>
-              </article>
+              </NavyCard>
             ))}
           </div>
 
@@ -728,12 +551,8 @@ export default function Page() {
             </p>
           </div>
           <div className="tepx-benefits">
-            <article className="tepx-adcp" data-reveal>
-              <span className="tepx-noise" aria-hidden="true" />
-              <span className="ax-hero-badge">
-                <i aria-hidden="true" />
-                Flagship benefit
-              </span>
+            <article className="ax-card navy ax-blue reveal tepx-adcp">
+              <span className="ax-blue-tag">Flagship Benefit</span>
               <h3>American Directory of Competent Personnel (ADCP)</h3>
               <p>
                 Accredited organizations receive secure access to the American Directory of
@@ -758,12 +577,12 @@ export default function Page() {
               </figure>
 
               <a href={ADCP_URL} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-white">
-                Explore ADCP <Icon name="arrow" size={14} />
+                Explore ADCP <Arrow />
               </a>
             </article>
 
             <div className="tepx-side">
-              <article className="ax-card" data-reveal>
+              <article className="ax-card navy ax-blue reveal tepx-side-card">
                 <span className="tepx-side-media badge">
                   <Image
                     src="/programs/training-education/accredited-organization-badge.png"
@@ -781,7 +600,7 @@ export default function Page() {
                   </p>
                 </div>
               </article>
-              <article className="ax-card" data-reveal>
+              <article className="ax-card navy ax-blue reveal tepx-side-card">
                 <span className="tepx-side-media">
                   <Image src="/logo/aaalog.png" alt="American Accreditation Association" width={64} height={64} />
                 </span>
@@ -793,14 +612,9 @@ export default function Page() {
                   </p>
                 </div>
               </article>
-              <article className="ax-card" data-reveal>
-                <span className="tepx-side-media cert">
-                  <Image
-                    src="/case-studies/monarch-master-injectors-certificate.jpg"
-                    alt="An AAA accreditation certificate"
-                    width={84}
-                    height={84}
-                  />
+              <article className="ax-card navy ax-blue reveal tepx-side-card">
+                <span className="ax-card-ico tepx-side-ico">
+                  <Glyph name="search-check" />
                 </span>
                 <div>
                   <h3>Digital Certificate Verification</h3>
@@ -816,7 +630,7 @@ export default function Page() {
       </section>
 
       {/* 06 — How Accreditation Works */}
-      <section className="ax-section tepx-wm" id="how-it-works">
+      <section className="ax-section cream tepx-wm" id="how-it-works">
         <span className="tepx-wm-text" aria-hidden="true">
           AAA
         </span>
@@ -837,37 +651,23 @@ export default function Page() {
             {STEPS.map((s, i) => (
               <li className="tepx-step" key={s.title}>
                 <span className="tepx-step-ico" data-reveal="pop">
-                  <LineIcon>{s.icon}</LineIcon>
+                  <Glyph name={s.icon} size={26} />
                 </span>
                 <span className="tepx-step-no">Step {i + 1}</span>
                 <div className="tepx-step-card">
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
+                  <div className="ax-card navy ax-blue tepx-step-inner">
+                    <h3>{s.title}</h3>
+                    <p>{s.text}</p>
+                  </div>
                 </div>
               </li>
             ))}
           </ol>
-
-          <figure className="tepx-dir" data-reveal>
-            <Image
-              src="/programs/training-education/accredited-organizations-directory.jpg"
-              alt="Cards from the AAA Accredited Organization Directory: Phenom Coaching System, Nuvin AI, Photovoice Worldwide, Craig’s Crane Inspections & Assessments, Aviation College of the Americas and Priority Global"
-              width={664}
-              height={574}
-              sizes="(max-width: 720px) 100vw, 670px"
-            />
-            <figcaption>
-              <span>Join the organizations already listed in the AAA Accredited Organization Directory.</span>
-              <Link href="/directory/accredited-organizations" className="ax-btn ax-btn-ghost-navy sm">
-                Browse the directory <Icon name="arrow" size={14} />
-              </Link>
-            </figcaption>
-          </figure>
         </div>
       </section>
 
       {/* 07 — FAQ */}
-      <section className="ax-section cream tepx-wm" id="faq">
+      <section className="ax-section tepx-wm" id="faq">
         <span className="tepx-wm-text" aria-hidden="true">
           AAA
         </span>
@@ -883,24 +683,12 @@ export default function Page() {
             </p>
           </div>
 
-          <div className="tepx-quick">
-            {QUICK.map((q) => (
-              <article className="ax-tile" key={q.title} data-reveal>
-                <span className="ax-tile-ico ax-ico">
-                  <Icon name={q.icon} size={20} />
-                </span>
-                <b>{q.title}</b>
-                <span>{q.text}</span>
-              </article>
-            ))}
-          </div>
-
           <FaqAccordion items={FAQ} />
         </div>
       </section>
 
       {/* 08 — Final CTA */}
-      <section className="ax-close tepx-close tepx-wm" id="cta">
+      <section className="ax-close tepx-close tepx-wm" id="apply">
         <span className="tepx-noise" aria-hidden="true" />
         <span className="tepx-wm-text" aria-hidden="true">
           AAA
@@ -922,7 +710,7 @@ export default function Page() {
             <div className="ax-close-actions" data-reveal>
               <Magnetic>
                 <Link href={APPLY} className="ax-btn ax-btn-gold">
-                  Apply for Accreditation <Icon name="arrow" size={14} />
+                  Apply for Accreditation <Arrow />
                 </Link>
               </Magnetic>
               <Magnetic strength={0.18}>
@@ -940,7 +728,7 @@ export default function Page() {
               {REASSURE.map((r) => (
                 <li key={r}>
                   <span className="ax-ico">
-                    <Icon name="check" size={12} />
+                    <Glyph name="check" size={12} strokeWidth={2.6} />
                   </span>
                   {r}
                 </li>

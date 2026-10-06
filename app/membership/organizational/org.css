@@ -1,0 +1,413 @@
+/* ==========================================================================
+   Organizational Membership — Oct 2026 client-structure rebuild.
+   Every rule scoped under `.morg`. Cards are the shared NavyCard (`.ax-blue`)
+   from app/aaa-ds.css; app/membership/membership.css is NOT used here.
+   ========================================================================== */
+
+/* -------------------------------- Hero -------------------------------- */
+.morg .morg-tagline {
+  display: block;
+  margin-top: 12px;
+  font-size: clamp(20px, 2.1vw, 28px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--aaa-gold-100);
+}
+.morg .morg-chips {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.morg .morg-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+.morg .morg-chips li strong { font-weight: 700; color: #fff; }
+.morg .morg-chips li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--aaa-gold);
+  box-shadow: 0 0 0 4px rgba(179, 138, 46, 0.18);
+}
+.morg .morg-hero-note {
+  display: flex;
+  flex-basis: 100%;
+  gap: 12px;
+  max-width: 62ch;
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.8);
+}
+.morg .morg-hero-note svg { flex: none; margin-top: 1px; color: var(--aaa-gold-100); }
+
+/* ---------------------- Inline callout band (light) ------------------- */
+.morg .morg-callout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px 24px;
+  margin-top: clamp(30px, 3.4vw, 44px);
+  padding: clamp(22px, 2.6vw, 30px) clamp(22px, 2.8vw, 34px);
+  border: 1px solid var(--aaa-blue-100);
+  border-left: 4px solid var(--aaa-gold);
+  border-radius: var(--ax-radius-lg);
+  background: linear-gradient(120deg, #fff 0%, var(--aaa-blue-50) 100%);
+  box-shadow: var(--ax-shadow-sm);
+}
+.morg .ax-section.cream .morg-callout { background: #fff; }
+.morg .morg-callout-ico {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 13px;
+  border: 1.5px solid rgba(179, 138, 46, 0.6);
+  border-radius: 50%;
+  color: var(--aaa-gold-700);
+  background: var(--aaa-gold-50);
+}
+.morg .morg-callout-ico svg { width: 100%; height: 100%; }
+.morg .morg-callout h3 { margin: 0; font-size: 19px; font-weight: 600; line-height: 1.3; color: var(--aaa-blue); }
+.morg .morg-callout p { margin: 6px 0 0; max-width: 72ch; font-size: 14.5px; line-height: 1.7; color: var(--ink-600); }
+
+.morg .morg-note { max-width: 880px; margin: clamp(26px, 3vw, 38px) auto 0; }
+
+/* ------------------------ Membership vs accreditation ----------------- */
+.morg .morg-compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.75fr);
+  align-items: start;
+  gap: clamp(24px, 3vw, 40px);
+}
+.morg .morg-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.morg .morg-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.morg .morg-table th,
+.morg .morg-table td { padding: 12px 16px; border-bottom: 1px solid var(--ink-100); text-align: center; vertical-align: middle; }
+.morg .morg-table tbody th,
+.morg .morg-table tfoot th,
+.morg .morg-table thead th:first-child { text-align: left; }
+.morg .morg-table thead th {
+  padding-top: 18px;
+  padding-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--aaa-blue);
+  background: var(--ax-cream);
+  border-bottom: 1px solid var(--ax-border);
+}
+.morg .morg-table thead th:first-child { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--aaa-gold-700); }
+.morg .morg-table thead th.is-accred { color: #fff; background: var(--ax-navy-bg); border-bottom-color: transparent; }
+.morg .morg-accred-label {
+  display: block;
+  width: max-content;
+  margin: 0 auto 8px;
+  padding: 3px 9px;
+  border: 1px solid rgba(179, 138, 46, 0.6);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.16);
+}
+.morg .morg-table tbody th { font-weight: 500; line-height: 1.45; color: var(--ink-700); }
+.morg .morg-table tbody tr { transition: background 0.2s ease; }
+.morg .morg-table tbody tr:hover { background: var(--aaa-blue-50); }
+.morg .morg-table tbody tr.is-extra th { color: var(--aaa-blue); font-weight: 600; }
+.morg .morg-table tbody tr.is-extra:first-child th,
+.morg .morg-table tbody tr:not(.is-extra) + tr.is-extra > * { border-top: 2px solid var(--aaa-blue-100); }
+.morg .morg-table td.is-accred { background: rgba(23, 61, 115, 0.04); }
+.morg .morg-table tbody tr:hover td.is-accred { background: rgba(23, 61, 115, 0.08); }
+.morg .morg-table tfoot th,
+.morg .morg-table tfoot td {
+  border-bottom: 0;
+  font-weight: 600;
+  color: var(--aaa-blue);
+  background: var(--ax-cream);
+}
+.morg .morg-table tfoot td { font-size: 13.5px; }
+.morg .morg-table tfoot td.is-accred { color: #fff; background: var(--aaa-blue); }
+
+.morg .morg-tick {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ax-ring);
+  border-radius: 50%;
+  color: var(--aaa-blue);
+  background: #fff;
+}
+.morg .morg-tick.gold { border-color: transparent; color: #fff; background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700)); }
+.morg .morg-dash { font-size: 16px; font-weight: 600; color: var(--ink-400); }
+
+.morg .morg-compare-side { position: sticky; top: 110px; display: grid; gap: 18px; }
+.morg .morg-credit { max-width: 980px; margin: clamp(28px, 3vw, 40px) auto 0; align-items: flex-start; }
+.morg .morg-credit > svg { flex: none; margin-top: 2px; color: var(--aaa-gold-700); }
+.morg .morg-credit strong { display: inline; margin: 0 6px 0 0; color: var(--aaa-blue); }
+.morg .morg-credit b { font-weight: 600; color: var(--aaa-blue-950); }
+
+/* ------------------------------ Plan ---------------------------------- */
+.morg .morg-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.95fr);
+  align-items: center;
+  gap: clamp(36px, 5vw, 72px);
+}
+.morg .morg-credit-card {
+  display: flex;
+  gap: 18px;
+  margin-top: 30px;
+  padding: 22px 24px;
+  border: 1px solid rgba(179, 138, 46, 0.3);
+  border-left: 4px solid var(--aaa-gold);
+  border-radius: var(--ax-radius);
+  background: #fff;
+  box-shadow: var(--ax-shadow-sm);
+}
+.morg .morg-credit-card .morg-callout-ico { flex: none; width: 46px; height: 46px; padding: 11px; }
+.morg .morg-credit-card h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35; color: var(--aaa-blue); }
+.morg .morg-credit-card p { margin: 6px 0 0; font-size: 14px; line-height: 1.7; color: var(--ink-600); }
+
+.morg .morg-price {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ax-radius-lg);
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.morg .morg-price::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.morg .morg-price-head { padding: 30px 32px 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.morg .morg-price-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.morg .morg-price-fig {
+  display: block;
+  margin-top: 10px;
+  font-size: clamp(48px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.morg .morg-price-per { display: block; margin-top: 6px; font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.78); }
+.morg .morg-price-head p { margin: 16px 0 0; font-size: 13.5px; line-height: 1.7; color: rgba(255, 255, 255, 0.76); }
+.morg .morg-price-body { padding: 24px 32px 30px; }
+.morg .morg-price-body h3 { margin: 0; font-size: 16px; font-weight: 600; color: #fff; }
+.morg .morg-price-list { display: grid; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+.morg .morg-price-list li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+}
+.morg .morg-price-list li::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ax-ring-gold);
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4e7c6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+    center / 11px no-repeat;
+}
+.morg .morg-price-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+/* ------------------------------ Steps rail ---------------------------- */
+.morg .morg-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.morg .morg-steps::before {
+  content: "";
+  position: absolute;
+  top: 17px;
+  right: 12.5%;
+  left: 12.5%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(179, 138, 46, 0.6) 0 8px, transparent 8px 16px);
+}
+.morg .morg-steps > li { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.morg .morg-steps > li > .ax-card { align-self: stretch; flex: 1; }
+.morg .morg-step-dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--aaa-blue-950);
+  background: linear-gradient(135deg, var(--aaa-gold-100), var(--aaa-gold));
+  box-shadow: 0 0 0 6px #fff, 0 8px 16px -8px rgba(179, 138, 46, 0.9);
+}
+
+/* ------------------------------ Members ------------------------------- */
+.morg .morg-member .ax-blue-body { display: contents; }
+.morg .morg-member .morg-member-photo { order: -1; }
+.morg .morg-member-photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  margin: -6px -8px 0;
+  border-radius: 12px;
+  background: var(--aaa-blue-950);
+}
+.morg .morg-member-photo img { object-fit: cover; transition: transform 0.9s var(--ease-out); }
+.morg .morg-member:hover .morg-member-photo img { transform: scale(1.04); }
+.morg .morg-member-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 44, 0) 55%, rgba(6, 26, 44, 0.7));
+}
+.morg .morg-member-photo figcaption {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.morg .morg-member-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(6, 26, 44, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
+}
+.morg .morg-member-tag.country { color: var(--aaa-blue-950); border-color: transparent; background: linear-gradient(135deg, var(--aaa-gold-100), var(--aaa-gold-300)); }
+.morg .morg-member > p { margin: 0; font-size: 13.5px; line-height: 1.7; }
+.morg .morg-member-foot {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--aaa-gold-100);
+}
+
+/* ------------------------------ Final CTA ----------------------------- */
+.morg .morg-choose {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  max-width: 980px;
+  margin: clamp(34px, 4vw, 48px) auto 0;
+}
+.morg .morg-choose > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 14px;
+  padding: 22px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 3px solid var(--aaa-gold);
+  border-radius: var(--ax-radius);
+  text-align: left;
+  background: rgba(255, 255, 255, 0.06);
+}
+.morg .morg-choose-ico {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid var(--ax-ring-gold);
+  border-radius: 50%;
+  color: #fff;
+}
+.morg .morg-choose strong { align-self: center; font-size: 16px; font-weight: 600; color: #fff; }
+.morg .morg-choose p { margin: 0; font-size: 14px; line-height: 1.7; color: rgba(255, 255, 255, 0.78); }
+
+/* ------------------------------ Responsive ---------------------------- */
+@media (max-width: 1100px) {
+  .morg .morg-compare { grid-template-columns: 1fr; }
+  .morg .morg-compare-side { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .morg .morg-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .morg .morg-steps::before { display: none; }
+}
+@media (max-width: 980px) {
+  .morg .morg-plan { grid-template-columns: 1fr; }
+  .morg .morg-callout { grid-template-columns: auto minmax(0, 1fr); }
+  .morg .morg-callout > .ax-btn { grid-column: 1 / -1; justify-self: start; }
+}
+@media (max-width: 720px) {
+  .morg .morg-compare-side,
+  .morg .morg-choose { grid-template-columns: 1fr; }
+  .morg .morg-table th,
+  .morg .morg-table td { padding: 10px 8px; }
+  .morg .morg-table tbody th { font-size: 13px; }
+  .morg .morg-table thead th { font-size: 12px; }
+  .morg .morg-table thead th:first-child { letter-spacing: 0.04em; }
+  .morg .morg-table tfoot td { font-size: 12px; }
+  .morg .morg-accred-label { padding: 2px 7px; letter-spacing: 0; width: auto; }
+}
+@media (max-width: 560px) {
+  .morg .morg-steps { grid-template-columns: 1fr; }
+  .morg .morg-callout { grid-template-columns: 1fr; }
+  .morg .morg-callout > .ax-btn { width: 100%; }
+  .morg .morg-price-head,
+  .morg .morg-price-body { padding-right: 22px; padding-left: 22px; }
+  .morg .morg-price-actions .ax-btn { width: 100%; }
+  .morg .morg-credit-card { flex-direction: column; }
+}

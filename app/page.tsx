@@ -1,268 +1,274 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import Icon, { type IconName } from "./_components/Icon";
 import JsonLd from "./_components/JsonLd";
 import { WorldMapFigure } from "./_components/WorldMap";
-import { CASE_STUDIES, type CaseStudy } from "./_data/case-studies";
-import HeroStats from "./_components/home/HeroStats";
-import HomeGallery from "./_components/home/HomeGallery";
-import HomeTeam from "./_components/home/HomeTeam";
-import Insights from "./_components/home/Insights";
-import QuoteForm from "./_components/home/QuoteForm";
-import { CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
-import { faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import NavyCard from "./_components/site/NavyCard";
+import SectionHead from "./_components/site/SectionHead";
+import Glyph, { type GlyphName } from "./_components/site/Glyph";
+import HomeMetrics, { type HomeMetric } from "./_components/home/HomeMetrics";
+import SuccessCarousel, { type SuccessStory } from "./_components/home/SuccessCarousel";
+import { FACTS, PROGRAMS } from "@/lib/facts";
+import { breadcrumbSchema, pageMeta, serviceSchema } from "@/lib/seo";
 import "./home.css";
 
 /* =========================================================================
-   HOMEPAGE
-   -------------------------------------------------------------------------
-   Aug 2026 rebuild onto the shared `.ax-*` design system (app/aaa-ds.css),
-   the same visual language as the two client-approved reference pages
-   (/programs/iso-17021 and /programs/smes-accreditation-program). Bespoke
-   bits live in app/home.css, scoped under `.homex`.
+   HOMEPAGE — Oct 2026 rebuild on the client's final homepage structure
+   ("Home page" package: Hero + metrics → Accreditation Programs → Why
+   Organizations Trust AAA → Success Stories → Latest Insights → Final CTA),
+   rendered in the AAA design system. Every card is the SME blue card.
 
-   CONTENT: the client reverted this page to GENERAL ACCREDITATION positioning
-   in July 2026 — headline "International Accreditation Accepted Globally",
-   a "Get a Quote" CTA and a certificate hero visual. SME-specific messaging
-   belongs on the SME program/landing pages, not here. Every figure comes from
-   lib/facts.ts, every testimonial from app/_data/case-studies.ts.
+   Approved decisions applied (client README): the hero metrics bar carries
+   the four metrics only (no mini map / "A GLOBAL PRESENCE"); Section 03 has
+   no duplicate metrics bar; the "View All Success Stories" CTA is AAA blue.
+   The hero keeps the client-approved BizGen treatment from home.css.
    ========================================================================= */
 
 // The root layout's `title.template` does not apply to its own segment, so the
 // homepage carries the brand suffix itself.
 export const metadata: Metadata = pageMeta({
-  title: "International Accreditation Accepted Globally | AAA",
-  description: `AAA delivers internationally recognized accreditation for healthcare, conformity assessment bodies, training providers and SMEs across ${FACTS.countriesLabel}.`,
+  title: "International Accreditation Body | AAA",
+  description: `AAA provides international accreditation for healthcare, training and education providers, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
   path: "/",
+  keywords: [
+    "American Accreditation Association",
+    "international accreditation",
+    "healthcare accreditation",
+    "training provider accreditation",
+    "conformity assessment accreditation",
+    "SME accreditation",
+  ],
 });
 
-const CONSULT = CONTACT.consultationUrl;
+const IMG = "/images/site/home";
+const STORY_URL =
+  "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
 
-const HERO_SUB =
-  "The American Accreditation Association offers accreditation worldwide, based on internationally recognized standards that ensure the competence of accredited organizations — and the global acceptance of their results.";
-
-const HERO_STATS = [
-  { num: FACTS.organizations, label: "Accredited organizations" },
-  { num: FACTS.countriesPlus, label: "Countries served" },
-  { num: FACTS.assessors, label: "Assessors & experts" },
-] as const;
-
-
-/** Standards the AAA programs are aligned with — shown in the hero marquee. */
-const STANDARDS = [
-  "ISQua EEA",
-  "ISO/IEC 17021-1",
-  "ISO/IEC 17025",
-  "ISO 15189",
-  "ISO/IEC 17020",
-  "ISO/IEC 17024",
-  "ISO/IEC 17065",
-  "ISO/IEC 17043",
-  "ASTM E2659",
+/* ------------------------------------------------------------ 01 · Hero */
+const METRICS: HomeMetric[] = [
+  { value: FACTS.countriesPlus, label: "Countries", icon: "globe" },
+  { value: FACTS.organizations, label: "Accredited Organizations", icon: "building" },
+  { value: FACTS.assessors, label: "Assessors & Experts", icon: "users" },
+  { value: FACTS.certificates, label: "Accredited Certificates", icon: "certificate" },
 ];
 
-/* ------------------------------------------------------ Why AAA (pillars) */
-// Transcribed from AAA's mission and the Virginia authorization statement.
-const PILLARS: { title: string; text: string; icon: IconName }[] = [
+/* ------------------------------------------------------- 02 · Programs */
+const PROGRAM_CARDS: { icon: GlyphName; title: string; text: string; href: string; schemaName: string }[] = [
+  {
+    icon: "graduation",
+    title: "Education & Training",
+    text: "Accreditation for training providers, academies, educational institutions and learning organizations seeking to strengthen credibility and demonstrate quality.",
+    href: PROGRAMS.training.href,
+    schemaName: PROGRAMS.training.label,
+  },
+  {
+    icon: "heart-pulse",
+    title: "Healthcare",
+    text: "Accreditation for healthcare organizations seeking to improve quality, safety, performance and confidence across clinical and support services.",
+    href: PROGRAMS.healthcare.href,
+    schemaName: PROGRAMS.healthcare.label,
+  },
+  {
+    icon: "badge-check",
+    title: "Conformity Assessment",
+    text: "Accreditation for certification bodies, inspection bodies, laboratories and other conformity assessment organizations operating against international standards.",
+    href: PROGRAMS.cab.href,
+    schemaName: PROGRAMS.cab.label,
+  },
+  {
+    icon: "briefcase",
+    title: "SMEs",
+    text: "A structured accreditation pathway for small and medium enterprises committed to stronger systems, continuous improvement and business readiness.",
+    href: PROGRAMS.sme.href,
+    schemaName: PROGRAMS.sme.label,
+  },
+];
+
+/* ---------------------------------------------------------- 03 · Trust */
+const TRUST: { icon: GlyphName; title: string; text: string }[] = [
   {
     icon: "globe",
-    title: "Globally accepted",
-    text: "AAA's vision is international accreditation accepted globally — promoting acceptance of accredited results and certificates internationally and amongst global partners.",
+    title: "International Standards & Recognized Frameworks",
+    text: "AAA accreditation programs are developed around internationally established standards and sector-specific quality frameworks. AAA Healthcare Accreditation Standards have also been assessed and accredited by ISQua EEA.",
   },
   {
-    icon: "cert",
-    title: "Built on international standards",
-    text: "Programs are based on internationally recognized standards — from ISO/IEC 17025 and ISO 15189 to ISO/IEC 17024 and ASTM E2659 — ensuring the competence of accredited organizations.",
+    icon: "user-check",
+    title: "Dedicated Accreditation Coordinator",
+    text: "Each applicant is assigned a dedicated Accreditation Coordinator to manage communication, coordinate process steps and provide timely administrative support.",
   },
   {
-    icon: "flag",
-    title: "US-authorized",
-    text: "Authorized by the State Corporation Commission of the Commonwealth of Virginia to transact business under Title 13.1 of the Code of Virginia, offering a full range of comprehensive accreditation services.",
+    icon: "target",
+    title: "Flexible Assessment Options",
+    text: "AAA provides on-site, remote and hybrid assessment options where appropriate, while maintaining the same rigorous accreditation requirements and decision process.",
   },
   {
-    icon: "scale",
-    title: "Independent and impartial",
-    text: "Impartiality, transparency, objectivity and independence are paramount in all AAA operations — safeguarded by a published impartiality policy, conflict-of-interest management and non-discriminatory services.",
+    icon: "trending-up",
+    title: "Proven International Experience",
+    text: `With activity across ${FACTS.countriesPlus} countries, AAA has experience working with organizations of different sizes, sectors and regional contexts.`,
   },
 ];
 
-/* -------------------------------------------------------------- Programs */
-const PROGRAM_CARDS: {
-  href: string;
+/* ------------------------------------------------- 04 · Success stories */
+const STORIES: SuccessStory[] = [
+  {
+    featured: true,
+    name: "Monarch Master Injector",
+    img: `${IMG}/monarch-master-injector-story.webp`,
+    alt: "Monarch Master Injector accreditation story",
+    sector: "Medical Education",
+    country: "Texas, USA",
+    metric: "12% Growth · 500+ Students Certified",
+    quote: "“AAA Accreditation has opened new doors for Monarch Master Injectors.”",
+    desc: "World-class training for medical professionals in cosmetic injections and wellness/weight-loss injections.",
+    href: STORY_URL,
+  },
+  {
+    name: "Monarch Graduates",
+    img: `${IMG}/monarch-graduates-story.webp`,
+    alt: "Monarch Graduates accreditation story",
+    sector: "Medical Education",
+    country: "Texas, USA",
+    metric: "Post-Accreditation Impact",
+    quote: "“A strong visual story showing learners, certificates, and practical professional training.”",
+    desc: "A supporting Monarch card that can link to the same detailed case study or video section.",
+    href: STORY_URL,
+  },
+  {
+    name: "Domus Salutis",
+    img: `${IMG}/domus-salutis-accreditation-story-6b4a6efe.webp`,
+    alt: "Domus Salutis accreditation story",
+    sector: "Healthcare",
+    country: "Italy",
+    metric: "Healthcare Accreditation",
+    quote: "“A healthcare organization demonstrating commitment to recognized excellence.”",
+    desc: "A strong healthcare success story for patient confidence, quality, and institutional recognition.",
+    href: STORY_URL,
+  },
+  {
+    name: "IIBMS",
+    img: `${IMG}/iibms-accreditation-story-c29e334c.webp`,
+    alt: "IIBMS accreditation story",
+    sector: "Education & Training",
+    country: "India",
+    metric: "Training Provider Accreditation",
+    quote: "“Accreditation helped strengthen trust, credibility, and learning standards.”",
+    desc: "An education and training provider using accreditation as a signal of structured quality.",
+    href: STORY_URL,
+  },
+  {
+    name: "NSC",
+    img: `${IMG}/nsc-accreditation-story-e32493fe.jpg`,
+    alt: "NSC accreditation story",
+    sector: "Professional / Regional",
+    country: "Middle East",
+    metric: "Regional Recognition",
+    quote: "“A strong example of AAA's growing international presence.”",
+    desc: "A regional organization reflecting the international reach and practical value of accreditation.",
+    href: STORY_URL,
+  },
+  {
+    name: "Cinute Digital",
+    img: `${IMG}/cinute-digital-accreditation-story-8c8b1a4e.webp`,
+    alt: "Cinute Digital accreditation story",
+    sector: "Corporate / SME",
+    country: "India",
+    metric: "Corporate Quality Recognition",
+    quote: "“A modern organization demonstrating quality and professional development.”",
+    desc: "An SME/corporate story that adds diversity to the homepage success stories.",
+    href: STORY_URL,
+  },
+  {
+    name: "Meridian",
+    img: `${IMG}/meridian-accreditation-story-4b226d09.webp`,
+    alt: "Meridian accreditation story",
+    sector: "Training Provider",
+    country: "International",
+    metric: "Training Excellence",
+    quote: "“Recognition for structured learning, quality, and continuous improvement.”",
+    desc: "A training-provider story suitable for showing breadth across the education sector.",
+    href: STORY_URL,
+  },
+  {
+    name: "Ullemeyer",
+    img: `${IMG}/ullemeyer-accreditation-story-17ede0a0.webp`,
+    alt: "Ullemeyer accreditation story",
+    sector: "Healthcare / Professional",
+    country: "United States",
+    metric: "Professional Recognition",
+    quote: "“A professional organization building confidence through accreditation.”",
+    desc: "A US-based story that adds geographic balance and strengthens international proof.",
+    href: STORY_URL,
+  },
+];
+
+/* ------------------------------------------------------- 05 · Insights */
+const INSIGHTS: {
   label: string;
-  tag: string;
-  icon: IconName;
+  kind: "article" | "event" | "news";
+  kicker: string;
+  title: string;
+  text: string;
+  cta: string;
   img: string;
   alt: string;
-  text: string;
-  links?: { href: string; label: string }[];
+  w: number;
+  h: number;
+  icon: GlyphName;
 }[] = [
   {
-    href: PROGRAMS.healthcare.href,
-    label: PROGRAMS.healthcare.label,
-    tag: PROGRAMS.healthcare.standard,
-    icon: "medical",
-    img: "/home/healthcare.jpg",
-    alt: "Clinicians reviewing patient records in a hospital corridor",
-    text: "Accreditation for hospitals, clinics, diagnostic centres, rehabilitation units and pharmacies — demonstrating a commitment to patient safety, clinical excellence and continuous improvement.",
+    label: "Article",
+    kind: "article",
+    kicker: "Accreditation Insights",
+    title: "Is Accreditation Really About Passing the Survey?",
+    text: "For many organizations, an accreditation survey can feel like the finish line. Explore why accreditation is better understood as an ongoing journey of quality and improvement.",
+    cta: "Read Article",
+    img: `${IMG}/insight-article-1.png`,
+    alt: "Healthcare professionals reviewing quality information",
+    w: 548,
+    h: 345,
+    icon: "file-text",
   },
   {
-    href: PROGRAMS.cab.href,
-    label: PROGRAMS.cab.label,
-    tag: "ISO/IEC 17000 series",
-    icon: "flask",
-    img: "/home/conformity.jpg",
-    alt: "Technician calibrating instruments in a testing laboratory",
-    text: "A full family of programs supporting the global recognition of conformity-assessment results — testing, calibration and medical laboratories, certification bodies, inspection bodies and proficiency testing providers.",
-    links: [
-      { href: PROGRAMS.iso17025.href, label: PROGRAMS.iso17025.shortLabel },
-      { href: PROGRAMS.iso15189.href, label: PROGRAMS.iso15189.shortLabel },
-      { href: PROGRAMS.iso17021.href, label: PROGRAMS.iso17021.shortLabel },
-      { href: PROGRAMS.iso17020.href, label: PROGRAMS.iso17020.shortLabel },
-    ],
+    label: "Event",
+    kind: "event",
+    kicker: "AAA Event",
+    title: "Maintaining Your Accreditation Without Turning It Into a Second Job",
+    text: "Join an upcoming AAA session focused on practical ways to maintain accreditation requirements as part of everyday operations and continuous improvement.",
+    cta: "View Event",
+    img: `${IMG}/insight-article-2.png`,
+    alt: "Team reviewing plans and schedules",
+    w: 548,
+    h: 345,
+    icon: "calendar",
   },
   {
-    href: PROGRAMS.training.href,
-    label: PROGRAMS.training.label,
-    tag: PROGRAMS.training.standard,
-    icon: "book",
-    img: "/home/training.jpg",
-    alt: "Participants in a professional training workshop",
-    text: "Formal recognition for training and education programs — classroom, workshop-based or e-learning, delivered anywhere in the world and assessed against ASTM E2659 and AAA's training standards.",
+    label: "News",
+    kind: "news",
+    kicker: "AAA News & Awareness",
+    title: "Blood Cancer Awareness Month: Turning Awareness into Action",
+    text: "Awareness can lead to earlier action. AAA joins the global conversation highlighting the importance of awareness, timely diagnosis and appropriate care.",
+    cta: "Read News",
+    img: `${IMG}/insight-news.png`,
+    alt: "Blood Cancer Awareness Month graphic",
+    w: 548,
+    h: 365,
+    icon: "megaphone",
   },
-  {
-    href: PROGRAMS.sme.href,
-    label: PROGRAMS.sme.label,
-    tag: "Business Readiness Score",
-    icon: "chart",
-    img: "/sme-journey-team.jpg",
-    alt: "Two business owners reviewing their AAA accreditation certificate",
-    text: "An independent, evidence-based assessment of how a small or medium enterprise is managed — producing an internationally recognized accreditation and a Business Readiness Score.",
-  },
-];
-
-/* ------------------------------------------------------ Global recognition */
-const METRICS = [
-  { num: FACTS.countriesPlus, label: "Countries served" },
-  { num: FACTS.organizations, label: "Accredited organizations" },
-  { num: FACTS.assessors, label: "Assessors & experts" },
-  { num: "ISQua", label: "EEA-assessed standards" },
-];
-
-const SUPPORT: { icon: IconName; title: string; text: string }[] = [
-  {
-    icon: "shield",
-    title: "Internationally recognized standards",
-    text: "AAA accreditation standards are assessed by ISQua EEA, reflecting alignment with international best-practice requirements.",
-  },
-  {
-    icon: "clipboard",
-    title: "Dedicated accreditation coordinator",
-    text: "Each applicant is assigned a dedicated coordinator to manage communication, coordinate the process and provide timely support.",
-  },
-  {
-    icon: "scale",
-    title: "Flexible assessment options",
-    text: "AAA provides on-site, hybrid and virtual assessment options while maintaining the same rigorous requirements and decision process.",
-  },
-  {
-    icon: "globe",
-    title: "Proven international experience",
-    text: `With activity across ${FACTS.countriesLabel}, AAA works with organizations of different sizes, sectors and regional contexts.`,
-  },
-];
-
-/* ------------------------------------------------ Process (from /faq copy) */
-const PROCESS: { title: string; text: string }[] = [
-  {
-    title: "Application",
-    text: "Send the accreditation application form for your program to AAA and pay the application fees. AAA issues a letter confirming that your accreditation is in process.",
-  },
-  {
-    title: "Document review",
-    text: "AAA reviews your application and the related documents and sends you a Document Review Compliance Report; you revise your documentation where the review identifies gaps.",
-  },
-  {
-    title: "Assessment",
-    text: "AAA defines the assessment dates and the assessment team, conducts the assessment, and issues an assessment report that includes a recommendation for accreditation.",
-  },
-  {
-    title: "Decision",
-    text: "You implement corrective actions where needed, and the accreditation committee reviews the complete file before an independent accreditation decision is taken.",
-  },
-];
-
-/* ------------------------------------------------------- Accredited network */
-const ORGS = [
-  { name: "GovernValU Consulting", loc: "Türkiye", mono: "GV" },
-  { name: "T&C Board", loc: "Gujarat, India", mono: "T&C" },
-  { name: "Millennia Wellness", loc: "Texas, USA", mono: "MW" },
-  { name: "Indian Institute for Business Management Studies", loc: "Mumbai, India", mono: "IIBMS" },
-  { name: "RC Business Growth Consultancies", loc: "Business growth consultancy", mono: "RC" },
-];
-
-// Real, attributed quotes from accredited organizations — see app/_data/case-studies.ts.
-const TESTIMONIALS = ["Cinute Digital", "Clarivate", "Monarch Master Injectors"]
-  .map((name) => CASE_STUDIES.find((c) => c.name === name))
-  .filter((c): c is CaseStudy => Boolean(c))
-  .map((c) => ({
-    quote: c.quote,
-    name: c.name,
-    org: `${c.sector} — ${c.country}`,
-    logo: c.logo,
-  }));
-
-/* ------------------------------------------------------- FAQ (from /faq) */
-const FAQ: { q: string; a: string }[] = [
-  {
-    q: "What is accreditation?",
-    a: "Accreditation is a formal process by which a recognized body evaluates and certifies that an institution meets predefined and established quality standards. The accreditation process aims to enhance service quality and ensure safety through compliance with global standards.",
-  },
-  {
-    q: "Who is the American Accreditation Association (AAA)?",
-    a: "AAA is authorized by the State Corporation Commission of the Commonwealth of Virginia to transact its business according to the articles of cooperation under Title 13.1 of the Code of Virginia and to offer a full range of comprehensive accreditation services. AAA is a third-party accreditation body that delivers accreditation services according to various international standards.",
-  },
-  {
-    q: "Is AAA internationally recognized?",
-    a: "AAA is an institutional member of the International Society for Quality in Health Care (ISQua). The AAA Accreditation Standards for Healthcare Facilities have been assessed and accredited by ISQua EEA against the Guidelines and Principles for the Development of Health and Social Care Standards, 5th Edition — meaning their development and content have been found to meet international best-practice requirements.",
-  },
-  {
-    q: "Which accreditation programs does AAA offer?",
-    a: "AAA delivers a range of accreditation programs using international standards: Healthcare Accreditation; Training & Education Providers Accreditation; School Accreditation; the SMEs Accreditation Program; Testing & Calibration Laboratories (ISO/IEC 17025); Medical Laboratories (ISO 15189); Personnel Certification Bodies (ISO/IEC 17024); Management Systems Certification Bodies (ISO/IEC 17021-1); Product Certification Bodies (ISO/IEC 17065); Inspection Bodies (ISO/IEC 17020); and Proficiency Testing Providers (ISO/IEC 17043).",
-  },
-  {
-    q: "What are the steps to get accreditation?",
-    a: "Although there may be certain differences from one application to another, the general process remains the same for all candidate bodies and follows four stages: Application, Document Review, Assessment and Decision.",
-  },
-];
-
-const CONTACT_ITEMS: { icon: IconName; label: string; value: string; href?: string }[] = [
-  { icon: "mail", label: "Email us", value: CONTACT.email, href: `mailto:${CONTACT.email}` },
-  { icon: "phone", label: "Call us", value: CONTACT.phone, href: CONTACT.phoneHref },
-  {
-    icon: "phone",
-    label: "International / WhatsApp",
-    value: CONTACT.whatsapp,
-    href: CONTACT.whatsappHref,
-  },
-  { icon: "pin", label: "Visit us", value: CONTACT.addressLine },
 ];
 
 /* --------------------------------------------------------------- JSON-LD */
-// The site-wide Organization and WebSite nodes are emitted once in
-// app/layout.tsx, so this page adds only what is specific to it: the four
-// headline programs as Services, and the FAQ block above as an FAQPage.
+// Organization and WebSite are emitted once in app/layout.tsx; breadcrumbSchema
+// prepends Home itself, so `[]` yields the single Home crumb for "/".
 const SCHEMA = [
+  breadcrumbSchema([]),
   ...PROGRAM_CARDS.map((p) =>
     serviceSchema({
-      name: p.label,
+      name: p.schemaName,
       description: p.text,
       path: p.href,
       audience: "Organizations seeking international accreditation",
     })
   ),
-  faqSchema(FAQ),
 ];
 
 export default function HomePage() {
@@ -272,514 +278,247 @@ export default function HomePage() {
 
       {/* ============================ 01 · Hero ============================ */}
       <section className="ax-hero hx-hero" id="top">
-        {/* Background footage. Muted + playsInline so mobile Safari autoplays
-            it inline; the poster paints immediately while the file streams,
-            and CSS drops the video entirely under prefers-reduced-motion. */}
-        <video
-          className="hx-hero-video"
-          poster="/video/home-hero.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-          tabIndex={-1}
-        >
-          <source src="/video/home-hero.mp4" type="video/mp4" />
-        </video>
+        <Image
+          className="hx-hero-img"
+          src={`${IMG}/aaa-homepage-hero.webp`}
+          alt="AAA team and healthcare professionals during an accreditation-related event"
+          fill
+          priority
+          sizes="100vw"
+        />
         <span className="hx-hero-scrim" aria-hidden="true" />
+        {/* Animated overlay: drifting light, a periodic sheen and slow seal rings. */}
+        <div className="hx-hero-fx" aria-hidden="true">
+          <span className="hx-fx-aura a" />
+          <span className="hx-fx-aura b" />
+          <span className="hx-fx-sheen" />
+          <span className="hx-fx-rings">
+            <i />
+            <i />
+            <i />
+          </span>
+        </div>
 
         <div className="container">
-          <div className="ax-hero-grid solo">
-            <div className="ax-hero-copy reveal">
-              <span className="ax-hero-badge">
-                <i aria-hidden="true" />
-                US-authorized accreditation body
-              </span>
+          <div className="ax-hero-grid solo overlap">
+            <div className="ax-hero-copy">
+              <span className="ax-hero-badge axh-in" style={{ "--d": 0 } as React.CSSProperties}>Global Accreditation. Trusted Quality.</span>
 
-              <h1>
-                International Accreditation <em>Accepted Globally</em>
+              <h1 className="axh-in" style={{ "--d": 1 } as React.CSSProperties}>
+                Inspiring Confidence. <em>Recognizing Excellence.</em>
               </h1>
 
-              <p className="ax-hero-lead">{HERO_SUB}</p>
-
-              <div className="ax-actions">
-                <Link href="/quote" className="ax-btn ax-btn-gold">
-                  Get a Quote <Icon name="arrow" size={15} />
-                </Link>
-                <Link href="#programs" className="ax-btn ax-btn-ghost">
-                  Explore our programs
-                </Link>
-              </div>
-
-              <HeroStats stats={HERO_STATS} />
-            </div>
-          </div>
-        </div>
-
-        {/* Standards marquee */}
-        <div className="hx-band">
-          <div className="container hx-band-inner">
-            <span className="hx-band-label">Programs aligned with international standards</span>
-            <div className="hx-mq" aria-hidden="true">
-              <div className="hx-mq-track">
-                {[...STANDARDS, ...STANDARDS].map((s, i) => (
-                  <span className="hx-mq-item" key={`${s}-${i}`}>
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================== 02 · Why AAA =========================== */}
-      <section className="ax-section hx-why" id="why">
-        <div className="container">
-          <div className="hx-why-split">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">Why choose AAA</span>
-                <h2>
-                  Independent accreditation for institutions that take{" "}
-                  <em>quality seriously</em>
-                </h2>
-              </div>
-              <span className="ax-rule" aria-hidden="true" />
-              <p>
-                The American Accreditation Association is a third-party accreditation body
-                headquartered in Tysons Corner, Virginia. Its programs are based on internationally
-                recognized standards that ensure the competence of accredited organizations and the
-                global acceptance of their accreditations.
+              <p className="ax-hero-lead axh-in" style={{ "--d": 2 } as React.CSSProperties}>
+                The American Accreditation Association provides international accreditation that strengthens
+                credibility, demonstrates quality and creates opportunities for organizations worldwide.
               </p>
 
-              <div className="hx-why-trust">
-                <b>{FACTS.organizations}</b>
-                <span>organizations accredited across {FACTS.countriesLabel}</span>
+              <div className="ax-actions axh-in" style={{ "--d": 3 } as React.CSSProperties}>
+                <Link href="/programs" className="ax-btn ax-btn-gold">
+                  Explore Accreditation Programs <Glyph name="arrow-right" size={15} strokeWidth={2} />
+                </Link>
+                <Link href="/contact" className="ax-btn ax-btn-ghost">
+                  Talk to an Accreditation Expert
+                </Link>
               </div>
 
-              <div className="ax-actions">
-                <Link href="/about" className="ax-btn ax-btn-blue">
-                  About AAA <Icon name="arrow" size={15} />
-                </Link>
-                <Link href="/about-accreditation" className="ax-btn ax-btn-ghost-navy">
-                  What accreditation means
-                </Link>
-              </div>
+              <p className="hx-help axh-in" style={{ "--d": 4 } as React.CSSProperties}>
+                <span className="hx-help-ico" aria-hidden="true">
+                  ?
+                </span>
+                Not sure which accreditation is right for your organization? Our team can help.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Credibility strip — normal flow, pulled up over the hero (README V2). */}
+      <div className="hx-metrics-wrap">
+        <div className="container">
+          <HomeMetrics items={METRICS} />
+        </div>
+      </div>
+
+      {/* ===================== 02 · Accreditation programs ================== */}
+      <section className="ax-section hx-programs" id="accreditation-programs">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Accreditation Programs"
+            title="Find the Right Accreditation Program"
+            intro="Choose the pathway that matches your organization type and quality objectives. AAA provides accreditation across education, healthcare, conformity assessment and SME sectors."
+          />
+          <div className="ax-blue-grid four">
+            {PROGRAM_CARDS.map((p, i) => (
+              <NavyCard
+                key={p.title}
+                icon={p.icon}
+                no={String(i + 1).padStart(2, "0")}
+                title={p.title}
+                href={p.href}
+                cta="Explore Program"
+              >
+                <p>{p.text}</p>
+              </NavyCard>
+            ))}
+          </div>
+
+          <div className="hx-support reveal">
+            <span className="hx-support-ico" aria-hidden="true">
+              <Glyph name="message" />
+            </span>
+            <div className="hx-support-copy">
+              <strong>Not sure which program is right for your organization?</strong>
+              <p>Speak with the AAA team and we will guide you toward the most suitable accreditation pathway.</p>
+            </div>
+            <Link href="/contact" className="ax-btn ax-btn-blue">
+              Talk to an Accreditation Expert <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== 03 · Why organizations trust AAA ============= */}
+      <section className="ax-section cream hx-trust" id="why-trust-aaa">
+        <div className="container">
+          <SectionHead
+            center
+            title={
+              <>
+                Why Organizations Around the World <em>Trust AAA</em>
+              </>
+            }
+            intro="Organizations around the world choose AAA for its commitment to quality, international experience and practical, supportive approach to accreditation."
+          />
+
+          <div className="hx-trust-layout">
+            <div className="ax-blue-grid two hx-trust-cards">
+              {TRUST.map((t, i) => (
+                <NavyCard key={t.title} icon={t.icon} no={String(i + 1).padStart(2, "0")} title={t.title}>
+                  <p>{t.text}</p>
+                </NavyCard>
+              ))}
             </div>
 
-            <ul className="hx-why-list reveal">
-              {PILLARS.map((p) => (
-                <li className="hx-why-item" key={p.title}>
-                  <span className="hx-why-ico" aria-hidden="true">
-                    <Icon name={p.icon} size={28} />
-                  </span>
-                  <div className="hx-why-card">
-                    <h3>{p.title}</h3>
-                    <p>{p.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================== 03 · Programs ========================== */}
-      <section className="hx-svc" id="programs">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Our services</span>
-            <h2>Accreditation programs, recognized worldwide</h2>
-            <p>
-              Choose the accreditation pathway that matches your organization — each assessed
-              against internationally recognized standards, by the same independent process.
-            </p>
-          </div>
-
-          <div className="hx-svc-grid">
-            {PROGRAM_CARDS.map((p, i) => (
-              <article className="hx-svc-item reveal" key={p.href} style={{ transitionDelay: `${i * 70}ms` }}>
-                <div className="hx-svc-top">
-                  <div className="hx-svc-iconcol">
-                    <span className="hx-svc-plate">
-                      <Icon name={p.icon} size={34} />
-                    </span>
-                    <span className="hx-svc-no" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <figure className="hx-svc-photo">
-                    <Image src={p.img} alt={p.alt} fill sizes="(max-width: 700px) 92vw, 24vw" />
-                    <span className="hx-svc-tag">{p.tag}</span>
-                  </figure>
-                </div>
-                <div className="hx-svc-body">
-                  <h3>{p.label}</h3>
-                  <p>{p.text}</p>
-                  <Link href={p.href} className="hx-svc-go">
-                    Explore the program <Icon name="arrow" size={14} />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===================== 04 · Global recognition ===================== */}
-      <section className="ax-section" id="global">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Global recognition</span>
-            <h2>Trusted by organizations around the world</h2>
-            <p>
-              AAA&rsquo;s international footprint reflects its growing role supporting
-              quality-focused organizations across regions and sectors.
-            </p>
-          </div>
-
-          <div className="ax-metrics reveal">
-            {METRICS.map((m) => (
-              <div className="ax-metric" key={m.label}>
-                <b>{m.num}</b>
-                <span>{m.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="hx-map reveal" style={{ marginTop: "22px" }}>
-            <div className="hx-map-head">
-              <div>
-                <h3>Countries we operate in</h3>
+            <div className="hx-reach reveal">
+              <div className="hx-reach-band">
+                <span className="hx-reach-mini">Global Experience. International Reach.</span>
+                <h3>Supporting Organizations Across {FACTS.countriesPlus} Countries</h3>
                 <p>
-                  Accredited organizations in {FACTS.countriesLabel} — hover a country to see
-                  whether it is part of the AAA network.
+                  AAA&apos;s international footprint reflects its experience working with organizations, professionals
+                  and quality-focused institutions across multiple regions and sectors.
                 </p>
               </div>
-              <span className="hx-map-badge">Global presence</span>
-            </div>
-            <div className="hx-map-body">
-              <WorldMapFigure />
+              <div className="hx-reach-map">
+                <WorldMapFigure />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ======================= 05 · How it works ========================= */}
-      <section className="ax-section cream" id="process">
+      {/* ========================= 04 · Success stories ===================== */}
+      <section className="ax-section hx-stories" id="success-stories">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">How it works</span>
-            <h2>A clear route from application to accreditation</h2>
-            <p>
-              Although details differ between programs, the general process is the same for every
-              candidate organization — and you are supported at each stage.
-            </p>
-          </div>
-
-          <div className="ax-grid four" style={{ marginBottom: "28px" }}>
-            {SUPPORT.map((s, i) => (
-              <article className="ax-card reveal" key={s.title} style={{ transitionDelay: `${i * 60}ms` }}>
-                <div className="ax-card-top">
-                  <span className="ax-ico ax-card-ico" aria-hidden="true">
-                    <Icon name={s.icon} size={24} />
-                  </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
-                <span className="ax-card-rule" aria-hidden="true" />
-              </article>
-            ))}
-          </div>
-
-          <div className="ax-split top">
-            <div className="ax-steps-panel reveal">
-              <h3>The accreditation process</h3>
-              <ol className="ax-steps">
-                {PROCESS.map((step, i) => (
-                  <li className="ax-step" key={step.title}>
-                    <span className="ax-step-num" aria-hidden="true">
-                      {i + 1}
-                    </span>
-                    <div className="ax-step-body">
-                      <b>{step.title}</b>
-                      <span>{step.text}</span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <span className="ax-pill">
-                <span className="ax-ico" aria-hidden="true">
-                  <Icon name="globe" size={16} />
-                </span>
-                Assessments delivered on-site, hybrid or virtually
+          <div className="hx-ss-head">
+            <SectionHead
+              eyebrow="Success Stories"
+              title="Trusted by organizations committed to excellence."
+              intro="Real accreditation journeys from healthcare organizations, education providers, SMEs, public institutions, and international partners recognized through AAA."
+            />
+            <aside className="hx-ss-feature reveal" aria-label="Featured story">
+              <span className="hx-ss-feature-ico" aria-hidden="true">
+                <Glyph name="trophy" />
               </span>
-            </div>
-
-            <aside className="ax-panel reveal">
-              <span className="ax-ico ax-panel-ico" aria-hidden="true">
-                <Icon name="doc" size={28} />
-              </span>
-              <h3>Start your application</h3>
-              <p>
-                Tell us about your organization, the standards you work to and the locations you
-                operate in. Application forms for every accreditation program are available in the
-                AAA document library.
-              </p>
-              <Link href="/apply" className="ax-btn ax-btn-blue">
-                Apply for accreditation <Icon name="arrow" size={15} />
-              </Link>
-              <p className="ax-panel-note">
-                Not sure which program applies? Request a quote and an accreditation specialist will
-                scope it with you.
-              </p>
-              <ul className="ax-docs">
-                <li className="ax-docs-title">Useful next steps</li>
-                <li>
-                  <Link href="/documents">
-                    <span className="ax-ico" aria-hidden="true">
-                      <Icon name="doc" size={16} strokeWidth={2} />
-                    </span>
-                    Application forms &amp; requirements
-                    <i>Library</i>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/quote">
-                    <span className="ax-ico" aria-hidden="true">
-                      <Icon name="clipboard" size={16} strokeWidth={2} />
-                    </span>
-                    Request a tailored quotation
-                    <i>Form</i>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faq">
-                    <span className="ax-ico" aria-hidden="true">
-                      <Icon name="search" size={16} strokeWidth={2} />
-                    </span>
-                    Frequently asked questions
-                    <i>FAQ</i>
-                  </Link>
-                </li>
-              </ul>
+              <div>
+                <strong>Featured Story</strong>
+                <p>Monarch Master Injector: 12% growth and 500+ students certified after accreditation.</p>
+              </div>
             </aside>
           </div>
         </div>
-      </section>
 
-      {/* ====================== 06 · Success stories ======================= */}
-      <section className="ax-section" id="clients">
+        <SuccessCarousel stories={STORIES} />
+
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Success stories</span>
-            <h2>Be part of our accredited network</h2>
-            <p>
-              Join a growing community of organizations that have demonstrated competence and
-              credibility through AAA accreditation.
-            </p>
-          </div>
-
-          <div className="hx-strip reveal">
-            <p className="hx-strip-lead">
-              Accredited organizations in <b>{FACTS.countriesLabel}</b>, assessed by a panel of{" "}
-              <b>{FACTS.assessors}</b> assessors and experts
-            </p>
-            <ul className="hx-orgs">
-              {ORGS.map((o) => (
-                <li className="hx-org" key={o.name}>
-                  <span className="hx-org-mono" aria-hidden="true">
-                    {o.mono}
-                  </span>
-                  <b>{o.name}</b>
-                  <span>{o.loc}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="hx-testis">
-            {TESTIMONIALS.map((t, i) => (
-              <figure className="hx-testi reveal" key={t.name} style={{ transitionDelay: `${i * 70}ms` }}>
-                <span className="hx-testi-mark" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30">
-                    <path d="M9.6 6.4v3.2c-1.7.5-2.6 1.6-2.7 3.4H9.6V18H3.9v-5c0-3.9 1.9-6.1 5.7-6.6zm10.5 0v3.2c-1.7.5-2.6 1.6-2.7 3.4h2.7V18h-5.7v-5c0-3.9 1.9-6.1 5.7-6.6z" />
-                  </svg>
-                </span>
-                <blockquote>{t.quote}</blockquote>
-                <figcaption>
-                  {t.logo && (
-                    <span className="hx-testi-logo" aria-hidden="true">
-                      <Image src={t.logo} alt="" width={120} height={40} sizes="120px" />
-                    </span>
-                  )}
-                  <span className="hx-testi-who">
-                    <strong>{t.name}</strong>
-                    <span>{t.org}</span>
-                  </span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-
-          <div className="ax-actions center">
-            <Link href="/directory/accredited-organizations" className="ax-btn ax-btn-ghost-navy">
-              Explore accredited organizations <Icon name="arrow" size={15} />
+          <div className="hx-ss-cta">
+            <Link href="/news" className="ax-btn ax-btn-blue">
+              View All Success Stories <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* =========================== 07 · Gallery ========================== */}
-      <section className="ax-section cream" id="gallery">
+      {/* ====================== 05 · Latest insights & updates ============== */}
+      <section className="ax-section cream hx-insights" id="latest-insights">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Gallery</span>
-            <h2>Excellence in action</h2>
-            <p>
-              Moments from AAA accreditation assessments, certification ceremonies and engagements
-              with organizations worldwide.
-            </p>
+          <SectionHead
+            center
+            eyebrow="Resources & Updates"
+            title="Latest Insights & Updates"
+            intro="Stay informed with practical accreditation insights, upcoming AAA events and the latest news from our global community."
+          />
+          <div className="ax-blue-grid hx-insight-grid">
+            {INSIGHTS.map((n, i) => (
+              <Link
+                key={n.title}
+                href="/news"
+                className={`ax-card navy ax-blue reveal hx-insight ${n.kind}`}
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                <figure className="hx-insight-media">
+                  <Image src={n.img} alt={n.alt} width={n.w} height={n.h} sizes="(max-width: 860px) 92vw, 400px" />
+                  <span className="hx-insight-label">
+                    <Glyph name={n.icon} size={13} strokeWidth={2} /> {n.label}
+                  </span>
+                </figure>
+                <div className="hx-insight-body">
+                  <span className="ax-blue-kicker">{n.kicker}</span>
+                  <h3>{n.title}</h3>
+                  <div className="ax-blue-body">
+                    <p>{n.text}</p>
+                  </div>
+                  <span className="ax-card-go">
+                    {n.cta} <Glyph name="arrow-right" size={14} strokeWidth={2} />
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
-          <HomeGallery />
-        </div>
-      </section>
-
-      {/* ============================ 08 · Team =========================== */}
-      <section className="ax-section navy" id="team">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Leadership team</span>
-            <h2>Meet our team</h2>
-            <p>
-              Dedicated professionals committed to elevating standards worldwide. Hover over a card
-              to read each biography.
-            </p>
-          </div>
-          <HomeTeam />
-        </div>
-      </section>
-
-      {/* ============================ 09 · News =========================== */}
-      <section className="ax-section" id="news">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">AAA news</span>
-            <h2>News &amp; events from the accreditation community</h2>
-          </div>
-          <Insights />
           <div className="ax-actions center">
             <Link href="/news" className="ax-btn ax-btn-ghost-navy">
-              View all news <Icon name="arrow" size={15} />
+              Explore All Resources <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ============================ 10 · FAQ ============================ */}
-      <section className="ax-section cream" id="faq">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">FAQ</span>
-            <h2>Frequently asked questions</h2>
-            <p>The questions organizations ask most often before they apply for accreditation.</p>
-          </div>
-          <div className="ax-faq-list">
-            {FAQ.map((item, i) => (
-              <details className="ax-faq-item" key={item.q} open={i === 0}>
-                <summary>
-                  <span>{item.q}</span>
-                  <span className="ax-faq-plus" aria-hidden="true" />
-                </summary>
-                <div className="ax-faq-a">
-                  <p>{item.a}</p>
-                </div>
-              </details>
-            ))}
-          </div>
-          <div className="ax-actions center">
-            <Link href="/faq" className="ax-btn ax-btn-ghost-navy">
-              Read all FAQs <Icon name="arrow" size={15} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ====================== 11 · Contact & quote ====================== */}
-      <section className="ax-section navy hx-navy" id="contact">
+      {/* ============================ 06 · Final CTA ======================== */}
+      <section className="ax-close hx-final" id="begin-accreditation">
         <span className="ax-close-corner" aria-hidden="true" />
         <div className="container">
-          <div className="ax-split top">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">Get in touch</span>
-                <h2>Ready to start your accreditation journey?</h2>
-                <p>
-                  Tell us about your organization and our team will scope your accreditation
-                  pathway — the applicable standards, the process and a tailored quotation.
-                </p>
-              </div>
-
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="hx-consult">
-                <i aria-hidden="true">
-                  <Icon name="cert" size={20} />
-                </i>
-                <span>
-                  <strong>Book a free 30-minute consultation</strong>
-                  <em>Talk to an accreditation specialist. No obligation.</em>
-                </span>
-                <Icon name="arrow" size={16} />
-              </a>
-
-              <ul className="hx-contacts">
-                {CONTACT_ITEMS.map((c) => {
-                  const body = (
-                    <>
-                      <i aria-hidden="true">
-                        <Icon name={c.icon} size={17} />
-                      </i>
-                      <span>
-                        <strong>{c.label}</strong>
-                        {c.value}
-                      </span>
-                    </>
-                  );
-                  return (
-                    <li key={c.label}>
-                      {c.href ? (
-                        <a
-                          className="hx-contact-item"
-                          href={c.href}
-                          {...(c.href.startsWith("http")
-                            ? { target: "_blank", rel: "noopener noreferrer" }
-                            : {})}
-                        >
-                          {body}
-                        </a>
-                      ) : (
-                        <div className="hx-contact-item">{body}</div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className="ax-related" style={{ justifyContent: "flex-start" }}>
-                <span>Explore:</span>
-                <Link href={PROGRAMS.healthcare.href}>Healthcare</Link>
-                <Link href={PROGRAMS.cab.href}>Conformity assessment bodies</Link>
-                <Link href={PROGRAMS.training.href}>Training &amp; education</Link>
-                <Link href={PROGRAMS.sme.href}>SMEs</Link>
-              </div>
+          <div className="ax-close-inner reveal">
+            <span className="eyebrow">Take the Next Step</span>
+            <h2>Ready to Begin Your Accreditation Journey?</h2>
+            <p>
+              Whether you represent a healthcare organization, training and education provider, conformity assessment
+              body or SME, our team can help you identify the accreditation pathway that fits your organization.
+            </p>
+            <div className="ax-close-actions">
+              <Link href="/contact" className="ax-btn ax-btn-gold">
+                Request Accreditation Information <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </Link>
+              <Link href="/programs" className="ax-btn ax-btn-ghost">
+                Explore Accreditation Programs <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </Link>
             </div>
-
-            <QuoteForm />
+            <p className="hx-help center">
+              <span className="hx-help-ico" aria-hidden="true">
+                ?
+              </span>
+              Not sure where to start? Our accreditation team is here to guide you through the options.
+            </p>
           </div>
         </div>
       </section>

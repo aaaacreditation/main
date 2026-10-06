@@ -1321,21 +1321,11 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
 @media (max-width: 1024px) {
   .site-header.site-header {
     position: static;
-    background: var(--aaa-blue);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    background: #fff;
   }
-  .site-header.site-header .menu-toggle {
-    display: grid;
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.45);
-  }
-  .site-header.site-header .header-nav,
   .site-header.site-header .utility-bar { display: none; }
-  .site-header.site-header .header-main .container {
-    justify-content: space-between;
-    padding: 14px 24px;
-  }
-  .site-header.site-header .brand-logo { height: 48px; width: auto; }
+  .sh2-seal { width: 46px; }
+  .sh2-wordmark { font-size: 13px; }
 
   /* The header no longer floats over the hero, so the hero stops reserving
      room for it. */
@@ -1355,4 +1345,534 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
   .smex .smex-hero-grid { padding-top: clamp(56px, 7vw, 88px); }
   .smex .smex-hero-grid { min-height: 0; }
   .smex .smex-hero { min-height: 0; }
+}
+
+/* ==========================================================================
+   Oct 2026 — client-structure rebuild kit
+   The client asked that EVERY card on the site match the SMEs page's blue
+   pillar card (.smex-mvv-card). `.ax-blue` (rendered by
+   app/_components/site/NavyCard.tsx) reproduces it on a single element:
+   navy gradient fill on the padding box, an animated conic border track on
+   the border box (steel-blue ring with two orbiting red accents), gold-ring
+   icon, ghost numeral, white title, gold rule. Description stays visible.
+   ========================================================================== */
+.ax-card.navy.ax-blue {
+  isolation: isolate;
+  overflow: hidden;
+  border: 0;
+  /* Steel-blue track; the navy face is ::after, inset by the 1.5px ring. */
+  background: #33598e;
+  min-height: 180px;
+  padding: 22px 24px 24px;
+}
+/* Orbiting red accents — rotated with `transform` so the animation stays on
+   the compositor (the SME original's technique) instead of repainting the
+   gradient every frame on pages with 20–30 cards. */
+.ax-card.navy.ax-blue::before {
+  content: "";
+  position: absolute;
+  inset: -160%;
+  z-index: -2;
+  opacity: 0.85;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 46deg,
+    var(--aaa-red) 80deg,
+    transparent 114deg 226deg,
+    var(--aaa-red-deep) 260deg,
+    transparent 294deg 360deg
+  );
+  animation: ax-blue-orbit 7s linear infinite;
+}
+.ax-card.navy.ax-blue::after {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  z-index: -1;
+  border-radius: calc(var(--ax-radius) - 1.5px);
+  background: var(--ax-navy-bg);
+  pointer-events: none;
+}
+.ax-card.navy.ax-blue:hover { transform: translateY(-5px); }
+.ax-card.navy.ax-blue:hover::before { opacity: 1; }
+@keyframes ax-blue-orbit { to { transform: rotate(1turn); } }
+.ax-card.navy.ax-blue h3 { margin: 16px 0 8px; font-size: 19px; line-height: 1.3; }
+.ax-card.navy.ax-blue .ax-card-top + h3,
+.ax-card.navy.ax-blue .ax-card-top + .ax-blue-tag { margin-top: 16px; }
+.ax-blue-tag {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border: 1px solid rgba(179, 138, 46, 0.55);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.12);
+}
+.ax-blue-tag + h3 { margin-top: 12px !important; }
+.ax-blue-kicker { display: block; margin: -2px 0 8px; font-size: 13px; font-weight: 500; color: var(--aaa-gold-100); }
+.ax-blue-body { font-size: 13.5px; line-height: 1.7; color: rgba(255, 255, 255, 0.8); }
+.ax-blue-body p { margin: 0; color: inherit; }
+.ax-blue-body p + p { margin-top: 8px; }
+.ax-blue-body ul { margin: 6px 0 0; padding: 0; list-style: none; }
+.ax-blue-body li { position: relative; padding-left: 18px; margin-top: 6px; }
+.ax-blue-body li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--aaa-gold);
+}
+.ax-card.navy.ax-blue .ax-card-rule { padding-top: 20px; }
+.ax-card.navy.ax-blue .ax-card-go { margin-top: auto; padding-top: 18px; }
+.ax-card.navy.ax-blue.compact { min-height: 0; padding: 18px 18px 20px; }
+.ax-card.navy.ax-blue.compact h3 { font-size: 15.5px; margin-top: 12px; margin-bottom: 4px; }
+.ax-card.navy.ax-blue.compact .ax-card-ico { width: 42px; height: 42px; padding: 9px; }
+.ax-card.navy.ax-blue.compact .ax-card-no { font-size: 30px; }
+.ax-card-ico svg { display: block; width: 100%; height: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .ax-card.navy.ax-blue::before { animation: none; }
+}
+
+/* Heads on navy surfaces outside .ax-section.navy */
+.ax-head.light h2 { color: #fff; }
+.ax-head.light p { color: rgba(255, 255, 255, 0.78); }
+.ax-head.light .eyebrow { color: var(--aaa-gold-100); }
+.ax-head + .ax-blue-grid { margin-top: clamp(30px, 3.4vw, 46px); }
+
+/* Responsive grids for blue cards */
+.ax-blue-grid { display: grid; gap: 22px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ax-blue-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ax-blue-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ax-blue-grid.five { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 1100px) {
+  .ax-blue-grid.four, .ax-blue-grid.five { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .ax-blue-grid, .ax-blue-grid.four, .ax-blue-grid.five { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .ax-blue-grid, .ax-blue-grid.two, .ax-blue-grid.four, .ax-blue-grid.five { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   Oct 2026 — header rebuilt on the client's "Main Navigation Menu" file:
+   thin navy utility bar (right-aligned links) over ONE white row — logo,
+   six-item menu with simple dropdowns, search, gold "Apply for Accreditation".
+   Selectors are doubled/qualified to beat globals.css, which loads after this
+   file. --header-h = 34px utility bar + 84px row.
+   ========================================================================== */
+html:root { --header-h: 118px; }
+
+.sh2 .utility-bar { border-bottom: 0; }
+.sh2 .sh2-utility { display: flex; align-items: center; justify-content: flex-end; height: 34px; }
+.sh2 .sh2-utility a {
+  padding: 0 14px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.86);
+  border-right: 1px solid rgba(255, 255, 255, 0.24);
+}
+.sh2 .sh2-utility a:last-child { padding-right: 0; border-right: 0; }
+.sh2 .sh2-utility a:hover { color: var(--aaa-gold-100); }
+
+.sh2 .sh2-main {
+  background: #fff;
+  border-bottom: 1px solid var(--ink-100);
+  box-shadow: 0 16px 34px -28px rgba(7, 29, 52, 0.55);
+}
+.sh2-row { display: flex; align-items: center; gap: 22px; height: 84px; }
+.sh2-row .brand { flex: none; }
+.sh2-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.sh2-seal { display: block; width: 56px; height: auto; }
+.sh2-compact .sh2-seal { width: 46px; }
+.sh2-wordmark {
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--aaa-blue);
+}
+.sh2-compact .sh2-wordmark { font-size: 13px; }
+.sh2-wordmark b { font-weight: 700; color: var(--aaa-red); }
+
+/* Menu — navy text on white, gold hover underline */
+.sh2 .nav,
+.sh2-compact .nav { display: flex; align-items: center; gap: 22px; margin: 0 0 0 auto; }
+.sh2 .nav a,
+.sh2-compact .nav a {
+  padding: 30px 0;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--aaa-blue);
+}
+.sh2-compact .nav a { padding: 24px 0; }
+.sh2 .nav a:hover,
+.sh2-compact .nav a:hover,
+.sh2 .nav .nav-item:focus-within > a,
+.sh2-compact .nav .nav-item:focus-within > a { color: var(--aaa-gold-700); }
+.sh2 .nav > a::after,
+.sh2 .nav .nav-item > a.has-caret::before,
+.sh2-compact .nav > a::after,
+.sh2-compact .nav .nav-item > a.has-caret::before { bottom: 20px; }
+.sh2-compact .nav > a::after,
+.sh2-compact .nav .nav-item > a.has-caret::before { bottom: 16px; }
+.sh2 .nav a.has-caret::after,
+.sh2-compact .nav a.has-caret::after { color: var(--aaa-gold); opacity: 1; }
+
+/* Simple dropdown list, as in the client file */
+.sh2 .nav .nav-dropdown,
+.sh2-compact .nav .nav-dropdown {
+  top: calc(100% - 8px);
+  left: -14px;
+  min-width: 290px;
+  padding: 10px;
+  border-color: #dce5ed;
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(5, 35, 72, 0.14);
+}
+.sh2 .nav .nav-dropdown a,
+.sh2-compact .nav .nav-dropdown a {
+  padding: 11px 12px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  color: #29465f;
+}
+.sh2 .nav .nav-dropdown a:hover,
+.sh2-compact .nav .nav-dropdown a:hover { color: var(--aaa-blue); background: #f2f6fa; }
+
+/* Closed right after a click (Header.tsx) — wins over :hover / :focus-within
+   until the pointer leaves the item. */
+.nav .nav-item.nav-closed .nav-dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: none;
+}
+.sh2-actions { display: flex; flex: none; align-items: center; gap: 10px; }
+.sh2 .sh2-search {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--aaa-blue);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.sh2 .sh2-search:hover { background: var(--aaa-blue-50); }
+.sh2-apply.sh2-apply {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  background: linear-gradient(135deg, var(--aaa-gold), var(--aaa-gold-700));
+  box-shadow: 0 14px 26px -16px rgba(142, 107, 24, 0.9);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.sh2-apply.sh2-apply:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.sh2 .menu-toggle,
+.sh2-compact .menu-toggle { display: none; margin-left: auto; color: var(--aaa-blue); border-color: var(--ink-200); }
+
+/* Pinned copy of the row, white like the main header */
+.header-compact.sh2-compact {
+  background: rgba(255, 255, 255, 0.97);
+  border-bottom: 1px solid var(--ink-100);
+  box-shadow: 0 14px 34px -22px rgba(7, 29, 52, 0.45);
+}
+.header-compact.sh2-compact .container { height: 70px; }
+.sh2-compact .hc-logo { height: 44px; width: auto; }
+.header-compact.sh2-compact .nav { display: flex; }
+
+/* The client's header runs on a 1440px shell (wider than page content). */
+.sh2 .container,
+.header-compact.sh2-compact .container { max-width: 1440px; padding-left: 28px; padding-right: 28px; }
+
+@media (max-width: 1480px) {
+  .sh2 .nav, .sh2-compact .nav { gap: 16px; }
+  .sh2 .nav a, .sh2-compact .nav a { font-size: 13.5px; }
+  .sh2-row { gap: 16px; }
+}
+@media (max-width: 1360px) {
+  .sh2 .sh2-search { display: none; }
+  .sh2 .nav, .sh2-compact .nav { gap: 13px; }
+  .sh2 .nav a, .sh2-compact .nav a { font-size: 13px; }
+  .sh2-apply.sh2-apply { padding: 10px 14px; font-size: 13px; }
+  .sh2-wordmark { font-size: 13px; }
+}
+@media (max-width: 1240px) {
+  .sh2 .sh2-wordmark, .sh2-compact .sh2-wordmark { display: none; }
+  .sh2 .container, .header-compact.sh2-compact .container { padding-left: 20px; padding-right: 20px; }
+}
+@media (max-width: 1100px) {
+  .sh2 .nav, .sh2-compact .nav, .header-compact.sh2-compact .nav, .sh2-actions { display: none; }
+  .sh2 .menu-toggle, .sh2-compact .menu-toggle { display: grid; }
+  .sh2 .sh2-wordmark, .sh2-compact .sh2-wordmark { display: flex; }
+}
+@media (max-width: 1024px) {
+  .sh2-row { height: 72px; }
+  .header-compact.sh2-compact .container { height: 72px; }
+  .mobile-menu { top: 72px; }
+}
+.mm-ctas .sh2-apply.sh2-apply { width: 100%; padding: 14px 20px; }
+
+/* Count-up figures (<Stat>) render a <span> inside `.ax-metric b`; keep it at
+   the figure's size rather than inheriting `.ax-metric span` label styling. */
+.ax-metric b > span { display: inline; margin: 0; font-size: inherit; color: inherit; letter-spacing: inherit; }
+
+/* ==========================================================================
+   Oct 2026 — PageHero v2 (`.ax-hero.v2`), inspired by institutional heroes on
+   Mobbin (Okta, Legora, PayPal leadership, Deel): an editorial split. The
+   page photo bleeds to the right viewport edge as a tall panel with one
+   sweeping bottom-left curve and a gold arc; copy sits on a deep navy field
+   over a slow, pre-blurred aura. Motion is CSS-only and composited
+   (transform / opacity / clip-path). The photo is the LCP element, so its
+   wipe starts partly open and finishes in ~0.7s — never from opacity 0.
+   ========================================================================== */
+.ax-hero.v2 {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(36, 79, 147, 0.38), transparent 55%),
+    linear-gradient(118deg, var(--aaa-blue-950) 0%, #0a2645 48%, #10345f 100%);
+}
+.ax-hero.v2.red {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(43, 93, 168, 0.32), transparent 55%),
+    linear-gradient(118deg, var(--aaa-blue-950) 0%, var(--aaa-navy-750) 52%, var(--aaa-navy-850) 100%);
+}
+.ax-hero.v2::before { opacity: 0.18; -webkit-mask-image: radial-gradient(ellipse 55% 75% at 20% 45%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 55% 75% at 20% 45%, #000 10%, transparent 75%); }
+.ax-hero.v2.has-visual { min-height: calc(var(--header-h) + clamp(500px, 60vh, 660px)); display: flex; align-items: center; }
+.ax-hero.v2 > .container { position: relative; z-index: 2; width: 100%; }
+.ax-hero.v2 .ax-hero-grid { padding-top: calc(var(--header-h) + clamp(56px, 6vw, 88px)); padding-bottom: clamp(72px, 8vw, 116px); }
+.ax-hero.v2.has-visual .ax-hero-copy { max-width: min(640px, 47vw); }
+.ax-hero.v2:not(.has-visual) .ax-hero-copy { max-width: 860px; }
+
+/* Aura — two pre-blurred radial fields drifting slowly behind the copy */
+.axh-aura { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.axh-aura span {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+.axh-aura span:first-child {
+  top: -18%;
+  left: -12%;
+  width: 62vw;
+  height: 62vw;
+  max-width: 900px;
+  max-height: 900px;
+  background: radial-gradient(circle, rgba(43, 93, 168, 0.42) 0%, rgba(43, 93, 168, 0.12) 42%, transparent 68%);
+  animation: axh-drift-a 22s ease-in-out infinite alternate;
+}
+.axh-aura span:last-child {
+  bottom: -30%;
+  left: 22%;
+  width: 46vw;
+  height: 46vw;
+  max-width: 700px;
+  max-height: 700px;
+  background: radial-gradient(circle, rgba(179, 138, 46, 0.2) 0%, rgba(179, 138, 46, 0.06) 45%, transparent 68%);
+  animation: axh-drift-b 26s ease-in-out infinite alternate;
+}
+@keyframes axh-drift-a { to { transform: translate3d(8vw, 6vh, 0) scale(1.08); } }
+@keyframes axh-drift-b { to { transform: translate3d(-6vw, -8vh, 0) scale(1.12); } }
+
+/* Typography — weight contrast and air rather than ornament */
+.ax-hero.v2 .ax-crumbs { margin-bottom: 30px; }
+.ax-hero.v2 .ax-hero-badge {
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--aaa-gold-100);
+}
+.ax-hero.v2 .ax-hero-badge i {
+  width: 38px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--aaa-gold), rgba(179, 138, 46, 0.35));
+  box-shadow: none;
+}
+.ax-hero.v2 .ax-hero-badge.red i { background: linear-gradient(90deg, var(--aaa-red-300), transparent); }
+.ax-hero.v2 h1 {
+  margin-top: 22px;
+  font-size: clamp(40px, 4.7vw, 70px);
+  font-weight: 600;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+}
+.ax-hero.v2 h1[data-size="lg"] { font-size: clamp(36px, 4vw, 58px); }
+.ax-hero.v2 h1[data-size="xl"] { font-size: clamp(32px, 3.3vw, 50px); line-height: 1.06; }
+.ax-hero.v2 h1 span[class*="gold"] { color: var(--aaa-gold); }
+.ax-hero.v2 .ax-hero-lead {
+  max-width: 56ch;
+  margin-top: 24px;
+  font-size: clamp(15.5px, 1.15vw, 17px);
+  font-weight: 400;
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.78);
+}
+.ax-hero.v2 .ax-actions { margin-top: 34px; }
+
+/* Stats — glass row with hairline dividers */
+.ax-hero.v2 .ax-stats {
+  gap: 0;
+  margin-top: 44px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.ax-hero.v2 .ax-stat {
+  padding: 18px 20px;
+  border: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+}
+.ax-hero.v2 .ax-stat:first-child { border-left: 0; }
+.ax-hero.v2 .ax-stat b { font-size: clamp(22px, 2vw, 30px); overflow-wrap: anywhere; }
+/* Four stats beside the photo panel: narrower columns, smaller figures */
+.ax-hero.v2.has-visual .ax-stats:not(.three) .ax-stat { padding: 16px 14px; }
+.ax-hero.v2.has-visual .ax-stats:not(.three) .ax-stat b { font-size: clamp(17px, 1.45vw, 23px); overflow-wrap: normal; }
+.ax-hero.v2.has-visual .ax-stats:not(.three) .ax-stat > span { font-size: 10.5px; }
+.ax-hero.v2 .ax-stat b > span { display: inline; margin: 0; font-size: inherit; letter-spacing: inherit; color: inherit; text-transform: none; }
+.ax-hero.v2 .ax-stat > span { color: var(--aaa-gold-100); opacity: 0.85; }
+
+/* Full-bleed photo panel */
+.ax-hero.v2 > .ax-hero-visual {
+  position: absolute;
+  top: var(--header-h);
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: min(46vw, 900px);
+  max-width: none;
+}
+.ax-hero.v2 > .ax-hero-visual .ax-hero-photo {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0 0 0 clamp(120px, 11vw, 220px);
+  box-shadow: -40px 0 90px -40px rgba(0, 0, 0, 0.6);
+  animation: axh-wipe 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ax-hero.v2 > .ax-hero-visual .ax-hero-photo::after { display: none; }
+.ax-hero.v2 > .ax-hero-visual .ax-hero-photo::before {
+  background:
+    linear-gradient(90deg, rgba(6, 26, 44, 0.55) 0%, rgba(6, 26, 44, 0) 32%),
+    linear-gradient(180deg, rgba(6, 26, 44, 0) 50%, rgba(6, 26, 44, 0.78) 100%);
+}
+.axh-media { position: absolute; inset: 0; display: block; animation: axh-settle 1.6s cubic-bezier(0.22, 1, 0.36, 1) both, axh-breathe 20s ease-in-out 1.6s infinite alternate; }
+.ax-hero.v2 .ax-hero-visual:hover .ax-hero-photo img { transform: none; }
+@keyframes axh-wipe { from { clip-path: inset(0 0 0 34%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes axh-settle { from { transform: scale(1.1); } to { transform: scale(1); } }
+@keyframes axh-breathe { to { transform: scale(1.045); } }
+
+/* Gold arc tracing the panel's curve */
+.axh-arc {
+  position: absolute;
+  bottom: -1px;
+  left: -26px;
+  z-index: 2;
+  width: clamp(150px, 13vw, 250px);
+  height: clamp(150px, 13vw, 250px);
+  border-bottom: 1.5px solid rgba(179, 138, 46, 0.75);
+  border-left: 1.5px solid rgba(179, 138, 46, 0.75);
+  border-radius: 0 0 0 100%;
+  pointer-events: none;
+  animation: axh-fade 1s ease 0.5s both;
+}
+
+/* Glass caption floating on the photo */
+.ax-hero.v2 > .ax-hero-visual figcaption {
+  right: auto;
+  bottom: clamp(28px, 3vw, 44px);
+  left: clamp(120px, 10vw, 190px);
+  max-width: min(420px, 80%);
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(6, 26, 44, 0.48);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.7);
+  animation: axh-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
+}
+
+/* Bottom hairline */
+.axh-rule {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  height: 2px;
+  background: linear-gradient(90deg, var(--aaa-gold) 0%, rgba(179, 138, 46, 0.4) 40%, transparent 75%);
+  transform-origin: left;
+  animation: axh-grow 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+/* Block-by-block entrance (crumbs → kicker → h1 → lead → actions → stats) */
+.axh-in { animation: axh-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--d, 0) * 80ms + 60ms); }
+@keyframes axh-rise { from { opacity: 0; transform: translateY(22px); } }
+@keyframes axh-fade { from { opacity: 0; } }
+@keyframes axh-grow { from { transform: scaleX(0); } }
+
+/* Tablet / mobile: photo becomes a full-width band above the copy */
+@media (max-width: 980px) {
+  .ax-hero.v2.has-visual { display: block; min-height: 0; }
+  .ax-hero.v2 > .ax-hero-visual {
+    position: relative;
+    top: auto;
+    width: 100%;
+    height: clamp(260px, 58vw, 440px);
+  }
+  .ax-hero.v2 > .ax-hero-visual .ax-hero-photo { border-radius: 0 0 0 clamp(70px, 16vw, 120px); box-shadow: none; }
+  .ax-hero.v2 > .ax-hero-visual figcaption { left: clamp(70px, 16vw, 120px); right: 16px; bottom: 18px; }
+  .axh-arc { display: none; }
+  .ax-hero.v2.has-visual .ax-hero-copy { max-width: none; }
+  .ax-hero.v2.has-visual .ax-hero-grid { padding-top: clamp(36px, 6vw, 56px); }
+}
+@media (max-width: 1024px) {
+  .ax-hero.v2:not(.has-visual) .ax-hero-grid { padding-top: clamp(56px, 7vw, 88px); }
+}
+@media (max-width: 640px) {
+  /* The caption would cover most of the short photo band on phones. */
+  .ax-hero.v2 > .ax-hero-visual figcaption { display: none; }
+  .ax-hero.v2 .ax-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ax-hero.v2 .ax-stats.three .ax-stat:last-child { grid-column: 1 / -1; border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .ax-hero.v2 .ax-stats:not(.three) .ax-stat:nth-child(3) { border-left: 0; }
+  .ax-hero.v2 .ax-stats:not(.three) .ax-stat:nth-child(n + 3) { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .axh-in, .axh-arc, .axh-rule, .axh-media, .axh-aura span,
+  .ax-hero.v2 > .ax-hero-visual .ax-hero-photo,
+  .ax-hero.v2 > .ax-hero-visual figcaption { animation: none; }
 }

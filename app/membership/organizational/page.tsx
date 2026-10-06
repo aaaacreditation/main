@@ -1,398 +1,591 @@
 import Link from "next/link";
 import Image from "next/image";
-import Icon from "../../_components/Icon";
-import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
-import CTA from "../../_components/CTA";
-import { pageMeta, breadcrumbSchema, faqSchema } from "../../../lib/seo";
-import "../membership.css";
+import JsonLd from "../../_components/JsonLd";
+import NavyCard from "../../_components/site/NavyCard";
+import SectionHead from "../../_components/site/SectionHead";
+import Glyph, { type GlyphName } from "../../_components/site/Glyph";
+import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import "./org.css";
+
+/*
+ * Organizational Membership — rebuilt Oct 2026 on the client's final page
+ * structure ("Organizational Membership" package: Hero → Who Should Consider →
+ * Benefits → Membership vs Accreditation → Plan → How It Works → Real Members →
+ * Final CTA), rendered in the AAA design system with the SME blue card.
+ * Page styles live in ./org.css under `.morg` (membership.css is shared by the
+ * other membership routes and is intentionally not imported here).
+ */
 
 export const metadata = pageMeta({
   title: "Organizational Membership",
   description:
-    "AAA Organizational Membership: $500 for one year, credited against your accreditation fees. Certificate, logo licence and ADCP listing for two staff.",
+    "Join the AAA global quality community for $500 a year: membership certificate, complimentary training places, ADCP listing, webinars and networking.",
   path: "/membership/organizational",
+  keywords: [
+    "AAA organizational membership",
+    "American Accreditation Association membership",
+    "quality community membership",
+    "membership vs accreditation",
+    "ADCP listing",
+  ],
 });
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const IMG = "/images/site/membership-organizational";
+const APPLY = "/membership/organizational/apply";
 
-/* Content transcribed from aaa-accreditation.org/organizational-membership. */
-
-const WHO_CAN_JOIN = [
-  "Institutions taking the first step in the journey to full AAA accreditation.",
-  "Organizations that want to be associated with AAA without going through the full accreditation process.",
-  "Any entity with an interest in promoting quality and competence through accreditation.",
-  "Institutions that want a visible way to showcase their commitment to high-quality standards.",
-];
-
-const BENEFITS = [
+const FIT: { icon: GlyphName; title: string; text: string }[] = [
   {
-    icon: "cert" as const,
-    title: "Global Recognition",
-    text: "An official membership certificate from AAA, validated through our platform with a unique URL — plus permission to use the AAA Membership Logo on your website and promotional material.",
+    icon: "compass",
+    title: "Not Yet Ready for Accreditation",
+    text: "Organizations that are interested in AAA but are not yet ready to begin a formal accreditation process can use membership as a way to engage, learn, and prepare.",
   },
   {
-    icon: "book" as const,
-    title: "Professional Training",
-    text: "Two members of your institution are eligible to attend one free training course each year to enhance their expertise.",
+    icon: "graduation",
+    title: "Seeking Professional Development",
+    text: "Organizations looking for learning opportunities, webinars, training benefits, and access to quality-focused professional development activities.",
   },
   {
-    icon: "clipboard" as const,
-    title: "Directory Enrolment",
-    text: "Two members of your institution are listed in the prestigious American Directory for Competent Persons (ADCP).",
-  },
-  {
-    icon: "mail" as const,
-    title: "Professional Branding",
-    text: "Receive a QR-coded membership email signature so your team can showcase its affiliation.",
-  },
-  {
-    icon: "chart" as const,
-    title: "Educational Webinars",
-    text: "Access free webinars on international standards development, quality management, internal audits and assessment preparation in your area of interest.",
-  },
-  {
-    icon: "doc" as const,
-    title: "Content Contribution",
-    text: "Publish two articles or papers annually on the AAA website, with backlinks to your institution's website or professional account.",
-  },
-  {
-    icon: "globe" as const,
-    title: "Networking Opportunities",
-    text: "Connect and collaborate with peers in the quality and accreditation community through various networking initiatives.",
-  },
-  {
-    icon: "scale" as const,
-    title: "Committee Membership",
-    text: "Gain eligibility to join AAA Technical Committees and actively engage in shaping your industry's standards.",
+    icon: "network",
+    title: "Interested in Participation & Knowledge Sharing",
+    text: "Organizations wishing to connect with the AAA community, contribute knowledge, participate in relevant activities, and build stronger professional relationships.",
   },
 ];
 
-const INCLUDED = [
-  "Validated membership certificate + AAA Membership Logo licence",
-  "Two staff: one free training course each year",
-  "Two staff listed in the ADCP professional directory",
-  "Two published articles or papers a year, with backlinks",
-  "Eligibility for AAA Technical Committees",
-];
-
-const STEPS = [
+const BENEFITS: { icon: GlyphName; title: string; text: string }[] = [
   {
-    n: "01",
-    title: "Apply for membership",
-    text: "Submit the organizational membership application with your institution's details and an authorized representative, then email a copy of your legal status document.",
+    icon: "certificate",
+    title: "Membership Recognition",
+    text: "Receive an official AAA Organizational Membership Certificate, online validation, and the right to use the AAA Organizational Member Logo in accordance with applicable rules.",
   },
   {
-    n: "02",
-    title: "Get recognized",
-    text: "Receive your official membership certificate and AAA Membership Logo licence, and enrol two members of staff in the ADCP directory.",
+    icon: "graduation",
+    title: "Professional Development",
+    text: "Two representatives from your organization can benefit from one complimentary AAA training course each year, supporting continued learning and professional growth.",
   },
   {
-    n: "03",
-    title: "Credit it toward accreditation",
-    text: "Submit an accreditation application within the first year of membership and your $500 membership fee is deducted from your accreditation fees.",
-  },
-];
-
-const FAQ = [
-  {
-    q: "How much does AAA organizational membership cost and how long does it last?",
-    a: "Organizational membership costs $500 and runs for one year.",
+    icon: "id-card",
+    title: "Professional Visibility",
+    text: "Two eligible representatives can be listed in the American Directory for Competent Persons (ADCP), supported by QR-coded membership communication benefits.",
   },
   {
-    q: "Can the membership fee be credited against accreditation fees?",
-    a: "Yes. Membership fees are deducted from accreditation fees if an accreditation application is submitted within the first year of the membership duration.",
+    icon: "lightbulb",
+    title: "Knowledge & Insights",
+    text: "Access educational webinars and quality-focused resources covering standards, management systems, internal audits and preparation for future assessment activities.",
   },
   {
-    q: "Who can become an organizational member?",
-    a: "Organizational membership is appropriate for any entity that has an interest in promoting quality and competence through accreditation. It can be the first step in the journey to full accreditation, and it also benefits institutions that would like to be associated with AAA without going through the full accreditation process.",
+    icon: "file-text",
+    title: "Share Your Expertise",
+    text: "Organizational Members may have opportunities to contribute up to two articles or papers annually through AAA channels, subject to applicable editorial and publication requirements.",
   },
   {
-    q: "Does organizational membership mean my institution is accredited?",
-    a: "No. The term “AAA Organizational Member” means the institution is a member of AAA. Members undertake not to represent their institution as accredited before accreditation has been granted, nor after it has been withdrawn or suspended.",
-  },
-  {
-    q: "How many staff benefit from an organizational membership?",
-    a: "Two members of your institution are eligible for one free training course each year and are listed in the American Directory for Competent Persons.",
+    icon: "handshake",
+    title: "Participate & Connect",
+    text: "Build professional relationships through AAA networking opportunities and become eligible to participate in relevant Technical Committees and community activities.",
   },
 ];
 
-export default function Page() {
+/** true = included in Organizational Membership; every row is included in accreditation. */
+const COMPARE: [string, boolean][] = [
+  ["Access to AAA professional community", true],
+  ["Professional development opportunities", true],
+  ["Complimentary training benefits", true],
+  ["Access to educational webinars", true],
+  ["Networking opportunities", true],
+  ["Opportunities to contribute articles/papers", true],
+  ["Eligibility to participate in relevant Technical Committees", true],
+  ["ADCP listing for eligible representatives", true],
+  ["Member communication/signature benefits", true],
+  ["Independent assessment against defined requirements", false],
+  ["Formal accreditation decision", false],
+  ["AAA Accreditation Certificate", false],
+  ["Accredited status for the approved scope", false],
+  ["Use of applicable AAA Accreditation Symbol", false],
+  ["Listing in the AAA Accredited Directory", false],
+  ["Independent demonstration of conformity/competence", false],
+  ["Formal recognition through the applicable AAA accreditation program", false],
+];
+
+const PLAN = [
+  "Official AAA Organizational Membership Certificate",
+  "Use of the AAA Organizational Member Logo, subject to applicable rules",
+  "Two complimentary training places annually",
+  "Educational webinars and professional development opportunities",
+  "ADCP listing for two eligible representatives",
+  "QR-coded membership communication/signature benefits",
+  "Opportunities to contribute articles or papers through AAA channels",
+  "Networking and relevant Technical Committee participation opportunities",
+];
+
+const STEPS: { icon: GlyphName; title: string; text: string }[] = [
+  {
+    icon: "file-text",
+    title: "Submit Your Application",
+    text: "Complete the Organizational Membership application and provide the required information about your organization.",
+  },
+  {
+    icon: "search-check",
+    title: "Application Review",
+    text: "AAA reviews the submitted information to confirm that the application meets the applicable Organizational Membership requirements.",
+  },
+  {
+    icon: "badge-check",
+    title: "Membership Approval",
+    text: "Following successful review and completion of the applicable membership requirements, your organization is approved as an AAA Organizational Member.",
+  },
+  {
+    icon: "rocket",
+    title: "Access Your Benefits",
+    text: "Begin using the applicable membership benefits, professional development opportunities and AAA community resources during your membership period.",
+  },
+];
+
+const MEMBERS = [
+  {
+    name: "MasterMinds Business School",
+    country: "United Kingdom",
+    sector: "Education",
+    text: "A UK-based business school providing executive education, professional courses, university pathways, corporate training and international learning activities.",
+    img: `${IMG}/member-masterminds-business-school.jpg`,
+    alt: "MasterMinds Business School representatives at a professional education event",
+    pos: "center 35%",
+  },
+  {
+    name: "International Agency for Quality of Education Assessment",
+    country: "Kazakhstan",
+    sector: "Quality Assurance",
+    text: "Part of the international quality community, with activities focused on education quality assurance and the assessment of educational quality.",
+    img: `${IMG}/member-international-agency-kazakhstan.jpg`,
+    alt: "Representatives of an education quality assurance organization in Kazakhstan",
+    pos: "center 30%",
+  },
+  {
+    name: "Eagleversity Royal Professional University",
+    country: "United States",
+    sector: "Education",
+    text: "A professional higher education institution with a practice-based approach that connects academic learning with professional and experiential development.",
+    img: `${IMG}/member-eagleversity-usa.jpeg`,
+    alt: "Eagleversity Royal Professional University representatives in academic regalia",
+    pos: "center 30%",
+  },
+];
+
+function Tick({ gold, label }: { gold?: boolean; label: string }) {
   return (
-    <main className="axp memx">
+    <span className={`morg-tick${gold ? " gold" : ""}`}>
+      <Glyph name="check" size={14} strokeWidth={2.6} />
+      <span className="sr-only">{label}</span>
+    </span>
+  );
+}
+
+export default function OrganizationalMembershipPage() {
+  return (
+    <div className="axp morg">
       <JsonLd
-        schema={[
-          breadcrumbSchema([
-            { name: "Membership", path: "/membership" },
-            { name: "Organizational Membership", path: "/membership/organizational" },
-          ]),
-          faqSchema(FAQ),
-        ]}
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Membership", path: "/membership" },
+          { name: "Organizational Membership", path: "/membership/organizational" },
+        ])}
       />
 
+      {/* 01 — Hero */}
       <PageHero
-        image="/member-org-sowmya.jpg"
         eyebrow="Organizational Membership"
+        crumbs={[{ href: "/membership", label: "Membership" }, { label: "Organizational Membership" }]}
         title={
           <>
-            Your first step to excellence and <em>global recognition.</em>
+            Organizational Membership
+            <span className="morg-tagline">Join the AAA Global Quality Community</span>
           </>
         }
-        intro="AAA membership can be the first step in the journey to full accreditation — and it also benefits institutions that want to be associated with AAA without going through the full accreditation process."
-        crumbs={[{ href: "/membership", label: "Membership" }, { label: "Organizational" }]}
-        meta={[
-          { k: "Term", v: "1 year" },
-          { k: "Fee", v: "$500" },
-          { k: "Staff covered", v: "2 members" },
-        ]}
+        intro="Connect your organization with an international community committed to quality, competence and continuous improvement, with access to professional development, networking and knowledge-sharing opportunities."
+        image={`${IMG}/organizational-membership-hero.jpg`}
+        imageAlt="Organizational member team with membership certificate"
         caption={{
-          kicker: "Dr. Sowmya NS · Study Medic, India",
-          title: "Associated with AAA Accreditation",
-          chip: "Member",
+          kicker: "AAA Organizational Member",
+          title: "A real AAA Organizational Membership organization and team.",
         }}
         actions={
           <>
-            <Link href="/membership/organizational/apply" className="ax-btn ax-btn-gold">
-              Apply for Organizational Membership <Icon name="arrow" size={16} />
+            <Link href={APPLY} className="ax-btn ax-btn-gold">
+              Become an Organizational Member <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
-            <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
-              Book a Free Consultation
+            <a href="#benefits" className="ax-btn ax-btn-ghost">
+              Explore Member Benefits
             </a>
+            <ul className="morg-chips" aria-label="Organizational Membership at a glance">
+              <li>
+                <strong>$500</strong> / Year
+              </li>
+              <li>Professional Development</li>
+              <li>Global Quality Community</li>
+            </ul>
+            <p className="morg-hero-note">
+              <Glyph name="lightbulb" size={18} />
+              <span>
+                If your organization is eligible for an AAA accreditation program, accreditation provides the stronger
+                recognition pathway. Organizational Membership can support organizations that want to engage with the
+                AAA community while preparing for future accreditation.
+              </span>
+            </p>
           </>
         }
       />
 
-      {/* 01 — who it is for */}
-      <section className="ax-section" id="who">
+      {/* 02 — Who should consider membership */}
+      <section className="ax-section" id="who-should-consider-membership">
         <div className="container">
-          <div className="ax-split">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">Who it&rsquo;s for</span>
-                <h2>Open to any organization committed to quality</h2>
-              </div>
-              <span className="ax-rule" aria-hidden="true" />
-              <p style={{ marginTop: 22 }}>
-                Organizational membership is appropriate for any entity that has an interest in
-                promoting quality and competence through accreditation — whether as a first step
-                toward full accreditation or as a lasting association with AAA.
-              </p>
-              <ul className="ax-checks gold">
-                {WHO_CAN_JOIN.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <div className="ax-actions">
-                <Link href="/membership/organizational/apply" className="ax-btn ax-btn-blue">
-                  Start your application <Icon name="arrow" size={16} />
-                </Link>
-                <Link href="/membership/individual" className="ax-btn ax-btn-ghost-navy">
-                  Compare individual
-                </Link>
-              </div>
-            </div>
+          <SectionHead
+            center
+            eyebrow="Is Membership Right for Your Organization?"
+            title="Who Should Consider Organizational Membership?"
+            intro="Organizational Membership is designed for organizations that want to engage with the AAA quality community, access professional development opportunities, and participate in knowledge-sharing activities."
+          />
+          <div className="ax-blue-grid">
+            {FIT.map((f, i) => (
+              <NavyCard key={f.title} icon={f.icon} no={String(i + 1).padStart(2, "0")} title={f.title}>
+                <p>{f.text}</p>
+              </NavyCard>
+            ))}
+          </div>
 
-            <div className="ax-panel reveal">
-              <span className="ax-ico ax-panel-ico" aria-hidden="true">
-                <Icon name="industry" size={28} />
-              </span>
-              <h3>What you&rsquo;ll need to apply</h3>
+          <div className="morg-callout reveal">
+            <span className="morg-callout-ico" aria-hidden="true">
+              <Glyph name="award" />
+            </span>
+            <div>
+              <h3>Eligible for an AAA Accreditation Program?</h3>
               <p>
-                The application asks for your institution&rsquo;s profile and one authorized
-                representative who signs the declaration on its behalf.
-              </p>
-              <ul className="ax-checks">
-                <li>Organization profile: legal status, date of establishment and staff count</li>
-                <li>Head office address and any other operating locations</li>
-                <li>Details of any certifications or memberships already held</li>
-                <li>An authorized representative with their qualifications and contact details</li>
-                <li>A copy of the organization&rsquo;s legal status document</li>
-              </ul>
-              <Link href="/membership/organizational/apply" className="ax-btn ax-btn-gold">
-                Apply now <Icon name="arrow" size={16} />
-              </Link>
-              <p className="ax-panel-note">
-                The declaration is made by the principal of the institution.
+                If your organization is eligible for accreditation, accreditation provides the stronger recognition
+                pathway and should be considered as the primary option. Organizational Membership is most suitable when
+                your organization is not yet ready to pursue accreditation.
               </p>
             </div>
+            <Link href="/programs" className="ax-btn ax-btn-blue">
+              Explore Accreditation Programs <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 02 — benefits */}
+      {/* 03 — Benefits */}
       <section className="ax-section cream" id="benefits">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Member benefits</span>
-            <h2>Why become a member of AAA Accreditation?</h2>
-            <p>
-              Eight ways membership elevates your institution&rsquo;s credibility, capability and
-              connections across the global quality and accreditation community.
-            </p>
-          </div>
-
-          <div className="ax-grid four">
+          <SectionHead
+            center
+            eyebrow="Membership Benefits"
+            title="Practical Benefits for Your Organization"
+            intro="Organizational Membership gives your organization access to professional development, visibility, knowledge-sharing and participation opportunities within the AAA community."
+          />
+          <div className="ax-blue-grid">
             {BENEFITS.map((b, i) => (
-              <article className="ax-card reveal" key={b.title} style={{ transitionDelay: `${i * 45}ms` }}>
-                <div className="ax-card-top">
-                  <span className="ax-ico ax-card-ico" aria-hidden="true">
-                    <Icon name={b.icon} size={24} />
-                  </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3>{b.title}</h3>
+              <NavyCard key={b.title} icon={b.icon} no={String(i + 1).padStart(2, "0")} title={b.title}>
                 <p>{b.text}</p>
-                <span className="ax-card-rule" aria-hidden="true" />
-              </article>
+              </NavyCard>
             ))}
           </div>
+          <p className="ax-note morg-note reveal">
+            Membership provides professional and community benefits. It does not represent accreditation or confer
+            accredited status. The next section explains how accreditation provides the stronger recognition pathway
+            for eligible organizations.
+          </p>
         </div>
       </section>
 
-      {/* 03 — price + accreditation credit */}
-      <section className="ax-section" id="details">
+      {/* 04 — Membership vs accreditation */}
+      <section className="ax-section" id="membership-vs-accreditation">
         <div className="container">
-          <div className="ax-head reveal">
-            <span className="eyebrow">Membership details</span>
-            <h2>Membership that can pay for itself</h2>
-          </div>
+          <SectionHead
+            center
+            eyebrow="Membership & Accreditation"
+            title="Membership Is a Starting Point. Accreditation Goes Further."
+            intro="Organizational Membership connects your organization with the AAA community and provides valuable professional benefits. Accreditation includes the applicable professional and community benefits while adding independent assessment and formal recognition against defined requirements."
+          />
 
-          <div className="memx-price-card reveal" style={{ marginTop: 34 }}>
-            <div className="memx-price-main">
-              <span className="eyebrow">Organizational membership</span>
-              <div className="memx-fig">
-                <span className="cur">$</span>500
-                <span className="per">/ 1 year</span>
-              </div>
-              <p>
-                A single fee of $500 covers a full one-year organizational membership for your
-                institution — no recurring charges and no hidden costs.
-              </p>
-              <Link href="/membership/organizational/apply" className="ax-btn ax-btn-gold">
-                Apply for Organizational Membership <Icon name="arrow" size={16} />
-              </Link>
-              <div className="memx-credit on-dark">
-                <span className="ax-ico" aria-hidden="true">
-                  <Icon name="cert" size={16} />
-                </span>
-                $500 membership &rarr; credited toward accreditation
-              </div>
+          <div className="morg-compare">
+            <div className="morg-table-wrap reveal">
+              <table className="morg-table">
+                <caption className="sr-only">
+                  Comparison of Organizational Membership and AAA Accreditation benefits and recognition
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Benefits &amp; Recognition</th>
+                    <th scope="col">Organizational Membership</th>
+                    <th scope="col" className="is-accred">
+                      <span className="morg-accred-label">Stronger Recognition</span>
+                      AAA Accreditation
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARE.map(([label, member]) => (
+                    <tr key={label} className={member ? undefined : "is-extra"}>
+                      <th scope="row">{label}</th>
+                      <td>
+                        {member ? (
+                          <Tick label="Included" />
+                        ) : (
+                          <>
+                            <span className="morg-dash" aria-hidden="true">
+                              —
+                            </span>
+                            <span className="sr-only">Not included</span>
+                          </>
+                        )}
+                      </td>
+                      <td className="is-accred">
+                        <Tick gold label="Included" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th scope="row">Annual / Program Cost</th>
+                    <td>$500 / year</td>
+                    <td className="is-accred">Depends on program &amp; scope</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
 
-            <div className="memx-price-side">
-              <h3>What the fee covers</h3>
-              <ul className="ax-checks gold">
-                {INCLUDED.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <p className="memx-price-note">
-                <strong>Fees credited toward accreditation.</strong> Membership fees are deducted
-                from accreditation fees if an accreditation application is submitted within the
-                first year of the membership duration. Joining as a professional instead? See{" "}
-                <Link href="/membership/individual">Individual Membership</Link>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 04 — how to join */}
-      <section className="ax-section cream" id="how">
-        <div className="container">
-          <div className="ax-split">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">How to join</span>
-                <h2>Becoming a member takes three steps</h2>
+            <aside className="morg-compare-side">
+              <NavyCard
+                icon="trending-up"
+                tag="Stronger Recognition"
+                title="Why Go Further with Accreditation?"
+                href="/programs"
+                cta="Explore Accreditation Programs"
+              >
                 <p>
-                  From application to recognition — and on to accreditation — the path to AAA
-                  organizational membership is straightforward and supported at every stage.
+                  If your organization is eligible for an AAA accreditation program, accreditation provides the stronger
+                  pathway. In addition to applicable professional and community benefits, accreditation involves
+                  independent assessment against defined requirements and provides formal accredited status within the
+                  approved scope.
+                </p>
+              </NavyCard>
+              <NavyCard
+                icon="users"
+                title="Not Ready for Accreditation Yet?"
+                href={APPLY}
+                cta="Become an Organizational Member"
+              >
+                <p>
+                  Organizational Membership allows your organization to engage with the AAA community, access member
+                  benefits, and prepare for a future accreditation journey.
+                </p>
+              </NavyCard>
+            </aside>
+          </div>
+
+          <p className="ax-note gold morg-credit reveal">
+            <Glyph name="refresh" size={20} />
+            <span>
+              <strong>Move from Membership to Accreditation:</strong>
+              If you apply for AAA accreditation during your first year of membership, your{" "}
+              <b>$500 membership fee can be credited toward your accreditation fees</b>, subject to the applicable AAA
+              terms and program requirements.
+            </span>
+          </p>
+        </div>
+      </section>
+
+      {/* 05 — Membership plan */}
+      <section className="ax-section cream" id="membership-plan">
+        <div className="container morg-plan">
+          <div className="morg-plan-copy">
+            <SectionHead
+              eyebrow="Organizational Membership"
+              title="One Membership. Practical Benefits Throughout the Year."
+              intro="Join the AAA quality community through a straightforward annual membership designed to support professional development, participation, visibility and knowledge sharing."
+            />
+            <div className="morg-credit-card reveal">
+              <span className="morg-callout-ico" aria-hidden="true">
+                <Glyph name="trending-up" />
+              </span>
+              <div>
+                <h3>Planning to Move Forward with Accreditation?</h3>
+                <p>
+                  If your organization applies for AAA accreditation during the first year of membership, the $500
+                  membership fee can be credited toward the accreditation fees, subject to applicable AAA terms and
+                  program requirements.
                 </p>
               </div>
-              <div className="ax-steps-panel" style={{ marginTop: 30 }}>
-                <h3>Your application route</h3>
-                <ol className="ax-steps">
-                  {STEPS.map((s) => (
-                    <li className="ax-step" key={s.n}>
-                      <span className="ax-step-num" aria-hidden="true">
-                        {s.n}
-                      </span>
-                      <div className="ax-step-body">
-                        <b>{s.title}</b>
-                        <span>{s.text}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <span className="ax-pill">
-                  <span className="ax-ico" aria-hidden="true">
-                    <Icon name="mail" size={16} />
-                  </span>
-                  Send your legal status document to info@aaa-accreditation.org
-                </span>
+            </div>
+          </div>
+
+          <aside className="morg-price reveal" aria-labelledby="morg-price-h">
+            <div className="morg-price-head">
+              <span className="morg-price-label">Annual Membership Fee</span>
+              <span className="morg-price-fig">$500</span>
+              <span className="morg-price-per">per organization / year</span>
+              <p>
+                Organizational Membership is valid for one year and can be renewed annually in accordance with
+                applicable AAA membership requirements.
+              </p>
+            </div>
+            <div className="morg-price-body">
+              <h3 id="morg-price-h">Your Organizational Membership Includes</h3>
+              <ul className="morg-price-list">
+                {PLAN.map((p) => (
+                  <li key={p}>{p}</li>
+                ))}
+              </ul>
+              <div className="morg-price-actions">
+                <Link href={APPLY} className="ax-btn ax-btn-gold">
+                  Apply for Organizational Membership <Glyph name="arrow-right" size={14} strokeWidth={2} />
+                </Link>
+                <Link href="/programs" className="ax-btn ax-btn-ghost">
+                  Explore Accreditation Programs
+                </Link>
               </div>
             </div>
+          </aside>
+        </div>
+      </section>
 
-            <figure className="ax-photo reveal">
-              <Image
-                src="/member-org-sowmya.jpg"
-                alt="Dr. Sowmya NS, COO of Study Medic in India, sharing a five-star testimonial about her organization's association with the American Accreditation Association."
-                fill
-                sizes="(max-width: 980px) 92vw, 36vw"
-              />
-              <span className="ax-photo-badge">Verified membership</span>
-              <figcaption>
-                Institutions across the AAA network hold verified membership and recognition.
-                <span>Dr. Sowmya NS · COO, Study Medic · India</span>
-              </figcaption>
-            </figure>
+      {/* 06 — How membership works */}
+      <section className="ax-section" id="how-membership-works">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Simple Membership Process"
+            title="How Organizational Membership Works"
+            intro="A straightforward process to join the AAA community and begin accessing Organizational Membership benefits."
+          />
+          <ol className="morg-steps">
+            {STEPS.map((s, i) => (
+              <li key={s.title}>
+                <span className="morg-step-dot" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <NavyCard icon={s.icon} no={String(i + 1).padStart(2, "0")} title={s.title}>
+                  <p>{s.text}</p>
+                </NavyCard>
+              </li>
+            ))}
+          </ol>
+
+          <div className="morg-callout reveal">
+            <span className="morg-callout-ico" aria-hidden="true">
+              <Glyph name="flag" />
+            </span>
+            <div>
+              <h3>Ready to Join the AAA Community?</h3>
+              <p>
+                Start with the Organizational Membership application. If your organization is ready for formal
+                accreditation, explore the applicable accreditation program instead.
+              </p>
+            </div>
+            <Link href={APPLY} className="ax-btn ax-btn-blue">
+              Start Membership Application <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 05 — FAQ */}
-      <section className="ax-section" id="faq">
+      {/* 07 — Real organizational members */}
+      <section className="ax-section cream" id="organizational-members">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">FAQ</span>
-            <h2>Frequently asked questions</h2>
-            <p>Common questions about AAA organizational membership.</p>
-          </div>
-          <div className="ax-faq-list">
-            {FAQ.map((item, i) => (
-              <details className="ax-faq-item" key={item.q} open={i === 0}>
-                <summary>
-                  <span>{item.q}</span>
-                  <span className="ax-faq-plus" aria-hidden="true" />
-                </summary>
-                <div className="ax-faq-a">
-                  <p>{item.a}</p>
-                </div>
-              </details>
+          <SectionHead
+            center
+            eyebrow="AAA Organizational Members"
+            title="Organizations Connected Through Quality"
+            intro="AAA Organizational Membership brings together organizations from different countries that share an interest in quality, professional development, knowledge exchange and international engagement."
+          />
+          <div className="ax-blue-grid">
+            {MEMBERS.map((m) => (
+              <NavyCard key={m.name} title={m.name} className="morg-member">
+                <figure className="morg-member-photo">
+                  <Image
+                    src={m.img}
+                    alt={m.alt}
+                    fill
+                    sizes="(max-width: 560px) 92vw, (max-width: 860px) 46vw, 380px"
+                    style={{ objectPosition: m.pos }}
+                  />
+                  <figcaption>
+                    <span className="morg-member-tag country">
+                      <Glyph name="pin" size={12} strokeWidth={2} /> {m.country}
+                    </span>
+                    <span className="morg-member-tag">{m.sector}</span>
+                  </figcaption>
+                </figure>
+                <p>{m.text}</p>
+                <span className="morg-member-foot">
+                  <Glyph name="badge-check" size={16} /> AAA Organizational Member
+                </span>
+              </NavyCard>
             ))}
           </div>
+
+          <div className="morg-callout reveal">
+            <span className="morg-callout-ico" aria-hidden="true">
+              <Glyph name="globe" />
+            </span>
+            <div>
+              <h3>Be Part of the AAA Quality Community</h3>
+              <p>
+                Connect your organization with an international professional community focused on quality, learning and
+                knowledge sharing. If your organization is ready for formal recognition, explore the applicable AAA
+                accreditation pathway.
+              </p>
+            </div>
+            <Link href={APPLY} className="ax-btn ax-btn-blue">
+              Become an Organizational Member <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
+          </div>
         </div>
       </section>
 
-      <CTA
-        eyebrow="Take the first step"
-        title={
-          <>
-            Ready to associate your institution with <em>AAA?</em>
-          </>
-        }
-        text="Complete the organizational membership application and the AAA membership team will confirm your membership, issue your certificate and logo licence, and explain how your fee is credited if you go on to full accreditation."
-        primary={{ href: "/membership/organizational/apply", label: "Apply for Organizational Membership" }}
-        secondary={{ href: "/contact", label: "Contact Membership" }}
-        related={[
-          { href: "/membership", label: "Membership overview" },
-          { href: "/membership/individual", label: "Individual Membership" },
-          { href: "/programs/smes-accreditation-program", label: "SME Accreditation Program" },
-        ]}
-      />
-    </main>
+      {/* 08 — Final CTA (hand-rolled .ax-close so the choose-pair stays in the same band) */}
+      <section className="ax-close" id="membership-final-cta">
+        <span className="ax-close-corner" aria-hidden="true" />
+        <div className="container">
+          <div className="ax-close-inner reveal">
+            <span className="eyebrow">Your Next Step</span>
+            <h2>Ready to Connect Your Organization with AAA?</h2>
+            <p>
+              Join the AAA professional community through Organizational Membership, or take the stronger recognition
+              pathway through accreditation if your organization is ready to be independently assessed against defined
+              requirements.
+            </p>
+            <div className="ax-close-actions">
+              <Link href={APPLY} className="ax-btn ax-btn-gold">
+                Apply for Organizational Membership <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </Link>
+              <Link href="/programs" className="ax-btn ax-btn-ghost">
+                Explore Accreditation Programs
+              </Link>
+            </div>
+          </div>
+          <div className="morg-choose reveal">
+            <div>
+              <span className="morg-choose-ico" aria-hidden="true">
+                <Glyph name="users" size={20} />
+              </span>
+              <strong>Choose Membership if...</strong>
+              <p>
+                Your organization wants professional development, networking, knowledge sharing and engagement with the
+                AAA community, but is not yet ready for accreditation.
+              </p>
+            </div>
+            <div>
+              <span className="morg-choose-ico" aria-hidden="true">
+                <Glyph name="shield-check" size={20} />
+              </span>
+              <strong>Choose Accreditation if...</strong>
+              <p>
+                Your organization is eligible and ready for independent assessment and formal recognition within an
+                approved accreditation scope.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

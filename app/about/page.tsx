@@ -1,575 +1,372 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import Icon, { type IconName } from "../_components/Icon";
-import { WorldMapFigure } from "../_components/WorldMap";
-import { posts, formatDate } from "../news/posts";
-import AboutCarousel from "./AboutCarousel";
-import HeroLeadForm from "./HeroLeadForm";
+import Image from "next/image";
+import PageHero from "../_components/PageHero";
+import CTA from "../_components/CTA";
+import JsonLd from "../_components/JsonLd";
+import NavyCard from "../_components/site/NavyCard";
+import SectionHead from "../_components/site/SectionHead";
+import Stat from "../_components/site/Stat";
+import Glyph from "../_components/site/Glyph";
+import { FACTS } from "@/lib/facts";
+import { pageMeta, breadcrumbSchema } from "@/lib/seo";
 import "./about.css";
 
-export const metadata: Metadata = {
+/*
+ * About AAA — rebuilt Oct 2026 on the client's final page structure
+ * ("About aaa" package: Hero → Who We Are → Purpose & Direction → Values →
+ * International Recognition → Learn More → Final CTA), rendered in the AAA
+ * design system with the SME blue card everywhere a card appears.
+ */
+
+export const metadata = pageMeta({
   title: "About AAA",
   description:
-    "The American Accreditation Association (AAA) is an independent accreditation organization headquartered in Virginia, USA, supporting organizations across 58 countries in demonstrating quality, competence, and continual improvement.",
+    "The American Accreditation Association is an independent international accreditation body headquartered in Virginia, USA, serving organizations across 58+ countries.",
+  path: "/about",
   keywords: [
     "American Accreditation Association",
-    "AAA accreditation",
-    "international accreditation",
-    "healthcare accreditation",
-    "training providers accreditation",
-    "conformity assessment bodies",
-    "SME accreditation",
+    "about AAA",
+    "international accreditation body",
+    "ISQua EEA accredited standards",
+    "independent accreditation",
   ],
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: "About AAA — American Accreditation Association",
-    description:
-      "Inspiring Confidence. Recognizing Excellence. Independent accreditation services across multiple sectors, supporting organizations in 58 countries.",
-    url: "/about",
-    type: "website",
-  },
-};
+});
 
-const ORG_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "American Accreditation Association",
-  alternateName: "AAA",
-  url: "https://aaa-accreditation.org",
-  logo: "https://aaa-accreditation.org/logo/AAA-Logo.png",
-  description:
-    "The American Accreditation Association (AAA) is an independent accreditation organization committed to promoting quality, competence, and confidence across organizations worldwide.",
-  address: { "@type": "PostalAddress", addressRegion: "Virginia", addressCountry: "US" },
-  knowsAbout: [
-    "Healthcare Accreditation",
-    "Training & Education Providers Accreditation",
-    "Conformity Assessment Bodies Accreditation",
-    "SME Accreditation",
-  ],
-};
+const IMG = "/images/site/about";
 
-const STATS = [
-  { num: "57", label: "Countries Served" },
-  { num: "200+", label: "Accredited Organizations" },
-  { num: "287", label: "Assessors & Experts" },
-  { num: "20,162", label: "Accredited Certificates" },
+const GLANCE = [
+  { v: "Virginia, USA", k: "Head Office" },
+  { v: FACTS.countriesPlus, k: "Countries Served" },
+  { v: FACTS.organizations, k: "Accredited Organizations" },
+  { v: FACTS.assessors, k: "Assessors & Experts" },
+  { v: FACTS.certificates, k: "Accredited Certificates" },
+  { v: "Multiple", k: "Accreditation Programs" },
 ];
 
-const MVV = [
+const VALUES = [
   {
-    no: "01",
-    label: "Our Mission",
-    title: "Inspiring Confidence Through Quality",
-    text: "To provide impartial and credible accreditation services that recognize excellence, promote continual improvement, and strengthen confidence in organizations worldwide.",
-  },
-  {
-    no: "02",
-    label: "Our Vision",
-    title: "Excellence Through Accreditation",
-    text: "To be recognized as a leading international accreditation organization that inspires confidence and advances quality, competence, and continual improvement.",
-  },
-  {
-    no: "03",
-    label: "Our Values",
-    title: "The Principles That Guide Us",
-    text: "Integrity, impartiality, competence, excellence, and collaboration — the principles behind every accreditation decision and relationship we build.",
-  },
-];
-
-const REASONS: { icon: IconName; title: string; text: string }[] = [
-  {
-    icon: "shield",
-    title: "Internationally Recognized Standards",
-    text: "AAA accreditation reflects alignment with international best-practice requirements, giving stakeholders confidence in the organizations we recognize.",
-  },
-  {
-    icon: "clipboard",
-    title: "Dedicated Accreditation Coordinator",
-    text: "Each applicant is assigned a dedicated coordinator to manage communication, coordinate process steps, and provide timely support.",
+    icon: "shield-check",
+    title: "Integrity",
+    text: "We conduct our activities with honesty, professionalism, transparency, and ethical responsibility.",
   },
   {
     icon: "scale",
-    title: "Flexible Assessment Options",
-    text: "AAA provides on-site, hybrid, and virtual assessment options while maintaining the same rigorous requirements and decision process.",
+    title: "Impartiality",
+    text: "Accreditation decisions are made independently and objectively, based on evidence and established accreditation requirements.",
+  },
+  {
+    icon: "user-check",
+    title: "Competence",
+    text: "We engage qualified assessors, technical experts, and accreditation professionals with the knowledge and experience relevant to their fields.",
+  },
+  {
+    icon: "award",
+    title: "Excellence",
+    text: "We pursue excellence in our own work while encouraging accredited organizations to strengthen quality, performance, and continual improvement.",
+  },
+  {
+    icon: "handshake",
+    title: "Collaboration",
+    text: "We believe meaningful collaboration with organizations, experts, and partners strengthens knowledge, creates lasting value, and supports positive impact.",
+  },
+] as const;
+
+const LINKS = [
+  {
+    icon: "landmark",
+    title: "Governance & Leadership",
+    text: "Learn about AAA's leadership, governance structure, oversight, and institutional responsibilities.",
+    href: "/governance-leadership",
   },
   {
     icon: "globe",
-    title: "Proven International Experience",
-    text: "With activity across 58 countries, AAA works with organizations of different sizes, sectors, and regional contexts.",
-  },
-];
-
-const TEAM: { title: string; role: string; text: string; img: string }[] = [
-  {
-    title: "Executive Leadership",
-    role: "Governance & Direction",
-    text: "Experienced leadership guiding AAA's strategy, impartial governance, and international growth.",
-    img: "/about/leadership.jpg",
+    title: "Recognition & Partnerships",
+    text: "Explore international recognition, memberships, professional engagement, and strategic partnerships.",
+    href: "/partnerships",
   },
   {
-    title: "Accreditation Committee",
-    role: "Impartial Decisions",
-    text: "An independent committee reviews assessment findings and grants accreditation on evidence alone.",
-    img: "/about/team-committee.jpg",
+    icon: "book",
+    title: "About Accreditation",
+    text: "Understand what accreditation is, why it matters, and how it supports confidence and quality.",
+    href: "/about-accreditation",
   },
   {
-    title: "Qualified Assessors",
-    role: "287 Assessors & Experts",
-    text: "Sector-experienced assessors who evaluate organizations against recognized standards worldwide.",
-    img: "/about/team-assessors.jpg",
+    icon: "scale",
+    title: "Impartiality & Integrity",
+    text: "Learn about the principles and safeguards that support fair, independent, and credible accreditation activities.",
+    href: "/impartiality-policy",
   },
-  {
-    title: "Technical Experts",
-    role: "Sector Specialists",
-    text: "Specialists across healthcare, education, conformity assessment, and enterprise development.",
-    img: "/about/team-experts.jpg",
-  },
-  {
-    title: "Advisory Committees",
-    role: "Standards & Guidance",
-    text: "Advisory committees supporting the development and continual review of AAA requirements.",
-    img: "/about/team-advisory.jpg",
-  },
-  {
-    title: "International Network",
-    role: "58 Countries",
-    text: "A worldwide professional network supporting organizations across regions and environments.",
-    img: "/about/team-network.jpg",
-  },
-];
-
-const STORIES: { name: string; sector: string; img: string; text: string; href: string }[] = [
-  { name: "Domus Salutis", sector: "Healthcare", img: "/about/story-domus.jpg", text: "A healthcare organization demonstrating commitment to quality, patient confidence, and recognized excellence.", href: "/news" },
-  { name: "IIBMS", sector: "Education & Training", img: "/about/story-iibms.jpg", text: "An education and training provider using accreditation to strengthen trust, credibility, and learning standards.", href: "/news" },
-  { name: "NSC", sector: "International", img: "/about/story-nsc.jpg", text: "A regional organization reflecting AAA's growing reach and recognition across international markets.", href: "/news" },
-  { name: "Woodcroft University", sector: "Education & Training", img: "/about/story-woodcroft.jpg", text: "Accredited as a Training & Education Provider for its Data Science and Cybersecurity master's programs.", href: "/news/woodcroft-university-earns-international-accreditation-for-data-science-and-cybersecurity-programs" },
-  { name: "Global College of America", sector: "Higher Education", img: "/about/story-gca.jpg", text: "Achieved AAA accreditation recognizing its commitment to higher-education quality and excellence.", href: "/news/global-college-of-america-achieves-aaa-accreditation-for-higher-education-excellence" },
-  { name: "Welcome Home Health", sector: "Healthcare", img: "/about/story-whh.jpg", text: "A Portland-based organization accredited for its commitment to quality care and professional training.", href: "/news/aaa-accredits-welcome-home-health-portland" },
-];
-
-/** Cleans WP excerpt artifacts (": :" and trailing "[…]") for card display. */
-function cleanExcerpt(s: string): string {
-  return s
-    .replace(/:\s*:/g, ":")
-    .replace(/\s*\[…\]\s*$/, "…")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
-
-function tagFor(title: string): string {
-  const t = title.toLowerCase();
-  if (/(webinar|event|conference|summit)/.test(t)) return "Event";
-  if (/(guide|difference|vs\.?|what|how|why|know)/.test(t)) return "Article";
-  return "News";
-}
-
-const UPDATES = posts.slice(0, 3);
+] as const;
 
 export default function AboutPage() {
   return (
-    <div className="abx">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
+    <div className="axp abt">
+      <JsonLd schema={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About AAA", path: "/about" }])} />
+
+      <PageHero
+        eyebrow="About AAA"
+        crumbs={[{ label: "About AAA" }]}
+        title={
+          <>
+            About the <span className="abt-gold">American Accreditation Association</span>
+          </>
+        }
+        intro="The American Accreditation Association is an international accreditation body working with organizations around the world to strengthen quality, demonstrate competence and create new opportunities through independent accreditation."
+        image={`${IMG}/aaa-about-team-hero.webp`}
+        imageAlt="International team behind the American Accreditation Association"
+        caption={{ kicker: "Independent • Impartial • International", title: "Accreditation across 58+ countries" }}
+        actions={
+          <>
+            <Link href="/programs" className="ax-btn ax-btn-gold">
+              Discover Our Accreditation Programs <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
+            <Link href="/contact" className="ax-btn ax-btn-ghost">
+              Talk to an Accreditation Expert
+            </Link>
+            <ul className="abt-chips" aria-label="What defines AAA">
+              <li>International Perspective</li>
+              <li>Independent &amp; Impartial</li>
+              <li>Quality-Focused</li>
+            </ul>
+          </>
+        }
       />
 
-      {/* ---------- Hero ---------- */}
-      <section className="abx-hero">
-        <div className="abx-container abx-hero-grid">
-          <div className="abx-hero-copy reveal">
-            <nav className="abx-crumbs" aria-label="Breadcrumb">
-              <Link href="/">Home</Link>
-              <span className="sep">/</span>
-              <span>About Us</span>
-            </nav>
-            <span className="abx-eyebrow">Quality • Competence • Continuous Improvement</span>
-            <h1>
-              Inspiring Confidence. <span className="gold">Recognizing Excellence.</span>
-            </h1>
-            <p className="abx-hero-sub">
-              Independent accreditation that helps organizations demonstrate quality, strengthen
-              credibility, and achieve recognition across education, healthcare, conformity
-              assessment, and SME sectors.
-            </p>
-            <div className="abx-hero-actions">
-              <Link href="/programs/healthcare" className="abx-btn abx-btn-gold">
-                Explore Accreditation Programs
-                <Icon name="arrow" className="abx-arw" />
-              </Link>
-              <Link href="/directory/accredited-organizations" className="abx-btn abx-btn-ghost">
-                View Accredited Directory
-              </Link>
-            </div>
-            <div className="abx-hero-trust">
-              {STATS.map((s) => (
-                <div key={s.label}>
-                  <strong>{s.num}</strong>
-                  <span>{s.label}</span>
-                </div>
-              ))}
+      {/* 02 — Who we are */}
+      <section className="ax-section" id="who-we-are">
+        <div className="container abt-who">
+          <div className="abt-who-copy">
+            <SectionHead
+              eyebrow="Who We Are"
+              title="An International Accreditation Organization Committed to Quality and Confidence"
+            />
+            <div className="ax-prose reveal">
+              <p>
+                The American Accreditation Association (AAA) is an independent accreditation organization committed to
+                promoting quality, competence, and confidence worldwide.
+              </p>
+              <p>
+                Headquartered in Virginia, United States, AAA delivers accreditation services through an international
+                network of assessors and technical experts, supporting organizations across{" "}
+                <strong>{FACTS.countriesPlus} countries</strong>.
+              </p>
+              <p>
+                AAA works with healthcare organizations, training and education providers, conformity assessment bodies,
+                SMEs, and professional institutions seeking to demonstrate alignment with recognized standards, pursue
+                continual improvement, and strengthen stakeholder confidence.
+              </p>
+              <p>
+                Through structured, impartial, and transparent accreditation processes, AAA supports organizations in
+                strengthening credibility, improving performance, and demonstrating a sustained commitment to quality and
+                excellence.
+              </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ---------- Who We Are ---------- */}
-      <section className="abx-section">
-        <div className="abx-container abx-who">
-          <div className="abx-collage reveal">
-            <span className="frame" aria-hidden="true" />
-            <figure className="main">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/about/assessment.jpg" alt="AAA accreditation assessment in practice" />
-            </figure>
-            <figure className="detail">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/about/leadership.jpg" alt="AAA leadership team" />
-            </figure>
-            <div className="badge">
-              <strong>57</strong>
-              <span>
-                Countries
-                <br />
-                Served
+          <aside className="abt-glance reveal" aria-labelledby="abt-glance-h">
+            <div className="abt-glance-head">
+              <span className="ax-card-ico">
+                <Glyph name="globe" />
               </span>
+              <h3 id="abt-glance-h">AAA at a Glance</h3>
             </div>
-          </div>
-          <div className="abx-who-copy reveal">
-            <div className="abx-kicker">Who We Are</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,40px)" }}>
-              Building Confidence Through <span className="gold">Accreditation</span>
-            </h2>
-            <p>
-              The American Accreditation Association (AAA) is an independent accreditation
-              organization committed to promoting quality, competence, and confidence across
-              organizations worldwide.
-            </p>
-            <p>
-              Headquartered in Virginia, United States, AAA delivers accreditation services through
-              an international network of assessors and technical experts supporting organizations
-              across 58 countries — helping them strengthen credibility, improve performance, and
-              demonstrate their commitment to excellence.
-            </p>
-            <div className="abx-checklist">
-              <span><Icon name="check" size={18} strokeWidth={2.4} /> Independent &amp; Impartial</span>
-              <span><Icon name="check" size={18} strokeWidth={2.4} /> Globally Recognized</span>
-              <span><Icon name="check" size={18} strokeWidth={2.4} /> Evidence-Based Decisions</span>
-              <span><Icon name="check" size={18} strokeWidth={2.4} /> Expert Assessors</span>
-            </div>
-            <div className="abx-who-actions">
-              <Link href="/about-accreditation" className="abx-btn abx-btn-navy">
-                Our Standards
-                <Icon name="arrow" className="abx-arw" />
-              </Link>
-              <Link href="/contact" className="abx-btn abx-btn-outline">
-                Contact AAA
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Mission / Vision / Values ---------- */}
-      <section className="abx-section light">
-        <div className="abx-container">
-          <div className="abx-head reveal">
-            <div className="abx-kicker">Our Foundation</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,40px)" }}>
-              Mission, Vision &amp; Values
-            </h2>
-            <p className="abx-desc">
-              Clear principles guide every assessment, every decision, and every partnership we
-              build.
-            </p>
-          </div>
-          <div className="abx-mvv reveal">
-            {MVV.map((m) => (
-              <article className="abx-mvv-card" key={m.no}>
-                <div className="abx-mvv-in">
-                  <div className="abx-flagband" aria-hidden="true">
-                    <span className="canton">★ ★ ★</span>
-                    <span className="stripes" />
-                  </div>
-                  <span className="abx-mvv-no" aria-hidden="true">{m.no}</span>
-                  <span className="abx-mvv-label">{m.label}</span>
-                  <h3>{m.title}</h3>
-                  <p>{m.text}</p>
-                  <span className="abx-mvv-rule" aria-hidden="true" />
+            <dl className="abt-glance-grid">
+              {GLANCE.map((g) => (
+                <div key={g.k}>
+                  <dt>{g.k}</dt>
+                  <dd>
+                    <Stat value={g.v} />
+                  </dd>
                 </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Leadership carousel ---------- */}
-      <section className="abx-section">
-        <div className="abx-container">
-          <div className="abx-head center reveal">
-            <div className="abx-kicker">Our People</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,40px)" }}>
-              A Committed Leadership Team
-            </h2>
-            <p className="abx-desc">
-              AAA&rsquo;s work is supported by experienced leadership, qualified assessors, and
-              international expertise across every sector we serve.
-            </p>
-          </div>
-          <div className="reveal">
-            <AboutCarousel label="AAA leadership and expertise">
-              {TEAM.map((m, i) => (
-                <article className="abx-team-card" key={m.title}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.img} alt={m.title} />
-                  <span className="abx-team-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="abx-team-overlay">
-                    <small>{m.role}</small>
-                    <b>{m.title}</b>
-                    <p>{m.text}</p>
-                  </div>
-                </article>
               ))}
-            </AboutCarousel>
+            </dl>
+            <p className="abt-glance-foot">Independent • Impartial • International</p>
+          </aside>
+        </div>
+      </section>
+
+      {/* 03 — Purpose & direction */}
+      <section className="ax-section cream" id="purpose-and-direction">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Our Purpose"
+            title="Our Purpose and Direction"
+            intro="AAA is guided by a clear mission and vision focused on quality, competence, confidence, and continual improvement."
+          />
+          <div className="ax-blue-grid two">
+            <NavyCard icon="target" no="01" title="Our Mission" kicker="Inspiring Confidence Through Quality">
+              <p>
+                To provide impartial and credible accreditation services that recognize excellence, promote continual
+                improvement, and strengthen confidence in organizations worldwide.
+              </p>
+            </NavyCard>
+            <NavyCard icon="compass" no="02" title="Our Vision" kicker="Excellence Through Accreditation">
+              <p>
+                To advance a world where quality, competence, and continual improvement are recognized and trusted
+                through credible accreditation.
+              </p>
+            </NavyCard>
           </div>
         </div>
       </section>
 
-      {/* ---------- Global Trust: reasons + stats + map ---------- */}
-      <section className="abx-section wash">
-        <div className="abx-container">
-          <div className="abx-head center reveal">
-            <div className="abx-kicker">Global Trust</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,42px)" }}>
-              Why Organizations Around the World Trust AAA
-            </h2>
-            <p className="abx-desc">
-              AAA brings together recognized standards, structured coordination, flexible assessment
-              options, and international experience across a growing global network.
-            </p>
-          </div>
-
-          <div className="abx-reasons reveal">
-            {REASONS.map((r) => (
-              <div className="abx-reason" key={r.title}>
-                <span className="ico"><Icon name={r.icon} /></span>
-                <h3>{r.title}</h3>
-                <p>{r.text}</p>
-              </div>
+      {/* 04 — Values */}
+      <section className="ax-section" id="our-values">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Our Values"
+            title="Principles That Guide Our Work"
+            intro="Our values shape how AAA approaches accreditation, works with organizations, and supports confidence in quality and competence across different sectors and regions."
+          />
+          <div className="ax-blue-grid five">
+            {VALUES.map((v, i) => (
+              <NavyCard key={v.title} icon={v.icon} no={String(i + 1).padStart(2, "0")} title={v.title}>
+                <p>{v.text}</p>
+              </NavyCard>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="abx-visual reveal">
-            <div className="abx-stats-panel">
-              <div className="abx-stats-grid">
-                {STATS.map((s) => (
-                  <div className="abx-stat" key={s.label}>
-                    <div className="num">{s.num}</div>
-                    <div className="lbl">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="abx-map-panel">
-              <div className="abx-map-head">
+      {/* 05 — International recognition */}
+      <section className="ax-section cream" id="international-recognition">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="International Recognition"
+            title="Recognition That Strengthens Confidence"
+            intro="AAA's international credibility is supported by external recognition, internationally aligned accreditation practices, and engagement with recognized quality organizations and frameworks."
+          />
+
+          <div className="abt-recog reveal">
+            <div className="abt-recog-main ax-card navy ax-blue">
+              <div className="abt-recog-mark">
+                <span className="abt-plate">
+                  <Image
+                    src={`${IMG}/isqua-eea-accredited-standards-2025-2029.png`}
+                    alt="ISQua EEA Accredited Standards 2025–2029 recognition mark"
+                    width={241}
+                    height={67}
+                  />
+                </span>
                 <div>
-                  <h3>Supporting Organizations Across 58 Countries</h3>
-                  <p>
-                    AAA&rsquo;s international footprint reflects its growing role in supporting
-                    quality-focused organizations across multiple regions and sectors.
-                  </p>
+                  <span className="ax-blue-tag">ISQua EEA Accredited Healthcare Standards</span>
+                  <h3>Accreditation Standards for Healthcare Facilities</h3>
+                  <span className="abt-recog-dates">
+                    <Glyph name="calendar" size={15} /> Accredited May 2025 – May 2029
+                  </span>
                 </div>
-                <span className="abx-map-badge">Global Presence</span>
               </div>
-              <div className="abx-map-image">
-                <WorldMapFigure />
+              <p className="abt-recog-text">
+                AAA&apos;s Accreditation Standards for Healthcare Facilities have been accredited by the International
+                Society for Quality in Health Care External Evaluation Association (ISQua EEA), following independent
+                assessment against the Guidelines and Principles for the Development of Health and Social Care Standards,
+                5th Edition.
+              </p>
+              <ul className="abt-recog-checks">
+                <li>Independent external assessment of AAA&apos;s healthcare accreditation standards</li>
+                <li>Alignment with an internationally recognized healthcare quality framework</li>
+                <li>Formal recognition applies specifically to the accredited healthcare standards and scope</li>
+              </ul>
+
+              <div className="abt-member">
+                <span className="abt-plate">
+                  <Image
+                    src={`${IMG}/isqua-institutional-member-2026-2027.png`}
+                    alt="ISQua Institutional Member 2026–2027"
+                    width={190}
+                    height={67}
+                  />
+                </span>
+                <div>
+                  <h4>Institutional Member of ISQua</h4>
+                  <p>
+                    AAA is also an institutional member of the International Society for Quality in Health Care (ISQua),
+                    supporting engagement with the international healthcare quality community.
+                  </p>
+                  <span className="abt-recog-dates">21 September 2026 – 21 September 2027</span>
+                  <a
+                    href="/docs/site/isqua-institutional-membership-certificate-2026-2027.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="abt-textlink"
+                  >
+                    View Membership Certificate <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ---------- Success Stories carousel ---------- */}
-      <section className="abx-section">
-        <div className="abx-container">
-          <div className="abx-head center reveal">
-            <div className="abx-kicker">Success Stories</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,42px)" }}>
-              Trusted by organizations committed to excellence.
-            </h2>
-            <p className="abx-desc">
-              Real organizations. Real recognition. Real accreditation journeys from different
-              countries and sectors.
-            </p>
+            <figure className="abt-cert">
+              <div className="abt-cert-frame">
+                <Image
+                  src={`${IMG}/isqua-eea-standards-certificate.webp`}
+                  alt="ISQua EEA certificate for AAA Accreditation Standards for Healthcare Facilities"
+                  width={1488}
+                  height={2105}
+                  sizes="(max-width: 980px) 90vw, 420px"
+                />
+              </div>
+              <a
+                href="/docs/site/isqua-eea-standards-certificate-5th-ed.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ax-btn ax-btn-blue"
+              >
+                View Accreditation Certificate <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
+              </a>
+            </figure>
           </div>
-          <div className="reveal">
-            <AboutCarousel label="AAA accredited organization success stories">
-              {STORIES.map((s) => (
-                <article className="abx-story" key={s.name}>
-                  <div className="abx-story-media">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.img} alt={s.name} />
-                    <span className="abx-story-badge">{s.sector}</span>
-                  </div>
-                  <div className="abx-story-body">
-                    <h3>{s.name}</h3>
-                    <p>{s.text}</p>
-                    <Link href={s.href} className="abx-readmore">
-                      Read Story <Icon name="arrow" />
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </AboutCarousel>
-          </div>
-          <div className="abx-center-action reveal">
-            <Link href="/news" className="abx-btn abx-btn-gold">
-              View All Success Stories
-              <Icon name="arrow" className="abx-arw" />
+
+          <p className="ax-note reveal abt-recog-note">
+            ISQua institutional membership is separate from ISQua EEA accreditation, which applies specifically to
+            AAA&apos;s Accreditation Standards for Healthcare Facilities and does not automatically apply to all AAA
+            programs.
+          </p>
+          <div className="abt-center reveal">
+            <Link href="/partnerships" className="ax-btn ax-btn-ghost-navy">
+              Explore Recognition &amp; Partnerships <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ---------- Request Information (lead form) ---------- */}
-      <section className="abx-section wash">
-        <div className="abx-container abx-apply">
-          <div className="abx-apply-copy reveal">
-            <span className="abx-sq" aria-hidden="true" />
-            <div className="abx-kicker on-dark">Get Started</div>
-            <h2 className="abx-title light" style={{ fontSize: "clamp(28px,3.4vw,38px)" }}>
-              Begin Your Accreditation Journey
-            </h2>
-            <p>
-              Whether you are a training provider, healthcare organization, conformity assessment
-              body, or SME, our team will guide you to the accreditation pathway that fits your
-              organization.
-            </p>
-            <ul className="abx-apply-points">
-              <li>
-                <Icon name="check" size={18} strokeWidth={2.4} /> A dedicated accreditation
-                coordinator
-              </li>
-              <li>
-                <Icon name="check" size={18} strokeWidth={2.4} /> On-site, hybrid, or virtual
-                assessment
-              </li>
-              <li>
-                <Icon name="check" size={18} strokeWidth={2.4} /> Internationally recognized
-                standards
-              </li>
-              <li>
-                <Icon name="check" size={18} strokeWidth={2.4} /> A response within two business
-                days
-              </li>
-            </ul>
-            <div className="abx-apply-contact">
-              <a href="tel:+18005550122">
-                <Icon name="phone" size={17} strokeWidth={1.8} /> +1 (800) 555-0122
-              </a>
-              <a href="mailto:info@aaa-accreditation.org">
-                <Icon name="mail" size={17} strokeWidth={1.8} /> info@aaa-accreditation.org
-              </a>
-            </div>
-          </div>
-          <div className="abx-apply-form reveal">
-            <HeroLeadForm />
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Resources: Latest Insights & Updates (real news) ---------- */}
-      <section className="abx-section light">
-        <div className="abx-container">
-          <div className="abx-head center reveal">
-            <div className="abx-kicker">Resources</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,42px)" }}>
-              Latest Insights &amp; Updates
-            </h2>
-            <p className="abx-desc">
-              Recent articles, announcements, and events from the AAA accreditation community.
-            </p>
-          </div>
-          <div className="abx-updates reveal">
-            {UPDATES.map((p) => (
-              <article className="abx-update" key={p.slug}>
-                <div className="row">
-                  <span className="abx-tag">{tagFor(p.title)}</span>
-                  <span className="date">{formatDate(p.date)}</span>
-                </div>
-                <h3>{p.title}</h3>
-                <p>{cleanExcerpt(p.excerpt)}</p>
-                <Link href={`/news/${p.slug}`} className="abx-readmore">
-                  Read more <Icon name="arrow" />
-                </Link>
-              </article>
+      {/* 06 — Learn more */}
+      <section className="ax-section" id="learn-more-about-aaa">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Explore More"
+            title="Learn More About AAA"
+            intro="Explore the areas that provide deeper insight into AAA's governance, recognition, accreditation role, and commitment to impartiality and integrity."
+          />
+          <div className="ax-blue-grid four">
+            {LINKS.map((l, i) => (
+              <NavyCard
+                key={l.href}
+                icon={l.icon}
+                no={String(i + 1).padStart(2, "0")}
+                title={l.title}
+                href={l.href}
+                cta="Explore"
+              >
+                <p>{l.text}</p>
+              </NavyCard>
             ))}
           </div>
-          <div className="abx-center-action reveal">
-            <Link href="/news" className="abx-btn abx-btn-outline">
-              Explore All Resources
-              <Icon name="arrow" className="abx-arw" />
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ---------- Executive Director's message ---------- */}
-      <section className="abx-section wash">
-        <div className="abx-container">
-          <div className="abx-head center reveal">
-            <div className="abx-kicker">Executive Director&rsquo;s Message</div>
-            <h2 className="abx-title" style={{ fontSize: "clamp(28px,3.4vw,40px)" }}>
-              Leading with Quality and Confidence
-            </h2>
-          </div>
-          <div className="abx-quote reveal">
-            <span className="mark" aria-hidden="true">&ldquo;</span>
-            <h3>Accreditation is more than recognition</h3>
-            <p>
-              At the American Accreditation Association, we believe accreditation is a commitment to
-              quality, competence, and continual improvement. Every organization we work with has
-              its own goals and challenges, but they all share one objective: building confidence
-              among the people they serve.
-            </p>
-            <p>
-              Our role is to provide an impartial, transparent, and internationally credible
-              accreditation process that supports that objective. As AAA continues to expand
-              globally, we remain committed to delivering professional accreditation services
-              supported by qualified assessors, technical experts, and dedicated teams.
-            </p>
-            <div className="abx-quote-sig">
-              <span className="av">ED</span>
-              <div>
-                <b>Executive Director</b>
-                <small>American Accreditation Association</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- CTA ---------- */}
-      <section className="abx-cta">
-        <div className="abx-cta-inner reveal">
-          <h2>Ready to Begin Your Accreditation Journey?</h2>
-          <p>
-            Whether you are a training provider, healthcare organization, conformity assessment
-            body, or SME, AAA can guide you toward the accreditation pathway that fits your
-            organization.
-          </p>
-          <div className="abx-cta-actions">
-            <Link href="/programs/healthcare" className="abx-btn abx-btn-gold">
-              Explore Accreditation Programs
-              <Icon name="arrow" className="abx-arw" />
-            </Link>
-            <Link href="/quote" className="abx-btn abx-btn-ghost">
-              Get a Quote
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* 07 — Final CTA */}
+      <CTA
+        eyebrow="Take the Next Step"
+        title="Ready to Learn More About Accreditation?"
+        text="Explore AAA accreditation programs or speak with our team to identify the pathway that best fits your organization."
+        primary={{ href: "/programs", label: "Discover Our Accreditation Programs" }}
+        secondary={{ href: "/contact", label: "Talk to an Accreditation Expert" }}
+      />
     </div>
   );
 }

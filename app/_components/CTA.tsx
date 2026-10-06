@@ -1,6 +1,19 @@
 import Link from "next/link";
 import Icon from "./Icon";
 
+/** Off-site targets (e.g. the Calendly booking page) open in a new tab. */
+function CtaLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
+  return /^https?:\/\//.test(href) ? (
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
+
 /**
  * Shared closing CTA band.
  *
@@ -33,12 +46,12 @@ export default function CTA({
           <p>{text}</p>
 
           <div className="ax-close-actions">
-            <Link href={primary.href} className="ax-btn ax-btn-gold">
+            <CtaLink href={primary.href} className="ax-btn ax-btn-gold">
               {primary.label} <Icon name="arrow" size={14} />
-            </Link>
-            <Link href={secondary.href} className="ax-btn ax-btn-ghost">
+            </CtaLink>
+            <CtaLink href={secondary.href} className="ax-btn ax-btn-ghost">
               {secondary.label}
-            </Link>
+            </CtaLink>
           </div>
 
           {related && related.length > 0 && (

@@ -1,537 +1,548 @@
 import Image from "next/image";
 import Link from "next/link";
-import CTA from "../../_components/CTA";
 import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
-import {
-  ArrowIcon,
-  ClusterNav,
-  DownloadIcon,
-  HC_APPLICATION_FORM,
-  HC_CONSULT,
-  HC_EMAIL,
-  LineIcon,
-} from "./cluster";
-import "./hc.css";
+import NavyCard from "../../_components/site/NavyCard";
+import SectionHead from "../../_components/site/SectionHead";
+import Glyph, { type GlyphName } from "../../_components/site/Glyph";
+import { FACTS } from "@/lib/facts";
+import { breadcrumbSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import HcVideo from "./HcVideo";
+import HcTestimonials, { type Testimonial } from "./HcTestimonials";
+import "./healthcare.css";
+
+/*
+ * Healthcare Accreditation — rebuilt Oct 2026 on the client's final
+ * "Healthcare Accreditation" package (README.txt, latest revisions win):
+ * 01 Hero → 02 Why (video left + 2×3 benefits) → 03 Eligibility (10 tiles,
+ * two rows of five, no photo) → 04 ISQua EEA recognition → 04b Team →
+ * 05 What We Evaluate (two core areas only; chapters live on /standards) →
+ * 06 Four-stage journey → 07 Video testimonials → 08 Final CTA.
+ */
+
+const PATH = "/programs/healthcare";
+const IMG = "/images/site/healthcare";
+const DESCRIPTION =
+  "Independent healthcare accreditation for hospitals, clinics, dental, diagnostic and specialized facilities, built on ISQua EEA accredited standards.";
 
 export const metadata = pageMeta({
   title: "Healthcare Accreditation for Hospitals & Clinics",
-  description:
-    "ISQua EEA accredited healthcare accreditation for hospitals, clinics, dental and diagnostic facilities — four documented stages, valid for three years.",
-  path: "/programs/healthcare",
+  description: DESCRIPTION,
+  path: PATH,
   keywords: [
     "healthcare accreditation",
     "hospital accreditation",
-    "ISQua EEA",
     "clinic accreditation",
-    "AAA healthcare standards",
+    "ISQua EEA accredited standards",
+    "AAA healthcare accreditation",
+    "patient safety accreditation",
   ],
 });
 
-/* --------------------------------------------------------------- content -- */
-
-const STANDARD_SECTIONS: { label: string; note: string; chapters: string[] }[] = [
+const BENEFITS: { icon: GlyphName; title: string; text: string }[] = [
   {
-    label: "Patient centered care",
-    note: "Chapters 1–6",
-    chapters: [
-      "Patient privacy, rights & responsibilities",
-      "Access, assessment & continuity of care",
-      "Provision of care",
-      "Medication management & use",
-      "Surgical and anaesthesia care",
-      "Diagnostic services and procedures",
-    ],
+    icon: "shield-check",
+    title: "Safer, Higher-Quality Care",
+    text: "Strengthen systems and practices that support patient safety, quality of care, and consistent service delivery.",
   },
   {
-    label: "Organization centered standards",
-    note: "Chapters 7–12",
-    chapters: [
-      "Corporate governance & leadership",
-      "Quality improvement & sustainability",
-      "Staff planning & continuous performance",
-      "Health record & information management",
-      "Infection control & hand hygiene practice",
-      "Facility safety & physical environment",
-    ],
+    icon: "heart-pulse",
+    title: "Greater Patient Confidence",
+    text: "Demonstrate that your organization has undergone an independent assessment against defined healthcare accreditation standards.",
+  },
+  {
+    icon: "gauge",
+    title: "Stronger Organizational Performance",
+    text: "Identify gaps, improve processes, strengthen accountability, and promote greater consistency across the organization.",
+  },
+  {
+    icon: "refresh",
+    title: "A Culture of Continual Improvement",
+    text: "Encourage teams to monitor performance, address weaknesses, and sustain improvements beyond the accreditation assessment.",
+  },
+  {
+    icon: "award",
+    title: "Stronger Reputation & Credibility",
+    text: "Demonstrate a visible commitment to quality that can strengthen confidence among patients, healthcare professionals, partners, and other stakeholders.",
+  },
+  {
+    icon: "trending-up",
+    title: "Competitive & Growth Opportunities",
+    text: "Strengthen your organization's position in the healthcare market and support opportunities to attract patients, build partnerships, and engage with organizations that value independently assessed quality.",
   },
 ];
 
-const STAGES: { title: string; text: string }[] = [
+const ELIGIBLE: { icon: GlyphName; title: string }[] = [
+  { icon: "hospital", title: "Hospitals" },
+  { icon: "stethoscope", title: "Clinics & Medical Centers" },
+  { icon: "sparkles", title: "Dental Organizations" },
+  { icon: "activity", title: "Rehabilitation Centers" },
+  { icon: "target", title: "Specialized Healthcare Facilities" },
+  { icon: "microscope", title: "Diagnostic & Treatment Centers" },
+  { icon: "globe", title: "Medical Tourism" },
+  { icon: "clock", title: "Day Care & Ambulatory" },
+  { icon: "leaf", title: "Alternative Medicine Units" },
+  { icon: "plus", title: "Other Healthcare Organizations" },
+];
+
+const WHY_AAA: { icon: GlyphName; title: string; text: string }[] = [
   {
+    icon: "badge-check",
+    title: "Internationally Accredited Healthcare Standards",
+    text: "Healthcare standards independently accredited by ISQua EEA.",
+  },
+  {
+    icon: "scale",
+    title: "Independent Accreditation",
+    text: "Structured assessment and independent accreditation decision-making.",
+  },
+  {
+    icon: "stethoscope",
+    title: "Healthcare Expertise",
+    text: "Assessments supported by qualified healthcare assessors and technical experts.",
+  },
+  {
+    icon: "route",
+    title: "A Structured Path to Accreditation",
+    text: "Clear preparation, assessment, corrective-action, decision, and ongoing accreditation stages.",
+  },
+];
+
+const TEAM: { name: string; role: string; photo: string; bio: string }[] = [
+  {
+    name: "Dr. Ruhina Khan",
+    role: "Business Development Manager – Healthcare Accreditation",
+    photo: `${IMG}/team-ruhina.webp`,
+    bio: "Dr. Ruhina Khan is a healthcare operations strategist and accreditation expert dedicated to advancing international quality standards. She works closely with healthcare institutions to strengthen compliance, optimize systems, and build globally recognized credibility through structured, sustainable growth strategies.",
+  },
+  {
+    name: "Willena McGee",
+    role: "Board Member",
+    photo: `${IMG}/team-willena.webp`,
+    bio: "Willena is an AAA board member and Founder and CEO of Uplifted Abilities. With over 20 years of experience in healthcare, project management, education, and consulting services, she guides new and existing Non-Emergency Medical Transportation (NEMT) providers through accreditation, regulatory compliance, and business planning.",
+  },
+  {
+    name: "Antonia Vitori",
+    role: "Healthcare Accreditation Surveyor",
+    photo: `${IMG}/team-antonia.jpeg`,
+    bio: "Antonia brings many years of experience in the healthcare compliance sector and currently serves as an AAA Healthcare Accreditation Surveyor. She graduated from the Royal College of Surgeons in Ireland and is the Chief Governance, Risk and Compliance Officer at Brookhaven Healthcare Ireland. She previously held the position of Compliance, Quality and Safety Manager at Cowper Care Ireland.",
+  },
+  {
+    name: "Dr. Rodolfo Buccico",
+    role: "Accreditation Advisor",
+    photo: `${IMG}/team-rodolfo.png`,
+    bio: "Dr. Rodolfo Buccico is a seasoned medical and public health professional with extensive expertise in preventive medicine, epidemiology, and healthcare management. He currently serves as a Chief Medical Officer and advisor, bringing deep experience in public health strategy, real-world evidence, and patient-centred care. With a background in hygiene and preventive medicine from the Università Federico II di Napoli, he has held leadership roles including director of clinical services and senior healthcare administration.",
+  },
+];
+
+const STAGES: { icon: GlyphName; title: string; text: string; badge?: string }[] = [
+  {
+    icon: "clipboard",
     title: "Preparation",
-    text: "A dedicated advisor is assigned, you receive the self-assessment tool, and an action plan is set for implementing the standards. The AAA advisory team provides training and technical support.",
+    text: "Review the standards, identify gaps, and prepare your organization for assessment.",
   },
   {
-    title: "Document review",
-    text: "Finalize the self-assessment tool, submit the required documents and evidence, and AAA Surveyors review what you have sent.",
+    icon: "file-check",
+    title: "Document Review",
+    text: "Submit the required documentation and supporting evidence for review.",
   },
   {
-    title: "Onsite or hybrid survey",
-    text: "AAA Surveyors conduct an onsite or hybrid survey of two to five days. The final report follows within two weeks, and the facility implements corrective actions if required.",
+    icon: "search-check",
+    title: "Onsite / Hybrid Survey",
+    text: "Healthcare surveyors evaluate implementation of the applicable standards.",
+    badge: "Typically 2–5 Days",
   },
   {
-    title: "Accreditation decision",
-    text: "The accreditation committee reviews the surveyors' final reports, the certificate is prepared, and accreditation is granted — valid for three years.",
+    icon: "gavel",
+    title: "Accreditation Decision",
+    text: "Assessment results undergo independent review and an accreditation decision is made.",
   },
 ];
 
-const FACILITIES: { name: string; note: string }[] = [
-  { name: "Hospitals", note: "Including day-care surgery centers" },
-  { name: "Primary care clinics", note: "General healthcare services" },
-  { name: "Specialty clinics", note: "Including ENT and dermatology" },
-  { name: "Dental organizations", note: "Single chair to multi-unit" },
-  { name: "Diagnostic centers", note: "X-ray, MRI, clinical analysis" },
-  { name: "Rehabilitation centers", note: "Physiotherapy, occupational therapy" },
-  { name: "Alternative medicine units", note: "Ayurveda and Unani centers" },
-  { name: "Community pharmacies", note: "Pharmacy services in the community" },
-  { name: "Medical travel agencies", note: "Facilitating travel for care" },
-];
-
-const FAQS: { q: string; a: string }[] = [
+const TESTIMONIALS: Testimonial[] = [
   {
-    q: "How long is AAA healthcare accreditation valid?",
-    a: "Accreditation is granted for three years. The decision is made by the accreditation committee after reviewing the final reports prepared by AAA Surveyors.",
+    org: "Global Medical City",
+    country: "Egypt",
+    theme: "Patient Safety & Trust",
+    quote:
+      "“AAA accreditation helps ensure patient safety and supports patients in receiving the best possible medical care.”",
+    note: "Translated from Arabic",
+    video: "AZd-Wi2o5UI",
+    image: `${IMG}/testimonial-gmc.webp`,
+    alt: "Global Medical City healthcare accreditation testimonial",
   },
   {
-    q: "What does the survey involve?",
-    a: "AAA Surveyors conduct an onsite or hybrid survey lasting two to five days. The AAA team sends the final report within two weeks, and the facility implements corrective actions if required.",
+    org: "Domus Salutis",
+    country: "Italy",
+    theme: "Consistency & Quality",
+    quote:
+      "“Accreditation means greater safety in procedures and protocols, and greater confidence that staff follow patients using consistent methods.”",
+    note: "Translated from Italian",
+    video: "SxgILo3vjGU",
+    image: `${IMG}/testimonial-domus.webp`,
+    alt: "Domus Salutis healthcare accreditation testimonial",
   },
   {
-    q: "Can part of the survey be conducted remotely?",
-    a: "Yes. AAA offers flexible survey options, including a hybrid approach that blends virtual and on-site components: one or more surveyors work on-site while the remainder of the team participates via video.",
-  },
-  {
-    q: "Are AAA standards internationally recognized?",
-    a: "Yes. The AAA Accreditation Standards for Healthcare Facilities have been assessed and accredited by ISQua EEA against the Guidelines and Principles for the Development of Health and Social Care Standards, 5th Edition, Version 1.0, September 2018. AAA is also an institutional member of ISQua.",
-  },
-  {
-    q: "Does AAA help us prepare, or only assess?",
-    a: "Both. Approved AAA consultants guide you step by step — from the first stage, or wherever you are, until accreditation is granted — including gap analysis, training and working through the standards. A dedicated advisor and a self-assessment tool support you from stage one.",
-  },
-  {
-    q: "Which healthcare facilities can apply?",
-    a: "Hospitals including day-care surgery centers, primary care clinics, specialty clinics, dental organizations, diagnostic centers, rehabilitation centers, alternative medicine units, community pharmacies and medical travel agencies.",
-  },
-  {
-    q: "How can we comment on the accreditation standards?",
-    a: "AAA gathers, analyses and uses feedback for continuous improvement under its Accreditation Standards Feedback Policy (Document No. P-HEC-10-V1). Email healthcare@aaa-accreditation.org to share feedback or to request a copy of draft standards for consultation.",
+    org: "Dr. Paul’s",
+    country: "India",
+    theme: "Systems & Organizational Improvement",
+    quote:
+      "“The accreditation journey has been a structured and valuable process that helped us strengthen our systems, documentation, patient safety practices and overall operational experience.”",
+    video: "zpzh6QtLdSI",
+    image: `${IMG}/testimonial-dr-paul.webp`,
+    alt: "Dr. Paul’s healthcare accreditation testimonial",
   },
 ];
 
-/* ------------------------------------------------------------------ page -- */
+const arrow = <Glyph name="arrow-right" size={14} strokeWidth={2} />;
 
-export default function Page() {
+export default function HealthcarePage() {
   return (
-    <main className="axp hcx">
+    <div className="axp hcx">
       <JsonLd
         schema={[
           breadcrumbSchema([
-            { name: "Programs", path: "/programs/healthcare" },
-            { name: "Healthcare Accreditation", path: "/programs/healthcare" },
+            { name: "Home", path: "/" },
+            { name: "Programs", path: "/programs" },
+            { name: "Healthcare Accreditation", path: PATH },
           ]),
           serviceSchema({
-            name: "Healthcare Accreditation",
-            description:
-              "Accreditation of hospitals, clinics, dental, diagnostic, rehabilitation and pharmacy organizations against the AAA Accreditation Standards for Healthcare Facilities, accredited by ISQua EEA.",
-            path: "/programs/healthcare",
+            name: "AAA Healthcare Accreditation",
+            description: DESCRIPTION,
+            path: PATH,
             standard: "AAA Accreditation Standards for Healthcare Facilities",
-            audience: "Hospitals and healthcare organizations",
+            audience: "Healthcare organizations",
           }),
-          faqSchema(FAQS),
         ]}
       />
 
       {/* 01 — Hero */}
       <PageHero
-        image="/home/healthcare.jpg"
         eyebrow="Healthcare Accreditation"
-        badge="ISQua EEA · Accredited standards"
+        crumbs={[{ href: "/programs", label: "Programs" }, { label: "Healthcare Accreditation" }]}
         title={
           <>
-            Advancing excellence in <em>healthcare.</em>
+            Healthcare Accreditation
+            <span className="hcx-h1-sub">
+              Accreditation for Safer Care, Stronger Performance and Global Recognition
+            </span>
           </>
         }
-        intro="At the American Accreditation Association we ensure hospitals and healthcare organizations deliver safe, high-quality care while fostering continuous improvement and innovation. Partnering with AAA demonstrates your commitment to patient safety, clinical excellence and operational efficiency."
-        crumbs={[{ href: "/programs/healthcare", label: "Programs" }, { label: "Healthcare Accreditation" }]}
-        caption={{
-          kicker: "Accreditation standards for healthcare facilities",
-          title: "Developed with 174 international healthcare experts",
-          chip: "ISQua EEA",
-        }}
+        intro="The American Accreditation Association provides independent healthcare accreditation designed to help healthcare organizations demonstrate quality, strengthen systems, and build confidence among patients, partners, and stakeholders."
+        image={`${IMG}/military-hospital-healthcare-accreditation.jpg`}
+        imageAlt="Healthcare team at an accredited military hospital holding an accreditation certificate"
+        caption={{ kicker: "ISQua EEA Accredited Standards", title: "Accreditation Standards for Healthcare Facilities" }}
         actions={
           <>
             <Link href="/apply" className="ax-btn ax-btn-gold">
-              Apply for Accreditation <ArrowIcon />
+              Apply for Accreditation {arrow}
             </Link>
-            <a href={HC_CONSULT} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
-              Book a Free Consultation
-            </a>
+            <Link href="/contact" className="ax-btn ax-btn-ghost">
+              Talk to a Healthcare Accreditation Expert {arrow}
+            </Link>
+            <ul className="hcx-chips" aria-label="What defines AAA healthcare accreditation">
+              <li>Independent Accreditation</li>
+              <li>Healthcare-Focused Standards</li>
+              <li>International Recognition</li>
+            </ul>
           </>
         }
-        meta={[
-          { k: "Standards accredited by", v: "ISQua EEA" },
-          { k: "Chapters of standards", v: "12" },
-          { k: "Onsite / hybrid survey", v: "2–5 days" },
-          { k: "Accreditation validity", v: "3 years" },
-        ]}
       />
 
-      {/* 02 — What makes us unique */}
-      <section className="ax-section" id="unique">
+      {/* 02 — Why healthcare accreditation */}
+      <section className="ax-section" id="why-healthcare-accreditation">
         <div className="container">
-          <div className="ax-split">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">What makes us unique?</span>
-                <h2>
-                  We do not just assess you — we <em>get you there.</em>
-                </h2>
-              </div>
-              <span className="ax-rule" aria-hidden="true" />
-              <p>
-                AAA is the only healthcare accreditation body that will ensure you achieve
-                accreditation through approved consultants who guide you step by step — taking you
-                from the first stage, or from wherever you are today, until AAA healthcare
-                accreditation is granted.
+          <SectionHead
+            center
+            className="hcx-oneline"
+            eyebrow="Why Healthcare Accreditation"
+            title="Better Care. Stronger Performance. Greater Confidence."
+            intro="Healthcare accreditation provides an independent framework for strengthening quality, patient safety, and organizational performance while demonstrating a clear commitment to continual improvement."
+          />
+          <div className="hcx-why">
+            <div className="hcx-why-media reveal">
+              <HcVideo id="CvsM6YXA2JQ" title="AAA Healthcare Accreditation Explained" label="AAA Healthcare Accreditation Explained" />
+              <p className="hcx-why-quote">
+                <Glyph name="quote" size={22} />
+                <span>
+                  Accreditation turns a commitment to quality into something patients, partners, and stakeholders can see
+                  and trust.
+                </span>
               </p>
-              <p>
-                That guidance includes gap analysis, training, and working through the standards to
-                confirm they are understood and applied inside your facility. Every applicant is
-                assigned a dedicated advisor committed to its specific needs, backed by a customer
-                care team that stays with you for the whole journey.
-              </p>
-              <ul className="ax-checks">
-                <li>Dedicated advisor and self-assessment tool from stage one</li>
-                <li>Gap analysis, training and technical support from approved consultants</li>
-                <li>Flexible onsite or hybrid survey options</li>
-                <li>Accreditation granted for three years</li>
-              </ul>
-              <div className="ax-actions">
-                <Link href="/programs/healthcare/consultation" className="ax-btn ax-btn-blue">
-                  See consultation services <ArrowIcon />
-                </Link>
-              </div>
             </div>
-
-            <figure className="ax-photo reveal">
-              <Image
-                src="/about/assessment.jpg"
-                alt="An AAA surveyor reviewing documentation with clinical staff during a healthcare facility survey"
-                fill
-                sizes="(max-width: 980px) 92vw, 40vw"
-              />
-              <span className="ax-photo-badge">Onsite survey</span>
-              <figcaption>
-                Surveyors review documents, walk the facility and interview staff.
-                <span>AAA Accreditation Standards for Healthcare Facilities</span>
-              </figcaption>
-            </figure>
+            <div className="ax-blue-grid two hcx-why-grid">
+              {BENEFITS.map((b) => (
+                <NavyCard key={b.title} compact icon={b.icon} title={b.title}>
+                  <p>{b.text}</p>
+                </NavyCard>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 03 — Cluster sub-navigation */}
-      <ClusterNav
-        cream
-        lead="Programs created according to the international requirements of ISQua and developed in consultation with 174 international healthcare experts."
-      />
-
-      {/* 04 — Standards at a glance */}
-      <section className="ax-section" id="standards">
+      {/* 03 — Eligible healthcare organizations */}
+      <section className="ax-section cream" id="who-can-apply">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">The standards</span>
-            <h2>Twelve chapters covering every aspect of care</h2>
-            <p>
-              AAA accreditation standards are evidence-based criteria that healthcare organizations
-              must meet to achieve and maintain accreditation — recognized internationally and
-              accredited by the International Society for Quality in Health Care (ISQua).
-            </p>
-          </div>
-
-          <div className="ax-grid two">
-            {STANDARD_SECTIONS.map((s, i) => (
-              <article className="ax-card reveal" key={s.label} style={{ transitionDelay: `${i * 70}ms` }}>
-                <div className="ax-card-top">
-                  <span className="ax-ico ax-card-ico gold" aria-hidden="true">
-                    <LineIcon>
-                      {i === 0 ? (
-                        <>
-                          <path d="M19 14c1.5-1.5 2-3.5 2-5a5 5 0 0 0-9-3 5 5 0 0 0-9 3c0 1.5.5 3.5 2 5l7 7z" />
-                        </>
-                      ) : (
-                        <>
-                          <path d="M3 21h18M5 21V7l7-4 7 4v14" />
-                          <path d="M9 9h2M13 9h2M9 13h2M13 13h2M10 21v-4h4v4" />
-                        </>
-                      )}
-                    </LineIcon>
-                  </span>
-                  <span className="hc-chip">{s.note}</span>
-                </div>
-                <h3>{s.label}</h3>
-                <ul className="ax-checks gold">
-                  {s.chapters.map((c) => (
-                    <li key={c}>{c}</li>
-                  ))}
-                </ul>
-              </article>
+          <SectionHead
+            center
+            className="hcx-oneline"
+            eyebrow="Eligible Healthcare Organizations"
+            title="One Accreditation Framework. Diverse Healthcare Settings."
+            intro="AAA Healthcare Accreditation is designed for a wide range of healthcare organizations across different sizes, specialties, and care settings."
+          />
+          <div className="ax-blue-grid five hcx-elig">
+            {ELIGIBLE.map((e) => (
+              <NavyCard key={e.title} compact icon={e.icon} title={e.title} />
             ))}
           </div>
-
-          <div className="ax-actions center">
-            <Link href="/programs/healthcare/standards" className="ax-btn ax-btn-ghost-navy">
-              Read the standards in detail <ArrowIcon />
+          <p className="hcx-elig-contact reveal">
+            Not sure if your organization is eligible?{" "}
+            <Link href="/contact">
+              Contact our healthcare team <span aria-hidden="true">→</span>
             </Link>
-          </div>
+          </p>
         </div>
       </section>
 
-      {/* 05 — Process and application */}
-      <section className="ax-section cream" id="process">
+      {/* 04 — International recognition / ISQua EEA */}
+      <section className="ax-section" id="international-recognition">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">How it works</span>
-            <h2>Four stages, fully documented</h2>
-            <p>
-              A transparent route from preparation to an independent accreditation decision, with a
-              dedicated advisor alongside you at every stage.
-            </p>
-          </div>
+          <SectionHead
+            center
+            eyebrow="International Recognition"
+            title="Healthcare Standards Accredited by ISQua EEA"
+            intro="AAA's Accreditation Standards for Healthcare Facilities have been accredited by the International Society for Quality in Health Care External Evaluation Association (ISQua EEA), following independent external evaluation against internationally recognized principles for the development of health and social care standards."
+          />
 
-          <div className="ax-split top">
-            <div className="ax-steps-panel reveal">
-              <h3>Accreditation process</h3>
-              <ol className="ax-steps">
-                {STAGES.map((s, i) => (
-                  <li className="ax-step" key={s.title}>
-                    <span className="ax-step-num" aria-hidden="true">
-                      {i + 1}
-                    </span>
-                    <div className="ax-step-body">
-                      <b>{s.title}</b>
-                      <span>{s.text}</span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <span className="ax-pill">
-                <span className="ax-ico" aria-hidden="true">
-                  <LineIcon strokeWidth={2}>
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v5l3 2" />
-                  </LineIcon>
+          <div className="hcx-recog reveal">
+            <div className="hcx-recog-main ax-card navy ax-blue">
+              <div className="hcx-recog-mark">
+                <span className="hcx-plate">
+                  <Image
+                    src={`${IMG}/isqua-eea-accredited-standards-2025-2029.png`}
+                    alt="ISQua EEA Accredited Standards 2025-2029"
+                    width={241}
+                    height={67}
+                  />
                 </span>
-                Accreditation certificate valid for 3 years
-              </span>
+                <div>
+                  <span className="ax-blue-tag">ISQua EEA Accredited Standards</span>
+                  <h3>Accreditation Standards for Healthcare Facilities</h3>
+                  <span className="hcx-recog-dates">
+                    <Glyph name="calendar" size={15} /> Recognition period: May 2025 – May 2029
+                  </span>
+                </div>
+              </div>
+              <p className="hcx-recog-text">
+                The recognition applies specifically to AAA&apos;s Accreditation Standards for Healthcare Facilities and
+                reflects independent external evaluation of the standards.
+              </p>
+              <ul className="hcx-recog-checks">
+                <li>Independent external evaluation of AAA&apos;s healthcare accreditation standards</li>
+                <li>Alignment with internationally recognized principles for health and social care standards</li>
+              </ul>
             </div>
 
-            <aside className="ax-panel reveal">
-              <span className="ax-ico ax-panel-ico" aria-hidden="true">
-                <LineIcon>
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <path d="M14 2v6h6M12 12v6M9 15l3 3 3-3" />
-                </LineIcon>
-              </span>
-              <h3>Now you can apply for accreditation</h3>
-              <p>
-                Complete the healthcare accreditation application form with details of your facility,
-                its services and the scope you want assessed. A dedicated advisor will take it from
-                there.
-              </p>
+            <figure className="hcx-cert">
+              <div className="hcx-cert-frame">
+                <Image
+                  src={`${IMG}/isqua-eea-standards-certificate.webp`}
+                  alt="ISQua EEA certificate for AAA healthcare accreditation standards"
+                  width={1488}
+                  height={2105}
+                  sizes="(max-width: 980px) 80vw, 340px"
+                />
+              </div>
               <a
-                href={HC_APPLICATION_FORM}
+                href="/docs/site/isqua-eea-standards-certificate-5th-ed.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ax-btn ax-btn-blue"
               >
-                <DownloadIcon /> Download Application Form
+                View Recognition Certificate <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
               </a>
-              <p className="ax-panel-note">
-                Prefer to talk first? Email{" "}
-                <a className="ax-link" href={`mailto:${HC_EMAIL}`}>
-                  {HC_EMAIL}
-                </a>{" "}
-                or book a free 30-minute consultation.
-              </p>
-              <ul className="ax-docs">
-                <li className="ax-docs-title">Useful next steps</li>
-                <li>
-                  <Link href="/programs/healthcare/process">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <circle cx="12" cy="12" r="9" />
-                        <path d="M12 7v5l3 2" />
-                      </LineIcon>
-                    </span>
-                    Full process &amp; timeline
-                    <i>Guide</i>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/programs/healthcare/who-can-apply">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <path d="m5 12 5 5L20 7" />
-                      </LineIcon>
-                    </span>
-                    Check your eligibility
-                    <i>Guide</i>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/documents">
-                    <span className="ax-ico" aria-hidden="true">
-                      <LineIcon strokeWidth={2}>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <path d="M14 2v6h6" />
-                      </LineIcon>
-                    </span>
-                    AAA policies &amp; documents
-                    <i>Docs</i>
-                  </Link>
-                </li>
-              </ul>
-            </aside>
+            </figure>
+          </div>
+
+          <h3 className="hcx-subhead reveal">Why AAA Healthcare Accreditation?</h3>
+          <div className="ax-blue-grid four">
+            {WHY_AAA.map((w, i) => (
+              <NavyCard key={w.title} icon={w.icon} no={String(i + 1).padStart(2, "0")} title={w.title}>
+                <p>{w.text}</p>
+              </NavyCard>
+            ))}
+          </div>
+
+          <p className="ax-note reveal hcx-recog-note">
+            ISQua EEA accreditation applies specifically to AAA&apos;s Accreditation Standards for Healthcare Facilities and
+            should not be interpreted as accreditation or endorsement of every AAA program or activity.
+          </p>
+        </div>
+      </section>
+
+      {/* 04b — Meet our healthcare accreditation team */}
+      <section className="ax-section cream" id="healthcare-team">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="Meet Our Team"
+            title="Meet Our Healthcare Accreditation Team"
+            intro="Healthcare, accreditation, governance, and quality expertise supporting our healthcare accreditation program."
+          />
+          <div className="hcx-team">
+            {TEAM.map((m) => (
+              <article key={m.name} className="ax-card navy ax-blue reveal hcx-member">
+                <span className="hcx-portrait">
+                  <Image src={m.photo} alt={m.name} fill sizes="112px" />
+                </span>
+                <h3>{m.name}</h3>
+                <span className="ax-blue-kicker">{m.role}</span>
+                <details className="hcx-bio">
+                  <summary>
+                    View Profile <Glyph name="plus" size={14} strokeWidth={2} />
+                  </summary>
+                  <p>{m.bio}</p>
+                </details>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 06 — Who can be accredited */}
-      <section className="ax-section" id="eligibility">
+      {/* 05 — What we evaluate */}
+      <section className="ax-section" id="what-we-evaluate">
+        <div className="container hcx-eval">
+          <div className="hcx-eval-copy">
+            <SectionHead
+              eyebrow="What We Evaluate"
+              title="A Comprehensive Framework for Healthcare Quality Standards"
+              intro="AAA healthcare accreditation evaluates both the experience and delivery of patient care and the organizational systems that support safe, effective, and consistent healthcare services."
+            />
+            <div className="ax-actions reveal">
+              <Link href="/programs/healthcare/standards" className="ax-btn ax-btn-blue">
+                Explore the Healthcare Accreditation Standards {arrow}
+              </Link>
+            </div>
+          </div>
+          <div className="hcx-eval-cards">
+            <NavyCard icon="heart-pulse" title="Patient-Centered Care">
+              <p>
+                Focuses on how care is accessed, delivered, coordinated, and experienced by patients, with emphasis on
+                safety, rights, continuity, and quality of clinical care.
+              </p>
+            </NavyCard>
+            <span className="hcx-eval-plus" aria-hidden="true">
+              <Glyph name="plus" size={18} strokeWidth={2.2} />
+            </span>
+            <NavyCard icon="building" title="Organization-Centered Standards">
+              <p>
+                Focuses on the leadership, workforce, quality, information, infection prevention, safety, and operational
+                systems that support reliable healthcare delivery.
+              </p>
+            </NavyCard>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 — Accreditation journey */}
+      <section className="ax-section cream" id="accreditation-journey">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Who can be accredited?</span>
-            <h2>
-              Open to the full spectrum of <em>care providers.</em>
-            </h2>
-            <p>
-              From single-chair dental offices to multi-unit hospitals, the AAA healthcare program
-              accredits the complete range of healthcare facilities — including services well beyond
-              the hospital, such as polyclinics, radiology, physiotherapy, fertility and eye care.
-            </p>
-          </div>
+          <SectionHead
+            center
+            eyebrow="Our Accreditation Process"
+            title="A Clear and Transparent Process"
+            intro="Our structured process ensures a fair, consistent, and internationally benchmarked assessment."
+          />
+          <div className="hcx-journey">
+            <ol className="hcx-stages">
+              {STAGES.map((s, i) => (
+                <li key={s.title}>
+                  <NavyCard compact icon={s.icon} no={String(i + 1).padStart(2, "0")} title={s.title}>
+                    <p>{s.text}</p>
+                    {s.badge && (
+                      <span className="hcx-badge">
+                        <Glyph name="clock" size={13} strokeWidth={2} /> {s.badge}
+                      </span>
+                    )}
+                  </NavyCard>
+                </li>
+              ))}
+            </ol>
 
-          <div className="ax-grid tight hc-tiles reveal">
-            {FACILITIES.map((f) => (
-              <div className="ax-tile" key={f.name}>
-                <b>{f.name}</b>
-                <span>{f.note}</span>
+            <div className="ax-card navy ax-blue reveal hcx-outcome">
+              <span className="hcx-outcome-kicker">Successful Completion</span>
+              <span className="ax-card-ico hcx-outcome-ico">
+                <Glyph name="award" />
+              </span>
+              <h3>AAA Healthcare Accreditation</h3>
+              <strong className="hcx-outcome-valid">{`Valid for ${FACTS.cycleYears} Years`}</strong>
+              <p className="hcx-cycle" aria-label="Maintain, Improve, Renew">
+                <span>Maintain</span>
+                <i aria-hidden="true">→</i>
+                <span>Improve</span>
+                <i aria-hidden="true">→</i>
+                <span>Renew</span>
+              </p>
+              <div className="hcx-periodic">
+                <span className="ps-title">
+                  <Glyph name="calendar" size={14} strokeWidth={2} /> 18-Month Periodic Survey
+                </span>
+                <span className="ps-text">Confirms continued conformity during the accreditation cycle.</span>
               </div>
-            ))}
+            </div>
           </div>
-
-          <div className="ax-actions center">
-            <Link href="/programs/healthcare/who-can-apply" className="ax-btn ax-btn-blue">
-              See every eligible facility type <ArrowIcon />
+          <div className="ax-actions center reveal">
+            <Link href="/programs/healthcare/process" className="ax-btn ax-btn-ghost-navy">
+              View the Full Accreditation Process {arrow}
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 07 — Recognition proof band */}
-      <section className="ax-section navy" id="recognition">
+      {/* 07 — Accreditation in practice */}
+      <section className="ax-section" id="accreditation-in-practice">
         <div className="container">
-          <div className="ax-split even">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">International recognition</span>
-                <h2>Standards assessed and accredited by ISQua EEA</h2>
-                <p>
-                  The AAA Accreditation Standards for Healthcare Facilities have been assessed and
-                  accredited by the International Society for Quality in Health Care (ISQua EEA)
-                  against the Guidelines and Principles for the Development of Health and Social Care
-                  Standards, 5th Edition, Version 1.0, September 2018 — confirming that both their
-                  development and their content meet international best practice.
-                </p>
-              </div>
-              <ul className="ax-checks">
-                <li>AAA is an institutional member of ISQua</li>
-                <li>Programs built to ISQua&apos;s international requirements</li>
-                <li>Developed with 174 international healthcare experts</li>
-              </ul>
-              <div className="ax-actions">
-                <Link href="/programs/healthcare/international-recognition" className="ax-btn ax-btn-ghost">
-                  How the recognition works <ArrowIcon />
-                </Link>
-              </div>
-            </div>
-
-            <div className="reveal">
-              <ul className="ax-stats hc-stats">
-                <li className="ax-stat">
-                  <b>200+</b>
-                  <span>Accredited organizations</span>
-                </li>
-                <li className="ax-stat">
-                  <b>58+</b>
-                  <span>Countries served</span>
-                </li>
-                <li className="ax-stat">
-                  <b>100+</b>
-                  <span>Assessors &amp; experts</span>
-                </li>
-                <li className="ax-stat">
-                  <b>174</b>
-                  <span>Experts consulted on the standards</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <SectionHead
+            center
+            eyebrow="Accreditation in Practice"
+            title="Hear From AAA-Accredited Healthcare Organizations"
+            intro="Healthcare organizations across different countries share how AAA accreditation has supported patient safety, stronger systems, consistent practices, and greater confidence."
+          />
+          <HcTestimonials items={TESTIMONIALS} />
+          <p className="hcx-testi-foot reveal">
+            <strong>Real Healthcare Organizations. Real Accreditation Experiences.</strong>
+            <span>Egypt • Italy • India</span>
+          </p>
         </div>
       </section>
 
-      {/* 08 — FAQ */}
-      <section className="ax-section fade-up" id="faq">
+      {/* 08 — Final CTA */}
+      <section className="ax-close" id="final-cta">
+        <span className="ax-close-corner" aria-hidden="true" />
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">FAQ</span>
-            <h2>Everything facilities ask before they apply</h2>
+          <div className="ax-close-inner reveal">
+            <span className="eyebrow">Ready to Get Started?</span>
+            <h2>Start Your Healthcare Accreditation Journey</h2>
             <p>
-              Don&apos;t see your question? Contact the healthcare accreditation department at{" "}
-              <a className="ax-link" href={`mailto:${HC_EMAIL}`}>
-                {HC_EMAIL}
-              </a>
-              .
+              Take the next step toward demonstrating your commitment to quality, patient safety, and stronger
+              organizational performance through AAA Healthcare Accreditation.
+            </p>
+            <div className="ax-close-actions">
+              <Link href="/apply" className="ax-btn ax-btn-gold">
+                Apply for Accreditation {arrow}
+              </Link>
+              <Link href="/contact" className="ax-btn ax-btn-ghost">
+                Talk to a Healthcare Accreditation Expert {arrow}
+              </Link>
+            </div>
+            <p className="hcx-reassure">
+              Our healthcare accreditation team can help you understand the application requirements, accreditation
+              scope, and next steps for your organization.
             </p>
           </div>
-
-          <div className="ax-faq-list">
-            {FAQS.map((f, i) => (
-              <details className="ax-faq-item" key={f.q} open={i === 0}>
-                <summary>
-                  <span>{f.q}</span>
-                  <span className="ax-faq-plus" aria-hidden="true" />
-                </summary>
-                <div className="ax-faq-a">
-                  <p>{f.a}</p>
-                </div>
-              </details>
-            ))}
-          </div>
         </div>
       </section>
-
-      {/* 09 — Closing CTA */}
-      <CTA
-        eyebrow="Take the next step"
-        title={
-          <>
-            Ready to accredit your <em>healthcare facility?</em>
-          </>
-        }
-        text="Tell us about your facility and a dedicated advisor will scope your accreditation journey — the applicable chapters of the standards, the survey format that suits you, and a realistic timeline to accreditation."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/contact", label: "Talk to the healthcare team" }}
-        related={[
-          { href: "/programs/healthcare/standards", label: "Accreditation Standards" },
-          { href: "/programs/healthcare/process", label: "Accreditation Process" },
-          { href: "/programs/healthcare/why-aaa", label: "Why AAA Accreditation?" },
-          { href: "/programs/iso-15189", label: "Medical Laboratories (ISO 15189)" },
-        ]}
-      />
-    </main>
+    </div>
   );
 }

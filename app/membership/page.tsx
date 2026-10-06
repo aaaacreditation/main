@@ -173,7 +173,7 @@ const FAQ = [
 
 export default function Page() {
   return (
-    <main className="axp memx">
+    <div className="axp memx">
       <JsonLd
         schema={[
           breadcrumbSchema([{ name: "Membership", path: "/membership" }]),
@@ -541,6 +541,6 @@ export default function Page() {
           { href: "/directory/accredited-organizations", label: "Accredited organizations" },
         ]}
       />
-    </main>
+    </div>
   );
 }

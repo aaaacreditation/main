@@ -1,142 +1,212 @@
-/* =========================================================================
-   SAFEGUARDING IMPARTIALITY POLICY — page-local styles
-   -------------------------------------------------------------------------
-   Aug 2026. Everything /impartiality-policy needs on top of the shared
-   `.ax-*` design system (app/aaa-ds.css). Nothing here is global: every rule
-   is scoped under `.impx`, which only this route puts on <main>:
+/* ==========================================================================
+   Impartiality & Independence — Oct 2026 client-structure rebuild.
+   Scoped under `.imp`. Cards come from the shared NavyCard (`.ax-blue`) in
+   app/aaa-ds.css.
+   ========================================================================== */
 
-       <main className="axp impx"> … </main>
-
-   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent,
-   red #c1122f used once, for the "accreditation shall not be provided" rule.
-   ========================================================================= */
-
-/* ========================= The four values ============================== */
-.impx .impx-values {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.impx .impx-value {
-  padding: 20px 18px;
-  border: 1px solid var(--ax-border);
-  border-top: 3px solid var(--aaa-gold);
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: var(--ax-shadow-sm);
-}
-.impx .impx-value b {
+.imp .imp-gold { color: var(--aaa-gold); }
+.imp .imp-tagline {
   display: block;
-  font-size: 17px;
+  margin-bottom: 12px;
+  font-size: clamp(16px, 1.5vw, 19px);
   font-weight: 600;
+  line-height: 1.45;
+  color: var(--aaa-gold-100);
+}
+
+/* The supplied hero artwork is a wide banner with its own lettering on the
+   left: frame the balance scale on the right and crop the white wave below. */
+.imp .ax-hero-photo img {
+  object-position: 80% 0;
+  transform: scale(1.24);
+  transform-origin: 60% 12%;
+}
+.imp .ax-hero-visual:hover .ax-hero-photo img { transform: scale(1.28); }
+
+/* In-page jump buttons: the arrow points down */
+.imp .ax-btn.imp-jump svg { transform: rotate(90deg); }
+.imp .ax-btn.imp-jump:hover svg { transform: rotate(90deg) translateX(3px); }
+
+/* Notes: icon + text */
+.imp .imp-note { align-items: flex-start; max-width: 920px; margin: clamp(28px, 3vw, 40px) auto 0; }
+.imp .imp-note-ico { flex: none; margin-top: 1px; color: var(--aaa-gold-700); }
+.imp .ax-note:not(.gold) .imp-note-ico { color: var(--aaa-blue); }
+
+/* --------------------------- Why it matters --------------------------- */
+.imp .imp-why {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(28px, 4.5vw, 64px);
+  margin-top: clamp(30px, 3.4vw, 46px);
+}
+.imp .imp-why-lead {
+  position: sticky;
+  top: 120px;
+  padding: clamp(8px, 1vw, 16px) 0 0;
+}
+.imp .imp-why-mark {
+  display: block;
+  width: 58px;
+  height: 58px;
+  padding: 14px;
+  border: 1.5px solid var(--ax-ring-gold);
+  border-radius: 50%;
+  color: var(--aaa-blue);
+  background: #fff;
+}
+.imp .imp-why-mark svg { display: block; width: 100%; height: 100%; }
+.imp .imp-why-lead p { margin: 18px 0 0; font-size: 15.5px; line-height: 1.75; color: var(--ink-600); }
+.imp .imp-why-lead .imp-why-big {
+  position: relative;
+  margin-top: 26px;
+  padding-left: 22px;
+  border-left: 3px solid var(--aaa-gold);
+  font-size: clamp(19px, 1.9vw, 24px);
+  font-weight: 600;
+  line-height: 1.45;
   letter-spacing: -0.015em;
   color: var(--aaa-blue);
 }
-.impx .impx-value span {
-  display: block;
-  margin-top: 7px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--ink-600);
-}
+.imp .imp-why-cards { display: grid; gap: 18px; }
+.imp .imp-why-cards .ax-card.navy.ax-blue { min-height: 0; }
 
-/* Sub-labels inside the navy risk section — gold-700 is too dark on navy. */
-.impx .ax-section.navy .ax-label {
-  margin-top: clamp(28px, 3vw, 38px);
-  color: var(--aaa-gold-100);
-}
-
-/* ==================== Risk-evidence mechanism tiles ===================== */
-.impx .impx-mechs {
+/* ----------------------------- Safeguards ----------------------------- */
+.imp .imp-safe {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 22px;
+  margin-top: clamp(30px, 3.4vw, 46px);
 }
-.impx .impx-mech {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 16px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.055);
-  backdrop-filter: blur(6px);
-  font-size: 13.5px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #fff;
+.imp .ax-card.navy.ax-blue.imp-oversight {
+  position: sticky;
+  top: 120px;
+  padding: clamp(26px, 3vw, 38px);
 }
-.impx .impx-mech .ax-ico {
-  width: 34px;
-  height: 34px;
-  padding: 8px;
-  flex: none;
-  border: 1px solid rgba(244, 231, 198, 0.35);
-  border-radius: 11px;
-  color: var(--aaa-gold-100);
-  background: rgba(179, 138, 46, 0.18);
-}
-
-/* The four-verb risk cycle, rendered as a track. */
-.impx .impx-cycle {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: impx-cycle;
-}
-.impx .impx-cycle li {
-  position: relative;
-  padding: 18px 18px 18px 20px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-left: 3px solid var(--aaa-gold);
-  background: rgba(255, 255, 255, 0.06);
-}
-.impx .impx-cycle b {
+.imp .ax-card.navy.ax-blue.imp-oversight:hover { transform: none; }
+.imp .imp-oversight-top { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.imp .imp-oversight-top .ax-blue-tag { margin-top: 0; }
+.imp .ax-card.navy .imp-oversight-ico { width: 58px; height: 58px; padding: 14px; }
+.imp .imp-oversight-kicker {
   display: block;
-  font-size: 15.5px;
+  margin-top: 26px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.imp .ax-card.navy.ax-blue.imp-oversight h3 { margin: 8px 0 14px; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; }
+.imp .ax-card.navy.imp-oversight p { margin: 0; font-size: 15px; line-height: 1.8; }
+
+/* --------------------------- Confidentiality -------------------------- */
+.imp .imp-conf {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
+  align-items: stretch;
+  gap: 22px;
+  margin-top: clamp(30px, 3.4vw, 46px);
+}
+.imp .imp-conf-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: clamp(28px, 3vw, 40px);
+  border-radius: var(--ax-radius-lg);
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.imp .imp-conf-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.imp .imp-conf-panel::after {
+  content: "";
+  position: absolute;
+  right: -70px;
+  bottom: -70px;
+  width: 220px;
+  height: 220px;
+  border: 1.5px solid rgba(179, 138, 46, 0.35);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(179, 138, 46, 0.06), 0 0 0 56px rgba(179, 138, 46, 0.04);
+}
+.imp .imp-conf-ico {
+  display: block;
+  width: 58px;
+  height: 58px;
+  padding: 14px;
+  border: 1.5px solid var(--ax-ring-gold);
+  border-radius: 50%;
+}
+.imp .imp-conf-ico svg { display: block; width: 100%; height: 100%; }
+.imp .imp-conf-panel p {
+  position: relative;
+  z-index: 1;
+  margin: 26px 0 0;
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 500;
+  line-height: 1.55;
   letter-spacing: -0.01em;
   color: #fff;
 }
-.impx .impx-cycle span {
-  display: block;
-  margin-top: 5px;
-  font-size: 12.5px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.7);
+.imp .imp-conf-foot {
+  margin-top: auto;
+  padding-top: 28px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
 }
 
-/* ============ The one red note: "accreditation shall not be provided" ====
-   Tertiary flag-red, used once on the page, on the navy surface. ========= */
-.impx .impx-alert {
-  margin-top: 26px;
-  border-color: rgba(255, 190, 200, 0.32);
-  border-left-color: var(--aaa-red);
-  background: rgba(193, 18, 47, 0.16);
-  color: rgba(255, 255, 255, 0.86);
+/* ------------------------- Complaints & appeals ----------------------- */
+.imp .imp-ca .ax-card.navy.ax-blue { padding: 28px 30px 28px; }
+.imp .imp-ca-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 36px;
+  margin-top: clamp(28px, 3vw, 40px);
+  padding: 22px 26px;
+  border: 1px solid var(--ax-border);
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 12px;
+  background: #fff;
 }
-.impx .impx-alert .ax-ico { width: 20px; height: 20px; flex: none; margin-top: 2px; color: #ffd9df; }
-.impx .impx-alert strong { color: #ffd9df; }
-.impx .impx-alert .impx-alert-rule { display: inline; color: #fff; }
+.imp .imp-ca-foot p {
+  display: flex;
+  gap: 14px;
+  max-width: 70ch;
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-700);
+}
+.imp .imp-ca-foot strong { color: var(--aaa-blue); }
+.imp .imp-ca-foot .ax-btn { flex: none; }
 
-/* ============================= Responsive =============================== */
+/* ------------------------------ Responsive ---------------------------- */
 @media (max-width: 1100px) {
-  .impx .impx-values,
-  .impx .impx-mechs,
-  .impx .impx-cycle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .imp .imp-safe,
+  .imp .imp-conf { grid-template-columns: 1fr; }
+  .imp .ax-card.navy.ax-blue.imp-oversight { position: static; }
 }
-@media (max-width: 620px) {
-  .impx .impx-values,
-  .impx .impx-mechs,
-  .impx .impx-cycle { grid-template-columns: 1fr; }
+@media (max-width: 980px) {
+  .imp .imp-why { grid-template-columns: 1fr; }
+  .imp .imp-why-lead { position: static; }
+}
+@media (max-width: 760px) {
+  .imp .imp-ca-foot { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .imp .imp-ca .ax-card.navy.ax-blue { padding: 22px 20px 24px; }
+  .imp .imp-ca-foot { padding: 20px 18px; }
+  .imp .imp-ca-foot .ax-btn { align-self: stretch; justify-content: center; white-space: normal; text-align: center; }
 }

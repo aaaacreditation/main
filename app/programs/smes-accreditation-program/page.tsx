@@ -260,7 +260,7 @@ const FAQ = [
 
 export default function Page() {
   return (
-    <main className="smex">
+    <div className="smex">
       {/* TEMPORARY: hides the site header/footer on sme.aaa-accreditation.org
           only. Remove together with proxy.ts when the full site launches. */}
       <BareChrome />
@@ -683,6 +683,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

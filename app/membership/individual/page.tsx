@@ -1,400 +1,465 @@
 import Link from "next/link";
 import Image from "next/image";
-import Icon from "../../_components/Icon";
-import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
-import CTA from "../../_components/CTA";
-import { pageMeta, breadcrumbSchema, faqSchema } from "../../../lib/seo";
-import "../membership.css";
+import JsonLd from "../../_components/JsonLd";
+import NavyCard from "../../_components/site/NavyCard";
+import SectionHead from "../../_components/site/SectionHead";
+import Glyph, { type GlyphName } from "../../_components/site/Glyph";
+import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import "./ind.css";
+
+/*
+ * Individual Membership — rebuilt Oct 2026 on the client's final page
+ * structure ("Indivdual membership" package: Hero → Who Should Consider →
+ * Benefits → Professional Engagement Platform → Eligibility & How to Join →
+ * Meet Our Individual Members → Final CTA), rendered in the AAA design system
+ * with the SME blue card. Page styles live in ./ind.css under `.mind`
+ * (membership.css is shared by the other membership routes and is
+ * intentionally not imported here).
+ */
 
 export const metadata = pageMeta({
   title: "Individual Membership",
   description:
-    "AAA Individual Membership: $350 for two years. Validated certificate, one free training course a year, ADCP directory listing and committee eligibility.",
+    "AAA Individual Membership: $350 for two years. Membership certificate, one complimentary training course a year, ADCP listing, webinars and networking.",
   path: "/membership/individual",
+  keywords: [
+    "AAA individual membership",
+    "American Accreditation Association membership",
+    "quality professional membership",
+    "professional affiliation",
+    "ADCP listing",
+  ],
 });
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const IMG = "/images/site/membership-individual";
+const APPLY = "/membership/individual/apply";
+const AFFILIATION =
+  "AAA Individual Membership represents professional affiliation with the American Accreditation Association. It does not constitute personnel certification, accreditation, or independent certification of an individual's competence.";
 
-/* Content transcribed from aaa-accreditation.org/individual-membership. */
-
-const IDEAL_FOR = [
-  "Enhance your professional credentials and credibility.",
-  "Gain recognition as a leader in promoting excellence and competence in your field.",
-  "Access cutting-edge resources that support career growth and development.",
-  "Contribute to setting global quality and accreditation standards.",
-];
-
-const BENEFITS = [
+const FIT: { icon: GlyphName; title: string; text: string }[] = [
   {
-    icon: "cert" as const,
-    title: "Global Recognition",
-    text: "Receive an official membership certificate from AAA, validated through our platform and linkable to your professional profiles with a unique URL.",
+    icon: "badge-check",
+    title: "Quality & Accreditation Professionals",
+    text: "Professionals working in quality management, accreditation, conformity assessment, auditing or related quality-focused fields.",
   },
   {
-    icon: "book" as const,
-    title: "Professional Training",
-    text: "Attend one free training course each year to enhance your expertise.",
+    icon: "flask",
+    title: "Industry & Technical Professionals",
+    text: "Experienced specialists who want to engage with an international professional community focused on competence, quality and continuous improvement.",
   },
   {
-    icon: "clipboard" as const,
-    title: "Directory Enrolment",
-    text: "Be listed in the prestigious American Directory for Competent Persons (ADCP).",
+    icon: "graduation",
+    title: "Educators, Trainers & Consultants",
+    text: "Professionals involved in education, training, consulting and professional development who want to expand their learning and professional connections.",
   },
   {
-    icon: "mail" as const,
-    title: "Professional Branding",
-    text: "Receive a QR-coded membership email signature to showcase your affiliation.",
-  },
-  {
-    icon: "chart" as const,
-    title: "Educational Webinars",
-    text: "Access free webinars on international standards development, quality management, internal audits and assessment preparation in your area of interest.",
-  },
-  {
-    icon: "doc" as const,
-    title: "Content Contribution",
-    text: "Publish two articles or papers annually on the AAA website, with backlinks to your personal website or professional account.",
-  },
-  {
-    icon: "globe" as const,
-    title: "Networking Opportunities",
-    text: "Connect and collaborate with peers in the quality and accreditation community through various networking initiatives.",
-  },
-  {
-    icon: "scale" as const,
-    title: "Committee Membership",
-    text: "Gain eligibility to join AAA Technical Committees and actively engage in shaping your industry's standards.",
+    icon: "network",
+    title: "Professionals Seeking Greater Engagement",
+    text: "Individuals interested in professional visibility, knowledge sharing, networking and participation in relevant AAA activities and initiatives.",
   },
 ];
 
-const INCLUDED = [
-  "Validated membership certificate with a unique URL",
-  "One free training course every year",
-  "Listing in the ADCP professional directory",
-  "Two published articles or papers a year, with backlinks",
-  "Eligibility for AAA Technical Committees",
-];
-
-const REQUIREMENTS = [
-  "An updated CV",
-  "A university degree",
-  "Evidence of competency and qualifications in the relevant field",
-];
-
-const STEPS = [
+const BENEFITS: { icon: GlyphName; title: string; text: string }[] = [
   {
-    n: "01",
-    title: "Prepare your documents",
-    text: "Gather your updated CV, your university degree and evidence of competency and qualifications in your field.",
+    icon: "certificate",
+    title: "Professional Recognition",
+    text: "Receive an official AAA Individual Membership Certificate with online validation and a unique verification link.",
   },
   {
-    n: "02",
-    title: "Submit the membership form",
-    text: "Complete the individual membership application with your professional background, then email your CV so the competency review can begin.",
+    icon: "graduation",
+    title: "Professional Development",
+    text: "Benefit from one complimentary AAA training course each year, together with access to educational webinars and professional learning opportunities.",
   },
   {
-    n: "03",
-    title: "Get verified and listed",
-    text: "On approval you receive your validated certificate and your place in the American Directory for Competent Persons.",
-  },
-];
-
-const FAQ = [
-  {
-    q: "How much does AAA individual membership cost and how long does it last?",
-    a: "Individual membership costs $350 and runs for two years.",
+    icon: "id-card",
+    title: "Professional Visibility",
+    text: "Strengthen your professional presence through eligible ADCP listing and QR-coded membership communication and email-signature benefits.",
   },
   {
-    q: "Who is eligible for individual membership?",
-    a: "Professionals who can provide an updated CV, a university degree, and evidence of competency and qualifications in the relevant field — industry experts, educators and quality professionals among them.",
+    icon: "lightbulb",
+    title: "Knowledge & Thought Leadership",
+    text: "Contribute up to two articles or papers annually through applicable AAA channels, subject to editorial and publication requirements.",
   },
   {
-    q: "What is the American Directory for Competent Persons?",
-    a: "The ADCP is the AAA directory of competent persons. Individual members are enrolled in it, and their membership certificate is validated through the AAA platform with a unique URL that can be linked from professional profiles.",
+    icon: "globe",
+    title: "Professional Community",
+    text: "Connect with professionals from different countries and fields through networking, knowledge exchange and AAA community activities.",
   },
   {
-    q: "Does individual membership mean I am accredited by AAA?",
-    a: "No. Individual membership is a professional association with AAA and recognition of your competence as a member. It is not an accreditation of an organization, and members undertake not to represent themselves as accredited.",
-  },
-  {
-    q: "What is a Recognized Competency Member application?",
-    a: "It is a separate individual membership application route offered by AAA, using the same application form and the same supporting documents as the standard individual membership application.",
+    icon: "handshake",
+    title: "Participation & Contribution",
+    text: "Eligible members may participate in relevant AAA Technical Committees and other professional activities, subject to applicable requirements.",
   },
 ];
 
-export default function Page() {
+const PLATFORM: { icon: GlyphName; step: string; title: string; text: string }[] = [
+  {
+    icon: "book",
+    step: "Learn",
+    title: "Training & Webinars",
+    text: "Access complimentary AAA training opportunities, educational webinars and professional learning activities that support continued development.",
+  },
+  {
+    icon: "eye",
+    step: "Be Visible",
+    title: "Recognition & Professional Presence",
+    text: "Build professional visibility through your membership credentials, online validation, eligible ADCP listing and QR-coded communication benefits.",
+  },
+  {
+    icon: "file-text",
+    step: "Contribute",
+    title: "Articles & Technical Participation",
+    text: "Share expertise through applicable publication opportunities and participate in relevant AAA Technical Committees and professional initiatives.",
+  },
+  {
+    icon: "users",
+    step: "Connect",
+    title: "International Professional Community",
+    text: "Build relationships with professionals from different countries, disciplines and sectors through AAA networking and community activities.",
+  },
+];
+
+const ELIGIBILITY = [
+  "Updated professional CV or résumé.",
+  "University degree or equivalent higher-education qualification.",
+  "Evidence of professional competency, qualifications and experience relevant to your field.",
+];
+
+const STEPS: { icon: GlyphName; title: string; text: string }[] = [
+  {
+    icon: "file-text",
+    title: "Apply",
+    text: "Complete the Individual Membership application and submit the required professional information and supporting documents.",
+  },
+  {
+    icon: "search-check",
+    title: "Review",
+    text: "AAA reviews your education, professional background, qualifications and evidence against the applicable membership requirements.",
+  },
+  {
+    icon: "badge-check",
+    title: "Approval",
+    text: "Applicants who successfully meet the applicable requirements are approved for AAA Individual Membership.",
+  },
+  {
+    icon: "rocket",
+    title: "Access Your Benefits",
+    text: "Receive your membership credentials and begin using the applicable learning, visibility, networking and participation benefits.",
+  },
+];
+
+const MEMBERS = [
+  {
+    name: "Dr. Abdualrahman Alshehry",
+    role: "Associate Professor, King Saud University, College of Nursing",
+    country: "Saudi Arabia",
+    img: `${IMG}/dr-abdualrahman-alshehry.png`,
+    w: 244,
+    h: 250,
+  },
+  {
+    name: "Dr. Marcel Hetu",
+    role: "Professor & Director of Academic Affairs, University of Phoenix",
+    country: "USA",
+    img: `${IMG}/dr-marcel-hetu.webp`,
+    w: 597,
+    h: 597,
+  },
+  {
+    // README: no "Dr." title for Francesco Serini (the file name predates the correction).
+    name: "Francesco Serini",
+    role: "Director of Training Academy L' importanza di Ser Frank",
+    country: "Italy",
+    img: `${IMG}/dr-francesco-serini.png`,
+    w: 352,
+    h: 319,
+  },
+];
+
+export default function IndividualMembershipPage() {
   return (
-    <main className="axp memx">
+    <div className="axp mind">
       <JsonLd
-        schema={[
-          breadcrumbSchema([
-            { name: "Membership", path: "/membership" },
-            { name: "Individual Membership", path: "/membership/individual" },
-          ]),
-          faqSchema(FAQ),
-        ]}
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Membership", path: "/membership" },
+          { name: "Individual Membership", path: "/membership/individual" },
+        ])}
       />
 
+      {/* 01 — Hero */}
       <PageHero
-        image="/member-approved-nigar.jpg"
         eyebrow="Individual Membership"
+        crumbs={[{ href: "/membership", label: "Membership" }, { label: "Individual Membership" }]}
         title={
           <>
-            Unlock new horizons in your <em>professional journey.</em>
+            Individual Membership
+            <span className="mind-tagline">Connect. Develop. Contribute. Be Recognized.</span>
           </>
         }
-        intro="Membership with AAA isn’t just about accreditation — it’s about expanding your potential, connecting with a prestigious global network, and excelling in your professional endeavors."
-        crumbs={[{ href: "/membership", label: "Membership" }, { label: "Individual" }]}
-        meta={[
-          { k: "Term", v: "2 years" },
-          { k: "Fee", v: "$350" },
-          { k: "Directory", v: "ADCP listing" },
-        ]}
+        intro="Join an international community of professionals committed to quality, competence and continuous improvement, with opportunities for professional development, visibility, knowledge sharing and participation in AAA activities."
+        image={`${IMG}/individual-membership-hero.webp`}
+        imageAlt="Professional displaying an AAA-registered certificate"
         caption={{
-          kicker: "Nigar Aslanova · Azerbaijan",
-          title: "Five-star approved AAA member",
-          chip: "Member",
+          kicker: "AAA Individual Membership",
+          title: "Professional engagement, development and visibility within the AAA quality community.",
         }}
         actions={
           <>
-            <Link href="/membership/individual/apply" className="ax-btn ax-btn-gold">
-              Apply for Individual Membership <Icon name="arrow" size={16} />
+            <Link href={APPLY} className="ax-btn ax-btn-gold">
+              Become an Individual Member <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
-            <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
-              Book a Free Consultation
+            <a href="#benefits" className="ax-btn ax-btn-ghost">
+              Explore Member Benefits
             </a>
+            <ul className="mind-chips" aria-label="Individual Membership at a glance">
+              <li>
+                <strong>$350</strong> 2-Year Membership
+              </li>
+              <li>Professional Development</li>
+              <li>Global Quality Community</li>
+            </ul>
+            <p className="mind-hero-note">
+              <Glyph name="scale" size={18} />
+              <span>{AFFILIATION}</span>
+            </p>
           </>
         }
       />
 
-      {/* 01 — who it is for */}
-      <section className="ax-section" id="who">
+      {/* 02 — Who should consider */}
+      <section className="ax-section" id="who-should-consider-individual-membership">
         <div className="container">
-          <div className="ax-split">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">Who it&rsquo;s for</span>
-                <h2>Built for professionals who set the standard</h2>
-              </div>
-              <span className="ax-rule" aria-hidden="true" />
-              <p style={{ marginTop: 22 }}>
-                Whether you are an industry expert, educator or quality professional, individual
-                membership with AAA lets you play an active role in promoting quality and global
-                excellence. Individual membership is ideal for anyone looking to:
-              </p>
-              <ul className="ax-checks gold">
-                {IDEAL_FOR.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <div className="ax-actions">
-                <Link href="/membership/individual/apply" className="ax-btn ax-btn-blue">
-                  Start your application <Icon name="arrow" size={16} />
-                </Link>
-                <Link href="/membership/organizational" className="ax-btn ax-btn-ghost-navy">
-                  Compare organizational
-                </Link>
-              </div>
-            </div>
-
-            <div className="ax-panel reveal">
-              <span className="ax-ico ax-panel-ico" aria-hidden="true">
-                <Icon name="cert" size={28} />
-              </span>
-              <h3>What you&rsquo;ll need to apply</h3>
-              <p>
-                AAA reviews each application against its membership criteria. Have these ready
-                before you begin — the form takes a few minutes once you do.
-              </p>
-              <ul className="ax-checks">
-                {REQUIREMENTS.map((r) => (
-                  <li key={r}>{r}</li>
-                ))}
-              </ul>
-              <Link href="/membership/individual/apply" className="ax-btn ax-btn-gold">
-                Apply now <Icon name="arrow" size={16} />
-              </Link>
-              <p className="ax-panel-note">
-                Applying for the Recognized Competency Member route instead?{" "}
-                <Link href="/membership/individual/recognized-competency" className="ax-link">
-                  Use this form
-                </Link>
-                .
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 02 — benefits */}
-      <section className="ax-section cream" id="benefits">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Member benefits</span>
-            <h2>Why become a member of AAA Accreditation?</h2>
-            <p>
-              Eight ways membership advances your expertise, credibility and connections across the
-              global quality and accreditation community.
-            </p>
-          </div>
-
-          <div className="ax-grid four">
-            {BENEFITS.map((b, i) => (
-              <article className="ax-card reveal" key={b.title} style={{ transitionDelay: `${i * 45}ms` }}>
-                <div className="ax-card-top">
-                  <span className="ax-ico ax-card-ico" aria-hidden="true">
-                    <Icon name={b.icon} size={24} />
-                  </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3>{b.title}</h3>
-                <p>{b.text}</p>
-                <span className="ax-card-rule" aria-hidden="true" />
-              </article>
+          <SectionHead
+            center
+            eyebrow="Is Individual Membership Right for You?"
+            title="Who Should Consider Individual Membership?"
+            intro="AAA Individual Membership is designed for professionals who want to strengthen their professional engagement, continue developing their knowledge, contribute expertise and connect with a wider quality-focused community."
+          />
+          <div className="ax-blue-grid four">
+            {FIT.map((f, i) => (
+              <NavyCard key={f.title} icon={f.icon} no={String(i + 1).padStart(2, "0")} title={f.title}>
+                <p>{f.text}</p>
+              </NavyCard>
             ))}
           </div>
+          <p className="ax-note mind-note reveal">
+            <Glyph name="scale" size={20} />
+            <span>
+              <strong>Important:</strong>
+              Individual Membership represents professional affiliation with AAA. It does not constitute personnel
+              certification, accreditation, or independent certification of an individual&apos;s competence.
+            </span>
+          </p>
         </div>
       </section>
 
-      {/* 03 — membership details / price */}
-      <section className="ax-section" id="details">
+      {/* 03 — Benefits */}
+      <section className="ax-section cream" id="benefits">
         <div className="container">
-          <div className="ax-head reveal">
-            <span className="eyebrow">Membership details</span>
-            <h2>One fee. Two years. Everything included.</h2>
+          <SectionHead
+            center
+            eyebrow="Your Membership Benefits"
+            title="Benefits That Support Your Professional Journey"
+            intro="Individual Membership combines professional recognition with practical opportunities to learn, contribute, connect and increase your visibility within the AAA quality community."
+          />
+          <div className="ax-blue-grid">
+            {BENEFITS.map((b, i) => (
+              <NavyCard key={b.title} icon={b.icon} no={String(i + 1).padStart(2, "0")} title={b.title}>
+                <p>{b.text}</p>
+              </NavyCard>
+            ))}
           </div>
 
-          <div className="memx-price-card reveal" style={{ marginTop: 34 }}>
-            <div className="memx-price-main">
-              <span className="eyebrow">Individual membership</span>
-              <div className="memx-fig">
-                <span className="cur">$</span>350
-                <span className="per">/ 2 years</span>
-              </div>
+          <div className="mind-training reveal">
+            <span className="mind-training-fig" aria-hidden="true">
+              1×
+            </span>
+            <div>
+              <h3>Complimentary AAA Training Every Year</h3>
               <p>
-                A single fee of $350 covers your full two-year individual membership — no recurring
-                charges and no hidden costs.
-              </p>
-              <Link href="/membership/individual/apply" className="ax-btn ax-btn-gold">
-                Apply for Individual Membership <Icon name="arrow" size={16} />
-              </Link>
-            </div>
-
-            <div className="memx-price-side">
-              <h3>What the fee covers</h3>
-              <ul className="ax-checks gold">
-                {INCLUDED.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <p className="memx-price-note">
-                Representing an institution instead? <Link href="/membership/organizational">
-                  Organizational Membership
-                </Link>{" "}
-                extends the training and directory benefits to two members of your staff.
+                Individual Members benefit from one complimentary AAA training course each year during their membership
+                period, providing a practical professional-development benefit alongside membership recognition.
               </p>
             </div>
+            <span className="mind-training-ico" aria-hidden="true">
+              <Glyph name="graduation" />
+            </span>
           </div>
         </div>
       </section>
 
-      {/* 04 — how to join */}
-      <section className="ax-section cream" id="how">
+      {/* 04 — Professional engagement platform */}
+      <section className="ax-section" id="professional-platform">
         <div className="container">
-          <div className="ax-split">
-            <div className="reveal">
-              <div className="ax-head">
-                <span className="eyebrow">How to join</span>
-                <h2>Becoming a member takes three steps</h2>
-                <p>
-                  From application to recognition, the path to AAA individual membership is
-                  straightforward and supported at every stage.
-                </p>
-              </div>
-              <div className="ax-steps-panel" style={{ marginTop: 30 }}>
-                <h3>Your application route</h3>
-                <ol className="ax-steps">
-                  {STEPS.map((s) => (
-                    <li className="ax-step" key={s.n}>
-                      <span className="ax-step-num" aria-hidden="true">
-                        {s.n}
-                      </span>
-                      <div className="ax-step-body">
-                        <b>{s.title}</b>
-                        <span>{s.text}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <span className="ax-pill">
-                  <span className="ax-ico" aria-hidden="true">
-                    <Icon name="mail" size={16} />
-                  </span>
-                  Send your CV to info@aaa-accreditation.org
-                </span>
-              </div>
+          <SectionHead
+            center
+            eyebrow="More Than a Membership"
+            title="More Than Membership. A Platform for Professional Engagement."
+            intro="AAA Individual Membership gives professionals more than a certificate. It creates practical opportunities to learn, increase visibility, contribute expertise and connect with an international community."
+          />
+          <div className="mind-platform">
+            <div className="ax-blue-grid two">
+              {PLATFORM.map((p, i) => (
+                <NavyCard
+                  key={p.step}
+                  icon={p.icon}
+                  no={String(i + 1).padStart(2, "0")}
+                  tag={p.step}
+                  title={p.title}
+                >
+                  <p>{p.text}</p>
+                </NavyCard>
+              ))}
             </div>
-
-            <figure className="ax-photo reveal">
-              <Image
-                src="/sme-journey-team.jpg"
-                alt="AAA members and assessors working together during a quality assessment session."
-                fill
-                sizes="(max-width: 980px) 92vw, 36vw"
-              />
-              <span className="ax-photo-badge">The AAA network</span>
+            <figure className="mind-testimonial reveal">
+              <div className="mind-testimonial-frame">
+                <Image
+                  src={`${IMG}/borbala-horvath-testimonial.webp`}
+                  alt="AAA Individual Member Borbala Horvath testimonial"
+                  width={940}
+                  height={788}
+                  sizes="(max-width: 980px) 92vw, 460px"
+                />
+              </div>
               <figcaption>
-                Professionals across 58 countries hold AAA membership and recognition.
-                <span>Networking, training and technical committee work</span>
+                <Glyph name="quote" size={16} /> Real AAA Individual Member Testimonial
               </figcaption>
             </figure>
           </div>
         </div>
       </section>
 
-      {/* 05 — FAQ */}
-      <section className="ax-section" id="faq">
+      {/* 05 — Eligibility & how to join */}
+      <section className="ax-section cream" id="membership-eligibility-process">
         <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">FAQ</span>
-            <h2>Frequently asked questions</h2>
-            <p>Common questions about AAA individual membership.</p>
+          <SectionHead
+            center
+            eyebrow="Membership Details & Application"
+            title="Individual Membership: Eligibility & How to Join"
+            intro="Everything you need to know before applying—from the membership fee and eligibility requirements to the simple four-step application process."
+          />
+
+          <div className="mind-join reveal">
+            <div className="mind-join-fee">
+              <span className="mind-join-label">Individual Membership Fee</span>
+              <span className="mind-join-fig">$350</span>
+              <span className="mind-join-term">
+                <Glyph name="calendar" size={15} /> 2-Year Membership
+              </span>
+              <p>
+                One membership fee provides two years of access to applicable Individual Membership benefits,
+                professional-development opportunities and AAA community activities.
+              </p>
+            </div>
+            <div className="mind-join-elig">
+              <h3>Eligibility Requirements</h3>
+              <ul className="mind-join-list">
+                {ELIGIBILITY.map((e) => (
+                  <li key={e}>{e}</li>
+                ))}
+              </ul>
+              <p className="mind-join-review">
+                <Glyph name="search-check" size={18} />
+                <span>
+                  Applications are reviewed by AAA before Individual Membership is approved. Submission of an
+                  application does not by itself constitute approval or certification.
+                </span>
+              </p>
+            </div>
           </div>
-          <div className="ax-faq-list">
-            {FAQ.map((item, i) => (
-              <details className="ax-faq-item" key={item.q} open={i === 0}>
-                <summary>
-                  <span>{item.q}</span>
-                  <span className="ax-faq-plus" aria-hidden="true" />
-                </summary>
-                <div className="ax-faq-a">
-                  <p>{item.a}</p>
-                </div>
-              </details>
+
+          <p className="mind-steps-title reveal">How to Join</p>
+          <ol className="mind-steps">
+            {STEPS.map((s, i) => (
+              <li key={s.title}>
+                <span className="mind-step-dot" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <NavyCard icon={s.icon} no={String(i + 1).padStart(2, "0")} title={s.title}>
+                  <p>{s.text}</p>
+                </NavyCard>
+              </li>
             ))}
+          </ol>
+
+          <div className="mind-join-cta reveal">
+            <Link href={APPLY} className="ax-btn ax-btn-blue">
+              Apply for Individual Membership <Glyph name="arrow-right" size={14} strokeWidth={2} />
+            </Link>
+            <p>
+              Prepare your updated CV, university qualification and supporting evidence of professional competency and
+              experience before submitting your application.
+            </p>
           </div>
         </div>
       </section>
 
-      <CTA
-        eyebrow="Take the first step"
-        title={
-          <>
-            Ready to join as an <em>individual member?</em>
-          </>
-        }
-        text="Complete the individual membership application and the AAA membership team will review your professional background, confirm the fee and guide you through enrolment in the ADCP."
-        primary={{ href: "/membership/individual/apply", label: "Apply for Individual Membership" }}
-        secondary={{ href: "/contact", label: "Contact Membership" }}
-        related={[
-          { href: "/membership", label: "Membership overview" },
-          { href: "/membership/individual/recognized-competency", label: "Recognized Competency Member" },
-          { href: "/membership/organizational", label: "Organizational Membership" },
-        ]}
-      />
-    </main>
+      {/* 06 — Meet our individual members */}
+      <section className="ax-section" id="meet-our-members">
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="A Global Professional Community"
+            title="Meet Our Individual Members"
+            intro="Professionals from different countries, disciplines and sectors are part of the AAA community, connected by a shared commitment to quality, competence and continuous professional development."
+          />
+          <div className="ax-blue-grid">
+            {MEMBERS.map((m) => (
+              <NavyCard key={m.name} tag="AAA Individual Member" title={m.name} kicker={m.role} className="mind-member">
+                <span className="mind-member-photo">
+                  <Image src={m.img} alt={m.name} width={m.w} height={m.h} sizes="144px" />
+                </span>
+                <span className="mind-member-country">
+                  <Glyph name="pin" size={14} strokeWidth={2} /> {m.country}
+                </span>
+              </NavyCard>
+            ))}
+          </div>
+          <p className="mind-global reveal">
+            <Glyph name="globe" size={18} />
+            One professional community, connecting members across countries and fields through learning, knowledge
+            sharing and professional engagement.
+          </p>
+        </div>
+      </section>
+
+      {/* 07 — Final CTA (hand-rolled .ax-close so the facts + note stay in the same band) */}
+      <section className="ax-close" id="join-aaa-individual-membership">
+        <span className="ax-close-corner" aria-hidden="true" />
+        <div className="container">
+          <div className="ax-close-inner reveal">
+            <span className="eyebrow">Join the AAA Professional Community</span>
+            <h2>Connect. Develop. Contribute. Be Recognized.</h2>
+            <p>
+              Join an international community of professionals committed to quality, competence and continuous
+              improvement—and make active use of opportunities for learning, visibility, knowledge sharing and
+              professional engagement.
+            </p>
+            <ul className="mind-facts" aria-label="Individual Membership facts">
+              <li>
+                <Glyph name="award" size={15} /> $350 Membership Fee
+              </li>
+              <li>
+                <Glyph name="calendar" size={15} /> 2-Year Membership
+              </li>
+              <li>
+                <Glyph name="globe" size={15} /> International Professional Community
+              </li>
+            </ul>
+            <div className="ax-close-actions">
+              <Link href={APPLY} className="ax-btn ax-btn-gold">
+                Become an Individual Member <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </Link>
+              <Link href="/membership/organizational" className="ax-btn ax-btn-ghost">
+                Explore Organizational Membership
+              </Link>
+            </div>
+            <p className="mind-final-note">{AFFILIATION}</p>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

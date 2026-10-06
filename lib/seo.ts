@@ -168,7 +168,8 @@ export function breadcrumbSchema(items: { name: string; path: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [{ name: "Home", path: "/" }, ...items].map((item, i) => ({
+    // Home is always prepended; drop a caller-supplied "/" entry so it never appears twice.
+    itemListElement: [{ name: "Home", path: "/" }, ...items.filter((it) => it.path !== "/")].map((item, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: item.name,

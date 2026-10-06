@@ -1,159 +1,265 @@
-import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
-import ProgramPage from "../../_components/ProgramPage";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
+import SchemePage from "../_scheme/SchemePage";
+import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import type { SchemeData } from "../_scheme/types";
+import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { PROGRAMS } from "@/lib/facts";
 
-const PATH = "/programs/iso-17043";
+const PATH = PROGRAMS.iso17043.href;
+const IMG = "/images/site/cab-17043";
 
-export const metadata: Metadata = pageMeta({
-  title: "Proficiency Testing Providers (ISO/IEC 17043)",
+export const metadata = pageMeta({
+  title: "Proficiency Testing Accreditation (ISO/IEC 17043)",
   description:
-    "AAA accredits proficiency testing providers to ISO/IEC 17043 — scheme design, homogeneity and stability of PT items, assigned values and performance evaluation.",
+    "ISO/IEC 17043 accreditation for proficiency testing providers: independent recognition that your PT schemes are designed, operated and reported competently.",
   path: PATH,
   keywords: [
     "ISO/IEC 17043 accreditation",
-    "proficiency testing provider",
+    "proficiency testing provider accreditation",
     "interlaboratory comparison",
     "PT scheme accreditation",
+    "ISO/IEC 17043:2023",
   ],
 });
 
-const DOCUMENTS = [
-  {
-    label: "Application form for accreditation of PT providers",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2023/03/Application-form-PT-providers-V2.docx",
-    meta: "DOCX",
+const DATA: SchemeData = {
+  slug: "iso17043",
+  path: PATH,
+  crumb: PROGRAMS.iso17043.shortLabel,
+  hero: {
+    standard: "ISO/IEC 17043:2023",
+    title: PROGRAMS.iso17043.label,
+    lead: "Demonstrate the competence, impartiality, and consistent operation of your proficiency testing program through accreditation against ISO/IEC 17043. AAA accreditation provides independent recognition that your organization designs, operates, evaluates, and reports proficiency testing schemes reliably and competently.",
+    image: `${IMG}/proficiency-testing-laboratory-professio-b937be61.webp`,
+    imageAlt: "Proficiency testing laboratory professionals reviewing samples and statistical results",
+    caption: "Technical competence, reliable PT schemes, and meaningful performance evaluation.",
+    stats: heroStats(),
   },
-  {
-    label: "Checklist for ISO/IEC 17043",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Checklist-for-ISO-17043.docx",
-    meta: "DOCX",
+  suitability: {
+    title: "Is ISO/IEC 17043 Accreditation Right for Your Organization?",
+    paragraphs: [
+      "ISO/IEC 17043 is the internationally recognized standard for organizations that provide proficiency testing and interlaboratory comparison schemes.",
+      "Accreditation demonstrates that a proficiency testing provider has competent personnel, technical methods, statistical processes, quality controls, impartiality arrangements, and management systems needed to design and operate reliable proficiency testing programs.",
+    ],
+    label: "Suitable for providers operating schemes in",
+    tiles: [
+      { icon: "flask", title: "Chemical Testing" },
+      { icon: "microscope", title: "Microbiological Testing" },
+      { icon: "heart-pulse", title: "Medical Laboratory Testing" },
+      { icon: "leaf", title: "Environmental Testing" },
+      { icon: "store", title: "Food Testing" },
+      { icon: "ruler", title: "Calibration & Measurement" },
+      { icon: "building", title: "Construction Materials Testing" },
+      { icon: "search", title: "Other Technical PT Programs" },
+    ],
   },
-  {
-    label: "Proficiency Testing policy",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Proficiency-Testing-policy.pdf",
-    meta: "PDF",
+  benefits: {
+    title: "Why ISO/IEC 17043 Accreditation Matters",
+    items: [
+      {
+        icon: "badge-check",
+        title: "Demonstrate Technical Competence",
+        text: "Provide independent evidence that your organization has the technical expertise, statistical capability, personnel, and systems needed to operate reliable proficiency testing schemes.",
+      },
+      {
+        icon: "shield-check",
+        title: "Strengthen Confidence in PT Results",
+        text: "Build confidence among participating laboratories, regulators, accreditation bodies, and other stakeholders that proficiency testing results are produced consistently and impartially.",
+      },
+      {
+        icon: "trending-up",
+        title: "Support Laboratory Performance Improvement",
+        text: "Help participating laboratories identify technical weaknesses, investigate unsatisfactory performance, and improve the reliability of their testing or calibration activities.",
+      },
+      {
+        icon: "clipboard-check",
+        title: "Support Regulatory & Accreditation Requirements",
+        text: "Provide proficiency testing services that can support laboratories in meeting external quality-assurance, regulatory, and accreditation requirements.",
+      },
+    ],
+    captionTitle: "Performance Review in Practice",
+    caption:
+      "Proficiency testing combines technical expertise, statistical evaluation, and interlaboratory comparison to support reliable performance.",
   },
-  {
-    label: "General requirements for accreditation",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2021/12/General-requirements-for-accreditation-V2.pdf",
-    meta: "PDF",
+  areas: {
+    intro:
+      "AAA evaluates the management, technical, statistical, and operational controls needed to design and deliver reliable proficiency testing schemes.",
+    tiles: [
+      {
+        icon: "building",
+        title: "Organization & Management System",
+        text: "Organizational responsibilities, governance, documented procedures, records, risk management, and continual improvement.",
+      },
+      {
+        icon: "users",
+        title: "Personnel Competence",
+        text: "Qualifications, training, experience, authorization, and ongoing competence of technical, statistical, and administrative personnel.",
+      },
+      {
+        icon: "puzzle",
+        title: "PT Scheme Design",
+        text: "Planning, development, validation, documentation, and maintenance of proficiency testing schemes.",
+      },
+      {
+        icon: "flask",
+        title: "Test Items & Sample Preparation",
+        text: "Preparation, homogeneity, stability, handling, storage, packaging, and distribution of proficiency testing items.",
+      },
+      {
+        icon: "chart",
+        title: "Assigned Values & Statistical Methods",
+        text: "Assigned values, uncertainty, statistical treatment, performance criteria, and participant scoring methods.",
+      },
+      {
+        icon: "megaphone",
+        title: "Participant Instructions & Communication",
+        text: "Instructions, submission requirements, timelines, confidentiality, and communication of scheme information.",
+      },
+      {
+        icon: "file-text",
+        title: "Evaluation & Reporting",
+        text: "Result evaluation, performance interpretation, report content, confidentiality, and technical conclusions.",
+      },
+      {
+        icon: "refresh",
+        title: "Complaints, Appeals & Improvement",
+        text: "Complaints, appeals, nonconforming work, corrective actions, internal audits, management review, and continual improvement.",
+      },
+    ],
   },
-  {
-    label: "Requirements for use of accreditation symbols",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Requirements-for-use-of-accreditation-symbols.pdf",
-    meta: "PDF",
+  process: {
+    title: "Accreditation Process & Application",
+    steps: [
+      {
+        title: "Submit Your Application",
+        text: "Define the proficiency testing schemes, technical fields, analytes, measurands, or activities for which accreditation is requested.",
+      },
+      {
+        title: "Document Review",
+        text: "AAA reviews management-system documentation, PT scheme procedures, statistical methods, personnel competence, sample preparation controls, and the proposed scope.",
+      },
+      {
+        title: "Accreditation Assessment",
+        text: "Qualified assessors evaluate the organization against ISO/IEC 17043 requirements and the requested proficiency testing scope.",
+      },
+      {
+        title: "Corrective Actions",
+        text: "Where findings are identified, the provider submits corrective actions together with supporting evidence for review.",
+      },
+      {
+        title: "Independent Accreditation Decision",
+        text: "Assessment results and supporting evidence are independently reviewed before the accreditation decision is made.",
+      },
+      {
+        title: "Accreditation Granted",
+        text: "Successful proficiency testing providers receive an accreditation certificate and approved scope, valid for three years.",
+      },
+    ],
+    application: {
+      text: "Complete the application form to provide information about your organization, proficiency testing schemes, technical fields, personnel, locations, and proposed accreditation scope.",
+      href: DOC.appPT,
+      note: "Additional technical requirements and supporting information will be provided by the AAA accreditation team as applicable to your requested scope.",
+    },
+    resourcesTitle: "Supporting Documents",
+    resources: [
+      { label: "Checklist for ISO/IEC 17043", href: DOC.checklist17043, meta: "DOCX" },
+      { label: "Proficiency Testing policy", href: DOC.ptPolicy, meta: "PDF" },
+      ...COMMON_DOCS,
+    ],
   },
-  {
-    label: "Requirements for accreditation of multi-site conformity assessment bodies",
-    href: "https://aaa-accreditation.org/wp-content/uploads/2020/04/Requirements-for-Accreditation-of-multi-site-conformity-assessment-bodies-.pdf",
-    meta: "PDF",
+  testimonial: {
+    title: "Hear From an AAA-Accredited Proficiency Testing Provider",
+    intro:
+      "Discover how AAA accreditation has supported proficiency testing providers in strengthening technical credibility, improving confidence in scheme results, and supporting laboratory performance.",
+    media: {
+      kind: "video",
+      id: "3nOuL937cA0",
+      title: "ISO/IEC 17043 accredited proficiency testing provider testimonial",
+    },
+    story: {
+      title: "Real Client Experience",
+      text: "Hear directly from an AAA-accredited proficiency testing provider about its accreditation journey and the value of demonstrating competence against ISO/IEC 17043.",
+    },
+    highlights: [
+      {
+        icon: "badge-check",
+        title: "Stronger Scheme Credibility",
+        text: "Accreditation strengthens confidence in the design, operation, and evaluation of proficiency testing schemes.",
+      },
+      {
+        icon: "users",
+        title: "Greater Participant Confidence",
+        text: "Independent accreditation reinforces trust among laboratories and other participants in PT results and performance evaluations.",
+      },
+      {
+        icon: "globe",
+        title: "Wider Market Recognition",
+        text: "Accredited PT services support stronger recognition among laboratories, regulators, and accreditation stakeholders.",
+      },
+    ],
   },
-];
-
-const FAQ = [
-  {
-    q: "What is a proficiency testing scheme?",
-    a: "A proficiency testing scheme is the design and operation of an interlaboratory comparison, in one or more rounds, for a defined type of item, test or measurement. Participants examine the same material and their results are compared with an assigned value so that their performance can be evaluated against criteria agreed before the round begins.",
+  faq: {
+    intro: "Common questions about ISO/IEC 17043 proficiency testing provider accreditation.",
+    items: [
+      {
+        q: "What is ISO/IEC 17043?",
+        a: "ISO/IEC 17043 specifies requirements for the competence, impartiality, and consistent operation of proficiency testing providers.",
+      },
+      {
+        q: "What is proficiency testing?",
+        a: "Proficiency testing is the evaluation of participant performance against pre-established criteria through interlaboratory comparisons or other appropriate comparison activities.",
+      },
+      {
+        q: "Can a newly established proficiency testing provider apply?",
+        a: "Yes. A newly established provider may apply once it has implemented its management system and can demonstrate technical competence, suitable scheme design, qualified personnel, reliable sample preparation, and effective statistical processes.",
+      },
+      {
+        q: "What types of PT schemes can be accredited?",
+        a: "Accreditation may cover schemes in testing, calibration, medical laboratory activities, microbiology, chemistry, environmental analysis, construction materials, food testing, and other technical fields.",
+      },
+      {
+        q: "Are homogeneity and stability studies required?",
+        a: "Where relevant, proficiency testing providers are expected to demonstrate that PT items are sufficiently homogeneous and stable for the intended scheme.",
+      },
+      {
+        q: "Are statistical methods assessed?",
+        a: "Yes. AAA evaluates the statistical design, assigned values, uncertainty, performance criteria, participant scoring, and interpretation methods used in proficiency testing schemes.",
+      },
+      {
+        q: "How long is accreditation valid?",
+        a: "AAA accreditation is valid for three years, subject to continued compliance with accreditation requirements and completion of applicable surveillance or reassessment activities.",
+      },
+      {
+        q: "How do I begin?",
+        a: "Complete the accreditation application form or contact the AAA team to discuss your proficiency testing schemes and proposed accreditation scope.",
+      },
+    ],
   },
-  {
-    q: "How are proficiency testing items checked before distribution?",
-    a: "The provider must show that the batch of items is sufficiently homogeneous, and — where the property could change over the round — sufficiently stable. This matters because a participant should be scored on its own performance, not on variation between the items it happened to receive.",
+  cta: {
+    title: "Ready to Apply for ISO/IEC 17043 Accreditation?",
+    text: "Take the next step toward independent recognition of your proficiency testing provider’s competence, impartiality, and reliable operation. Our team is ready to guide you through the accreditation process and help define the appropriate scope for your proficiency testing schemes.",
   },
-  {
-    q: "How is participant performance evaluated?",
-    a: "Each participant's result is compared with the assigned value using the statistical design set out in the scheme documentation, commonly through standardized performance scores such as z-scores. The assigned value, its uncertainty and the criteria for acceptable performance are established before results are evaluated and are explained in the report issued to participants.",
-  },
-  {
-    q: "Can a provider subcontract part of a scheme?",
-    a: "Yes. A provider may subcontract work such as item production, testing for homogeneity or statistical analysis, provided it retains responsibility for the scheme, informs participants, and can demonstrate the competence of the subcontractor for the work performed.",
-  },
-  {
-    q: "Why do laboratories take part in proficiency testing?",
-    a: "Testing, calibration and medical laboratories need objective evidence that their results are valid. Participation in an accredited scheme is one of the principal ways of meeting the requirements of ISO/IEC 17025 and ISO 15189 for monitoring the validity of results, alongside internal quality control.",
-  },
-];
+  related: relatedFor(PATH),
+};
 
 export default function Page() {
   return (
     <>
       <JsonLd
         schema={[
-          breadcrumbSchema([
-            { name: "Programs", path: "/programs/conformity-assessment-bodies" },
-            { name: "Proficiency Testing Providers Accreditation", path: PATH },
-          ]),
+          breadcrumbSchema(crumbsFor(PROGRAMS.iso17043.label, PATH)),
           serviceSchema({
-            name: "Proficiency Testing Providers Accreditation (ISO/IEC 17043)",
+            name: `${PROGRAMS.iso17043.label} (ISO/IEC 17043)`,
             description:
-              "Accreditation of proficiency testing providers against ISO/IEC 17043, covering scheme design, preparation of PT items, assigned values, statistical analysis and reporting.",
+              "Accreditation of proficiency testing providers against ISO/IEC 17043, covering PT scheme design, test item preparation, assigned values and statistical methods, evaluation and reporting.",
             path: PATH,
             standard: "ISO/IEC 17043",
             audience: "Proficiency testing providers",
           }),
-          faqSchema(FAQ),
+          faqSchema(DATA.faq.items),
         ]}
       />
-      <ProgramPage
-        title="Proficiency Testing Providers Accreditation"
-        standard="ISO/IEC 17043"
-        intro="AAA offers an internationally recognized accreditation program for proficiency testing providers — the organizations that take responsibility for all aspects of the development and operation of proficiency testing schemes."
-        hero="/about/team-advisory.jpg"
-        heroCaption={{
-          kicker: "AAA accreditation",
-          title: "Proficiency testing",
-          chip: "ISO/IEC 17043",
-        }}
-        metrics={[
-          { v: "ISO/IEC 17043", k: "Anchor standard" },
-          { v: "Per scheme", k: "Scope granted" },
-          { v: "3 years", k: "Accreditation cycle" },
-          { v: "Annual", k: "Surveillance" },
-        ]}
-        overview={[
-          "Proficiency testing providers are organizations that take responsibility for all aspects of the development and operation of proficiency testing schemes.",
-          "Requirements for AAA's accreditation program for proficiency testing providers are defined in ISO/IEC 17043:2010 — Conformity assessment — General requirements for proficiency testing.",
-          "Accredited proficiency testing providers produce proficiency testing samples that compare results from similar testing laboratories, allowing those laboratories to assess and demonstrate the reliability of the data they produce, to identify areas where their testing and measurement methods need improvement, to identify further training needs of staff, to foster confidence in the performance of their testing and measurements, and to assure laboratory competence and confidence in results.",
-          "Because participating laboratories rely on the score they receive, the credibility of a scheme rests on details that are invisible from the outside: whether the items distributed were genuinely homogeneous, how the assigned value was established, and whether the statistical design was fixed before the results arrived. Accreditation to ISO/IEC 17043 puts exactly those decisions under independent assessment.",
-        ]}
-        whoFor={[
-          "Organizations that design and operate proficiency testing schemes for testing, calibration or medical laboratories",
-          "Organizers of interlaboratory comparisons in a defined technical field or industry sector",
-          "Sector bodies and industry associations running proficiency schemes for their members",
-          "Reference material producers and laboratories that also operate proficiency testing schemes",
-          "Regulators and scheme owners needing independent confirmation that a scheme is technically and statistically sound",
-          "Providers whose participants must cite accredited proficiency testing in their own ISO/IEC 17025 or ISO 15189 accreditation",
-        ]}
-        scopeHeading="What the assessment covers"
-        scope={[
-          "Impartiality, confidentiality and conflicts of interest — including protection of participant identity and results.",
-          "Competence of personnel — scheme coordinators, technical advisers and the statisticians responsible for the design and analysis.",
-          "Design of proficiency testing schemes — the statistical design, the number and frequency of rounds, and the criteria for evaluating performance, all fixed in advance.",
-          "Preparation of proficiency testing items — production or procurement, and the assessment of homogeneity and, where relevant, stability.",
-          "Handling, storage, packaging, labelling and distribution of items so that every participant receives comparable material in a comparable condition.",
-          "Assignment of values — the method used to establish the assigned value and its uncertainty, and the traceability of that value where applicable.",
-          "Statistical analysis, evaluation of performance and reporting — performance statistics interpreted against the pre-established criteria, and reports that present them clearly to participants.",
-          "Subcontracting, records, complaints and appeals, and the management system, including internal audit, management review and corrective action.",
-        ]}
-
-        benefits={[
-          "Independent confirmation that your scheme design, item homogeneity and statistics stand up to technical scrutiny",
-          "Participants can cite your accredited scheme as evidence when demonstrating the validity of their own results",
-          "Credibility with regulators and sector bodies that specify accredited proficiency testing in their requirements",
-          "A means of demonstrating your competence to your clients, and a passport to tenders that require accredited providers",
-          "Clearer, more defensible reports — the assigned value and performance criteria are documented before results are evaluated",
-          "Annual surveillance that keeps scheme design, statistical treatment and reporting under continuous review",
-        ]}
-        documents={DOCUMENTS}
-        documentsHeading="Documents related to the accreditation of proficiency testing providers"
-        faq={FAQ}
-        related={[
-          { href: "/programs/conformity-assessment-bodies", label: "All conformity assessment programs" },
-          { href: "/programs/iso-17025", label: "Testing & Calibration Laboratories (ISO/IEC 17025)" },
-          { href: "/programs/iso-15189", label: "Medical Laboratories (ISO 15189)" },
-          { href: "/programs/iso-17020", label: "Inspection Bodies (ISO/IEC 17020)" },
-        ]}
-      />
+      <SchemePage data={DATA} />
     </>
   );
 }

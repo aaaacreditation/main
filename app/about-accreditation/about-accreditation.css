@@ -1,174 +1,329 @@
-/* =========================================================================
-   ABOUT ACCREDITATION — page-local styles
-   -------------------------------------------------------------------------
-   Aug 2026. Everything /about-accreditation needs on top of the shared
-   `.ax-*` design system (app/aaa-ds.css). Nothing here is global: every rule
-   is scoped under `.aax`, which only this route puts on <main>:
+/* ==========================================================================
+   About Accreditation — Oct 2026 client-structure rebuild. Scoped under `.acc`.
+   Cards are the shared SME blue card (`.ax-blue`) from app/aaa-ds.css.
+   ========================================================================== */
 
-       <main className="axp aax"> … </main>
-
-   Palette is tokens only — navy #173d73 dominant, gold #b38a2e accent.
-   ========================================================================= */
-
-/* ====================== The definition, pulled out ====================== */
-.aax .aax-def {
-  position: relative;
-  overflow: hidden;
-  padding: clamp(32px, 4vw, 52px);
-  border: 1px solid var(--ax-border);
-  border-left: 4px solid var(--aaa-gold);
-  border-radius: 6px 22px 22px 6px;
-  background: linear-gradient(150deg, #fff 55%, #fdf9ef);
-  box-shadow: var(--ax-shadow);
-}
-.aax .aax-def-mark {
-  width: 38px;
-  height: 38px;
-  color: var(--aaa-gold);
-}
-.aax .aax-def p {
-  margin: 16px 0 0;
-  font-size: clamp(19px, 2.1vw, 27px);
+/* ------------------------------- Hero --------------------------------- */
+.acc .acc-tagline {
+  display: block;
+  margin-bottom: 12px;
+  font-size: clamp(16px, 1.4vw, 18px);
   font-weight: 500;
-  line-height: 1.46;
-  letter-spacing: -0.02em;
-  color: var(--aaa-blue-950);
-  text-wrap: pretty;
+  line-height: 1.5;
+  color: var(--aaa-gold-100);
 }
-.aax .aax-def cite {
-  display: block;
-  margin-top: 20px;
-  font-style: normal;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-}
-
-/* ==================== Accreditation vs certification ==================== */
-.aax .aax-vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-
-.aax .aax-vs-card {
+.acc .acc-chips {
   display: flex;
-  flex-direction: column;
-  padding: clamp(24px, 2.8vw, 34px);
-  border: 1px solid var(--ax-border);
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: var(--ax-shadow-sm);
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
 }
-.aax .aax-vs-card.lead {
-  color: #fff;
-  border-color: transparent;
-  background:
-    radial-gradient(circle at 88% 4%, rgba(36, 79, 147, 0.5), transparent 44%),
-    linear-gradient(160deg, var(--aaa-blue-900), var(--aaa-blue-950) 82%);
-  box-shadow: var(--ax-shadow);
-}
-.aax .aax-vs-tag {
-  align-self: flex-start;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-  background: #faf3e0;
-  border: 1px solid rgba(179, 138, 46, 0.3);
-}
-.aax .aax-vs-card.lead .aax-vs-tag {
-  color: var(--aaa-blue-950);
-  background: linear-gradient(135deg, #f4e7c6, #d9bd76);
-  border-color: transparent;
-}
-.aax .aax-vs-card h3 {
-  margin: 16px 0 0;
-  font-size: clamp(20px, 2vw, 25px);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-  color: var(--aaa-blue);
-}
-.aax .aax-vs-card.lead h3 { color: #fff; }
-.aax .aax-vs-card > p { margin: 12px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-600); }
-.aax .aax-vs-card.lead > p { color: rgba(255, 255, 255, 0.78); }
-
-.aax .aax-vs-facts { margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--ink-100); display: grid; gap: 13px; }
-.aax .aax-vs-card.lead .aax-vs-facts { border-top-color: rgba(255, 255, 255, 0.14); }
-.aax .aax-vs-facts div { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 14px; align-items: baseline; }
-.aax .aax-vs-facts dt {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-}
-.aax .aax-vs-card.lead .aax-vs-facts dt { color: var(--aaa-gold-100); }
-.aax .aax-vs-facts dd { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-700); }
-.aax .aax-vs-card.lead .aax-vs-facts dd { color: rgba(255, 255, 255, 0.84); }
-
-/* ========================= Benefits by audience ========================= */
-.aax .aax-benefit { border-top: 3px solid var(--aaa-gold); }
-.aax .aax-benefit h3 { margin-top: 14px; }
-
-/* ============================ Program grid ============================== */
-.aax .aax-programs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.aax a.aax-program {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) auto;
+.acc .acc-chips li {
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  padding: 15px 18px;
-  border: 1px solid var(--ax-border);
-  border-radius: 13px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.84);
+}
+.acc .acc-chips svg { color: var(--aaa-gold); }
+
+.acc .acc-hero-visual { display: grid; place-items: center; }
+.acc .acc-symbol {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: clamp(10px, 1.2vw, 16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
   background: #fff;
-  box-shadow: var(--ax-shadow-sm);
-  color: inherit;
-  transition: transform 0.25s var(--ease-out), border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.8);
+  animation: acc-float 7s ease-in-out infinite;
 }
-.aax a.aax-program:hover {
-  transform: translateY(-3px);
-  border-color: rgba(179, 138, 46, 0.5);
-  box-shadow: var(--ax-shadow);
+.acc .acc-symbol::before {
+  content: "";
+  position: absolute;
+  inset: -18% -12%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(179, 138, 46, 0.32), transparent 72%);
 }
-.aax .aax-program-ico {
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  border: 1px solid var(--aaa-blue-100);
-  border-radius: 11px;
-  color: var(--aaa-blue);
-  background: var(--aaa-blue-50);
+.acc .acc-symbol img { display: block; width: 100%; height: auto; border-radius: 16px; }
+@keyframes acc-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
-.aax .aax-program-txt { min-width: 0; }
-.aax .aax-program-txt b {
+
+/* -------------------- 02 What is accreditation ------------------------ */
+.acc .acc-what {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+  align-items: start;
+  gap: clamp(36px, 5vw, 72px);
+}
+.acc .acc-what .ax-prose { margin-top: 26px; }
+.acc .acc-pull {
+  position: relative;
+  margin: 28px 0 0;
+  padding: 22px 24px 22px 28px;
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 0 16px 16px 0;
+  background: linear-gradient(90deg, var(--aaa-gold-wash, rgba(179, 138, 46, 0.08)), transparent);
+}
+.acc .acc-pull strong {
   display: block;
-  font-size: 14.5px;
+  font-size: clamp(18px, 1.7vw, 21px);
   font-weight: 600;
   line-height: 1.35;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
   color: var(--aaa-blue);
 }
-.aax .aax-program-txt span {
-  display: block;
-  margin-top: 3px;
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--ink-500);
-}
-.aax .aax-program svg { flex: none; color: var(--aaa-gold-700); transition: transform 0.2s ease; }
-.aax a.aax-program:hover svg { transform: translateX(3px); }
+.acc .acc-pull span { display: block; margin-top: 8px; font-size: 15px; line-height: 1.7; color: var(--ink-700); }
+.acc .acc-scope-note { align-items: flex-start; margin: 22px 0 0; }
+.acc .acc-scope-note svg,
+.acc .acc-ongoing svg { flex: none; margin-top: 2px; color: var(--aaa-blue); }
 
-/* ============================= Responsive =============================== */
-@media (max-width: 980px) {
-  .aax .aax-vs { grid-template-columns: 1fr; }
+.acc .acc-delivers {
+  position: sticky;
+  top: 110px;
+  overflow: hidden;
+  border-radius: var(--ax-radius-lg);
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
 }
-@media (max-width: 720px) {
-  .aax .aax-programs { grid-template-columns: 1fr; }
-  .aax .aax-vs-facts div { grid-template-columns: 1fr; gap: 4px; }
+.acc .acc-delivers::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.acc .acc-delivers-head { padding: 28px 28px 18px; }
+.acc .acc-kicker {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.acc .acc-delivers-head h3 { margin: 8px 0 0; font-size: clamp(20px, 1.9vw, 24px); font-weight: 600; color: #fff; }
+.acc .acc-delivers-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+.acc .acc-delivers-list li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 16px;
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.25s ease;
+}
+.acc .acc-delivers-list li:last-child { border-bottom: 0; }
+.acc .acc-delivers-list li:hover { background: rgba(255, 255, 255, 0.04); }
+.acc .acc-delivers-list .ax-card-ico {
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  color: #fff;
+  border-color: var(--ax-ring-gold);
+  background: transparent;
+}
+.acc .acc-delivers-list li:hover .ax-card-ico { color: var(--aaa-blue-950); background: var(--aaa-gold-100); border-color: var(--aaa-gold-100); }
+.acc .acc-delivers-list b { display: block; font-size: 15px; font-weight: 600; line-height: 1.35; color: #fff; }
+.acc .acc-delivers-list span { display: block; margin-top: 4px; font-size: 13.5px; line-height: 1.65; color: rgba(255, 255, 255, 0.76); }
+
+/* ------------------ 03 Accreditation vs certification ----------------- */
+.acc .acc-compare {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(5, auto);
+  column-gap: clamp(18px, 2.4vw, 32px);
+  margin-top: clamp(30px, 3.4vw, 46px);
+}
+.acc .acc-col {
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--ax-radius-lg);
+  color: #fff;
+  background: var(--ax-navy-bg);
+  box-shadow: var(--ax-navy-shadow);
+}
+.acc .acc-col dl { display: contents; }
+.acc .acc-col-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.acc .acc-col-head::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
+}
+.acc .acc-col-certification .acc-col-head::before {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 45%, transparent 80%);
+}
+.acc .acc-col-head .ax-card-ico { color: #fff; border-color: var(--ax-ring-gold); background: transparent; }
+.acc .acc-col-certification .acc-col-head .ax-card-ico { border-color: rgba(255, 255, 255, 0.5); }
+.acc .acc-col-head h3 { margin: 0; font-size: clamp(20px, 2vw, 24px); font-weight: 600; color: #fff; }
+.acc .acc-row {
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.25s ease;
+}
+.acc .acc-row:last-child { border-bottom: 0; }
+.acc .acc-row:hover { background: rgba(255, 255, 255, 0.04); }
+.acc .acc-row dt {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.acc .acc-row dd { margin: 6px 0 0; font-size: 14px; line-height: 1.7; color: rgba(255, 255, 255, 0.86); }
+.acc .acc-vs {
+  position: absolute;
+  top: 46px;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 3px solid var(--ax-cream);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, var(--aaa-gold), var(--aaa-gold-700));
+  transform: translate(-50%, -50%);
+}
+.acc .acc-roles { margin-top: clamp(22px, 2.6vw, 32px); }
+.acc .acc-roles .ax-card.navy.ax-blue { min-height: 0; }
+
+/* -------------------------- 04 Process rail --------------------------- */
+.acc .acc-prestep {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 880px;
+  margin: clamp(26px, 3vw, 38px) auto 0;
+  padding: 16px 18px 16px 20px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 16px;
+  background: var(--aaa-blue-50);
+}
+.acc .acc-prestep-ico {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  border: 1.5px solid var(--ax-ring);
+  border-radius: 50%;
+  color: var(--aaa-blue);
+}
+.acc .acc-prestep-ico svg { width: 100%; height: 100%; }
+.acc .acc-prestep p { flex: 1; margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-700); }
+.acc .acc-prestep strong { color: var(--aaa-blue); }
+.acc .acc-prestep .ax-btn { flex: none; }
+
+.acc .acc-rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin: clamp(34px, 4vw, 52px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* Gold track running through the step nodes */
+.acc .acc-rail::before {
+  content: "";
+  position: absolute;
+  top: 23px;
+  right: calc(100% / 12);
+  left: calc(100% / 12);
+  height: 2px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-blue) 50%, var(--aaa-gold));
+  opacity: 0.55;
+}
+.acc .acc-rail-step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.acc .acc-rail-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--aaa-gold);
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--aaa-blue);
+  background: #fff;
+  box-shadow: 0 0 0 6px #fff;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.acc .acc-rail-step:hover .acc-rail-node { color: #fff; background: var(--aaa-blue); }
+.acc .acc-rail-step .ax-card { flex: 1; width: 100%; }
+.acc .acc-ongoing { align-items: flex-start; max-width: 880px; margin: clamp(30px, 3.4vw, 44px) auto 0; }
+.acc .acc-ongoing svg { color: var(--aaa-gold-700); }
+
+/* ------------------------------ CTA note ------------------------------ */
+.acc .acc-cta-note {
+  display: block;
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+/* ------------------------------ Responsive ---------------------------- */
+@media (max-width: 1100px) {
+  .acc .acc-rail { grid-template-columns: 1fr; gap: 14px; max-width: 720px; margin-right: auto; margin-left: auto; }
+  .acc .acc-rail::before {
+    top: 24px;
+    bottom: 24px;
+    right: auto;
+    left: 23px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--aaa-gold), var(--aaa-blue) 50%, var(--aaa-gold));
+  }
+  .acc .acc-rail-step { flex-direction: row; align-items: flex-start; }
+}
+@media (max-width: 980px) {
+  .acc .acc-what { grid-template-columns: 1fr; }
+  .acc .acc-delivers { position: static; }
+  .acc .acc-symbol { max-width: 560px; }
+}
+@media (max-width: 760px) {
+  .acc .acc-compare { grid-template-columns: 1fr; grid-template-rows: none; row-gap: 22px; }
+  .acc .acc-col { grid-row: auto; grid-template-rows: none; }
+  .acc .acc-vs { display: none; }
+  .acc .acc-prestep { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .acc .acc-delivers-head { padding: 24px 20px 16px; }
+  .acc .acc-delivers-list li { padding: 16px 20px; gap: 14px; }
+  .acc .acc-col-head,
+  .acc .acc-row { padding-right: 20px; padding-left: 20px; }
+  .acc .acc-rail-node { width: 40px; height: 40px; font-size: 13px; }
+  .acc .acc-rail::before { left: 19px; top: 20px; bottom: 20px; }
+  .acc .acc-rail-step { gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .aax a.aax-program { transition: none; }
+  .acc .acc-symbol { animation: none; }
 }

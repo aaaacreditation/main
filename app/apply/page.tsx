@@ -196,7 +196,7 @@ const FAQ: { q: string; a: string }[] = [
 
 export default function Page() {
   return (
-    <main className="axp apx">
+    <div className="axp apx">
       <JsonLd
         schema={[breadcrumbSchema([{ name: "Apply", path: "/apply" }]), faqSchema(FAQ)]}
       />
@@ -547,6 +547,6 @@ export default function Page() {
           { href: "/directory/accredited-organizations", label: "Accredited organizations" },
         ]}
       />
-    </main>
+    </div>
   );
 }

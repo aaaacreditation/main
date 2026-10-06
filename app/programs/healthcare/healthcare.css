@@ -1,0 +1,569 @@
+/* ==========================================================================
+   Healthcare Accreditation — Oct 2026 client-structure rebuild.
+   Scoped under `.hcx`. Cards are the shared NavyCard (`.ax-blue`) from
+   app/aaa-ds.css. (The legacy hc.css / cluster.tsx remain only for the
+   older healthcare sub-pages.)
+   ========================================================================== */
+
+/* ------------------------------- Hero --------------------------------- */
+.hcx .hcx-h1-sub {
+  display: block;
+  max-width: 30ch;
+  margin-top: 14px;
+  font-size: clamp(18px, 1.7vw, 23px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--aaa-gold-100);
+}
+.hcx .hcx-chips {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hcx .hcx-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+.hcx .hcx-chips li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--aaa-gold);
+  box-shadow: 0 0 0 4px rgba(179, 138, 46, 0.18);
+}
+
+/* Two headlines the client wants on a single line on desktop */
+@media (min-width: 1024px) {
+  .hcx .hcx-oneline { max-width: none; }
+  .hcx .hcx-oneline h2 { white-space: nowrap; }
+}
+
+/* ------------------------- 02 Why accreditation ----------------------- */
+.hcx .hcx-why {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(24px, 3vw, 40px);
+}
+.hcx .hcx-why-media { position: sticky; top: 110px; }
+.hcx .hcx-video {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--ax-radius-lg);
+  background: var(--aaa-blue-950);
+  box-shadow: var(--ax-shadow);
+}
+.hcx .hcx-video iframe,
+.hcx .hcx-video-btn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.hcx .hcx-video-btn {
+  display: block;
+  padding: 0;
+  cursor: pointer;
+  background: var(--aaa-blue-950);
+}
+.hcx .hcx-video-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+.hcx .hcx-video-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 44, 0.05) 40%, rgba(6, 26, 44, 0.78) 100%);
+}
+.hcx .hcx-video-btn:hover img { transform: scale(1.03); }
+.hcx .hcx-video-btn:focus-visible { outline: 3px solid var(--aaa-gold); outline-offset: -3px; }
+.hcx .hcx-video-label {
+  position: absolute;
+  z-index: 1;
+  left: 22px;
+  right: 22px;
+  bottom: 18px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  color: #fff;
+}
+
+/* Shared play button (explainer + testimonials) */
+.hcx .hcx-play {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700));
+  box-shadow: 0 0 0 10px rgba(179, 138, 46, 0.22), 0 18px 34px -14px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s ease;
+}
+.hcx .hcx-play svg { width: 26px; height: 26px; margin-left: 4px; }
+.hcx button:hover > .hcx-play {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 0 0 16px rgba(179, 138, 46, 0.18), 0 18px 34px -14px rgba(0, 0, 0, 0.6);
+}
+
+.hcx .hcx-why-quote {
+  display: flex;
+  gap: 14px;
+  margin: 22px 0 0;
+  padding: 20px 22px;
+  border-left: 3px solid var(--aaa-gold);
+  border-radius: 0 var(--ax-radius) var(--ax-radius) 0;
+  font-size: 16.5px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--aaa-blue);
+  background: var(--aaa-gold-wash);
+}
+.hcx .hcx-why-quote svg { flex: none; color: var(--aaa-gold-700); }
+.hcx .hcx-why-grid { gap: 16px; }
+.hcx .hcx-why-grid .ax-card.navy.ax-blue.compact { padding: 18px 20px 20px; }
+
+/* --------------------------- 03 Eligibility --------------------------- */
+.hcx .hcx-elig .ax-card.navy.ax-blue.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px;
+}
+.hcx .hcx-elig .ax-card.navy.ax-blue.compact h3 { margin: 0; font-size: 14.5px; line-height: 1.3; }
+.hcx .hcx-elig .ax-card-top { flex: none; }
+.hcx .hcx-elig-contact {
+  margin: 26px 0 0;
+  font-size: 14.5px;
+  text-align: center;
+  color: var(--ink-600);
+}
+.hcx .hcx-elig-contact a { font-weight: 600; color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); }
+.hcx .hcx-elig-contact a:hover { border-color: var(--aaa-blue); }
+
+/* ------------------------ 04 International recognition --------------- */
+.hcx .hcx-recog {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 56px);
+}
+.hcx .ax-card.navy.ax-blue.hcx-recog-main { padding: clamp(26px, 3vw, 38px); min-height: 0; }
+.hcx .ax-card.navy.ax-blue.hcx-recog-main:hover { transform: none; }
+.hcx .hcx-recog-mark { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px; }
+.hcx .hcx-plate {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 30px -22px rgba(0, 0, 0, 0.6);
+}
+.hcx .hcx-plate img { display: block; height: auto; max-width: 100%; }
+.hcx .ax-card.ax-blue.hcx-recog-main h3 { margin: 10px 0 6px; font-size: clamp(20px, 2vw, 25px); }
+.hcx .hcx-recog-dates {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--aaa-gold-100);
+}
+.hcx .hcx-recog-text { margin: 20px 0 0; font-size: 14.5px; line-height: 1.75; color: rgba(255, 255, 255, 0.82); }
+.hcx .hcx-recog-checks { margin: 18px 0 0; padding: 0; list-style: none; }
+.hcx .hcx-recog-checks li {
+  position: relative;
+  margin-top: 10px;
+  padding-left: 30px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+.hcx .hcx-recog-checks li::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ax-ring-gold);
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4e7c6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+    center / 11px no-repeat;
+}
+.hcx .hcx-cert { display: flex; flex-direction: column; align-items: center; gap: 22px; margin: 0; }
+.hcx .hcx-cert-frame {
+  width: min(100%, 320px);
+  padding: 12px;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: #fff;
+  box-shadow: var(--ax-shadow);
+  transform: rotate(-1.5deg);
+  transition: transform 0.5s var(--ease-out);
+}
+.hcx .hcx-cert-frame:hover { transform: rotate(0deg) translateY(-6px); }
+.hcx .hcx-cert-frame img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.hcx .hcx-subhead {
+  margin: clamp(48px, 5vw, 68px) 0 24px;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--aaa-blue);
+}
+.hcx .hcx-recog-note { max-width: 880px; margin: clamp(28px, 3vw, 40px) auto 0; }
+
+/* ------------------------------ 04b Team ------------------------------ */
+.hcx .hcx-team {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
+.hcx .ax-card.navy.ax-blue.hcx-member {
+  align-items: center;
+  min-height: 0;
+  padding: 28px 22px 22px;
+  text-align: center;
+}
+.hcx .ax-card.navy.ax-blue.hcx-member:hover { transform: translateY(-4px); }
+.hcx .hcx-portrait {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: var(--aaa-blue-900);
+  box-shadow: 0 0 0 3px var(--aaa-blue-900), 0 0 0 5px var(--ax-ring-gold);
+}
+.hcx .hcx-portrait img { object-fit: cover; object-position: center 25%; }
+.hcx .ax-card.ax-blue.hcx-member h3 { margin: 20px 0 6px; font-size: 17px; }
+.hcx .hcx-member .ax-blue-kicker { margin: 0; font-size: 12.5px; line-height: 1.5; }
+.hcx .hcx-bio { width: 100%; margin-top: 16px; text-align: left; }
+.hcx .hcx-bio summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid rgba(244, 231, 198, 0.35);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  list-style: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.hcx .hcx-bio summary::-webkit-details-marker { display: none; }
+.hcx .hcx-bio summary:hover { border-color: var(--aaa-gold); background: rgba(179, 138, 46, 0.14); }
+.hcx .hcx-bio summary:focus-visible { outline: 2px solid var(--aaa-gold); outline-offset: 2px; }
+.hcx .hcx-bio summary svg { transition: transform 0.3s var(--ease-out); }
+.hcx .hcx-bio[open] summary svg { transform: rotate(45deg); }
+.hcx .hcx-bio p { margin: 14px 0 0; font-size: 13px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); }
+
+/* ------------------------- 05 What we evaluate ------------------------ */
+.hcx .hcx-eval {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+}
+.hcx .hcx-eval-cards {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 22px;
+}
+.hcx .hcx-eval-plus {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700));
+  box-shadow: 0 0 0 6px #fff;
+  transform: translate(-50%, -50%);
+}
+
+/* ------------------------------ 06 Journey ---------------------------- */
+.hcx .hcx-journey {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(250px, 1.1fr);
+  align-items: stretch;
+  gap: 18px;
+}
+.hcx .hcx-stages {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hcx .hcx-stages::before {
+  content: "";
+  position: absolute;
+  top: 39px;
+  left: 4%;
+  right: -18px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--aaa-gold), rgba(179, 138, 46, 0.25));
+}
+.hcx .hcx-stages > li { position: relative; display: flex; }
+.hcx .hcx-stages .ax-card { width: 100%; }
+.hcx .hcx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 5px 10px;
+  border: 1px solid rgba(179, 138, 46, 0.55);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--aaa-gold-100);
+  background: rgba(179, 138, 46, 0.14);
+}
+.hcx .ax-card.navy.ax-blue.hcx-outcome {
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 24px 20px;
+  text-align: center;
+}
+/* Gold top bar, painted into the blue card's face (::after) because ::before
+   carries the card's orbiting border accent. */
+.hcx .ax-card.navy.ax-blue.hcx-outcome::after {
+  background:
+    linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 50%, var(--aaa-gold)) top / 100% 4px no-repeat,
+    var(--ax-navy-bg);
+}
+.hcx .hcx-outcome-kicker {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aaa-gold-100);
+}
+.hcx .hcx-outcome-ico { margin-top: 14px; }
+.hcx .ax-card.ax-blue.hcx-outcome h3 { margin: 12px 0 4px; font-size: 19px; }
+.hcx .hcx-outcome-valid { font-size: 15px; font-weight: 600; color: #fff; }
+.hcx .hcx-cycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.hcx .hcx-cycle span {
+  padding: 4px 9px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+.hcx .hcx-cycle i { font-style: normal; color: var(--aaa-gold-100); }
+.hcx .hcx-periodic {
+  width: 100%;
+  margin-top: 16px;
+  padding: 11px 12px;
+  border: 1px solid rgba(179, 138, 46, 0.6);
+  border-radius: 12px;
+  text-align: left;
+  background: rgba(179, 138, 46, 0.12);
+}
+.hcx .hcx-periodic .ps-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--aaa-gold-100);
+}
+.hcx .hcx-periodic .ps-text { display: block; margin-top: 3px; font-size: 12px; line-height: 1.5; color: rgba(255, 255, 255, 0.8); }
+.hcx #accreditation-journey .ax-actions { margin-top: 34px; }
+
+/* --------------------------- 07 Testimonials -------------------------- */
+.hcx .hcx-testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.hcx .ax-card.navy.ax-blue.hcx-testi { overflow: hidden; min-height: 0; padding: 0; }
+.hcx .hcx-testi-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--aaa-blue-950);
+}
+.hcx .hcx-testi-thumb img { object-fit: cover; transition: transform 0.6s var(--ease-out); }
+.hcx .hcx-testi-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 44, 0) 45%, rgba(6, 26, 44, 0.55) 100%);
+}
+.hcx .hcx-testi-thumb:hover img { transform: scale(1.04); }
+.hcx .hcx-testi-thumb:focus-visible { outline: 3px solid var(--aaa-gold); outline-offset: -3px; }
+.hcx .hcx-testi-body { display: flex; flex: 1; flex-direction: column; padding: 22px 24px 24px; }
+.hcx .hcx-testi-org { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.hcx .ax-card.ax-blue .hcx-testi-org h3 { margin: 0; font-size: 18px; }
+.hcx .hcx-testi-org span { font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--aaa-gold-100); }
+.hcx .hcx-testi .ax-blue-tag { margin-top: 12px; }
+.hcx .hcx-testi blockquote {
+  margin: 16px 0 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+}
+.hcx .hcx-testi-note { margin: 10px 0 0; font-size: 12px; font-style: italic; color: rgba(255, 255, 255, 0.6) !important; }
+.hcx .hcx-testi-link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 18px 0 0;
+  border: 0;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--aaa-gold-100);
+  cursor: pointer;
+  background: none;
+}
+.hcx .hcx-testi-link span { display: inline-block; transition: transform 0.25s ease; }
+.hcx .hcx-testi-link:hover span { transform: translateX(4px); }
+.hcx .hcx-testi-link:focus-visible { outline: 2px solid var(--aaa-gold); outline-offset: 3px; border-radius: 4px; }
+.hcx .hcx-testi-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 34px 0 0;
+  text-align: center;
+}
+.hcx .hcx-testi-foot strong { font-size: 16px; font-weight: 600; color: var(--aaa-blue); }
+.hcx .hcx-testi-foot span { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--aaa-gold-700); }
+
+/* Video modal */
+.hcx .hcx-modal {
+  width: min(960px, calc(100vw - 32px));
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+}
+.hcx .hcx-modal::backdrop { background: rgba(6, 26, 44, 0.86); backdrop-filter: blur(4px); }
+.hcx .hcx-modal-box { position: relative; }
+.hcx .hcx-modal-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  background: #000;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.8);
+}
+.hcx .hcx-modal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.hcx .hcx-modal-close {
+  position: absolute;
+  top: -52px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+}
+.hcx .hcx-modal-close:hover { border-color: var(--aaa-gold); background: rgba(179, 138, 46, 0.25); }
+.hcx .hcx-modal-close:focus-visible { outline: 2px solid var(--aaa-gold); outline-offset: 2px; }
+.hcx .hcx-modal-close svg { width: 100%; height: 100%; }
+
+/* ------------------------------ 08 Final CTA -------------------------- */
+.hcx .ax-close-inner .hcx-reassure { margin-top: 22px; font-size: 13.5px; color: rgba(255, 255, 255, 0.66); }
+
+/* ------------------------------ Responsive ---------------------------- */
+@media (max-width: 1180px) {
+  .hcx .hcx-journey { grid-template-columns: 1fr; }
+  .hcx .hcx-stages::before { right: 4%; }
+  .hcx .ax-card.navy.ax-blue.hcx-outcome { max-width: 560px; width: 100%; margin: 0 auto; }
+}
+@media (max-width: 1100px) {
+  .hcx .hcx-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .hcx .hcx-why,
+  .hcx .hcx-recog,
+  .hcx .hcx-eval { grid-template-columns: 1fr; }
+  .hcx .hcx-why-media { position: static; }
+  .hcx .hcx-testi-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 860px) {
+  .hcx .hcx-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hcx .hcx-stages::before { display: none; }
+}
+@media (max-width: 640px) {
+  .hcx .hcx-why-grid,
+  .hcx .hcx-eval-cards,
+  .hcx .hcx-stages,
+  .hcx .hcx-testi-grid,
+  .hcx .hcx-team { grid-template-columns: 1fr; }
+  .hcx .hcx-eval-plus { display: none; }
+  .hcx .hcx-cert-frame { transform: none; }
+}
+@media (max-width: 560px) {
+  .hcx .ax-blue-grid.five.hcx-elig { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hcx .hcx-elig .ax-card.navy.ax-blue.compact { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hcx .hcx-video-btn img,
+  .hcx .hcx-testi-thumb img,
+  .hcx .hcx-cert-frame,
+  .hcx .hcx-play { transition: none; }
+}
+
+/* Kit chip is 10.5px; the brief sets a 12px floor for text */
+.hcx .ax-blue-tag { font-size: 12px; letter-spacing: 0.06em; }
