@@ -23,7 +23,11 @@ const LEGACY_PAGES: Record<string, string> = {
   "/become-a-partner": "/partnerships",
   "/privacy-policy": "/privacy",
   "/contact-us": "/contact",
-  "/get-a-quote": "/quote",
+  // Oct 2026: /quote was retired — quotes go through the contact form
+  // (CONTACT.quoteHref in lib/facts.ts). Next does not chain redirects, so
+  // the WordPress URL points straight at the form too.
+  "/get-a-quote": "/contact?topic=quote#enquiry",
+  "/quote": "/contact?topic=quote#enquiry",
   "/apply-for-accreditation": "/apply",
 
   // Healthcare cluster

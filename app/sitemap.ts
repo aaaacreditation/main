@@ -61,7 +61,6 @@ const STATIC_ROUTES: Entry[] = [
 
   // Conversion.
   page("/apply", 0.9, "monthly"),
-  page("/quote", 0.9, "monthly"),
   page("/contact", 0.8, "monthly"),
 
   // Membership.

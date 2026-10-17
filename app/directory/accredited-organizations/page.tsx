@@ -15,7 +15,7 @@ import "./directory.css";
  *
  * Two different country figures appear on this page and they are deliberately
  * distinct: REGISTER_STATS.countries is how many countries the entries below
- * come from, while FACTS.countries (58) is AAA's canonical worldwide reach.
+ * come from, while FACTS.countries is AAA's canonical worldwide reach.
  * Country counts inside an organization's own description belong to that
  * organization and are never rewritten.
  */

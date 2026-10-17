@@ -9,7 +9,9 @@
  *
  * The canonical figures below are taken from the two most recent
  * client-approved pages (/programs/iso-17021, Aug 2026, and
- * /programs/smes-accreditation-program, July 2026), which both say 58.
+ * /programs/smes-accreditation-program, July 2026), which both said 58. The
+ * client raised it to 59 in the Oct 2026 "Website corrections" document,
+ * alongside the list of countries drawn on the world map (WorldMap.tsx).
  *
  * Import these instead of hardcoding. If the client updates a number, it
  * changes here and everywhere at once.
@@ -17,9 +19,9 @@
 
 export const FACTS = {
   /** Countries in which AAA-accredited organizations operate. */
-  countries: 58,
-  countriesLabel: "58 countries",
-  countriesPlus: "58+",
+  countries: 59,
+  countriesLabel: "59 countries",
+  countriesPlus: "59+",
 
   /** Organizations holding a live AAA accreditation. */
   organizations: "200+",
@@ -55,6 +57,10 @@ export const CONTACT = {
   country: "USA",
   addressLine: "8609 Westwood Center Drive, Tysons Corner, VA 22182, USA",
   consultationUrl: "https://calendly.com/aaa-accreditation4/30min",
+  /** The enquiry form on /contact. Every "talk to us" CTA lands here (Oct 2026). */
+  formHref: "/contact#enquiry",
+  /** Same form with "Quote request" pre-selected — the separate /quote page was retired (Oct 2026). */
+  quoteHref: "/contact?topic=quote#enquiry",
 } as const;
 
 /**

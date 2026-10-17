@@ -3,12 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "../../_components/Icon";
 import ReadinessCheck from "../../programs/smes-accreditation-program/ReadinessCheck";
+import { CONTACT, FACTS } from "@/lib/facts";
 import "../../programs/smes-accreditation-program/sme.css";
 
 export const metadata: Metadata = {
   title: "SMEs Funding Readiness Accreditation",
   description:
-    "AAA SMEs Accreditation is an international accreditation that turns your operational and financial health into a lender-readable Business Readiness Score, recognized across 58 countries. Check your readiness for free.",
+    `AAA SMEs Accreditation is an international accreditation that turns your operational and financial health into a lender-readable Business Readiness Score, recognized across ${FACTS.countriesLabel}. Check your readiness for free.`,
   robots: { index: false, follow: false },
 };
 
@@ -321,7 +322,7 @@ export default function Page() {
             <span>U.S. headquartered</span><i>★</i>
             <span>Independent assessment</span><i>★</i>
             <span>International recognition</span><i>★</i>
-            <span>Recognised in 58 countries</span>
+            <span>Recognised in {FACTS.countriesLabel}</span>
           </div>
         </div>
       </section>
@@ -508,7 +509,7 @@ export default function Page() {
               </p>
             </div>
             <div className="sme-band-actions">
-              <Link href="/quote" className="btn btn-gold">
+              <Link href={CONTACT.quoteHref} className="btn btn-gold">
                 Start your accreditation <Icon name="arrow" size={14} className="arrow" />
               </Link>
               <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="btn btn-ghost-light">
@@ -678,7 +679,7 @@ export default function Page() {
                 <span className="ico"><Icon name="pin" size={18} /></span>
                 <span><strong>Visit us</strong>8609 Westwood Center Drive, Tysons Corner, VA 22182, USA</span>
               </div>
-              <Link href="/quote" className="btn btn-gold sme-contact-cta">
+              <Link href={CONTACT.quoteHref} className="btn btn-gold sme-contact-cta">
                 Request a Quote <Icon name="arrow" size={14} className="arrow" />
               </Link>
             </div>

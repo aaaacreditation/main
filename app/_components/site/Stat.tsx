@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Animated figure for stat strips. Accepts the display strings from
- * lib/facts.ts ("58+", "20,162", "287") and counts up to them once scrolled
+ * lib/facts.ts ("59+", "20,162", "287") and counts up to them once scrolled
  * into view; anything non-numeric ("Multiple", "Virginia, USA") renders as-is.
  * Server-renders the final value, so no-JS and reduced-motion users see it.
  */

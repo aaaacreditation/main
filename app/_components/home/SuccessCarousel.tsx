@@ -1,19 +1,22 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 import Glyph from "../site/Glyph";
 
 export type SuccessStory = {
   name: string;
-  img: string;
-  alt: string;
   sector: string;
   country: string;
-  metric: string;
+  /** The organization's testimonial, without surrounding quote marks. */
   quote: string;
-  desc: string;
-  href: string;
+  /** Certificate photo, or the video thumbnail when `video` is set. */
+  img: string;
+  alt: string;
+  logo: string;
+  /** YouTube URL — the card shows a play button and "Watch Video". */
+  video?: string;
+  /** Story page; falls back to the carousel's `moreHref`. */
+  href?: string;
+  /** Gold kicker line, used on the featured card. */
+  metric?: string;
   featured?: boolean;
 };
 
@@ -21,61 +24,90 @@ export type SuccessStory = {
  * Home "Success Stories" auto-scrolling carousel (client mockup 04, Oct 2026).
  *
  * The track holds the stories twice and slides by -50% on a CSS loop, so it
- * never jumps. Motion pauses on hover and on keyboard focus (CSS), and the
- * Pause / Play button gives everyone a way to stop it (WCAG 2.2.2). The
+ * never jumps. Motion pauses on hover and on keyboard focus (CSS). The
  * duplicate set is `inert`, so screen readers and Tab only meet each story
  * once. Under prefers-reduced-motion the loop is dropped entirely and the
  * row becomes a native horizontal scroller with snap points (see home.css).
+ *
+ * Oct 2026 corrections: the "Carousel pauses on hover" hint and the Pause
+ * stories button were removed at the client's request; hover/focus pausing
+ * and the reduced-motion scroller remain.
  */
-export default function SuccessCarousel({ stories }: { stories: readonly SuccessStory[] }) {
-  const [paused, setPaused] = useState(false);
-
+export default function SuccessCarousel({
+  stories,
+  moreHref,
+}: {
+  stories: readonly SuccessStory[];
+  moreHref: string;
+}) {
   const group = (clone: boolean) => (
     <ul className="hx-ss-group" inert={clone} aria-hidden={clone || undefined}>
-      {stories.map((s) => (
-        <li key={s.name} className="hx-ss-item">
-          <article className={`ax-card navy ax-blue hx-story${s.featured ? " featured" : ""}`}>
-            <figure className="hx-story-media">
-              <Image
-                src={s.img}
-                alt={clone ? "" : s.alt}
-                fill
-                sizes="(max-width: 650px) 300px, 460px"
-                // Load up front: cards slide into view continuously, and lazy
-                // loading made each photo pop in late. The duplicate set
-                // reuses the same cached files.
-                loading="eager"
-                fetchPriority="low"
-              />
-              <span className="hx-story-sector">{s.sector}</span>
-              <span className="hx-story-country">
-                <Glyph name="pin" size={14} strokeWidth={2} /> {s.country}
-              </span>
-            </figure>
-            <div className="hx-story-body">
-              {s.featured && <span className="ax-blue-tag">Featured Story</span>}
-              <span className="hx-story-metric">{s.metric}</span>
-              <h3>{s.name}</h3>
-              <p className="hx-story-quote">{s.quote}</p>
-              <p className="hx-story-desc">{s.desc}</p>
-              <div className="hx-story-foot">
-                <a href={s.href} target="_blank" rel="noopener noreferrer" className="hx-story-link">
-                  Read Story <Glyph name="arrow-right" size={14} strokeWidth={2} />
-                  <span className="sr-only"> about {s.name} (opens in a new tab)</span>
-                </a>
-                <span className="hx-story-badge">
-                  <Glyph name="badge-check" size={14} strokeWidth={2} /> Accredited
+      {stories.map((s) => {
+        const href = s.video ?? s.href ?? moreHref;
+        return (
+          <li key={s.name} className="hx-ss-item">
+            <article className={`ax-card navy ax-blue hx-story${s.featured ? " featured" : ""}${s.video ? " video" : ""}`}>
+              <figure className="hx-story-media">
+                <Image
+                  src={s.img}
+                  alt={clone ? "" : s.alt}
+                  fill
+                  sizes="(max-width: 650px) 300px, 460px"
+                  // Load up front: cards slide into view continuously, and lazy
+                  // loading made each photo pop in late. The duplicate set
+                  // reuses the same cached files.
+                  loading="eager"
+                  fetchPriority="low"
+                />
+                <span className="hx-story-sector">{s.sector}</span>
+                <span className="hx-story-country">
+                  <Glyph name="pin" size={14} strokeWidth={2} /> {s.country}
                 </span>
+                {s.video && (
+                  // Mouse shortcut to the same video as the "Watch Video" link
+                  // below, so it stays out of the tab order.
+                  <a
+                    href={s.video}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hx-story-play"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  >
+                    <Glyph name="play" size={22} strokeWidth={2} />
+                  </a>
+                )}
+              </figure>
+              <div className="hx-story-body">
+                {s.featured && <span className="ax-blue-tag">Featured Story</span>}
+                {s.metric && <span className="hx-story-metric">{s.metric}</span>}
+                <div className="hx-story-org">
+                  <span className="hx-story-logo">
+                    <Image src={s.logo} alt={clone ? "" : `${s.name} logo`} fill sizes="96px" />
+                  </span>
+                  <h3>{s.name}</h3>
+                </div>
+                <p className="hx-story-quote">“{s.quote}”</p>
+                <div className="hx-story-foot">
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="hx-story-link">
+                    {s.video ? "Watch Video" : "Read Story"}{" "}
+                    <Glyph name={s.video ? "play" : "arrow-right"} size={14} strokeWidth={2} />
+                    <span className="sr-only"> about {s.name} (opens in a new tab)</span>
+                  </a>
+                  <span className="hx-story-badge">
+                    <Glyph name="badge-check" size={14} strokeWidth={2} /> Accredited
+                  </span>
+                </div>
               </div>
-            </div>
-          </article>
-        </li>
-      ))}
+            </article>
+          </li>
+        );
+      })}
     </ul>
   );
 
   return (
-    <div className={`hx-ss${paused ? " is-paused" : ""}`}>
+    <div className="hx-ss">
       <div
         className="hx-ss-shell"
         role="region"
@@ -87,29 +119,6 @@ export default function SuccessCarousel({ stories }: { stories: readonly Success
           {group(false)}
           {group(true)}
         </div>
-      </div>
-      <div className="hx-ss-controls">
-        <p className="hx-ss-hint">Carousel pauses on hover.</p>
-        <button
-          type="button"
-          className="hx-ss-toggle"
-          aria-pressed={paused}
-          onClick={() => setPaused((p) => !p)}
-        >
-          {paused ? (
-            <>
-              <Glyph name="play" size={14} strokeWidth={2} /> Play stories
-            </>
-          ) : (
-            <>
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
-                <rect x="6" y="5" width="4" height="14" rx="1" />
-                <rect x="14" y="5" width="4" height="14" rx="1" />
-              </svg>{" "}
-              Pause stories
-            </>
-          )}
-        </button>
       </div>
     </div>
   );

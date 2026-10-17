@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Icon from "./Icon";
 import SealRosette from "./SealRosette";
-import { CAB_SCHEMES, CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
+import { CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
 
 /**
  * Site footer.
@@ -13,9 +13,9 @@ import { CAB_SCHEMES, CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
  * four social icons pointed at `href="#"`.
  */
 
-// Oct 2026: mirrors the client's site structure — the four primary programs,
-// then the eight conformity-assessment programs in hub order.
-const PROGRAM_LINKS = [PROGRAMS.training, PROGRAMS.healthcare, PROGRAMS.cab, PROGRAMS.sme, ...CAB_SCHEMES];
+// Oct 2026 ("Website corrections"): the four main programs only — TEPA,
+// Healthcare, CABs and SMEs. The eight CAB schemes are reached from the CAB hub.
+const PROGRAM_LINKS = [PROGRAMS.training, PROGRAMS.healthcare, PROGRAMS.cab, PROGRAMS.sme];
 
 const ABOUT_LINKS = [
   { href: "/about", label: "About AAA" },
@@ -47,10 +47,9 @@ export default function Footer() {
               />
             </Link>
             <p>
-              An independent accreditation body delivering internationally recognized programs
-              for healthcare organizations, training and education providers, schools,
-              laboratories, and certification and inspection bodies across{" "}
-              {FACTS.countriesLabel}.
+              An independent accreditation body delivering accreditation programs for healthcare
+              organizations, training and education providers, schools, laboratories, and
+              certification and inspection bodies across {FACTS.countriesLabel}.
             </p>
             <div className="social">
               {SOCIAL.map((s) => (
@@ -72,7 +71,7 @@ export default function Footer() {
             <ul>
               {PROGRAM_LINKS.map((p) => (
                 <li key={p.href}>
-                  <Link href={p.href}>{"shortLabel" in p ? p.shortLabel : p.label}</Link>
+                  <Link href={p.href}>{p.label}</Link>
                 </li>
               ))}
             </ul>
@@ -123,7 +122,7 @@ export default function Footer() {
                 {CONTACT.email}
               </a>
             </div>
-            <Link href="/quote" className="ax-btn ax-btn-gold sm" style={{ marginTop: 18 }}>
+            <Link href={CONTACT.quoteHref} className="ax-btn ax-btn-gold sm" style={{ marginTop: 18 }}>
               Request a Quote <Icon name="arrow" size={13} />
             </Link>
           </div>

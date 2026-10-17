@@ -9,6 +9,15 @@ import { feature, merge } from "topojson-client";
 // markerFrom keeps the location dot on the named member's landmass.
 const MERGE_GROUPS = [
   { name: "Morocco", members: ["Morocco", "W. Sahara"], markerFrom: "Morocco" },
+  { name: "Somalia", members: ["Somalia", "Somaliland"], markerFrom: "Somalia" },
+];
+
+// Countries too small to appear in the 110m dataset. They are emitted as
+// marker-only entries (empty `d`) at their capital, so the map can still flag
+// them. Coordinates are [longitude, latitude].
+const POINT_ONLY = [
+  { name: "Bahrain", at: [50.58, 26.22] },
+  { name: "Malta", at: [14.51, 35.9] },
 ];
 
 const W = 980;
@@ -71,8 +80,13 @@ const data = countries
       cy: Math.round(cy * 10) / 10,
     };
   })
-  .filter(Boolean)
-  .sort((a, b) => a.name.localeCompare(b.name));
+  .filter(Boolean);
+
+for (const p of POINT_ONLY) {
+  const [cx, cy] = projection(p.at);
+  data.push({ name: p.name, d: "", cx: Math.round(cx * 10) / 10, cy: Math.round(cy * 10) / 10 });
+}
+data.sort((a, b) => a.name.localeCompare(b.name));
 
 writeFileSync(
   new URL("../app/_components/world-map-data.json", import.meta.url),

@@ -471,7 +471,7 @@ export default function Page() {
                   {CONTACT.email}
                 </a>{" "}
                 or request a{" "}
-                <Link href="/quote" className="ax-link">
+                <Link href={CONTACT.quoteHref} className="ax-link">
                   tailored quote
                 </Link>
                 .
@@ -515,7 +515,7 @@ export default function Page() {
         }
         text="Send us your school's details and we will confirm your candidacy against the four eligibility criteria, walk you through the ten standards and set out the timeline to your five-year certificate."
         primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/quote", label: "Request a Quote" }}
+        secondary={{ href: CONTACT.quoteHref, label: "Request a Quote" }}
         related={[
           { href: PROGRAMS.training.href, label: "Training & Education Providers" },
           { href: PROGRAMS.astm.href, label: `${PROGRAMS.astm.shortLabel} (${PROGRAMS.astm.standard})` },

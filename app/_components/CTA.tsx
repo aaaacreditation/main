@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Icon from "./Icon";
+import { CONTACT } from "@/lib/facts";
 
 /** Off-site targets (e.g. the Calendly booking page) open in a new tab. */
 function CtaLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
@@ -25,7 +26,7 @@ export default function CTA({
   eyebrow = "Get started",
   title = "Ready to pursue international accreditation?",
   text = "Tell us about your organization and our team will scope your accreditation journey — your sector, the applicable standards, and the geographies you operate in — then come back with a tailored quote.",
-  primary = { href: "/quote", label: "Request a Quote" },
+  primary = { href: CONTACT.quoteHref, label: "Request a Quote" },
   secondary = { href: "/contact", label: "Schedule a Consultation" },
   related,
 }: {

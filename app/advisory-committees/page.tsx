@@ -4,6 +4,7 @@ import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
 import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { FACTS } from "@/lib/facts";
 import "./advisory-committees.css";
 
 export const metadata = pageMeta({
@@ -450,7 +451,7 @@ export default function Page() {
               <p>
                 Committees also identify potential assessors and sources of assessors for their
                 accreditation program. AAA works with a network of over 100 assessors and technical
-                experts across 58 countries.
+                experts across {FACTS.countriesLabel}.
               </p>
               <Link href="/contact" className="ax-btn ax-btn-blue">
                 Register your interest <Icon name="arrow" size={14} />

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
 import type { Org } from "@/app/_data/accredited-organizations";
+import { CONTACT } from "@/lib/facts";
 
 export type { Accreditation, Org } from "@/app/_data/accredited-organizations";
 
@@ -328,7 +329,7 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
               <Link href="/contact" className="ax-btn ax-btn-blue sm">
                 Verify this listing <Icon name="arrow" size={14} />
               </Link>
-              <Link href="/quote" className="ax-btn ax-btn-ghost-navy sm">
+              <Link href={CONTACT.quoteHref} className="ax-btn ax-btn-ghost-navy sm">
                 Get a quote
               </Link>
             </div>

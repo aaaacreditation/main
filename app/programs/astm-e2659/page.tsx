@@ -558,7 +558,7 @@ export default function Page() {
         }
         text="Tell us about your organization, the courses you deliver and the scope you want accredited. We will confirm the applicable requirements and come back with a tailored quote."
         primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/quote", label: "Request a Quote" }}
+        secondary={{ href: CONTACT.quoteHref, label: "Request a Quote" }}
         related={[
           { href: PROGRAMS.training.href, label: PROGRAMS.training.label },
           { href: PROGRAMS.school.href, label: PROGRAMS.school.label },

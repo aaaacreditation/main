@@ -21,7 +21,7 @@ import "./about.css";
 export const metadata = pageMeta({
   title: "About AAA",
   description:
-    "The American Accreditation Association is an independent international accreditation body headquartered in Virginia, USA, serving organizations across 58+ countries.",
+    `The American Accreditation Association is an independent international accreditation body headquartered in Virginia, USA, serving organizations across ${FACTS.countriesPlus} countries.`,
   path: "/about",
   keywords: [
     "American Accreditation Association",
@@ -114,7 +114,7 @@ export default function AboutPage() {
         intro="The American Accreditation Association is an international accreditation body working with organizations around the world to strengthen quality, demonstrate competence and create new opportunities through independent accreditation."
         image={`${IMG}/aaa-about-team-hero.webp`}
         imageAlt="International team behind the American Accreditation Association"
-        caption={{ kicker: "Independent • Impartial • International", title: "Accreditation across 58+ countries" }}
+        caption={{ kicker: "Independent • Impartial • International", title: `Accreditation across ${FACTS.countriesPlus} countries` }}
         actions={
           <>
             <Link href="/programs" className="ax-btn ax-btn-gold">

@@ -5,6 +5,7 @@ import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
 import { breadcrumbSchema, faqSchema, pageMeta } from "../../../../lib/seo";
 import { ArrowIcon, ClusterNav, HC_CONSULT, hcRelated } from "../cluster";
+import { FACTS } from "@/lib/facts";
 import "../hc.css";
 
 const SELF = "/programs/healthcare/why-aaa";
@@ -208,7 +209,7 @@ export default function Page() {
               <span>Accredited organizations</span>
             </li>
             <li className="ax-stat">
-              <b>58+</b>
+              <b>{FACTS.countriesPlus}</b>
               <span>Countries served</span>
             </li>
             <li className="ax-stat">

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Status = "idle" | "sending" | "ok" | "error";
 type FieldKey = "first" | "last" | "email" | "topic" | "message";
@@ -16,6 +17,9 @@ const TOPICS = [
   "Membership",
   "Complaint or appeal",
 ];
+
+/** `?topic=` values other pages link with (e.g. CONTACT.quoteHref). */
+const TOPIC_PARAMS: Record<string, string> = { quote: "Quote request" };
 
 const EMPTY = {
   first: "",
@@ -34,9 +38,27 @@ const EMPTY = {
  * Posts to the shared /api/leads endpoint with source "contact-form" so
  * enquiries land in the admin Content Studio alongside applications and quote
  * requests. Modelled on the client-approved AdvisorForm pattern.
+ *
+ * Oct 2026: the separate /quote page was retired, so "Request a Quote" links
+ * arrive as `?topic=quote` and the topic is pre-selected. The static HTML is
+ * the plain form (Suspense fallback); the URL is read once it hydrates.
  */
 export default function ContactForm() {
-  const [values, setValues] = useState(EMPTY);
+  return (
+    <Suspense fallback={<EnquiryForm />}>
+      <EnquiryFormFromUrl />
+    </Suspense>
+  );
+}
+
+function EnquiryFormFromUrl() {
+  const topic = TOPIC_PARAMS[useSearchParams().get("topic") ?? ""] ?? "";
+  // Keyed so a same-page link with a different topic starts a fresh form.
+  return <EnquiryForm key={topic} initialTopic={topic} />;
+}
+
+function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
+  const [values, setValues] = useState({ ...EMPTY, topic: initialTopic });
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>("idle");
   const [failure, setFailure] = useState("");

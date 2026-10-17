@@ -335,8 +335,23 @@
   align-items: stretch;
   gap: clamp(22px, 2.6vw, 36px);
 }
-.homex .hx-trust-cards { align-content: stretch; }
-.homex .hx-trust-cards .ax-card.navy.ax-blue h3 { font-size: 17.5px; }
+/* Oct 2026 corrections: the 2×2 cards were too tall ("currently it is long
+   and takes more space"). They now stack as four short, wide rows — icon
+   left, copy right, ghost numeral top-right — in a column that matches the
+   map card's height. Still the NavyCard (`compact`), only re-flowed. */
+.homex .hx-trust-cards.ax-blue-grid { grid-template-columns: 1fr; gap: 14px; }
+.homex .hx-trust-cards .ax-card.navy.ax-blue {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 18px;
+  align-items: start;
+  padding: 18px 22px 18px 20px;
+}
+.homex .hx-trust-cards .ax-card-top { display: contents; }
+.homex .hx-trust-cards .ax-card-ico { grid-row: 1 / span 2; width: 44px; height: 44px; padding: 10px; }
+.homex .hx-trust-cards .ax-card-no { position: absolute; top: 12px; right: 18px; font-size: 26px; line-height: 1; }
+.homex .hx-trust-cards .ax-card.navy.ax-blue h3 { grid-column: 2; margin: 2px 44px 4px 0; font-size: 15.5px; line-height: 1.3; }
+.homex .hx-trust-cards .ax-blue-body { grid-column: 2; font-size: 13px; line-height: 1.55; }
 
 .homex .hx-reach {
   display: flex;
@@ -397,18 +412,23 @@
 .homex .hx-stories { overflow: hidden; background: linear-gradient(180deg, #fff 0%, var(--ax-cream) 100%); }
 .homex .hx-ss-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 470px);
   align-items: end;
   gap: clamp(24px, 4vw, 56px);
   margin-bottom: clamp(26px, 3vw, 38px);
 }
 .homex .hx-ss-head .ax-head { max-width: 800px; }
+/* Oct 2026 corrections: larger section title. globals.css caps every h2 with
+   !important, so this one heading needs !important (and higher specificity)
+   to step above the cap. */
+.homex .hx-ss-head .ax-head h2 { font-size: clamp(32px, 3.9vw, 54px) !important; line-height: 1.06; }
+.homex .hx-ss-head .ax-head .eyebrow { font-size: 14px; }
 .homex .hx-ss-feature {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  padding: 20px 22px;
-  border: 1px solid rgba(179, 138, 46, 0.45);
+  gap: 18px;
+  padding: 26px 28px;
+  border: 1px solid rgba(179, 138, 46, 0.55);
   border-radius: var(--ax-radius);
   background: #fff;
   box-shadow: var(--ax-shadow-sm);
@@ -417,17 +437,17 @@
   display: grid;
   flex: none;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 10px;
+  width: 56px;
+  height: 56px;
+  padding: 13px;
   border: 1.5px solid rgba(179, 138, 46, 0.6);
   border-radius: 50%;
   color: var(--aaa-gold-700);
   background: var(--aaa-gold-50);
 }
 .homex .hx-ss-feature-ico svg { width: 100%; height: 100%; }
-.homex .hx-ss-feature strong { display: block; font-size: 16px; font-weight: 600; color: var(--aaa-blue); }
-.homex .hx-ss-feature p { margin: 4px 0 0; font-size: 14px; line-height: 1.6; color: var(--ink-600); }
+.homex .hx-ss-feature strong { display: block; font-size: 19px; font-weight: 600; color: var(--aaa-blue); }
+.homex .hx-ss-feature p { margin: 6px 0 0; font-size: 16.5px; font-weight: 500; line-height: 1.55; color: var(--ink-700); }
 
 /* Carousel shell — full-bleed, edges fade into the section */
 .homex .hx-ss-shell {
@@ -451,8 +471,7 @@
    rotating layers on a sliding strip made the loop stutter. */
 .homex .hx-story.ax-blue::before { animation: none; opacity: 0; }
 .homex .hx-ss-shell:hover .hx-ss-track,
-.homex .hx-ss-shell:focus-within .hx-ss-track,
-.homex .hx-ss.is-paused .hx-ss-track { animation-play-state: paused; }
+.homex .hx-ss-shell:focus-within .hx-ss-track { animation-play-state: paused; }
 @keyframes hx-ss-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -535,15 +554,50 @@
   text-transform: uppercase;
   color: var(--aaa-gold-400);
 }
-.homex .hx-story.ax-blue h3 { margin: 6px 0 10px; font-size: 21px; }
+.homex .hx-story-org {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 14px;
+}
+.homex .hx-story-logo {
+  position: relative;
+  flex: none;
+  width: 96px;
+  height: 54px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.6);
+}
+.homex .hx-story-logo img { object-fit: contain; padding: 6px; }
+.homex .hx-story.ax-blue .hx-story-org h3 { margin: 0; font-size: 19px; line-height: 1.25; }
+.homex .hx-story-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  padding-left: 4px;
+  border-radius: 50%;
+  color: var(--aaa-blue);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.22), 0 18px 34px -12px rgba(0, 0, 0, 0.55);
+  transform: translate(-50%, -50%);
+  transition: transform 0.25s var(--ease-out), background 0.25s ease;
+}
+.homex .hx-story-play svg { fill: currentColor; }
+.homex .hx-story-play:hover { background: #fff; transform: translate(-50%, -50%) scale(1.08); }
 .homex .hx-story-quote {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1.6;
   color: #fff;
 }
-.homex .hx-story-desc { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: rgba(255, 255, 255, 0.74); }
 .homex .hx-story-foot {
   display: flex;
   align-items: center;
@@ -577,32 +631,7 @@
   background: rgba(179, 138, 46, 0.12);
 }
 
-.homex .hx-ss-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 2px;
-}
-.homex .hx-ss-hint { margin: 0; font-size: 12.5px; color: var(--ink-600); }
-.homex .hx-ss-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border: 1px solid rgba(23, 61, 115, 0.3);
-  border-radius: 999px;
-  font: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--aaa-blue);
-  background: #fff;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.homex .hx-ss-toggle:hover { border-color: var(--aaa-blue); background: var(--aaa-blue-50); }
-.homex .hx-ss-toggle:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 3px; }
-.homex .hx-ss-cta { display: flex; justify-content: center; margin-top: 26px; }
+.homex .hx-ss-cta { display: flex; justify-content: center; margin-top: 18px; }
 
 /* Reduced motion: no loop — a native swipe/scroll row with snap points. */
 @media (prefers-reduced-motion: reduce) {
@@ -614,8 +643,6 @@
   }
   .homex .hx-ss-group[aria-hidden="true"] { display: none; }
   .homex .hx-ss-item { scroll-snap-align: start; }
-  .homex .hx-ss-toggle,
-  .homex .hx-ss-hint { display: none; }
 }
 
 /* ========================== 05 · Insights ============================= */
@@ -705,5 +732,4 @@
   .homex .hx-metric-copy span { font-size: 12px; }
   .homex .ax-hero .ax-actions .ax-btn { width: 100%; justify-content: center; }
   .homex .hx-help { align-items: flex-start; font-size: 13.5px; }
-  .homex .hx-ss-controls { flex-direction: column; gap: 10px; }
 }

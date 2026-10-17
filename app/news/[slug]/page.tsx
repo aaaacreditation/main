@@ -166,7 +166,7 @@ export default async function Page({
                 education providers, schools and SMEs. Tell us about your organization and we will
                 scope the right route.
               </p>
-              <Link href="/quote" className="ax-btn ax-btn-blue">
+              <Link href={CONTACT.quoteHref} className="ax-btn ax-btn-blue">
                 Request a Quote <Icon name="arrow" size={14} />
               </Link>
               <ul className="ax-docs">

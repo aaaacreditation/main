@@ -5,6 +5,7 @@ import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
 import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
 import ApplyForm from "./ApplyForm";
+import { CONTACT, FACTS } from "@/lib/facts";
 import "./apply.css";
 
 export const metadata: Metadata = pageMeta({
@@ -216,7 +217,7 @@ export default function Page() {
         meta={[
           { k: "Process stages", v: "4" },
           { k: "Certificate validity", v: "2 years" },
-          { k: "Countries served", v: "58" },
+          { k: "Countries served", v: String(FACTS.countries) },
           { k: "Accredited organizations", v: "200+" },
         ]}
         caption={{
@@ -539,7 +540,7 @@ export default function Page() {
         eyebrow="International Accreditation … Accepted Globally"
         title="Ready to send your application?"
         text="Download the form for your program, or start with a quote so you know exactly what Stage 1 commits your organization to."
-        primary={{ href: "/quote", label: "Request a Quote" }}
+        primary={{ href: CONTACT.quoteHref, label: "Request a Quote" }}
         secondary={{ href: "/contact", label: "Talk to an advisor" }}
         related={[
           { href: "/programs/conformity-assessment-bodies", label: "All CAB programs" },

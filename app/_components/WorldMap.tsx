@@ -9,74 +9,75 @@ const DATA = worldData as { width: number; height: number; countries: Country[] 
 
 // Countries with AAA accreditation activity — shown in brand blue with an
 // animated marker. Names must match the Natural Earth names in
-// world-map-data.json (e.g. "United States of America", "Dominican Rep.").
+// world-map-data.json (e.g. "United States of America", "Czechia").
+//
+// Oct 2026: replaced with the client's list from the "Website corrections"
+// document. Scotland is drawn as part of the United Kingdom; the list's
+// duplicate UAE and Georgia rows appear once. Bahrain and Malta are too small
+// for the 110m outlines and are marker-only entries (see
+// scripts/generate-world-map.mjs).
 const ACCREDITED = new Set<string>([
   // Americas
   "Canada",
   "United States of America",
   "Mexico",
-  "Dominican Rep.",
+  "Panama",
+  "Jamaica",
   "Trinidad and Tobago",
   "Guyana",
+  "Suriname",
   "Brazil",
-  "Argentina",
+  "Uruguay",
   // Europe
   "United Kingdom",
   "Portugal",
   "Spain",
+  "France",
+  "Switzerland",
   "Germany",
+  "Italy",
+  "Malta",
   "Poland",
   "Czechia",
-  "Austria",
   "Hungary",
-  "Italy",
-  "Serbia",
-  "Romania",
-  "Bulgaria",
-  "Greece",
-  // Middle East
   "Turkey",
-  "Cyprus",
+  "Georgia",
+  "Azerbaijan",
+  // Middle East
   "Lebanon",
   "Jordan",
   "Iraq",
-  "Kuwait",
   "Saudi Arabia",
+  "Bahrain",
   "Qatar",
   "United Arab Emirates",
-  "Oman",
   "Yemen",
   // Africa
   "Morocco",
-  "Algeria",
   "Tunisia",
-  "Libya",
   "Egypt",
-  "Sudan",
+  "Côte d'Ivoire",
   "Ghana",
   "Nigeria",
-  "Ethiopia",
   "Somalia",
   "Kenya",
-  "Dem. Rep. Congo",
+  "Angola",
   "Zambia",
   "Namibia",
-  "Botswana",
   "South Africa",
   // Central & South Asia
-  "Russia",
   "Kazakhstan",
   "Uzbekistan",
-  "Kyrgyzstan",
-  "Azerbaijan",
   "Mongolia",
   "Pakistan",
   "India",
+  "Nepal",
   "Bangladesh",
-  // Southeast Asia
+  // Southeast Asia & Oceania
+  "Thailand",
   "Malaysia",
-  "Indonesia",
   "Philippines",
+  "Australia",
 ]);
 
 /**
@@ -90,7 +91,7 @@ export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) 
   const tipRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState<string | null>(null);
 
-  // Tooltip follows the pointer via direct DOM writes so the 176 country
+  // Tooltip follows the pointer via direct DOM writes so the 174 country
   // paths only re-render when the hovered country changes.
   const positionTip = (e: React.PointerEvent) => {
     const wrap = wrapRef.current;
@@ -122,7 +123,7 @@ export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) 
           role="img"
           aria-label="World map highlighting the countries where AAA operates"
         >
-          {DATA.countries.map((c) => (
+          {DATA.countries.filter((c) => c.d).map((c) => (
             <path
               key={c.name}
               d={c.d}

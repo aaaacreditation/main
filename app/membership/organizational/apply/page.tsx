@@ -6,6 +6,7 @@ import CTA from "../../../_components/CTA";
 import { pageMeta, breadcrumbSchema, faqSchema } from "../../../../lib/seo";
 import OrganizationalApplicationForm from "../../_forms/OrganizationalApplicationForm";
 import ApplyAside from "../../_forms/ApplyAside";
+import { CONTACT } from "@/lib/facts";
 import "../../membership.css";
 
 export const metadata = pageMeta({
@@ -153,7 +154,7 @@ export default function Page() {
         title={<>Planning to go on to <em>full accreditation?</em></>}
         text="Membership fees are deducted from accreditation fees when an accreditation application is submitted within the first year of membership. Our team can scope your accreditation route alongside your membership."
         primary={{ href: "/contact", label: "Contact Membership" }}
-        secondary={{ href: "/quote", label: "Request a Quote" }}
+        secondary={{ href: CONTACT.quoteHref, label: "Request a Quote" }}
         related={[
           { href: "/membership", label: "Membership overview" },
           { href: "/membership/organizational", label: "Organizational Membership" },

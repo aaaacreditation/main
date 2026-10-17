@@ -228,13 +228,10 @@ rebuilt on that structure in this design system. Rules that came with it:
   icon set for new cards) in `app/_components/site/`. `PageHero` takes `imageAlt`; `CTA` opens
   `http(s)` targets in a new tab.
 - Pages render `<div className="axp …">` — `SiteChrome` already provides the single `<main>`.
-- **Header = the client's "Main Navigation Menu" file** (supersedes the Sept three-tier BizGen
-  header): thin navy utility bar (Contact Us · Login / Client Portal) over ONE white row —
-  seal + navy three-line wordmark, Home · Accreditation Programs · About AAA · Academy &
-  Community · Accredited Directory · Resources (simple dropdown lists), search, gold "Apply for
-  Accreditation". `.sh2*` rules in `aaa-ds.css`; 1440px shell; `--header-h` is 118px. The
-  full-colour `AAA-Logo.png` has white lettering, so it is only used on dark surfaces (footer).
-  Off-site/unconfirmed nav targets live in `EXTERNAL` in `lib/facts.ts`.
+- **Header menu = the client's "Main Navigation Menu" file**: Home · Accreditation Programs ·
+  About AAA · Academy & Community · Accredited Directory · Resources (simple dropdown lists).
+  Off-site/unconfirmed nav targets live in `EXTERNAL` in `lib/facts.ts`. The single white-row
+  layout from that file was replaced on Oct 17 2026 — see "Website corrections" below.
 - **Hero v2** (`PageHero` → `.ax-hero.v2` in `aaa-ds.css`; Mobbin refs: Okta, Legora, PayPal
   leadership, Deel): the photo bleeds to the right edge as a tall panel with a curved
   bottom-left corner + gold arc and a glass caption (hidden <640px); copy on deep navy over a
@@ -256,12 +253,43 @@ Rules:
 - Known quirk: `globals.css` carries `h2 { font-size: clamp(24px,2.7vw,36px) !important }`.
   Every `h2` on the site renders at that compact scale regardless of what a component
   stylesheet declares — that is the approved look, inherited from the reference pages.
+  The one approved exception is the home Success Stories title (`.homex .hx-ss-head .ax-head
+  h2`, Oct 17 2026), which the client asked to make larger.
+
+### Oct 17 2026 — "Website corrections" + "success stories home page" documents
+
+- **Header follows the live aaa-accreditation.org layout** ("place of logo and layout similar
+  to the current website"): navy utility bar → the official `AAA-Logo.png` centred on the
+  skyline band (`public/images/site/header-skyline.webp`, cropped from the live site's
+  `HomeBack3-1.jpg`) with search + gold "Apply for Accreditation" at the band's right →
+  full-width navy menu bar with the items centred. The sticky bar is navy with the same logo.
+  The logo's lettering is white, so it only sits on the photo band, navy bars and the footer —
+  never on white. `.sh2*` rules in `aaa-ds.css`; `--header-h` is 196px (34 + 110 + 52), 106px
+  at 1025–1100px where the menu folds into the burger. The frozen SME page's hero padding is
+  re-keyed to `--header-h` from `aaa-ds.css` (`.smex-hero.lpx-hero--nav .lpx-hero-inner`).
+- **59 countries** (was 58) — client figure; every page reads it from `FACTS`. The world map
+  (`WorldMap.tsx` `ACCREDITED`) is the client's list: 55 distinct map countries (the list has
+  duplicate UAE and Georgia rows, skips #49, and Scotland is drawn as the UK). Bahrain and
+  Malta are marker-only points added in `scripts/generate-world-map.mjs`; Somaliland is merged
+  into Somalia.
+- **`/quote` is retired.** Every "Request a Quote" CTA uses `CONTACT.quoteHref`
+  (`/contact?topic=quote#enquiry`, pre-selects "Quote request" in `ContactForm`); "Talk to an
+  expert" / "Request information" CTAs use `CONTACT.formHref` (`/contact#enquiry`). `/quote`
+  and `/get-a-quote` redirect there.
+- **Footer**: the client's new blurb, and only the four main programs (TEPA, Healthcare, CABs,
+  SMEs).
+- **Home**: "Why Organizations Trust AAA" cards are compact stacked rows beside the map; the
+  Success Stories carousel holds the client's 12 organizations (logo plate on every card;
+  video stories show the YouTube thumbnail and link to the video), with no hint text or pause
+  button (hover/focus still pauses; reduced motion still gets a scroller). The SME page's story
+  marquee still reads `CASE_STUDIES` and was not changed.
 
 ## Facts, SEO and GEO
 
 - **Never hardcode a company statistic.** `lib/facts.ts` is the single source of truth
   (`FACTS`, `CONTACT`, `PROGRAMS`, `CAB_SCHEMES`, `SOCIAL`). The site previously published
-  nine different values for "countries served"; the canonical figure is **58**.
+  nine different values for "countries served"; the canonical figure is **59** (raised from 58
+  by the client in Oct 2026).
 - The ISO/IEC 17021-1 program is named **"Management Systems Certification Bodies
   Accreditation"** (renamed Aug 2026 from "System Certification Bodies"). Use
   `PROGRAMS.iso17021.label`.

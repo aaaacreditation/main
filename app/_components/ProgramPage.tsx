@@ -2,6 +2,7 @@ import Link from "next/link";
 import PageHero from "./PageHero";
 import Icon from "./Icon";
 import CTA from "./CTA";
+import { CONTACT } from "@/lib/facts";
 
 /**
  * Editorial template for the conformity-assessment program pages.
@@ -78,7 +79,7 @@ export default function ProgramPage({
             <Link href="/apply" className="ax-btn ax-btn-gold">
               Apply for Accreditation <Icon name="arrow" size={14} />
             </Link>
-            <Link href="/quote" className="ax-btn ax-btn-ghost">
+            <Link href={CONTACT.quoteHref} className="ax-btn ax-btn-ghost">
               Request a Quote
             </Link>
           </>
@@ -293,7 +294,7 @@ export default function ProgramPage({
         title={<>Ready to apply for {standard ? <span className="ax-nowrap">{standard}</span> : "this"} accreditation?</>}
         text="Tell us about your organization, your intended scope and the sites involved. We will confirm the applicable requirements and come back with a tailored quote."
         primary={{ href: "/apply", label: "Apply for Accreditation" }}
-        secondary={{ href: "/quote", label: "Request a Quote" }}
+        secondary={{ href: CONTACT.quoteHref, label: "Request a Quote" }}
         related={related}
       />
     </>

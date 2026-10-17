@@ -8,12 +8,16 @@ import Icon from "./Icon";
 import { EXTERNAL, PROGRAMS as P } from "../../lib/facts";
 
 /*
- * Oct 2026: rebuilt on the client's "Main Navigation Menu" file — a thin navy
- * utility bar (Contact Us · Login / Client Portal) over ONE white row holding
- * the logo, the six-item menu with simple dropdowns, search and the gold
- * "Apply for Accreditation" button. Replaces the three-tier BizGen header
- * (utility strip → logo/contact row → dark nav bar). `--header-h` in
- * aaa-ds.css is the height heroes pad against; keep it in step with this.
+ * Oct 2026: menu items, dropdowns and utility links come from the client's
+ * "Main Navigation Menu" file.
+ *
+ * Oct 2026 corrections ("Website corrections" document): the logo and its
+ * placement follow the live aaa-accreditation.org header — a thin navy
+ * utility bar, then the official full-colour logo centred on the skyline
+ * band, then a full-width navy menu bar with the items centred. Search and
+ * the gold "Apply for Accreditation" button sit at the right of the logo
+ * band. `--header-h` in aaa-ds.css is the height heroes pad against; keep it
+ * in step with this.
  */
 type NavItem = { href: string; label: string; external?: boolean };
 
@@ -128,19 +132,21 @@ function NavLinks() {
   );
 }
 
-/* Seal + three-line wordmark, as in the client's menu file. The full-colour
-   logo PNG has white lettering made for dark surfaces (it stays in the dark
-   footer); on this white row the words are set in navy with the logo's red
-   initials. */
-function Brand({ size = 56, tabbable = true }: { size?: number; tabbable?: boolean }) {
+/* The official logo (seal + wordmark, as on the live site). Its lettering is
+   white, so it is only placed on dark surfaces: the skyline band, the navy
+   sticky bar and the footer. */
+function Brand({ compact = false, tabbable = true }: { compact?: boolean; tabbable?: boolean }) {
   return (
     <Link href="/" className="brand sh2-brand" aria-label="American Accreditation Association — home" tabIndex={tabbable ? 0 : -1}>
-      <Image src="/logo/aaalog.png" alt="" width={size} height={Math.round((size * 671) / 710)} priority className="sh2-seal" />
-      <span className="sh2-wordmark" aria-hidden="true">
-        <span><b>A</b>merican</span>
-        <span><b>A</b>ccreditation</span>
-        <span><b>A</b>ssociation</span>
-      </span>
+      <Image
+        src="/logo/AAA-Logo.png"
+        alt=""
+        width={349}
+        height={141}
+        priority={!compact}
+        sizes={compact ? "120px" : "200px"}
+        className="sh2-logo"
+      />
     </Link>
   );
 }
@@ -189,10 +195,9 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="sh2-main">
-          <div className="container sh2-row">
+        <div className="sh2-band">
+          <div className="container sh2-band-row">
             <Brand />
-            <NavLinks />
             <div className="sh2-actions">
               <button className="sh2-search" aria-label="Search">
                 <Icon name="search" size={18} />
@@ -200,8 +205,14 @@ export default function Header() {
               <Link href="/apply" className="sh2-apply">
                 Apply for Accreditation
               </Link>
+              <MenuToggle open={menuOpen} onToggle={toggle} />
             </div>
-            <MenuToggle open={menuOpen} onToggle={toggle} />
+          </div>
+        </div>
+
+        <div className="sh2-navbar">
+          <div className="container">
+            <NavLinks />
           </div>
         </div>
       </header>
@@ -209,7 +220,7 @@ export default function Header() {
       {/* Same single row, pinned once the page scrolls past the header */}
       <div className={"header-compact sh2-compact" + (scrolled ? " show" : "")} aria-hidden={!scrolled}>
         <div className="container sh2-row">
-          <Brand size={46} tabbable={scrolled} />
+          <Brand compact tabbable={scrolled} />
           <NavLinks />
           <div className="sh2-actions">
             <Link href="/apply" className="sh2-apply" tabIndex={scrolled ? 0 : -1}>

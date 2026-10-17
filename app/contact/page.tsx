@@ -6,6 +6,7 @@ import JsonLd from "../_components/JsonLd";
 import { pageMeta, breadcrumbSchema, faqSchema, ORG, SITE_NAME, SITE_URL } from "@/lib/seo";
 import ContactForm from "./ContactForm";
 import "./contact.css";
+import { CONTACT, FACTS } from "@/lib/facts";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact the American Accreditation Association",
@@ -125,17 +126,6 @@ const ROUTES: { title: string; text: string; href: string; cta: string; icon: Re
     ),
   },
   {
-    title: "Request a quote",
-    text: "Tell us your standard, sites and scope and we will price the assessment.",
-    href: "/quote",
-    cta: "Get a quote",
-    icon: (
-      <>
-        <path d="M12 2v20M17 6.5c0-2-2.2-3-5-3s-5 .9-5 2.8c0 3.9 10 2 10 5.9 0 2-2.2 3.1-5 3.1s-5-1.1-5-3" />
-      </>
-    ),
-  },
-  {
     title: "Verify an accreditation",
     text: "Check whether an organization holds a current AAA accreditation and what its scope covers.",
     href: "/directory/accredited-organizations",
@@ -187,7 +177,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Who should I contact about a quote?",
-    a: "Use the quote request form so your enquiry reaches the team with the scoping information they need — organization, country, program, number of sites and estimated scopes. That avoids a round of follow-up questions and shortens the time to a firm price.",
+    a: "Use the enquiry form on this page and choose “Quote request” as the topic. Include the scoping information the team needs — organization, country, program, number of sites and estimated scopes. That avoids a round of follow-up questions and shortens the time to a firm price.",
   },
   {
     q: "How do I verify that an organization is accredited by AAA?",
@@ -271,12 +261,12 @@ export default function Page() {
         meta={[
           { k: "Head office", v: "Tysons Corner, VA" },
           { k: "Typical reply", v: "2 days" },
-          { k: "Countries served", v: "58" },
+          { k: "Countries served", v: String(FACTS.countries) },
           { k: "Accredited organizations", v: "200+" },
         ]}
         caption={{
           kicker: "American Accreditation Association",
-          title: "Assessors, technical experts and advisors across 58 countries",
+          title: `Assessors, technical experts and advisors across ${FACTS.countriesLabel}`,
           chip: "Tysons Corner, VA",
         }}
       />
@@ -356,7 +346,7 @@ export default function Page() {
                 <span className="eyebrow">Point your enquiry</span>
                 <h2>Some questions have a faster answer than email</h2>
                 <p>
-                  Five of the requests we receive most often already have a page built for them.
+                  Four of the requests we receive most often already have a page built for them.
                   Starting there gets you a complete answer in minutes instead of a thread.
                 </p>
               </div>
@@ -392,7 +382,7 @@ export default function Page() {
             <div className="reveal">
               <div className="ax-head">
                 <span className="eyebrow">Our office</span>
-                <h2>Headquartered in Virginia, working across 58 countries</h2>
+                <h2>Headquartered in Virginia, working across {FACTS.countriesLabel}</h2>
                 <p>
                   AAA is an international accreditation body headquartered in the Washington, DC
                   metropolitan area. Correspondence, applications and certificates are issued from
@@ -463,7 +453,7 @@ export default function Page() {
         eyebrow="Next step"
         title="Ready to move from question to application?"
         text="Whether you need a price, a scope discussion or the application pack itself, the next step is a short conversation with an accreditation advisor."
-        primary={{ href: "/quote", label: "Request a Quote" }}
+        primary={{ href: CONTACT.quoteHref, label: "Request a Quote" }}
         secondary={{ href: "/apply", label: "Apply for Accreditation" }}
         related={[
           { href: "/faq", label: "Full FAQ" },

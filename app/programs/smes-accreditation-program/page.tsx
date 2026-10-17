@@ -5,12 +5,13 @@ import Icon from "../../_components/Icon";
 import { CASE_STUDIES } from "../../_data/case-studies";
 import ReadinessLauncher from "./ReadinessLauncher";
 import BareChrome from "./BareChrome";
+import { FACTS } from "@/lib/facts";
 import "./sme.css";
 
 export const metadata: Metadata = {
   title: { absolute: "SMEs Accreditation Program | AAA" },
   description:
-    "Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in 58 countries. Take the free 2-minute check.",
+    `Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in ${FACTS.countriesLabel}. Take the free 2-minute check.`,
 };
 
 const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
@@ -54,7 +55,7 @@ const ABOUT_CARDS: { big: string; small: string; text: string }[] = [
     text: "Experienced professionals delivering consistent, evidence-based assessments.",
   },
   {
-    big: "58+",
+    big: FACTS.countriesPlus,
     small: "Countries served",
     text: "Accreditation recognised by businesses and stakeholders worldwide.",
   },
@@ -318,7 +319,7 @@ export default function Page() {
             <span>U.S. headquartered</span><i>★</i>
             <span>Independent assessment</span><i>★</i>
             <span>International recognition</span><i>★</i>
-            <span>Recognised in 58 countries</span>
+            <span>Recognised in {FACTS.countriesLabel}</span>
           </div>
         </div>
       </section>

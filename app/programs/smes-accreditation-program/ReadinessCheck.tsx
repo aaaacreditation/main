@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
+import { CONTACT } from "@/lib/facts";
 
 const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
 
@@ -236,7 +237,7 @@ export default function ReadinessCheck() {
           </div>
 
           <div className="smerc-cta">
-            <Link href="/quote" className="btn btn-primary">
+            <Link href={CONTACT.quoteHref} className="btn btn-primary">
               Apply now <Icon name="arrow" size={14} className="arrow" />
             </Link>
             <a

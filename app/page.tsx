@@ -8,7 +8,7 @@ import SectionHead from "./_components/site/SectionHead";
 import Glyph, { type GlyphName } from "./_components/site/Glyph";
 import HomeMetrics, { type HomeMetric } from "./_components/home/HomeMetrics";
 import SuccessCarousel, { type SuccessStory } from "./_components/home/SuccessCarousel";
-import { FACTS, PROGRAMS } from "@/lib/facts";
+import { CONTACT, EXTERNAL, FACTS, PROGRAMS } from "@/lib/facts";
 import { breadcrumbSchema, pageMeta, serviceSchema } from "@/lib/seo";
 import "./home.css";
 
@@ -43,6 +43,7 @@ export const metadata: Metadata = pageMeta({
 const IMG = "/images/site/home";
 const STORY_URL =
   "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
+
 
 /* ------------------------------------------------------------ 01 · Hero */
 const METRICS: HomeMetric[] = [
@@ -109,95 +110,139 @@ const TRUST: { icon: GlyphName; title: string; text: string }[] = [
 ];
 
 /* ------------------------------------------------- 04 · Success stories */
+// Oct 2026: the client's "success stories home page" document — twelve
+// organizations, in the document's order. Testimonials are verbatim (spelling
+// fixed only), except Monarch's, which the document gave as a note ("12% Growth
+// & 500+ students certified and The google reviews become 1500+(5.0⭐)") and is
+// set as a sentence here. Rows supplied with a YouTube video show the video thumbnail
+// and link to it; the rest show the certificate photo and link to the case
+// studies site. Assets live in /public/case-studies.
+const CS = "/case-studies";
 const STORIES: SuccessStory[] = [
   {
     featured: true,
     name: "Monarch Master Injector",
-    img: `${IMG}/monarch-master-injector-story.webp`,
-    alt: "Monarch Master Injector accreditation story",
-    sector: "Medical Education",
-    country: "Texas, USA",
-    metric: "12% Growth · 500+ Students Certified",
-    quote: "“AAA Accreditation has opened new doors for Monarch Master Injectors.”",
-    desc: "World-class training for medical professionals in cosmetic injections and wellness/weight-loss injections.",
-    href: STORY_URL,
-  },
-  {
-    name: "Monarch Graduates",
-    img: `${IMG}/monarch-graduates-story.webp`,
-    alt: "Monarch Graduates accreditation story",
-    sector: "Medical Education",
-    country: "Texas, USA",
-    metric: "Post-Accreditation Impact",
-    quote: "“A strong visual story showing learners, certificates, and practical professional training.”",
-    desc: "A supporting Monarch card that can link to the same detailed case study or video section.",
-    href: STORY_URL,
-  },
-  {
-    name: "Domus Salutis",
-    img: `${IMG}/domus-salutis-accreditation-story-6b4a6efe.webp`,
-    alt: "Domus Salutis accreditation story",
     sector: "Healthcare",
-    country: "Italy",
-    metric: "Healthcare Accreditation",
-    quote: "“A healthcare organization demonstrating commitment to recognized excellence.”",
-    desc: "A strong healthcare success story for patient confidence, quality, and institutional recognition.",
-    href: STORY_URL,
-  },
-  {
-    name: "IIBMS",
-    img: `${IMG}/iibms-accreditation-story-c29e334c.webp`,
-    alt: "IIBMS accreditation story",
-    sector: "Education & Training",
-    country: "India",
-    metric: "Training Provider Accreditation",
-    quote: "“Accreditation helped strengthen trust, credibility, and learning standards.”",
-    desc: "An education and training provider using accreditation as a signal of structured quality.",
-    href: STORY_URL,
-  },
-  {
-    name: "NSC",
-    img: `${IMG}/nsc-accreditation-story-e32493fe.jpg`,
-    alt: "NSC accreditation story",
-    sector: "Professional / Regional",
-    country: "Middle East",
-    metric: "Regional Recognition",
-    quote: "“A strong example of AAA's growing international presence.”",
-    desc: "A regional organization reflecting the international reach and practical value of accreditation.",
+    country: "USA",
+    metric: "12% Growth · 500+ Students Certified",
+    quote:
+      "Accreditation impact: 12% growth and 500+ students certified, and Google reviews have grown to 1,500+ (5.0 ★).",
+    img: `${CS}/monarch-master-injectors-certificate.jpg`,
+    alt: "Monarch Master Injectors graduates holding their certificates",
+    logo: `${CS}/monarch-master-injectors-logo.png`,
     href: STORY_URL,
   },
   {
     name: "Cinute Digital",
-    img: `${IMG}/cinute-digital-accreditation-story-8c8b1a4e.webp`,
-    alt: "Cinute Digital accreditation story",
-    sector: "Corporate / SME",
+    sector: "Information Technology",
     country: "India",
-    metric: "Corporate Quality Recognition",
-    quote: "“A modern organization demonstrating quality and professional development.”",
-    desc: "An SME/corporate story that adds diversity to the homepage success stories.",
-    href: STORY_URL,
+    quote: "AAA’s global recognition has opened more doors with corporate clients, learners, and institutional partners.",
+    img: `${CS}/cinute-digital-video.jpg`,
+    alt: "Cinute Digital team with their AAA accreditation certificate",
+    logo: `${CS}/cinute-digital-logo.jpg`,
+    video: "https://www.youtube.com/watch?v=JN5Z7seQiFY",
   },
   {
-    name: "Meridian",
-    img: `${IMG}/meridian-accreditation-story-4b226d09.webp`,
-    alt: "Meridian accreditation story",
-    sector: "Training Provider",
-    country: "International",
-    metric: "Training Excellence",
-    quote: "“Recognition for structured learning, quality, and continuous improvement.”",
-    desc: "A training-provider story suitable for showing breadth across the education sector.",
-    href: STORY_URL,
+    name: "Aldelma Training Center",
+    sector: "Training Center",
+    country: "Jordan, Iraq",
+    quote:
+      "Our main strategic benefits from accreditation are: we gained preferred vendor status with government entities and attracted multinational corporate clients.",
+    img: `${CS}/aldelma-trading-certificate.jpg`,
+    alt: "Aldelma Training Center representative holding the AAA accreditation certificate",
+    logo: `${CS}/aldelma-trading-logo.jpg`,
   },
   {
-    name: "Ullemeyer",
-    img: `${IMG}/ullemeyer-accreditation-story-17ede0a0.webp`,
-    alt: "Ullemeyer accreditation story",
-    sector: "Healthcare / Professional",
-    country: "United States",
-    metric: "Professional Recognition",
-    quote: "“A professional organization building confidence through accreditation.”",
-    desc: "A US-based story that adds geographic balance and strengthens international proof.",
-    href: STORY_URL,
+    name: "Dr. Paul Clinic",
+    sector: "Healthcare",
+    country: "India",
+    quote:
+      "AAA accreditation has strengthened our patients’ trust, demonstrated our commitment to quality care, and supported our clinic’s growth.",
+    img: `${CS}/dr-paul-clinic-certificate.jpg`,
+    alt: "Dr. Paul’s clinic team receiving the AAA accreditation award",
+    logo: `${CS}/dr-paul-clinic-logo.jpg`,
+  },
+  {
+    name: "IIBMS",
+    sector: "Training Center",
+    country: "India",
+    quote:
+      "Since achieving AAA accreditation, we have seen a noticeable improvement. Accreditation has strengthened our credibility and market reputation.",
+    img: `${CS}/iibms-certificate.jpg`,
+    alt: "IIBMS team with the AAA accreditation certificate",
+    logo: `${CS}/iibms-logo.jpg`,
+  },
+  {
+    name: "Domus Salutis",
+    sector: "Healthcare",
+    country: "Italy",
+    quote: "By working with the AAA, Domus Salutis has established a roadmap for ongoing growth in safety and medical technology.",
+    img: `${CS}/domus-salutis-video.jpg`,
+    alt: "Domus Salutis clinical team with the AAA accreditation plaque",
+    logo: `${CS}/domus-salutis-logo.jpg`,
+    video: "https://www.youtube.com/watch?v=SxgILo3vjGU",
+  },
+  {
+    name: "Clarivate",
+    sector: "Information Services",
+    country: "USA, UK",
+    quote:
+      "Our experience with AAA was excellent. The accreditation process was professional, well-structured, and conducted with integrity, providing valuable insights that strengthened our organization.",
+    img: `${CS}/clarivate-certificate.jpg`,
+    alt: "Clarivate team receiving the AAA accreditation certificate",
+    logo: `${CS}/clarivate-logo.jpg`,
+  },
+  {
+    name: "QML",
+    sector: "Certification Body",
+    country: "Spain",
+    quote:
+      "AAA’s accreditation process was professional and smooth, providing valuable learning opportunities that helped us strengthen our certification practices.",
+    img: `${CS}/qml-certificate.jpg`,
+    alt: "QML representatives holding the AAA accreditation certificate",
+    logo: `${CS}/qml-logo.png`,
+  },
+  {
+    name: "RC Growth Consultancies",
+    sector: "Consultation",
+    country: "India",
+    quote:
+      "The value of accreditation extends far beyond recognition. It has helped our consultancy differentiate itself in the market while reinforcing a culture of quality and continual improvement.",
+    img: `${CS}/rc-growth-consultancies-certificate.jpg`,
+    alt: "RC Growth Consultancies founder holding the AAA accreditation certificate",
+    logo: `${CS}/rc-growth-consultancies-logo.png`,
+  },
+  {
+    name: "Namaa Academy",
+    sector: "Academy",
+    country: "Morocco",
+    quote:
+      "AAA’s accreditation recognises Namaa Academy’s commitment to quality education and strengthens our credibility as an ambitious academic institution.",
+    img: `${CS}/namaa-academy-video.jpg`,
+    alt: "Namaa Academy team receiving the AAA accreditation certificate",
+    logo: `${CS}/namaa-academy-logo.png`,
+    video: "https://www.youtube.com/watch?v=9Pluh1W5we8",
+  },
+  {
+    name: "Global Medical City",
+    sector: "Healthcare",
+    country: "Egypt",
+    quote:
+      "Achieving AAA accreditation was a pivotal moment for us. It affirmed our dedication to providing world-class healthcare services and set a new benchmark for quality in Egypt.",
+    img: `${CS}/global-medical-city-video.jpg`,
+    alt: "Global Medical City team with the AAA accreditation award",
+    logo: `${CS}/global-medical-city-logo.jpg`,
+    video: "https://www.youtube.com/watch?v=zpzh6QtLdSI",
+  },
+  {
+    name: "Clinoxy Solutions",
+    sector: "Medical Devices",
+    country: "India",
+    quote:
+      "The accreditation process has added real value to our organization, improving market credibility, increasing customer confidence, and supporting our mission to deliver high-quality healthcare solutions.",
+    img: `${CS}/clinoxy-solutions-certificate.png`,
+    alt: "Clinoxy Solutions director beside the AAA accreditation certificate",
+    logo: `${CS}/clinoxy-solutions-logo.png`,
   },
 ];
 
@@ -317,7 +362,7 @@ export default function HomePage() {
                 <Link href="/programs" className="ax-btn ax-btn-gold">
                   Explore Accreditation Programs <Glyph name="arrow-right" size={15} strokeWidth={2} />
                 </Link>
-                <Link href="/contact" className="ax-btn ax-btn-ghost">
+                <Link href={CONTACT.formHref} className="ax-btn ax-btn-ghost">
                   Talk to an Accreditation Expert
                 </Link>
               </div>
@@ -372,7 +417,7 @@ export default function HomePage() {
               <strong>Not sure which program is right for your organization?</strong>
               <p>Speak with the AAA team and we will guide you toward the most suitable accreditation pathway.</p>
             </div>
-            <Link href="/contact" className="ax-btn ax-btn-blue">
+            <Link href={CONTACT.formHref} className="ax-btn ax-btn-blue">
               Talk to an Accreditation Expert <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
           </div>
@@ -395,7 +440,7 @@ export default function HomePage() {
           <div className="hx-trust-layout">
             <div className="ax-blue-grid two hx-trust-cards">
               {TRUST.map((t, i) => (
-                <NavyCard key={t.title} icon={t.icon} no={String(i + 1).padStart(2, "0")} title={t.title}>
+                <NavyCard key={t.title} icon={t.icon} no={String(i + 1).padStart(2, "0")} title={t.title} compact>
                   <p>{t.text}</p>
                 </NavyCard>
               ))}
@@ -439,13 +484,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        <SuccessCarousel stories={STORIES} />
+        <SuccessCarousel stories={STORIES} moreHref={EXTERNAL.successStories} />
 
         <div className="container">
           <div className="hx-ss-cta">
-            <Link href="/news" className="ax-btn ax-btn-blue">
+            <a href={EXTERNAL.successStories} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-blue">
               View All Success Stories <Glyph name="arrow-right" size={14} strokeWidth={2} />
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -506,7 +551,7 @@ export default function HomePage() {
               body or SME, our team can help you identify the accreditation pathway that fits your organization.
             </p>
             <div className="ax-close-actions">
-              <Link href="/contact" className="ax-btn ax-btn-gold">
+              <Link href={CONTACT.formHref} className="ax-btn ax-btn-gold">
                 Request Accreditation Information <Glyph name="arrow-right" size={14} strokeWidth={2} />
               </Link>
               <Link href="/programs" className="ax-btn ax-btn-ghost">

@@ -4,6 +4,7 @@ import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
 import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { FACTS } from "@/lib/facts";
 import "./faq.css";
 
 export const metadata = pageMeta({
@@ -251,14 +252,14 @@ export default function Page() {
         crumbs={[{ label: "FAQ" }]}
         caption={{
           kicker: "American Accreditation Association",
-          title: "Tysons Corner, Virginia · Serving 58 countries",
+          title: `Tysons Corner, Virginia · Serving ${FACTS.countriesLabel}`,
           chip: "ISQua EEA assessed",
         }}
         meta={[
           { k: "Topic areas", v: String(GROUPS.length) },
           { k: "Questions answered", v: String(TOTAL_QUESTIONS) },
           { k: "Accreditation programs", v: "10" },
-          { k: "Countries served", v: "58" },
+          { k: "Countries served", v: String(FACTS.countries) },
         ]}
         actions={
           <>
