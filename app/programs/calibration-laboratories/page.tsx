@@ -1,25 +1,29 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
-import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import { crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 
 const PATH = "/programs/calibration-laboratories";
 const IMG = "/images/site/cab-calibration-labs";
 
-export const metadata = pageMeta({
-  title: "Calibration Laboratories Accreditation (ISO/IEC 17025)",
-  description:
-    "ISO/IEC 17025 accreditation for calibration laboratories: independent recognition of competent, consistent calibration with reliable measurement traceability.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17025 calibration accreditation",
-    "calibration laboratory accreditation",
-    "measurement traceability",
-    "measurement uncertainty",
-    "calibration and measurement capability",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Calibration Laboratories Accreditation (ISO/IEC 17025)",
+    description:
+      "ISO/IEC 17025 accreditation for calibration laboratories: independent recognition of competent, consistent calibration with reliable measurement traceability.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17025 calibration accreditation",
+      "calibration laboratory accreditation",
+      "measurement traceability",
+      "measurement uncertainty",
+      "calibration and measurement capability",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "calibration-labs",
@@ -164,18 +168,6 @@ const DATA: SchemeData = {
         title: "Accreditation Granted",
         text: "Successful laboratories receive an accreditation certificate and approved calibration scope, valid for three years.",
       },
-    ],
-    resourcesTitle: "Application Documents & Resources",
-    resources: [
-      { label: "Accreditation Application Form", href: DOC.appLabs, meta: "DOC" },
-      { label: "ISO/IEC 17025 Accreditation Requirements", href: DOC.generalRequirements, meta: "PDF" },
-      { label: "Calibration Laboratory Assessment Checklist", href: "/documents", meta: "VIEW" },
-      { label: "Scope of Accreditation Template", href: "/documents", meta: "VIEW" },
-      { label: "Measurement Uncertainty Policy", href: DOC.uncertainty, meta: "PDF" },
-      { label: "Measurement Traceability Policy", href: DOC.traceability, meta: "PDF" },
-      { label: "Proficiency Testing Policy", href: DOC.ptPolicy, meta: "PDF" },
-      { label: "Accreditation Symbol Requirements", href: DOC.symbols, meta: "PDF" },
-      COMMON_DOCS[2],
     ],
   },
   testimonial: {

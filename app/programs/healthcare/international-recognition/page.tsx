@@ -1,25 +1,29 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import CTA from "../../../_components/CTA";
 import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta } from "../../../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
+import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, LineIcon, hcRelated } from "../cluster";
 import "../hc.css";
 
 const SELF = "/programs/healthcare/international-recognition";
 const ISQUA_MEMBERS = "https://isqua.org/membership/institutional-members.html";
 
-export const metadata = pageMeta({
-  title: "International Recognition: AAA Standards & ISQua",
-  description:
-    "AAA's healthcare standards are assessed and accredited by ISQua EEA against the Guidelines and Principles for Health and Social Care Standards, 5th Edition.",
-  path: SELF,
-  keywords: [
-    "ISQua EEA",
-    "ISQua accredited standards",
-    "international healthcare accreditation recognition",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "International Recognition: AAA Standards & ISQua",
+    description:
+      "AAA's healthcare standards are assessed and accredited by ISQua EEA against the Guidelines and Principles for Health and Social Care Standards, 5th Edition.",
+    path: SELF,
+    keywords: [
+      "ISQua EEA",
+      "ISQua accredited standards",
+      "international healthcare accreditation recognition",
+    ],
+  });
+}
 
 const MILESTONES: { year: string; title: string; text: string }[] = [
   {

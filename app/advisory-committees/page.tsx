@@ -1,24 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../_components/Icon";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
-import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { FACTS } from "@/lib/facts";
 import "./advisory-committees.css";
 
-export const metadata = pageMeta({
-  title: "Advisory Technical Committees",
-  description:
-    "AAA's 12 Advisory Technical Committees set the technical requirements for each accreditation scope — experts drawn from every stakeholder group.",
-  path: "/advisory-committees",
-  keywords: [
-    "AAA advisory technical committees",
-    "accreditation technical committee",
-    "accreditation governance",
-    "technical requirements accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Advisory Technical Committees",
+    description:
+      "AAA's 12 Advisory Technical Committees set the technical requirements for each accreditation scope — experts drawn from every stakeholder group.",
+    path: "/advisory-committees",
+    keywords: [
+      "AAA advisory technical committees",
+      "accreditation technical committee",
+      "accreditation governance",
+      "technical requirements accreditation",
+    ],
+  });
+}
 
 function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
   return (

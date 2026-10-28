@@ -6,7 +6,8 @@ import Icon from "../../_components/Icon";
 import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
 import { CONTACT, PROGRAMS } from "../../../lib/facts";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "../../../lib/seo";
+import { seoPage } from "../../../lib/seo-overrides";
 import "./school.css";
 
 /* -------------------------------------------------------------------------
@@ -19,19 +20,21 @@ import "./school.css";
 
 const PATH = "/programs/school-accreditation";
 
-export const metadata: Metadata = pageMeta({
-  title: "School Accreditation Worldwide",
-  description:
-    "AAA accredits elementary and secondary schools worldwide — eligibility criteria, the ten AAA standards and an accreditation certificate valid for 5 years.",
-  path: PATH,
-  keywords: [
-    "school accreditation",
-    "international school accreditation",
-    "American school accreditation",
-    "accredited school",
-    "AAA accreditation standards",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "School Accreditation Worldwide",
+    description:
+      "AAA accredits elementary and secondary schools worldwide — eligibility criteria, the ten AAA standards and an accreditation certificate valid for 5 years.",
+    path: PATH,
+    keywords: [
+      "school accreditation",
+      "international school accreditation",
+      "American school accreditation",
+      "accredited school",
+      "AAA accreditation standards",
+    ],
+  });
+}
 
 const APPLICATION_FORM =
   "https://aaa-accreditation.org/wp-content/uploads/2023/02/Application-for-accreditation-schools-1.docx";

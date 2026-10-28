@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHero from "../../_components/PageHero";
@@ -5,7 +6,8 @@ import JsonLd from "../../_components/JsonLd";
 import NavyCard from "../../_components/site/NavyCard";
 import SectionHead from "../../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./ind.css";
 
 /*
@@ -18,19 +20,21 @@ import "./ind.css";
  * intentionally not imported here).
  */
 
-export const metadata = pageMeta({
-  title: "Individual Membership",
-  description:
-    "AAA Individual Membership: $350 for two years. Membership certificate, one complimentary training course a year, ADCP listing, webinars and networking.",
-  path: "/membership/individual",
-  keywords: [
-    "AAA individual membership",
-    "American Accreditation Association membership",
-    "quality professional membership",
-    "professional affiliation",
-    "ADCP listing",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Individual Membership",
+    description:
+      "AAA Individual Membership: $350 for two years. Membership certificate, one complimentary training course a year, ADCP listing, webinars and networking.",
+    path: "/membership/individual",
+    keywords: [
+      "AAA individual membership",
+      "American Accreditation Association membership",
+      "quality professional membership",
+      "professional affiliation",
+      "ADCP listing",
+    ],
+  });
+}
 
 const IMG = "/images/site/membership-individual";
 const APPLY = "/membership/individual/apply";

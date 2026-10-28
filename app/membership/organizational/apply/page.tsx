@@ -1,20 +1,24 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../../../_components/Icon";
 import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
 import CTA from "../../../_components/CTA";
-import { pageMeta, breadcrumbSchema, faqSchema } from "../../../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
+import { seoPage } from "../../../../lib/seo-overrides";
 import OrganizationalApplicationForm from "../../_forms/OrganizationalApplicationForm";
 import ApplyAside from "../../_forms/ApplyAside";
 import { CONTACT } from "@/lib/facts";
 import "../../membership.css";
 
-export const metadata = pageMeta({
-  title: "Organizational Membership Application",
-  description:
-    "Apply for AAA Organizational Membership — $500 for one year, credited against accreditation fees when you apply within the first year of membership.",
-  path: "/membership/organizational/apply",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Organizational Membership Application",
+    description:
+      "Apply for AAA Organizational Membership — $500 for one year, credited against accreditation fees when you apply within the first year of membership.",
+    path: "/membership/organizational/apply",
+  });
+}
 
 const NEXT_STEPS = [
   {

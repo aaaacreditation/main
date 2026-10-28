@@ -1,26 +1,30 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
 import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { PROGRAMS } from "@/lib/facts";
 
 const PATH = PROGRAMS.iso17024.href;
 const IMG = "/images/site/cab-17024";
 
-export const metadata = pageMeta({
-  title: "Personnel Certification Accreditation (ISO/IEC 17024)",
-  description:
-    "ISO/IEC 17024 accreditation for personnel certification bodies: independent recognition of credible certification schemes and reliable decisions on competence.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17024 accreditation",
-    "personnel certification body accreditation",
-    "certification of persons",
-    "certification scheme development",
-    "ISO/IEC 17024:2026",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Personnel Certification Accreditation (ISO/IEC 17024)",
+    description:
+      "ISO/IEC 17024 accreditation for personnel certification bodies: independent recognition of credible certification schemes and reliable decisions on competence.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17024 accreditation",
+      "personnel certification body accreditation",
+      "certification of persons",
+      "certification scheme development",
+      "ISO/IEC 17024:2026",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "iso17024",

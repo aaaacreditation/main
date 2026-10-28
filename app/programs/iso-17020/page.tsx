@@ -1,26 +1,30 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
-import { COMMON_DOCS, DOC, POLICIES_LINK, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import { crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { PROGRAMS } from "@/lib/facts";
 
 const PATH = PROGRAMS.iso17020.href;
 const IMG = "/images/site/cab-inspection";
 
-export const metadata = pageMeta({
-  title: "Inspection Bodies Accreditation (ISO/IEC 17020)",
-  description:
-    "ISO/IEC 17020 accreditation for inspection bodies: independent recognition of the competence, impartiality and consistency behind reliable inspection results.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17020 accreditation",
-    "inspection body accreditation",
-    "third-party inspection",
-    "lifting and pressure equipment inspection",
-    "impartiality and independence",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Inspection Bodies Accreditation (ISO/IEC 17020)",
+    description:
+      "ISO/IEC 17020 accreditation for inspection bodies: independent recognition of the competence, impartiality and consistency behind reliable inspection results.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17020 accreditation",
+      "inspection body accreditation",
+      "third-party inspection",
+      "lifting and pressure equipment inspection",
+      "impartiality and independence",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "inspection",
@@ -166,18 +170,6 @@ const DATA: SchemeData = {
         title: "Accreditation Granted",
         text: "Successful inspection bodies receive an accreditation certificate and approved scope, valid for three years.",
       },
-    ],
-    resourcesTitle: "Application Documents & Resources",
-    resources: [
-      { label: "Accreditation Application Form", href: DOC.appInspection, meta: "DOC" },
-      { label: "ISO/IEC 17020 Accreditation Requirements", href: DOC.generalRequirements, meta: "PDF" },
-      { label: "Inspection Body Assessment Checklist", href: DOC.checklist17020, meta: "DOCX" },
-      { label: "Scope of Accreditation Template", href: "/documents", meta: "VIEW" },
-      { label: "Impartiality & Independence Requirements", href: "/documents", meta: "VIEW" },
-      { label: "Witness Assessment Guidance", href: "/documents", meta: "VIEW" },
-      { label: "Accreditation Symbol Requirements", href: DOC.symbols, meta: "PDF" },
-      COMMON_DOCS[2],
-      POLICIES_LINK,
     ],
   },
   testimonial: {

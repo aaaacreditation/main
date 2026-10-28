@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import CTA from "../../../_components/CTA";
 import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../../lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "../../../../lib/seo";
+import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, HC_CONSULT, HC_EMAIL, LineIcon, hcRelated } from "../cluster";
 import "../hc.css";
 
@@ -11,18 +13,20 @@ const SELF = "/programs/healthcare/consultation";
 const PHONE = "+1 (571) 601 2616";
 const PHONE_HREF = "+15716012616";
 
-export const metadata = pageMeta({
-  title: "Healthcare Consulting Services for Accreditation",
-  description:
-    "AAA healthcare consulting: gap analysis, documentation support, staff training, operational improvement, mock surveys and continuous compliance strategy.",
-  path: SELF,
-  keywords: [
-    "healthcare accreditation consulting",
-    "gap analysis healthcare",
-    "mock accreditation survey",
-    "accreditation preparation support",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Healthcare Consulting Services for Accreditation",
+    description:
+      "AAA healthcare consulting: gap analysis, documentation support, staff training, operational improvement, mock surveys and continuous compliance strategy.",
+    path: SELF,
+    keywords: [
+      "healthcare accreditation consulting",
+      "gap analysis healthcare",
+      "mock accreditation survey",
+      "accreditation preparation support",
+    ],
+  });
+}
 
 /* Services transcribed from AAA's "Healthcare Consulting Services for AAA
    Healthcare Accreditation" guide. */

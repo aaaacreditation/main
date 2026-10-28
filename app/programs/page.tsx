@@ -6,21 +6,27 @@ import JsonLd from "../_components/JsonLd";
 import NavyCard from "../_components/site/NavyCard";
 import SectionHead from "../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../_components/site/Glyph";
-import { pageMeta, breadcrumbSchema, SITE_URL } from "../../lib/seo";
+import { breadcrumbSchema, SITE_URL } from "../../lib/seo";
+import { seoPage } from "../../lib/seo-overrides";
 import { FACTS, PROGRAMS } from "../../lib/facts";
+import "./programs.css";
 
 /**
  * `/programs` index — the destination of every "Explore Accreditation
- * Programs" button. Oct 2026: rebuilt on the client's program structure (four
- * primary pathways from the homepage, eight conformity-assessment programs
- * from the CAB hub), using the client's own card copy and the SME blue card.
+ * Programs" button. Oct 2026: rebuilt on the client's program structure (the
+ * four primary pathways from the homepage), using the client's own card copy
+ * and the SME blue card. The eight-program "Choose Your Accreditation Program"
+ * grid was removed at the client's request (Oct 22 2026); those programs are
+ * still listed on the Conformity Assessment Bodies hub.
  */
 
-export const metadata: Metadata = pageMeta({
-  title: "Accreditation Programs",
-  description: `Accreditation programs from the American Accreditation Association for education and training, healthcare, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
-  path: "/programs",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Accreditation Programs",
+    description: `Accreditation programs from the American Accreditation Association for education and training, healthcare, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
+    path: "/programs",
+  });
+}
 
 const PRIMARY: { icon: GlyphName; href: string; title: string; text: string }[] = [
   {
@@ -49,65 +55,24 @@ const PRIMARY: { icon: GlyphName; href: string; title: string; text: string }[] 
   },
 ];
 
-const CAB: { icon: GlyphName; p: { href: string; shortLabel: string; standard: string }; text: string }[] = [
-  {
-    icon: "flask",
-    p: PROGRAMS.testingLabs,
-    text: "For laboratories performing testing or sampling activities that require technically valid, reliable, and traceable results.",
-  },
-  {
-    icon: "gauge",
-    p: PROGRAMS.calibrationLabs,
-    text: "For laboratories performing calibration activities to establish measurement accuracy, traceability, and confidence in results.",
-  },
-  {
-    icon: "search-check",
-    p: PROGRAMS.iso17020,
-    text: "For organizations examining products, equipment, installations, processes, or services against specified requirements.",
-  },
-  {
-    icon: "file-check",
-    p: PROGRAMS.iso17021,
-    text: "For bodies certifying management systems such as quality, environmental, information security, or occupational health and safety systems.",
-  },
-  {
-    icon: "id-card",
-    p: PROGRAMS.iso17024,
-    text: "For organizations certifying the competence of individuals against defined requirements or certification schemes.",
-  },
-  {
-    icon: "microscope",
-    p: PROGRAMS.iso15189,
-    text: "For laboratories providing medical examination services that support diagnosis, screening, treatment, and patient care.",
-  },
-  {
-    icon: "package",
-    p: PROGRAMS.iso17065,
-    text: "For bodies certifying products, processes, or services, including applicable Halal certification programs.",
-  },
-  {
-    icon: "chart",
-    p: PROGRAMS.iso17043,
-    text: "For organizations designing and operating proficiency testing schemes that help laboratories evaluate and improve their performance.",
-  },
-];
-
 const itemList = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "AAA accreditation programs",
-  itemListElement: [...PRIMARY.map((p) => ({ name: p.title, href: p.href })), ...CAB.map((c) => ({ name: c.p.shortLabel, href: c.p.href }))].map(
+  itemListElement: PRIMARY.map((p) => ({ name: p.title, href: p.href })).map(
     (p, i) => ({ "@type": "ListItem", position: i + 1, name: p.name, url: `${SITE_URL}${p.href}` })
   ),
 };
 
 export default function ProgramsPage() {
   return (
-    <div className="axp">
+    <div className="axp prgx">
       <JsonLd schema={[breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Accreditation Programs", path: "/programs" }]), itemList]} />
 
       <PageHero
         eyebrow="Accreditation Programs"
+        background="/images/site/programs/programs-hero.jpg"
+        imageAlt="Monarch Master Injectors training cohort holding an accreditation certificate"
         crumbs={[{ label: "Accreditation Programs" }]}
         title="Find the Right Accreditation Program"
         intro="Choose the pathway that matches your organization type and quality objectives. AAA provides accreditation across education, healthcare, conformity assessment and SME sectors."
@@ -135,24 +100,6 @@ export default function ProgramsPage() {
             {PRIMARY.map((p, i) => (
               <NavyCard key={p.href} icon={p.icon} no={String(i + 1).padStart(2, "0")} title={p.title} href={p.href} cta="Explore Program">
                 <p>{p.text}</p>
-              </NavyCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="ax-section cream" id="conformity-assessment">
-        <div className="container">
-          <SectionHead
-            center
-            eyebrow="Conformity Assessment Programs"
-            title="Choose Your Accreditation Program"
-            intro="Select the accreditation program that best matches your organization’s activities. Each program is based on a specific international standard and designed for a particular type of conformity assessment body."
-          />
-          <div className="ax-blue-grid four">
-            {CAB.map((c) => (
-              <NavyCard key={c.p.href} icon={c.icon} tag={c.p.standard} title={c.p.shortLabel} href={c.p.href}>
-                <p>{c.text}</p>
               </NavyCard>
             ))}
           </div>

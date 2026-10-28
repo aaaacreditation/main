@@ -18,6 +18,7 @@ import {
 import { getPublishedPost, getPublishedPosts, type PublicPost } from "@/lib/content";
 import { CONTACT } from "@/lib/facts";
 import { SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema } from "@/lib/seo";
+import { withSeoOverride } from "@/lib/seo-overrides";
 import "../news.css";
 
 export const revalidate = 300;
@@ -41,24 +42,30 @@ export async function generateMetadata({
 
   // pageMeta is not used here: the article title is the post's own headline and
   // must not be truncated, and the canonical/OG data is assembled per post.
-  const description = metaDescription(post);
+  // An SEO Center override for this URL (SeoEntry) is applied on top.
+  // The editor's SEO fields win over the headline/excerpt-derived defaults.
+  const title = post.seoTitle?.trim() || post.title;
+  const description = post.seoDescription?.trim() || metaDescription(post);
   const url = `${SITE_URL}/news/${post.slug}`;
+  // The cover when there is one, else the generated site-wide card.
+  const image = post.coverImage || "/opengraph-image";
 
-  return {
-    title: post.title,
+  return withSeoOverride(`/news/${post.slug}`, {
+    title,
     description,
     alternates: { canonical: url },
     openGraph: {
       type: "article",
       url,
       siteName: SITE_NAME,
-      title: post.title,
+      title,
       description,
       locale: "en_US",
       publishedTime: post.date,
+      images: [{ url: image, alt: post.title }],
     },
-    twitter: { card: "summary_large_image", title: post.title, description },
-  };
+    twitter: { card: "summary_large_image", title, description, images: [image] },
+  });
 }
 
 function NavCard({

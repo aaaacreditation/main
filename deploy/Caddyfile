@@ -1,0 +1,79 @@
+# Caddy front for the AAA website — used by the optional `caddy` profile of
+# docker-compose.prod.yml, for a box that has NO host-level nginx. (The
+# existing AAA Hetzner box runs nginx; use deploy/nginx/aaa-accreditation.org.conf
+# there instead — both cannot own ports 80/443.)
+#
+# Caddy obtains and renews the Let's Encrypt certificates itself once DNS for
+# these hostnames points at this server. It forwards Host, X-Forwarded-For,
+# X-Forwarded-Proto and X-Forwarded-Host to the app by default — proxy.ts
+# (sme.* host gating) and NextAuth both depend on them.
+#
+# Mounted paths (see the caddy service):
+#   /srv/www/adcp                 ← /opt/aaa-web/adcp              ADCP certificate SPA
+#   /srv/www/wp-content/uploads   ← /opt/aaa-web/wp-content/uploads legacy WordPress files
+{
+	email {$ACME_EMAIL:webmaster@aaa-accreditation.org}
+}
+
+(proxy_app) {
+	encode zstd gzip
+	reverse_proxy app:3000
+}
+
+www.{$SITE_DOMAIN:aaa-accreditation.org} {
+	redir https://{$SITE_DOMAIN:aaa-accreditation.org}{uri} permanent
+}
+
+{$SITE_DOMAIN:aaa-accreditation.org} {
+	request_body {
+		max_size 10MB
+	}
+
+	# --- ADCP certificate verification (static React SPA) ------------------
+	# Printed QR codes point at /adcp/CertificateDetails/<id>: every unknown
+	# /adcp/* path must fall back to the SPA's index.html, on this domain,
+	# with no redirect.
+	redir /adcp /adcp/ 308
+	# Hashed build assets: long cache, and a real 404 when missing (never the
+	# HTML fallback under an immutable header).
+	handle /adcp/static/* {
+		root * /srv/www
+		header Cache-Control "public, max-age=31536000, immutable"
+		file_server
+	}
+	handle /adcp/* {
+		root * /srv/www
+		header Cache-Control "no-cache"
+		try_files {path} /adcp/index.html
+		file_server
+	}
+
+	# --- Legacy WordPress uploads (application forms, post images) --------
+	# Pages and migrated posts still link to /wp-content/uploads/... Copy ONLY
+	# the referenced files (deploy/wp-uploads-manifest.sh) — the old site was
+	# compromised, so never mirror the folder wholesale. Documents and images
+	# only; anything else is a 404.
+	@wpUploads path_regexp wpup ^/wp-content/uploads/.+\.(pdf|docx?|xlsx?|pptx?|jpe?g|png|gif|webp)$
+	handle @wpUploads {
+		root * /srv/www
+		header Cache-Control "public, max-age=2592000"
+		header X-Content-Type-Options nosniff
+		file_server
+	}
+	handle /wp-content/* {
+		respond 404
+	}
+
+	# --- Everything else: the Next.js app ----------------------------------
+	handle {
+		import proxy_app
+	}
+}
+
+# The sme.aaa-accreditation.org subdomain is served by the same app (proxy.ts
+# gates it to the SME page). Uncomment only once its DNS points at this box —
+# Caddy retries certificate issuance for every hostname listed here.
+#
+# sme.aaa-accreditation.org {
+# 	import proxy_app
+# }

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHero from "../_components/PageHero";
@@ -8,7 +9,8 @@ import SectionHead from "../_components/site/SectionHead";
 import Stat from "../_components/site/Stat";
 import Glyph from "../_components/site/Glyph";
 import { FACTS } from "@/lib/facts";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./about.css";
 
 /*
@@ -18,19 +20,21 @@ import "./about.css";
  * design system with the SME blue card everywhere a card appears.
  */
 
-export const metadata = pageMeta({
-  title: "About AAA",
-  description:
-    `The American Accreditation Association is an independent international accreditation body headquartered in Virginia, USA, serving organizations across ${FACTS.countriesPlus} countries.`,
-  path: "/about",
-  keywords: [
-    "American Accreditation Association",
-    "about AAA",
-    "international accreditation body",
-    "ISQua EEA accredited standards",
-    "independent accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "About AAA",
+    description:
+      `The American Accreditation Association is an independent international accreditation body headquartered in Virginia, USA, serving organizations across ${FACTS.countriesPlus} countries.`,
+    path: "/about",
+    keywords: [
+      "American Accreditation Association",
+      "about AAA",
+      "international accreditation body",
+      "ISQua EEA accredited standards",
+      "independent accreditation",
+    ],
+  });
+}
 
 const IMG = "/images/site/about";
 

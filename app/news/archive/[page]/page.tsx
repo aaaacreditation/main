@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Archive from "../../Archive";
 import { PER_PAGE } from "../../helpers";
 import { getPublishedPosts } from "@/lib/content";
-import { pageMeta } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 
 /**
  * Pages 2..N of the newsroom archive: /news/archive/2 … /news/archive/15.
@@ -43,7 +43,7 @@ export async function generateMetadata({
   const posts = await getPublishedPosts();
   const pageCount = Math.max(1, Math.ceil(posts.length / PER_PAGE));
 
-  return pageMeta({
+  return seoPage({
     title: `AAA News Archive — Page ${n}`,
     description: `Page ${n} of ${pageCount} in the American Accreditation Association news archive: accreditation announcements, recognitions and standards guidance, newest first.`,
     path: `/news/archive/${n}`,

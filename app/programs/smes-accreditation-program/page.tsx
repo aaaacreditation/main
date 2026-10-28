@@ -2,21 +2,27 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
-import { CASE_STUDIES } from "../../_data/case-studies";
+import { getSmeCaseStudies } from "@/lib/case-studies";
 import ReadinessLauncher from "./ReadinessLauncher";
 import BareChrome from "./BareChrome";
 import { FACTS } from "@/lib/facts";
+import { withSeoOverride } from "@/lib/seo-overrides";
+import { SITE_URL } from "@/lib/seo";
 import "./sme.css";
 
-export const metadata: Metadata = {
-  title: { absolute: "SMEs Accreditation Program | AAA" },
-  description:
-    `Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in ${FACTS.countriesLabel}. Take the free 2-minute check.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return withSeoOverride("/programs/smes-accreditation-program", {
+    title: { absolute: "SMEs Accreditation Program | AAA" },
+    description:
+      `Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in ${FACTS.countriesLabel}. Take the free 2-minute check.`,
+    // Metadata only — the page's frozen markup and sme.css are untouched.
+    alternates: { canonical: `${SITE_URL}/programs/smes-accreditation-program` },
+  });
+}
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 /* Closing "Book a Meeting" button — client-requested booking page (Sept 2026). */
-const MEETING = "https://calendly.com/aaa-accreditation4/new-meeting";
+const MEETING = "https://calendly.com/accreditationaaa/consultation-call-am";
 const APPLICATION_FORM = "/documents/AAA-SME-Accreditation-Application-Form.docx";
 
 function LineIcon({ children }: { children: React.ReactNode }) {
@@ -212,9 +218,8 @@ const PROCESS: { title: string; text: string; icon: React.ReactNode }[] = [
   },
 ];
 
-// Organizations, quotes, certificates and logos all come from the client's
-// case-study source — see app/_data/case-studies.ts.
-const STORIES = CASE_STUDIES;
+// Static with hourly ISR; saving a case study in the admin revalidates this page at once.
+export const revalidate = 3600;
 
 const FAQ = [
   {
@@ -259,7 +264,11 @@ const FAQ = [
   },
 ];
 
-export default function Page() {
+export default async function Page() {
+  // Organizations, quotes, certificates and logos come from admin → Case Studies
+  // (rows with "Show on SME page"); app/_data/case-studies.ts is the seed + fallback.
+  const STORIES = await getSmeCaseStudies();
+
   return (
     <div className="smex">
       {/* TEMPORARY: hides the site header/footer on sme.aaa-accreditation.org

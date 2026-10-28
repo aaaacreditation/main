@@ -1,0 +1,35 @@
+/* ============================================================
+   ADMIN — Accredited Organizations directory (list + editor).
+   Page-local; every rule is scoped under .adm. Uses the brand tokens only.
+   ============================================================ */
+
+.adm .dir-admin .adm-stat.accent em{ color: rgba(255,255,255,.78); }
+
+.adm .dir-count{ margin: -4px 0 12px; font-size: 12.5px; color: var(--ink-500); }
+
+.adm .dir-name{ min-width: 0; }
+.adm .dir-sub{ display: block; margin-top: 3px; font-size: 12px; color: var(--ink-500); white-space: nowrap; }
+
+.adm .dir-nums{
+  display: inline-block; max-width: 24ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle;
+  font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums;
+  letter-spacing: .02em; color: var(--ink-800);
+}
+.adm .dir-nums em{ font-style: normal; color: var(--ink-400); }
+
+.adm .dir-mono{
+  display: inline-grid; place-items: center;
+  font-size: 12px; font-weight: 600; color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+}
+
+/* ---------- Editor: accreditation repeater ---------- */
+.adm .dir-rec-actions{ display: flex; align-items: center; gap: 12px; }
+.adm .dir-rec-actions .adm-linkbtn:disabled{ color: var(--ink-300); cursor: default; text-decoration: none; }
+.adm .dir-rec-actions .adm-danger-link{ font-size: 12.5px; }
+.adm .dir-rec-tag{ font-weight: 500; color: var(--ink-500); }
+.adm .dir-rec-add{ margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+.adm .dir-rec-warn{ margin: 6px 0 0; font-size: 12px; color: var(--aaa-gold-700); }
+
+.adm .dir-delete{ margin-top: 4px; }

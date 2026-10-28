@@ -1,26 +1,30 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import CTA from "../../../_components/CTA";
 import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta } from "../../../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
+import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, HC_CONSULT, hcRelated } from "../cluster";
 import { FACTS } from "@/lib/facts";
 import "../hc.css";
 
 const SELF = "/programs/healthcare/why-aaa";
 
-export const metadata = pageMeta({
-  title: "Why AAA Healthcare Accreditation? 7 Reasons",
-  description:
-    "Seven reasons hospitals and clinics choose AAA: ISQua-accredited standards, a simple four-step process, a dedicated advisor and flexible hybrid surveys.",
-  path: SELF,
-  keywords: [
-    "why AAA accreditation",
-    "healthcare accreditation benefits",
-    "hospital accreditation advantages",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Why AAA Healthcare Accreditation? 7 Reasons",
+    description:
+      "Seven reasons hospitals and clinics choose AAA: ISQua-accredited standards, a simple four-step process, a dedicated advisor and flexible hybrid surveys.",
+    path: SELF,
+    keywords: [
+      "why AAA accreditation",
+      "healthcare accreditation benefits",
+      "hospital accreditation advantages",
+    ],
+  });
+}
 
 /* Reasons transcribed from the client's live "Why AAA Accreditation?" page. */
 const REASONS: { title: string; text: string }[] = [

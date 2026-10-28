@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import CTA from "../../../_components/CTA";
 import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta } from "../../../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
+import { seoPage } from "../../../../lib/seo-overrides";
 import {
   ArrowIcon,
   ClusterNav,
@@ -18,18 +20,20 @@ import "../hc.css";
 
 const SELF = "/programs/healthcare/process";
 
-export const metadata = pageMeta({
-  title: "Healthcare Accreditation Process & Timeline",
-  description:
-    "The AAA healthcare accreditation process: four documented stages, a 3–6 month preparation phase, on-site or hybrid survey and a 28-day decision.",
-  path: SELF,
-  keywords: [
-    "healthcare accreditation process",
-    "accreditation timeline",
-    "hospital accreditation survey",
-    "AAA accreditation stages",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Healthcare Accreditation Process & Timeline",
+    description:
+      "The AAA healthcare accreditation process: four documented stages, a 3–6 month preparation phase, on-site or hybrid survey and a 28-day decision.",
+    path: SELF,
+    keywords: [
+      "healthcare accreditation process",
+      "accreditation timeline",
+      "hospital accreditation survey",
+      "AAA accreditation stages",
+    ],
+  });
+}
 
 /* The four formal accreditation stages, as published by AAA. */
 const STAGES: { title: string; items: string[] }[] = [

@@ -5,34 +5,42 @@ import CTA from "../../_components/CTA";
 import JsonLd from "../../_components/JsonLd";
 import Icon from "../../_components/Icon";
 import DirectoryExplorer from "./DirectoryExplorer";
-import { ACCREDITED_ORGANIZATIONS, REGISTER_STATS } from "@/app/_data/accredited-organizations";
+import { getAccreditedOrganizations, registerStats } from "@/lib/directory";
 import { CONTACT, FACTS } from "@/lib/facts";
-import { SITE_URL, breadcrumbSchema, pageMeta } from "@/lib/seo";
+import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./directory.css";
 
 /**
  * The public register of AAA-accredited organizations.
  *
+ * The entries come from the database (admin: /admin/directory) through
+ * getAccreditedOrganizations(), with the bundled JSON snapshot as the
+ * no-database fallback; saving in the admin revalidates this page.
+ *
  * Two different country figures appear on this page and they are deliberately
- * distinct: REGISTER_STATS.countries is how many countries the entries below
- * come from, while FACTS.countries is AAA's canonical worldwide reach.
+ * distinct: registerStats(orgs).countries is how many countries the entries
+ * below come from, while FACTS.countries is AAA's canonical worldwide reach.
  * Country counts inside an organization's own description belong to that
  * organization and are never rewritten.
  */
 export const revalidate = 3600;
 
-export const metadata: Metadata = pageMeta({
-  title: "Accredited Organizations Register",
-  description: `Search AAA\u2019s public register of accredited organizations: ${REGISTER_STATS.organizations} universities, training providers, certification bodies, laboratories and healthcare institutions.`,
-  path: "/directory/accredited-organizations",
-  keywords: [
-    "AAA accredited organizations",
-    "accreditation register",
-    "verify AAA accreditation",
-    "accredited training providers",
-    "accredited certification bodies",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const { organizations } = registerStats(await getAccreditedOrganizations());
+  return seoPage({
+    title: "Accredited Organizations Register",
+    description: `Search AAA\u2019s public register of accredited organizations: ${organizations} universities, training providers, certification bodies, laboratories and healthcare institutions.`,
+    path: "/directory/accredited-organizations",
+    keywords: [
+      "AAA accredited organizations",
+      "accreditation register",
+      "verify AAA accreditation",
+      "accredited training providers",
+      "accredited certification bodies",
+    ],
+  });
+}
 
 function LineIcon({ children }: { children: React.ReactNode }) {
   return (
@@ -91,7 +99,7 @@ const MEANING: { title: string; text: string; icon: React.ReactNode }[] = [
 const VERIFY: { title: string; text: string }[] = [
   {
     title: "Find the organization",
-    text: "Search by name, city or keyword, or filter the register by country. Entries marked “Record on file” publish the accredited scope, number, validity and status.",
+    text: "Search by name, city, keyword or accreditation number, or filter the register by program, status and country. Every entry opens its record: what it is accredited as, the scope, the accreditation number, validity and status.",
   },
   {
     title: "Check the scope on the certificate",
@@ -107,7 +115,10 @@ const VERIFY: { title: string; text: string }[] = [
   },
 ];
 
-export default function Page() {
+export default async function Page() {
+  const orgs = await getAccreditedOrganizations();
+  const stats = registerStats(orgs);
+
   const schema = [
     breadcrumbSchema([
       { name: "Directory", path: "/directory" },
@@ -123,8 +134,8 @@ export default function Page() {
       mainEntity: {
         "@type": "ItemList",
         name: "Organizations accredited by the American Accreditation Association",
-        numberOfItems: REGISTER_STATS.organizations,
-        itemListElement: ACCREDITED_ORGANIZATIONS.map((o, i) => ({
+        numberOfItems: stats.organizations,
+        itemListElement: orgs.map((o, i) => ({
           "@type": "ListItem",
           position: i + 1,
           item: {
@@ -157,8 +168,8 @@ export default function Page() {
         intro="The public register of organizations holding AAA accreditation — universities, training and education providers, certification and inspection bodies, laboratories, schools and healthcare institutions."
         crumbs={[{ href: "/directory", label: "Directory" }, { label: "Accredited Organizations" }]}
         meta={[
-          { k: "Organizations listed", v: String(REGISTER_STATS.organizations) },
-          { k: "Countries in this register", v: String(REGISTER_STATS.countries) },
+          { k: "Organizations listed", v: String(stats.organizations) },
+          { k: "Countries in this register", v: String(stats.countries) },
           { k: "Countries AAA serves", v: FACTS.countriesPlus },
         ]}
       />
@@ -197,8 +208,8 @@ export default function Page() {
           <div className="ax-note gold reveal" style={{ marginTop: 28 }}>
             <div>
               <strong>About the figures on this page</strong>
-              The {REGISTER_STATS.organizations} entries below come from{" "}
-              {REGISTER_STATS.countries} countries. AAA itself serves{" "}
+              The {stats.organizations} entries below come from{" "}
+              {stats.countries} countries. AAA itself serves{" "}
               {FACTS.countriesLabel} worldwide and works with {FACTS.organizationsLabel}; this
               page lists the organizations currently published in the register. Any country or
               client figure inside an organization&rsquo;s own description is that
@@ -214,17 +225,18 @@ export default function Page() {
           <div className="ax-head reveal">
             <span className="eyebrow">The register</span>
             <h2>
-              {REGISTER_STATS.organizations} organizations, {REGISTER_STATS.countries} countries.
+              {stats.organizations} organizations, {stats.countries} countries.
             </h2>
             <p>
-              Search by name, city or keyword; narrow by country or focus area; or show only the
-              entries that publish a full accreditation record. Descriptions are supplied by the
-              organizations themselves.
+              Search by name, city, keyword or accreditation number; narrow by program, status or
+              country; and open any entry for its full accreditation record —{" "}
+              {stats.records} records in all. Descriptions are supplied by the organizations
+              themselves.
             </p>
           </div>
 
           <div style={{ marginTop: "clamp(28px, 3.2vw, 42px)" }}>
-            <DirectoryExplorer orgs={ACCREDITED_ORGANIZATIONS} />
+            <DirectoryExplorer orgs={orgs} />
           </div>
         </div>
       </section>

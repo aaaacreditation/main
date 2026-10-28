@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHero from "../_components/PageHero";
@@ -8,7 +9,8 @@ import SectionHead from "../_components/site/SectionHead";
 import Stat from "../_components/site/Stat";
 import Glyph, { type GlyphName } from "../_components/site/Glyph";
 import { FACTS } from "@/lib/facts";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import ProfileToggle from "./ProfileToggle";
 import "./governance.css";
 
@@ -22,19 +24,21 @@ import "./governance.css";
  * two rows of three.
  */
 
-export const metadata = pageMeta({
-  title: "Governance & Leadership",
-  description:
-    "Meet AAA's Board of Trustees and team, and see how governance, oversight and clear accountability protect the impartiality of every accreditation decision.",
-  path: "/governance-leadership",
-  keywords: [
-    "AAA governance",
-    "AAA Board of Trustees",
-    "accreditation body leadership",
-    "accreditation governance structure",
-    "American Accreditation Association team",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Governance & Leadership",
+    description:
+      "Meet AAA's Board of Trustees and team, and see how governance, oversight and clear accountability protect the impartiality of every accreditation decision.",
+    path: "/governance-leadership",
+    keywords: [
+      "AAA governance",
+      "AAA Board of Trustees",
+      "accreditation body leadership",
+      "accreditation governance structure",
+      "American Accreditation Association team",
+    ],
+  });
+}
 
 const IMG = "/images/site/governance";
 

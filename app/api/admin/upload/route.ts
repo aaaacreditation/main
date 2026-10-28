@@ -1,21 +1,21 @@
 import { NextResponse } from "next/server";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-import crypto from "node:crypto";
-import { auth } from "@/auth";
+import { canAccess, getStaffSession } from "@/lib/admin";
+import { prisma } from "@/lib/db";
+import { MEDIA_MAX_BYTES, MEDIA_TYPES, mediaFilename, mediaUrl } from "@/lib/media";
 
-const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
-
-const EXT_BY_TYPE: Record<string, string> = {
-  "image/jpeg": ".jpg",
-  "image/png": ".png",
-  "image/webp": ".webp",
-  "image/gif": ".gif",
-};
-
+/**
+ * Admin upload endpoint (cover images, logos, certificates, documents).
+ * Stores the bytes in the Media table — see lib/media.ts for why — and
+ * returns the public URL the forms save.
+ */
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user) {
+  const session = await getStaffSession();
+  // Uploads feed articles, pages, case studies, logos and SEO images — any
+  // editing area qualifies; the leads-only Sales role does not.
+  const canEdit = (["content", "case-studies", "directory", "seo"] as const).some((a) =>
+    canAccess(session?.user.role, a),
+  );
+  if (!session || !canEdit) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -24,18 +24,29 @@ export async function POST(req: Request) {
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
-  if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: "File too large (max 8 MB)" }, { status: 413 });
+  if (file.size > MEDIA_MAX_BYTES) {
+    return NextResponse.json({ error: "File too large (max 4 MB)" }, { status: 413 });
   }
-  const ext = EXT_BY_TYPE[file.type];
-  if (!ext) {
-    return NextResponse.json({ error: "Unsupported type — use JPG, PNG, WebP or GIF" }, { status: 415 });
+  if (!MEDIA_TYPES[file.type]) {
+    return NextResponse.json(
+      { error: "Unsupported type — use JPG, PNG, WebP, GIF, SVG or PDF" },
+      { status: 415 },
+    );
   }
 
-  const name = `${Date.now().toString(36)}-${crypto.randomBytes(6).toString("hex")}${ext}`;
-  const dir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
+  const alt = typeof form?.get("alt") === "string" ? String(form.get("alt")).slice(0, 300) : "";
+  const filename = mediaFilename(file.name, file.type);
+  const media = await prisma.media.create({
+    data: {
+      filename,
+      mimeType: file.type,
+      size: file.size,
+      data: Buffer.from(await file.arrayBuffer()),
+      alt,
+      uploadedById: session.user.id || null,
+    },
+    select: { id: true, filename: true },
+  });
 
-  return NextResponse.json({ url: `/uploads/${name}` });
+  return NextResponse.json({ id: media.id, url: mediaUrl(media.id, media.filename) });
 }

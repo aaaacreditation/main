@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import JsonLd from "../../_components/JsonLd";
@@ -6,7 +7,8 @@ import NavyCard from "../../_components/site/NavyCard";
 import SectionHead from "../../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
 import { FACTS } from "@/lib/facts";
-import { breadcrumbSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import HcVideo from "./HcVideo";
 import HcTestimonials, { type Testimonial } from "./HcTestimonials";
 import "./healthcare.css";
@@ -14,7 +16,7 @@ import "./healthcare.css";
 /*
  * Healthcare Accreditation — rebuilt Oct 2026 on the client's final
  * "Healthcare Accreditation" package (README.txt, latest revisions win):
- * 01 Hero → 02 Why (video left + 2×3 benefits) → 03 Eligibility (10 tiles,
+ * 01 Hero → 02 Why (video left + 2×2 benefits, cut from six Oct 23 2026) → 03 Eligibility (10 tiles,
  * two rows of five, no photo) → 04 ISQua EEA recognition → 04b Team →
  * 05 What We Evaluate (two core areas only; chapters live on /standards) →
  * 06 Four-stage journey → 07 Video testimonials → 08 Final CTA.
@@ -25,50 +27,42 @@ const IMG = "/images/site/healthcare";
 const DESCRIPTION =
   "Independent healthcare accreditation for hospitals, clinics, dental, diagnostic and specialized facilities, built on ISQua EEA accredited standards.";
 
-export const metadata = pageMeta({
-  title: "Healthcare Accreditation for Hospitals & Clinics",
-  description: DESCRIPTION,
-  path: PATH,
-  keywords: [
-    "healthcare accreditation",
-    "hospital accreditation",
-    "clinic accreditation",
-    "ISQua EEA accredited standards",
-    "AAA healthcare accreditation",
-    "patient safety accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Healthcare Accreditation for Hospitals & Clinics",
+    description: DESCRIPTION,
+    path: PATH,
+    keywords: [
+      "healthcare accreditation",
+      "hospital accreditation",
+      "clinic accreditation",
+      "ISQua EEA accredited standards",
+      "AAA healthcare accreditation",
+      "patient safety accreditation",
+    ],
+  });
+}
 
 const BENEFITS: { icon: GlyphName; title: string; text: string }[] = [
   {
     icon: "shield-check",
     title: "Safer, Higher-Quality Care",
-    text: "Strengthen systems and practices that support patient safety, quality of care, and consistent service delivery.",
+    text: "Strengthen practices that support patient safety and consistent quality of care.",
   },
   {
-    icon: "heart-pulse",
-    title: "Greater Patient Confidence",
-    text: "Demonstrate that your organization has undergone an independent assessment against defined healthcare accreditation standards.",
+    icon: "award",
+    title: "Greater Trust & Credibility",
+    text: "Build confidence through independent assessment against healthcare accreditation standards.",
   },
   {
     icon: "gauge",
     title: "Stronger Organizational Performance",
-    text: "Identify gaps, improve processes, strengthen accountability, and promote greater consistency across the organization.",
-  },
-  {
-    icon: "refresh",
-    title: "A Culture of Continual Improvement",
-    text: "Encourage teams to monitor performance, address weaknesses, and sustain improvements beyond the accreditation assessment.",
-  },
-  {
-    icon: "award",
-    title: "Stronger Reputation & Credibility",
-    text: "Demonstrate a visible commitment to quality that can strengthen confidence among patients, healthcare professionals, partners, and other stakeholders.",
+    text: "Improve processes, strengthen accountability, and sustain continual improvement.",
   },
   {
     icon: "trending-up",
-    title: "Competitive & Growth Opportunities",
-    text: "Strengthen your organization's position in the healthcare market and support opportunities to attract patients, build partnerships, and engage with organizations that value independently assessed quality.",
+    title: "More Opportunities for Growth",
+    text: "Strengthen your market position and support opportunities to attract patients and build partnerships.",
   },
 ];
 
@@ -261,7 +255,12 @@ export default function HealthcarePage() {
           />
           <div className="hcx-why">
             <div className="hcx-why-media reveal">
-              <HcVideo id="CvsM6YXA2JQ" title="AAA Healthcare Accreditation Explained" label="AAA Healthcare Accreditation Explained" />
+              <HcVideo
+                id="CvsM6YXA2JQ"
+                title="AAA Healthcare Accreditation Explained"
+                label="AAA Healthcare Accreditation Explained"
+                poster="/programs/healthcare/explainer-video-poster.jpg"
+              />
               <p className="hcx-why-quote">
                 <Glyph name="quote" size={22} />
                 <span>
@@ -373,11 +372,6 @@ export default function HealthcarePage() {
               </NavyCard>
             ))}
           </div>
-
-          <p className="ax-note reveal hcx-recog-note">
-            ISQua EEA accreditation applies specifically to AAA&apos;s Accreditation Standards for Healthcare Facilities and
-            should not be interpreted as accreditation or endorsement of every AAA program or activity.
-          </p>
         </div>
       </section>
 

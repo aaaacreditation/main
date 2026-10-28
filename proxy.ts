@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, type NextFetchEvent } from "next/server";
 import { GATED_HOST } from "./lib/gating";
+import { isSkippedPath, lookupRedirect, recordRedirectHit, stripTrailingSlash } from "./lib/redirect-map";
 
 /*
  * The sme.aaa-accreditation.org subdomain went live before the rest of the
@@ -9,7 +10,9 @@ import { GATED_HOST } from "./lib/gating";
  *
  * Localhost, Vercel preview URLs, and any future production domain are
  * unaffected, so the rest of the site can keep being built and reviewed.
- * DELETE THIS FILE when the full site launches.
+ * When the full site launches, remove ONLY the GATED_HOST block below — this
+ * file also serves the 410s for spam URLs, the canonical Link headers and the
+ * admin-managed redirects, which must stay.
  */
 
 const ALLOWED_PREFIXES = [
@@ -66,7 +69,37 @@ function withCanonical(res: NextResponse, path: string) {
   return res;
 }
 
-export function proxy(request: NextRequest) {
+/*
+ * Managed redirects — the admin's SEO → Redirects table (lib/redirect-map.ts
+ * keeps it in memory, refreshed at most once a minute). They apply on every
+ * host except the gated subdomain, never to /_next, /api, /admin or /media,
+ * and never to file URLs (the matcher below skips dotted paths). Coded
+ * redirects in next.config.ts run before proxy and therefore win.
+ */
+async function managedRedirect(request: NextRequest, path: string, event: NextFetchEvent) {
+  if (!path || isSkippedPath(path)) return null;
+  const rule = await lookupRedirect(path);
+  if (!rule) return null;
+
+  let dest: URL;
+  try {
+    dest = new URL(rule.to, request.nextUrl.href);
+  } catch {
+    return null;
+  }
+  // Carry the visitor's query string over; parameters already on the target win.
+  const own = new Set(dest.searchParams.keys());
+  request.nextUrl.searchParams.forEach((value, name) => {
+    if (!own.has(name)) dest.searchParams.append(name, value);
+  });
+  // A rule pointing at its own source would loop forever — ignore it.
+  if (dest.origin === request.nextUrl.origin && stripTrailingSlash(dest.pathname) === path) return null;
+
+  event.waitUntil(recordRedirectHit(rule.from));
+  return NextResponse.redirect(dest, rule.permanent ? 308 : 307);
+}
+
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const path = request.nextUrl.pathname.replace(/\/$/, "");
   if (GONE.has(path)) {
     return new NextResponse(null, {
@@ -77,6 +110,8 @@ export function proxy(request: NextRequest) {
 
   const host = request.headers.get("host")?.split(":")[0];
   if (host !== GATED_HOST) {
+    const managed = await managedRedirect(request, path, event);
+    if (managed) return managed;
     return FROZEN_CANONICAL.has(path)
       ? withCanonical(NextResponse.next(), path)
       : NextResponse.next();

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
@@ -7,7 +8,8 @@ import SectionHead from "../_components/site/SectionHead";
 import Stat from "../_components/site/Stat";
 import Glyph from "../_components/site/Glyph";
 import { FACTS } from "@/lib/facts";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./partnerships.css";
 
 /*
@@ -23,22 +25,24 @@ import "./partnerships.css";
  * representatives do not constitute external recognition" line is removed.
  */
 
-export const metadata = pageMeta({
-  title: "Recognition & Partnerships",
-  description:
-    "AAA's international recognition and partnerships: ISQua EEA accredited healthcare standards, ISQua membership, professional networks and cooperation agreements.",
-  path: "/partnerships",
-  keywords: [
-    "AAA recognition",
-    "ISQua EEA accredited standards",
-    "ISQua institutional member",
-    "accreditation partnerships",
-    "AAACE",
-    "AGCAS",
-    "CONIES",
-    "accreditation cooperation agreements",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Recognition & Partnerships",
+    description:
+      "AAA's international recognition and partnerships: ISQua EEA accredited healthcare standards, ISQua membership, professional networks and cooperation agreements.",
+    path: "/partnerships",
+    keywords: [
+      "AAA recognition",
+      "ISQua EEA accredited standards",
+      "ISQua institutional member",
+      "accreditation partnerships",
+      "AAACE",
+      "AGCAS",
+      "CONIES",
+      "accreditation cooperation agreements",
+    ],
+  });
+}
 
 const IMG = "/images/site/partnerships";
 

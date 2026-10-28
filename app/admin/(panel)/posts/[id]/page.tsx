@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { requireArea } from "@/lib/admin";
 import { toEditorHtml } from "@/lib/mdish";
 import { deletePost } from "../../../actions";
 import PostForm from "../../../_components/PostForm";
@@ -14,6 +15,7 @@ export default async function EditPostPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireArea("content");
   const { id } = await params;
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) notFound();

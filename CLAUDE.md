@@ -54,6 +54,8 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 ### Suggested Supporting Palette
 - Map marker red: `#D6334D` — reserved exclusively for the animated location markers on the "Countries We Operate" world map (carried over from the legacy site map at the client's request, June 2026). Do not use it anywhere else.
 - Map deep navy: `#0E2A47` — world-map fill for countries without AAA accreditation (accredited countries use brand navy `#173d73`).
+  Exception (Oct 22 2026, client): the **home page** map (`.homex .hx-reach-map` in `home.css`) fills
+  countries without accreditation with `#005ac2`. Reserved for that map only. Only accredited countries are interactive (name tooltip, hover, pointer) on every map.
 - Light blue surfaces: `#eef4ff` (`--aaa-blue-50`) subtle tinted backgrounds; `#d7e2f4` (`--aaa-blue-100`) tinted borders.
 - White: `#FFFFFF` — backgrounds, surfaces, text on brand color.
 - Neutral 900: `#0F172A` — body text on light backgrounds.
@@ -225,7 +227,9 @@ rebuilt on that structure in this design system. Rules that came with it:
   (+`.two` `.four` `.five`). Card grids sit on white or `.cream` sections. Forms, tables, logo
   plates, callout strips and FAQ accordions stay light.
 - Kit: `NavyCard`, `SectionHead`, `Stat` (count-up from a `FACTS` string), `Glyph` (the only
-  icon set for new cards) in `app/_components/site/`. `PageHero` takes `imageAlt`; `CTA` opens
+  icon set for new cards) in `app/_components/site/`. `PageHero` takes `imageAlt`, and an optional
+  `visual` node for a custom right-hand column instead of the bleeding photo (Oct 23 2026: the
+  floating standards manual on `/programs/healthcare/standards`); `CTA` opens
   `http(s)` targets in a new tab.
 - Pages render `<div className="axp …">` — `SiteChrome` already provides the single `<main>`.
 - **Header menu = the client's "Main Navigation Menu" file**: Home · Accreditation Programs ·
@@ -259,13 +263,18 @@ Rules:
 ### Oct 17 2026 — "Website corrections" + "success stories home page" documents
 
 - **Header follows the live aaa-accreditation.org layout** ("place of logo and layout similar
-  to the current website"): navy utility bar → the official `AAA-Logo.png` centred on the
-  skyline band (`public/images/site/header-skyline.webp`, cropped from the live site's
-  `HomeBack3-1.jpg`) with search + gold "Apply for Accreditation" at the band's right →
-  full-width navy menu bar with the items centred. The sticky bar is navy with the same logo.
-  The logo's lettering is white, so it only sits on the photo band, navy bars and the footer —
-  never on white. `.sh2*` rules in `aaa-ds.css`; `--header-h` is 196px (34 + 110 + 52), 106px
-  at 1025–1100px where the menu folds into the burger. The frozen SME page's hero padding is
+  to the current website"): navy utility bar → the official logo centred on a plain white band
+  (the client removed the skyline photo behind it, Oct 17) with search + gold "Apply for
+  Accreditation" at the band's right → full-width navy menu bar with the items centred.
+  `AAA-Logo.png` has white lettering, so it stays on dark surfaces (navy sticky bar, footer);
+  the white band uses `AAA-Logo-navy.png`, the same file with only the wordmark recoloured to
+  brand navy (seal and red initials untouched). `.sh2*` rules in `aaa-ds.css`; `--header-h` is 220px (34 + 134 + 52), 106px
+  at 1025–1100px where the menu folds into the burger.
+  **Oct 22 2026 update (client, live review):** above 1024px the logo band is transparent so
+  the hero photo runs up behind the logo (utility and menu bars translucent), carrying the
+  white-lettered `AAA-Logo.png`; the logo is 108px tall (was 80px) in a 134px band (was 110px).
+  At ≤1024px the header stops overlaying the hero and the band is white with `AAA-Logo-navy.png`
+  — `Brand` renders both and CSS (`.sh2-logo-light` / `.sh2-logo-navy`) picks one. The frozen SME page's hero padding is
   re-keyed to `--header-h` from `aaa-ds.css` (`.smex-hero.lpx-hero--nav .lpx-hero-inner`).
 - **59 countries** (was 58) — client figure; every page reads it from `FACTS`. The world map
   (`WorldMap.tsx` `ACCREDITED`) is the client's list: 55 distinct map countries (the list has
@@ -282,7 +291,8 @@ Rules:
   Success Stories carousel holds the client's 12 organizations (logo plate on every card;
   video stories show the YouTube thumbnail and link to the video), with no hint text or pause
   button (hover/focus still pauses; reduced motion still gets a scroller). The SME page's story
-  marquee still reads `CASE_STUDIES` and was not changed.
+  marquee still reads `CASE_STUDIES` and was not changed. *(Superseded Oct 27 2026: both the
+  home carousel and the SME marquee now read the CaseStudy table — see "Admin Portal".)*
 
 ## Facts, SEO and GEO
 
@@ -293,14 +303,51 @@ Rules:
 - The ISO/IEC 17021-1 program is named **"Management Systems Certification Bodies
   Accreditation"** (renamed Aug 2026 from "System Certification Bodies"). Use
   `PROGRAMS.iso17021.label`.
-- Every page must export `metadata` built with `pageMeta()` from `lib/seo.ts` — it produces
-  the canonical URL, OpenGraph and Twitter card together. Titles ≤ 60 chars, descriptions
-  120–160.
+- Every page exports `generateMetadata()` returning `seoPage({...})` from
+  `lib/seo-overrides.ts` (same argument as `pageMeta()` in `lib/seo.ts`, plus the admin's
+  per-URL SeoEntry override on top). Pages that build their own Metadata object wrap it in
+  `withSeoOverride(path, metadata)`. It produces the canonical URL, OpenGraph (with the
+  generated `/opengraph-image` card when a page has no artwork) and Twitter card together.
+  Titles ≤ 60 chars, descriptions 120–160.
 - Every page emits JSON-LD via `<JsonLd>`: `breadcrumbSchema` always, plus `faqSchema` /
   `serviceSchema` / `articleSchema` where they apply. `organizationSchema` and
   `websiteSchema` are emitted once, in `app/layout.tsx`.
 - Legacy WordPress URLs are redirected in `next.config.ts`; the news-post redirects are
   generated from `app/news/posts-data.json`, so re-running the migration keeps them in sync.
+
+## Admin Portal (`/admin`) — Oct 27 2026
+
+The CMS ("Content Studio", July 2026) was expanded into the **AAA Admin Portal**. Postgres via
+Prisma 6 (not 7), NextAuth v5 credentials. Deployment: `docs/DEPLOYMENT.md` (Vercel now,
+Hetzner Docker later — `Dockerfile`, `docker-compose.prod.yml`, `deploy/`).
+
+- **Areas** (`app/admin/(panel)/…`): Dashboard · Leads & Applications (`leads/`, CSV export,
+  timeline, assignment, bulk status) · News & Blog · Case Studies · Pages · Media Library ·
+  Accredited Register (`directory/`) · SEO Center (`seo/` audit crawler, `seo/pages`
+  metadata editor, `seo/redirects`) · Team & Access (`users/`) · Activity Log · My account.
+- **Roles** (`lib/admin.ts`): ADMIN everything; EDITOR everything except users; SALES
+  dashboard + leads. Every admin page and server action starts with `requireArea(area)`
+  (re-reads role/active from the DB — JWT sessions); route handlers use `getStaffSession()`.
+  Every write calls `audit()`. Admin pages are `force-dynamic`.
+- **Public content from the DB, with bundled fallbacks**: news (`lib/content.ts` ↔
+  `app/news/posts-data.json`), case studies (`lib/case-studies.ts` ↔ `app/_data/home-stories.ts`
+  + `case-studies.ts`), register (`lib/directory.ts` ↔ `accredited-organizations.json`), SEO
+  overrides and managed redirects. Getters fall back to the bundled snapshot only when the DB
+  throws (and skip the DB for 60s after a failure), so builds without `DATABASE_URL` still
+  work. Public pages stay static/ISR; admin saves `revalidatePath()` the routes they feed
+  (SEO saves use `updateTag("seo")`). Once the DB is live, edit content in the admin — the
+  snapshot files are only the seed (`prisma/seed.mjs`) and the fallback.
+- **Leads**: all site forms post to `/api/leads`; it derives `kind` (CONTACT / APPLICATION /
+  QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new form by picking a
+  `source` that `leadKindFromSource()` classifies.
+- **Uploads** go to the Media table (bytea) and are served from `/media/<id>/<name>` — works
+  on Vercel's read-only filesystem and travels with a `pg_dump`. 4 MB cap.
+- **Redirects**: coded ones in `next.config.ts` run first; admin-managed ones are applied in
+  `proxy.ts` (60s in-memory cache, `lib/redirect-map.ts`). Changing a published article/page
+  slug creates a redirect automatically (`recordSlugChange`).
+- **Admin CSS**: legacy `adm-*` rules live in `globals.css` (don't add to them); new shared
+  admin primitives are in `app/admin/admin.css` (scoped `.adm`); module CSS is page-local.
+  Inside the admin use `h3` for section titles — the global `h2 !important` rule applies.
 
 ## Tech Stack Conventions
 - Next.js (App Router) — keep components in `app/_components/` when shared.

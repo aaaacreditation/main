@@ -17,7 +17,7 @@ export const ORG = {
   alternateName: "AAA Accreditation",
   email: "info@aaa-accreditation.org",
   telephone: "+1-571-601-2616",
-  telephoneIntl: "+44-748-755-0737",
+  telephoneIntl: "+1-571-630-2066",
   street: "8609 Westwood Center Drive",
   city: "Tysons Corner",
   region: "VA",
@@ -26,7 +26,10 @@ export const ORG = {
   countryName: "United States",
 } as const;
 
-type MetaInput = {
+/** The generated site-wide share card (app/opengraph-image.tsx). */
+const DEFAULT_OG_IMAGE = "/opengraph-image";
+
+export type MetaInput = {
   title: string;
   description: string;
   /** Route path, e.g. "/programs/healthcare". Becomes the canonical URL. */
@@ -78,16 +81,19 @@ export function pageMeta({
       title,
       description,
       locale: "en_US",
-      // No `images` key when the page has no bespoke artwork: Next then falls
-      // back to the generated site-wide card instead of pointing at a 404.
-      ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: title }] } : {}),
+      // Pages without bespoke artwork point at the generated site-wide card
+      // (app/opengraph-image.tsx). Next does NOT inherit that card into a
+      // page that sets its own `openGraph` object — the Oct 2026 SEO audit
+      // found og:image missing on 406 of 408 pages — so name it explicitly.
+      // Root-relative, resolved against metadataBase in app/layout.tsx.
+      images: [{ url: ogImage ?? DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
       ...(publishedTime ? { publishedTime } : {}),
     },
     twitter: {
       card: "summary_large_image" as const,
       title,
       description,
-      ...(ogImage ? { images: [ogImage] } : {}),
+      images: [ogImage ?? DEFAULT_OG_IMAGE],
     },
   };
 }

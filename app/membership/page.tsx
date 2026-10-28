@@ -1,21 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Icon from "../_components/Icon";
 import JsonLd from "../_components/JsonLd";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
-import { pageMeta, breadcrumbSchema, faqSchema } from "../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../lib/seo";
+import { seoPage } from "../../lib/seo-overrides";
 import { FACTS } from "@/lib/facts";
 import "./membership.css";
 
-export const metadata = pageMeta({
-  title: "Membership: Individual & Organizational",
-  description:
-    "Join AAA as an individual or organizational member: a validated membership certificate, ADCP directory listing, free annual training and committee eligibility.",
-  path: "/membership",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Membership: Individual & Organizational",
+    description:
+      "Join AAA as an individual or organizational member: a validated membership certificate, ADCP directory listing, free annual training and committee eligibility.",
+    path: "/membership",
+  });
+}
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 
 /* ------------------------------------------------------------------ content
    Every fact below is transcribed from the client's live membership pages

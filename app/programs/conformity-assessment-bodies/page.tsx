@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHero from "../../_components/PageHero";
@@ -7,7 +8,8 @@ import SectionHead from "../../_components/site/SectionHead";
 import Stat from "../../_components/site/Stat";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
 import { CAB_SCHEMES, CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
-import { pageMeta, breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import AdvisorForm from "./AdvisorForm";
 import CabVideo from "./CabVideo";
 import "./cab.css";
@@ -26,22 +28,24 @@ const IMG = "/images/site/cab-hub";
 const DESCRIPTION =
   "AAA accredits testing and calibration laboratories, inspection bodies, certification bodies, medical laboratories and proficiency testing providers worldwide.";
 
-export const metadata = pageMeta({
-  title: "Conformity Assessment Bodies Accreditation",
-  description: DESCRIPTION,
-  path: PATH,
-  keywords: [
-    "conformity assessment body accreditation",
-    "CAB accreditation",
-    "ISO/IEC 17025 accreditation",
-    "ISO/IEC 17020 accreditation",
-    "ISO/IEC 17021-1 accreditation",
-    "ISO/IEC 17024 accreditation",
-    "ISO 15189 accreditation",
-    "ISO/IEC 17065 accreditation",
-    "ISO/IEC 17043 accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Conformity Assessment Bodies Accreditation",
+    description: DESCRIPTION,
+    path: PATH,
+    keywords: [
+      "conformity assessment body accreditation",
+      "CAB accreditation",
+      "ISO/IEC 17025 accreditation",
+      "ISO/IEC 17020 accreditation",
+      "ISO/IEC 17021-1 accreditation",
+      "ISO/IEC 17024 accreditation",
+      "ISO 15189 accreditation",
+      "ISO/IEC 17065 accreditation",
+      "ISO/IEC 17043 accreditation",
+    ],
+  });
+}
 
 /* ------------------------------------------------------------------ data */
 
@@ -411,18 +415,13 @@ export default function CabHubPage() {
 
       {/* 05 — How accreditation works */}
       <section className="ax-section cream" id="how-accreditation-works">
-        <div className="container cabh-process">
-          <div className="cabh-process-copy">
-            <SectionHead
-              eyebrow="A Structured Accreditation Journey"
-              title="How Accreditation Works"
-              intro="AAA follows a structured accreditation process designed to assess your organization against the applicable international standard and requested scope of accreditation."
-            />
-            <p className="ax-note reveal">
-              The assessment approach, required evidence, timeframe, and technical activities depend on the selected
-              accreditation program and requested scope.
-            </p>
-          </div>
+        <div className="container">
+          <SectionHead
+            center
+            eyebrow="A Structured Accreditation Journey"
+            title="How Accreditation Works"
+            intro="AAA follows a structured accreditation process designed to assess your organization against the applicable international standard and requested scope of accreditation."
+          />
 
           <div className="ax-steps-panel cabh-steps reveal">
             <ol className="ax-steps">

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import PageHero from "../../_components/PageHero";
@@ -5,7 +6,8 @@ import JsonLd from "../../_components/JsonLd";
 import NavyCard from "../../_components/site/NavyCard";
 import SectionHead from "../../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./org.css";
 
 /*
@@ -17,19 +19,21 @@ import "./org.css";
  * other membership routes and is intentionally not imported here).
  */
 
-export const metadata = pageMeta({
-  title: "Organizational Membership",
-  description:
-    "Join the AAA global quality community for $500 a year: membership certificate, complimentary training places, ADCP listing, webinars and networking.",
-  path: "/membership/organizational",
-  keywords: [
-    "AAA organizational membership",
-    "American Accreditation Association membership",
-    "quality community membership",
-    "membership vs accreditation",
-    "ADCP listing",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Organizational Membership",
+    description:
+      "Join the AAA global quality community for $500 a year: membership certificate, complimentary training places, ADCP listing, webinars and networking.",
+    path: "/membership/organizational",
+    keywords: [
+      "AAA organizational membership",
+      "American Accreditation Association membership",
+      "quality community membership",
+      "membership vs accreditation",
+      "ADCP listing",
+    ],
+  });
+}
 
 const IMG = "/images/site/membership-organizational";
 const APPLY = "/membership/organizational/apply";

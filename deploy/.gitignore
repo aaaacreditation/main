@@ -1,0 +1,4 @@
+# The root .gitignore ignores every .env* file; keep the template tracked and
+# the real secrets file out of git.
+!.env.production.example
+.env.production

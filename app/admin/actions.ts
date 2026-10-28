@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ContentStatus, LeadStatus } from "@prisma/client";
+import { ContentStatus } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { requireAdmin } from "@/lib/admin";
+import { audit, requireArea } from "@/lib/admin";
 import { slugify } from "@/lib/slug";
+import { recordSlugChange } from "@/lib/seo-overrides";
 import { signOut } from "@/auth";
 
 /* ---------- shared helpers ---------- */
@@ -60,7 +61,7 @@ export async function logout() {
 /* ---------- posts ---------- */
 
 export async function savePost(formData: FormData) {
-  const session = await requireAdmin();
+  const session = await requireArea("content");
 
   const id = str(formData, "id");
   const title = str(formData, "title", 300);
@@ -100,10 +101,17 @@ export async function savePost(formData: FormData) {
             : existing.publishedAt,
       },
     });
-    if (existing.slug !== slug) revalidatePath(`/news/${existing.slug}`);
+    if (existing.slug !== slug) {
+      revalidatePath(`/news/${existing.slug}`);
+      // A published article's old URL may be indexed or linked — keep it alive.
+      if (existing.status === ContentStatus.PUBLISHED) {
+        await recordSlugChange(`/news/${existing.slug}`, `/news/${slug}`);
+      }
+    }
+    await audit(session.user.id, "update", "post", id, `${title}${existing.status !== status ? ` (${status.toLowerCase()})` : ""}`);
   } else {
     slug = await uniquePostSlug(requestedSlug);
-    await prisma.post.create({
+    const created = await prisma.post.create({
       data: {
         title,
         slug,
@@ -119,6 +127,7 @@ export async function savePost(formData: FormData) {
         authorId: session.user.id ?? null,
       },
     });
+    await audit(session.user.id, "create", "post", created.id, title);
   }
 
   revalidateNews(slug);
@@ -126,10 +135,11 @@ export async function savePost(formData: FormData) {
 }
 
 export async function deletePost(formData: FormData) {
-  await requireAdmin();
+  const session = await requireArea("content");
   const id = str(formData, "id");
   if (!id) redirect("/admin/posts");
   const post = await prisma.post.delete({ where: { id } }).catch(() => null);
+  if (post) await audit(session.user.id, "delete", "post", id, post.title);
   revalidateNews(post?.slug);
   redirect("/admin/posts?deleted=1");
 }
@@ -137,7 +147,7 @@ export async function deletePost(formData: FormData) {
 /* ---------- pages ---------- */
 
 export async function savePage(formData: FormData) {
-  await requireAdmin();
+  const session = await requireArea("content");
 
   const id = str(formData, "id");
   const title = str(formData, "title", 300);
@@ -161,10 +171,17 @@ export async function savePage(formData: FormData) {
     if (!existing) redirect("/admin/pages?error=notfound");
     slug = await uniquePageSlug(requestedSlug, id);
     await prisma.page.update({ where: { id }, data: { ...data, slug } });
-    if (existing.slug !== slug) revalidatePath(`/${existing.slug}`);
+    if (existing.slug !== slug) {
+      revalidatePath(`/${existing.slug}`);
+      if (existing.status === ContentStatus.PUBLISHED) {
+        await recordSlugChange(`/${existing.slug}`, `/${slug}`);
+      }
+    }
+    await audit(session.user.id, "update", "page", id, title);
   } else {
     slug = await uniquePageSlug(requestedSlug);
-    await prisma.page.create({ data: { ...data, slug } });
+    const created = await prisma.page.create({ data: { ...data, slug } });
+    await audit(session.user.id, "create", "page", created.id, title);
   }
 
   revalidatePath(`/${slug}`);
@@ -172,31 +189,13 @@ export async function savePage(formData: FormData) {
 }
 
 export async function deletePage(formData: FormData) {
-  await requireAdmin();
+  const session = await requireArea("content");
   const id = str(formData, "id");
   if (!id) redirect("/admin/pages");
   const page = await prisma.page.delete({ where: { id } }).catch(() => null);
-  if (page) revalidatePath(`/${page.slug}`);
+  if (page) {
+    revalidatePath(`/${page.slug}`);
+    await audit(session.user.id, "delete", "page", id, page.title);
+  }
   redirect("/admin/pages?deleted=1");
-}
-
-/* ---------- leads ---------- */
-
-export async function updateLead(formData: FormData) {
-  await requireAdmin();
-  const id = str(formData, "id");
-  const status = str(formData, "status") as LeadStatus;
-  const notes = str(formData, "notes", 4000);
-  if (!id || !Object.values(LeadStatus).includes(status)) redirect("/admin/leads");
-  await prisma.lead.update({ where: { id }, data: { status, notes } }).catch(() => null);
-  revalidatePath("/admin/leads");
-  redirect("/admin/leads?saved=1");
-}
-
-export async function deleteLead(formData: FormData) {
-  await requireAdmin();
-  const id = str(formData, "id");
-  if (id) await prisma.lead.delete({ where: { id } }).catch(() => null);
-  revalidatePath("/admin/leads");
-  redirect("/admin/leads?deleted=1");
 }

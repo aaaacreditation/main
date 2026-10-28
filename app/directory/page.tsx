@@ -4,9 +4,10 @@ import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
 import Icon from "../_components/Icon";
-import { REGISTER_STATS } from "@/app/_data/accredited-organizations";
+import { getAccreditedOrganizations, registerStats } from "@/lib/directory";
 import { CONTACT, FACTS } from "@/lib/facts";
-import { SITE_URL, breadcrumbSchema, faqSchema, pageMeta } from "@/lib/seo";
+import { SITE_URL, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 
 /**
  * The AAA directory hub.
@@ -20,18 +21,20 @@ export const revalidate = 3600;
 
 const ADCP_URL = "https://adcp.aaa-accreditation.org";
 
-export const metadata: Metadata = pageMeta({
-  title: "AAA Directories & Public Registers",
-  description:
-    "Look up an AAA-accredited organization or a credential held in the American Directory of Competent Personnel, and confirm any listing directly with AAA.",
-  path: "/directory",
-  keywords: [
-    "AAA directory",
-    "accreditation register",
-    "verify AAA accreditation",
-    "American Directory of Competent Personnel",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "AAA Directories & Public Registers",
+    description:
+      "Look up an AAA-accredited organization or a credential held in the American Directory of Competent Personnel, and confirm any listing directly with AAA.",
+    path: "/directory",
+    keywords: [
+      "AAA directory",
+      "accreditation register",
+      "verify AAA accreditation",
+      "American Directory of Competent Personnel",
+    ],
+  });
+}
 
 function LineIcon({ children }: { children: React.ReactNode }) {
   return (
@@ -68,7 +71,9 @@ const FAQ: { q: string; a: string }[] = [
   },
 ];
 
-export default function Page() {
+export default async function Page() {
+  const stats = registerStats(await getAccreditedOrganizations());
+
   return (
     <div className="axp">
       <JsonLd
@@ -109,7 +114,7 @@ export default function Page() {
         intro="AAA publishes two registers: the organizations that hold AAA accreditation, and the individual credentials issued through them. Both exist so that funders, regulators, employers and clients can check a claim rather than take it on trust."
         crumbs={[{ label: "Directory" }]}
         meta={[
-          { k: "Organizations listed", v: String(REGISTER_STATS.organizations) },
+          { k: "Organizations listed", v: String(stats.organizations) },
           { k: "Countries AAA serves", v: FACTS.countriesPlus },
           { k: "Accreditation cycle", v: `${FACTS.cycleYears} years` },
         ]}
@@ -144,9 +149,9 @@ export default function Page() {
               <p>
                 The public register of organizations holding AAA accreditation — universities,
                 training and education providers, certification and inspection bodies,
-                laboratories, schools and healthcare institutions. Search by name, city or keyword,
-                filter by country, and open any entry to see the accreditation record where one is
-                published.
+                laboratories, schools and healthcare institutions. Search by name, city, keyword or
+                accreditation number, filter by program, status and country, and open any entry to
+                see its accreditation record.
               </p>
               <span className="ax-card-go">
                 Search the register <Icon name="arrow" size={13} />
@@ -223,8 +228,8 @@ export default function Page() {
                   AAA.
                 </li>
                 <li>
-                  Where an entry publishes an accreditation number and validity date, both are
-                  shown on the record.
+                  Every entry shows its accreditation number, validity date and status as
+                  published in the register.
                 </li>
               </ul>
             </div>

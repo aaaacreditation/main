@@ -10,6 +10,8 @@ datasource db {
 enum Role {
   ADMIN
   EDITOR
+  /// Sales team: leads and applications only, no content editing.
+  SALES
 }
 
 enum ContentStatus {
@@ -21,18 +23,38 @@ enum LeadStatus {
   NEW
   CONTACTED
   QUALIFIED
+  PROPOSAL
+  WON
+  LOST
   CLOSED
+  SPAM
+}
+
+/// What a lead asked for, derived from its `source` at capture (lib/leads.ts).
+enum LeadKind {
+  CONTACT
+  APPLICATION
+  QUOTE
+  ADVISOR
+  MEMBERSHIP
+  OTHER
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String
-  passwordHash String
-  role         Role     @default(EDITOR)
-  posts        Post[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String
+  passwordHash  String
+  role          Role           @default(EDITOR)
+  active        Boolean        @default(true)
+  lastLoginAt   DateTime?
+  posts         Post[]
+  assignedLeads Lead[]         @relation("LeadAssignee")
+  leadActivity  LeadActivity[]
+  media         Media[]
+  auditLogs     AuditLog[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 /// News / blog article. `content` stores sanitized HTML from the admin editor.
@@ -75,19 +97,219 @@ model Page {
 
 /// Application / contact submissions captured from the public site.
 model Lead {
-  id        String     @id @default(cuid())
-  business  String
-  contact   String
-  email     String
-  phone     String     @default("")
-  sector    String     @default("")
-  stage     String     @default("")
-  message   String     @default("")
-  source    String     @default("home-apply")
-  status    LeadStatus @default(NEW)
-  notes     String     @default("")
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id           String         @id @default(cuid())
+  business     String
+  contact      String
+  email        String
+  phone        String         @default("")
+  sector       String         @default("")
+  stage        String         @default("")
+  message      String         @default("")
+  source       String         @default("home-apply")
+  kind         LeadKind       @default(OTHER)
+  status       LeadStatus     @default(NEW)
+  notes        String         @default("")
+  /// Page the form was submitted from (Referer header), when the browser sent one.
+  referrer     String         @default("")
+  assignedTo   User?          @relation("LeadAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  assignedToId String?
+  activities   LeadActivity[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@index([status, createdAt(sort: Desc)])
+  @@index([kind, createdAt(sort: Desc)])
+}
+
+/// Timeline entry on a lead: a staff note, a status change or an assignment.
+model LeadActivity {
+  id        String   @id @default(cuid())
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId    String
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId  String?
+  /// "note" | "status" | "assign"
+  type      String   @default("note")
+  body      String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+/// Success story / case study. Home and SME placements are separate rows
+/// because the client supplied different wording for each (see seed).
+model CaseStudy {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  name          String
+  sector        String        @default("")
+  country       String        @default("")
+  /// Short gold kicker above the name ("12% Growth · 500+ Students Certified").
+  metric        String        @default("")
+  /// The organization's testimonial, verbatim.
+  quote         String        @default("")
+  /// Extra impact detail (SME cards).
+  description   String        @default("")
+  image         String?
+  imageAlt      String        @default("")
+  /// CSS object-position for the photo crop, e.g. "center 35%".
+  imagePosition String        @default("")
+  logo          String?
+  /// Near-zero logo plate padding, for round or very wide marks.
+  logoTight     Boolean       @default(false)
+  initials      String        @default("")
+  videoUrl      String?
+  link          String?
+  featured      Boolean       @default(false)
+  showOnHome    Boolean       @default(false)
+  showOnSme     Boolean       @default(false)
+  order         Int           @default(0)
+  status        ContentStatus @default(PUBLISHED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status, order])
+}
+
+/// An organization on the public accredited-organizations register.
+model Organization {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  name           String
+  location       String          @default("")
+  country        String          @default("")
+  /// The organization's own wording — never edited to match AAA's figures.
+  description    String          @default("")
+  logo           String?
+  website        String?
+  /// Register order: lower first. New entries go on top (most recent first).
+  order          Int             @default(0)
+  status         ContentStatus   @default(PUBLISHED)
+  accreditations Accreditation[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([status, order])
+}
+
+model Accreditation {
+  id             String       @id @default(cuid())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  /// As published, e.g. "Training & Education Provider", "ISO/IEC 17024: 2026".
+  accreditedAs   String
+  number         String       @default("")
+  scope          String       @default("")
+  /// As published, e.g. "May 1, 2029".
+  expiry         String       @default("")
+  /// Parsed from `expiry` for renewal alerts; the public site shows `expiry`.
+  expiresOn      DateTime?
+  /// "Accredited" | "Suspended" | "Withdrawn"
+  status         String       @default("Accredited")
+  order          Int          @default(0)
+
+  @@index([organizationId, order])
+  @@index([number])
+}
+
+/// Per-URL SEO override. Null fields inherit the page's coded defaults.
+model SeoEntry {
+  id          String   @id @default(cuid())
+  /// Route path, e.g. "/programs/healthcare" ("/" for home).
+  path        String   @unique
+  title       String?
+  description String?
+  keywords    String[] @default([])
+  ogImage     String?
+  canonical   String?
+  /// null = inherit, true = noindex, false = force index.
+  noindex     Boolean?
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// One crawl of the live site by the SEO auditor.
+model SeoAuditRun {
+  id         String         @id @default(cuid())
+  baseUrl    String
+  status     String         @default("running") // running | done | failed
+  pageCount  Int            @default(0)
+  avgScore   Int            @default(0)
+  error      String         @default("")
+  startedAt  DateTime       @default(now())
+  finishedAt DateTime?
+  pages      SeoAuditPage[]
+
+  @@index([startedAt(sort: Desc)])
+}
+
+model SeoAuditPage {
+  id               String      @id @default(cuid())
+  run              SeoAuditRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  runId            String
+  path             String
+  statusCode       Int         @default(0)
+  title            String      @default("")
+  description      String      @default("")
+  canonical        String      @default("")
+  robots           String      @default("")
+  ogImage          String      @default("")
+  h1               String      @default("")
+  h1Count          Int         @default(0)
+  wordCount        Int         @default(0)
+  imagesMissingAlt Int         @default(0)
+  jsonLdTypes      String[]    @default([])
+  /// [{ level: "error" | "warn" | "info", code, message }]
+  issues           Json        @default("[]")
+  score            Int         @default(0)
+  fetchMs          Int         @default(0)
+
+  @@index([runId, score])
+  @@index([path])
+}
+
+/// Managed redirect (in addition to the coded ones in next.config.ts).
+model Redirect {
+  id        String   @id @default(cuid())
+  from      String   @unique
+  to        String
+  permanent Boolean  @default(true)
+  hits      Int      @default(0)
+  note      String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Uploaded file. Bytes live in Postgres by default so uploads work on
+/// Vercel's read-only filesystem and travel with a pg_dump to Hetzner.
+model Media {
+  id           String   @id @default(cuid())
+  filename     String
+  mimeType     String
+  size         Int
+  data         Bytes?
+  alt          String   @default("")
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+}
+
+/// Who changed what in the admin portal.
+model AuditLog {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String?
+  /// "create" | "update" | "delete" | "login" | …
+  action    String
+  /// "post" | "page" | "lead" | "case-study" | "organization" | "seo" | "user" | …
+  entity    String
+  entityId  String?
+  summary   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+  @@index([entity, entityId])
 }

@@ -17,6 +17,9 @@ export interface PublicPost {
   images: string[];
   coverImage: string | null;
   category: string;
+  /** Search-result overrides set in the article editor (DB only). */
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 }
 
 interface RawPost {
@@ -26,6 +29,9 @@ interface RawPost {
   excerpt: string;
   content: string;
   images: string[];
+  /** Local featured image (public/news/covers), from scripts/sync-news-posts.mjs. */
+  cover?: string;
+  category?: string;
 }
 
 function toLocalIso(d: Date): string {
@@ -39,8 +45,9 @@ const fallbackPosts: PublicPost[] = (postsJson as unknown as RawPost[])
     excerpt: p.excerpt ?? "",
     content: p.content ?? "",
     images: p.images ?? [],
-    coverImage: p.images?.[0] ?? null,
-    category: "News",
+    // Never fall back to images[0]: those are old-site wp-content URLs.
+    coverImage: p.cover ?? null,
+    category: p.category ?? "News",
   }))
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
@@ -59,6 +66,8 @@ export async function getPublishedPosts(): Promise<PublicPost[]> {
       images: r.images,
       coverImage: r.coverImage,
       category: r.category,
+      seoTitle: r.seoTitle,
+      seoDescription: r.seoDescription,
     }));
   } catch (err) {
     console.error("getPublishedPosts: falling back to bundled data —", err);
@@ -81,6 +90,8 @@ export async function getPublishedPost(slug: string): Promise<PublicPost | null>
       images: r.images,
       coverImage: r.coverImage,
       category: r.category,
+      seoTitle: r.seoTitle,
+      seoDescription: r.seoDescription,
     };
   } catch (err) {
     console.error("getPublishedPost: falling back to bundled data —", err);

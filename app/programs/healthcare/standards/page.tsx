@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import CTA from "../../../_components/CTA";
 import JsonLd from "../../../_components/JsonLd";
@@ -5,7 +7,8 @@ import PageHero from "../../../_components/PageHero";
 import NavyCard from "../../../_components/site/NavyCard";
 import SectionHead from "../../../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../../../_components/site/Glyph";
-import { breadcrumbSchema, pageMeta } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./standards.css";
 
 /*
@@ -19,19 +22,21 @@ import "./standards.css";
 const SELF = "/programs/healthcare/standards";
 const EMAIL = "healthcare@aaa-accreditation.org";
 
-export const metadata = pageMeta({
-  title: "AAA Healthcare Accreditation Standards (12 Chapters)",
-  description:
-    "Explore AAA's ISQua EEA accredited healthcare standards: 12 chapters across patient-centered care and organizational systems, built through a 10-step process.",
-  path: SELF,
-  keywords: [
-    "healthcare accreditation standards",
-    "AAA healthcare standards",
-    "patient-centered care standards",
-    "ISQua EEA accredited standards",
-    "healthcare standards development",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "AAA Healthcare Accreditation Standards (12 Chapters)",
+    description:
+      "Explore AAA's ISQua EEA accredited healthcare standards: 12 chapters across patient-centered care and organizational systems, built through a 10-step process.",
+    path: SELF,
+    keywords: [
+      "healthcare accreditation standards",
+      "AAA healthcare standards",
+      "patient-centered care standards",
+      "ISQua EEA accredited standards",
+      "healthcare standards development",
+    ],
+  });
+}
 
 type Item = { icon: GlyphName; title: string };
 
@@ -143,6 +148,32 @@ export default function HealthcareStandardsPage() {
           { v: "10", k: "Development Steps" },
           { v: "ISQua EEA", k: "Accredited Standards" },
         ]}
+        visual={
+          <div className="hcs-book">
+            <span className="hcs-book-rings" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span className="hcs-book-glow" aria-hidden="true" />
+            <figure className="hcs-book-cover">
+              <span className="hcs-book-face">
+                <Image
+                  src="/programs/healthcare/standards-manual-2025.jpg"
+                  alt="AAA Accreditation Standards Manual for Healthcare Facilities, 2025 edition"
+                  width={760}
+                  height={1014}
+                  sizes="(max-width: 980px) 240px, 330px"
+                  priority
+                />
+              </span>
+            </figure>
+            <span className="hcs-book-tag">
+              <span>ISQua EEA Accredited Standards</span>
+              <strong>Standards Manual for Healthcare Facilities</strong>
+            </span>
+          </div>
+        }
       />
 
       {/* Standards framework — 12 chapters */}
@@ -183,6 +214,53 @@ export default function HealthcareStandardsPage() {
               </li>
             ))}
           </ol>
+
+          {/* The journey and the feedback commitment as plain paragraphs (client copy, Oct 23 2026). */}
+          <div className="hcs-journey reveal">
+            <p>
+              The AAA Standards Development Journey follows a transparent and systematic 10-step process designed to
+              ensure that all standards are evidence-based, internationally benchmarked, practical, and responsive to
+              stakeholder needs.
+            </p>
+            <p>
+              The process begins with identifying healthcare needs and priorities, followed by research and benchmarking
+              against national and international best practices. Technical committees and subject matter experts are then
+              formed to develop the draft standards.
+            </p>
+            <p>
+              During the development stage, draft standards are shared with stakeholders and external experts for
+              consultation, review, and feedback to ensure relevance and applicability. The standards then undergo field
+              testing and pilot surveys in real healthcare settings to evaluate clarity, feasibility, usability, and
+              effectiveness.
+            </p>
+            <p>
+              Following validation and analysis of all feedback and pilot findings, the standards are refined, finalized,
+              and submitted for approval. This structured development journey supports transparency, stakeholder
+              engagement, and continuous quality improvement throughout the standards development process. Interested
+              parties are welcome to contribute to the standards development process. If you are interested in reviewing
+              and providing feedback on draft standards you may submit a request via email to{" "}
+              <a href={`mailto:${EMAIL}`}>{EMAIL}</a>, and a copy of the relevant draft standards will be shared for
+              consultation and comments.
+            </p>
+            <p>
+              <strong>Your contribution and feedback is important to us</strong>
+            </p>
+            <p>
+              AAA is committed to fostering an open and transparent feedback environment. AAA implemented a standardized
+              mechanism to ensure that feedback regarding healthcare accreditation standards is effectively gathered,
+              analysed, and utilized for continuous improvement according to the Accreditation Standards Feedback Policy{" "}
+              <span className="hcs-nowrap">(Document No. P-HEC-10-V1)</span>.
+            </p>
+            <p>
+              The AAA feedback analysis includes specific metrics or key performance indicators (KPIs) for tracking
+              patterns in feedback over time. Metrics are &ldquo;frequency of feedback on specific standards&rdquo; and
+              &ldquo;number of requests for clarification on terminology&rdquo;.
+            </p>
+            <p>
+              All AAA customers and stakeholders are requested to provide feedback concerning their experience with AAA
+              accreditation standards manual using the email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+            </p>
+          </div>
 
           <div className="ax-card navy ax-blue reveal hcs-feedback">
             <span className="ax-card-ico">

@@ -1,25 +1,29 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import CTA from "../../../_components/CTA";
 import JsonLd from "../../../_components/JsonLd";
 import PageHero from "../../../_components/PageHero";
-import { breadcrumbSchema, faqSchema, pageMeta } from "../../../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
+import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, HC_CONSULT, HC_EMAIL, LineIcon, hcRelated } from "../cluster";
 import "../hc.css";
 
 const SELF = "/programs/healthcare/who-can-apply";
 
-export const metadata = pageMeta({
-  title: "Who Can Be Accredited? Eligible Healthcare Facilities",
-  description:
-    "Hospitals, primary care and specialty clinics, dental organizations, diagnostic and rehabilitation centers, pharmacies and medical travel agencies can apply.",
-  path: SELF,
-  keywords: [
-    "who can be accredited",
-    "healthcare accreditation eligibility",
-    "clinic accreditation",
-    "dental accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Who Can Be Accredited? Eligible Healthcare Facilities",
+    description:
+      "Hospitals, primary care and specialty clinics, dental organizations, diagnostic and rehabilitation centers, pharmacies and medical travel agencies can apply.",
+    path: SELF,
+    keywords: [
+      "who can be accredited",
+      "healthcare accreditation eligibility",
+      "clinic accreditation",
+      "dental accreditation",
+    ],
+  });
+}
 
 /* Facility types, verbatim in substance from the client's live
    "Who can be accredited?" page. */

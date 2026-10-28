@@ -1,25 +1,29 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../_components/Icon";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
-import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./documents.css";
 
-export const metadata = pageMeta({
-  title: "Document Library",
-  description:
-    "Download AAA application forms, accreditation requirements, policies and checklists — plus the ILAC and IAF documents behind them. Free, no signup.",
-  path: "/documents",
-  keywords: [
-    "accreditation application form",
-    "AAA accreditation requirements",
-    "ILAC documents",
-    "IAF mandatory documents",
-    "ISO 17020 checklist",
-    "ISO 17043 checklist",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Document Library",
+    description:
+      "Download AAA application forms, accreditation requirements, policies and checklists — plus the ILAC and IAF documents behind them. Free, no signup.",
+    path: "/documents",
+    keywords: [
+      "accreditation application form",
+      "AAA accreditation requirements",
+      "ILAC documents",
+      "IAF mandatory documents",
+      "ISO 17020 checklist",
+      "ISO 17043 checklist",
+    ],
+  });
+}
 
 /* -------------------------------------------------------------------------
    Every href below is the live, published URL on aaa-accreditation.org,

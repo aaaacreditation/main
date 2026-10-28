@@ -27,11 +27,13 @@ async function login(formData: FormData) {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; inactive?: string }>;
 }) {
+  const { error, inactive } = await searchParams;
   const session = await auth();
-  if (session?.user) redirect("/admin");
-  const { error } = await searchParams;
+  // A deactivated account still holds a valid token; stay here instead of
+  // bouncing between /admin and the login screen.
+  if (session?.user && !inactive) redirect("/admin");
 
   return (
     <div className="alogin">
@@ -40,12 +42,16 @@ export default async function LoginPage({
         <div className="alogin-brand">
           <Image src="/logo/AAA-Logo.png" alt="American Accreditation Association" width={210} height={65} priority />
         </div>
-        <h1>Content Studio</h1>
-        <p className="alogin-sub">Sign in to manage pages, news and applications.</p>
+        <h1>AAA Admin Portal</h1>
+        <p className="alogin-sub">Sign in to manage content, leads, the directory and SEO.</p>
 
         {error ? (
           <p className="alogin-error" role="alert">
             Incorrect email or password. Please try again.
+          </p>
+        ) : inactive ? (
+          <p className="alogin-error" role="alert">
+            This account has been deactivated. Ask an administrator to restore access.
           </p>
         ) : null}
 

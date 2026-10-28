@@ -1,9 +1,11 @@
+import { requireArea } from "@/lib/admin";
 import Link from "next/link";
 import PostForm from "../../../_components/PostForm";
 
 export const metadata = { title: "New article" };
 
-export default function NewPostPage() {
+export default async function NewPostPage() {
+  await requireArea("content");
   return (
     <>
       <header className="adm-topbar">

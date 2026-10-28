@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
@@ -5,7 +6,8 @@ import JsonLd from "../_components/JsonLd";
 import NavyCard from "../_components/site/NavyCard";
 import SectionHead from "../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../_components/site/Glyph";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./impartiality-policy.css";
 
 /*
@@ -17,19 +19,21 @@ import "./impartiality-policy.css";
  * exist.
  */
 
-export const metadata = pageMeta({
-  title: "Impartiality & Independence",
-  description:
-    "How AAA protects impartiality and independence: conflict of interest management, independent oversight, confidentiality, and fair complaints and appeals.",
-  path: "/impartiality-policy",
-  keywords: [
-    "accreditation impartiality",
-    "accreditation independence",
-    "conflict of interest accreditation body",
-    "accreditation complaints and appeals",
-    "AAA impartiality policy",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Impartiality & Independence",
+    description:
+      "How AAA protects impartiality and independence: conflict of interest management, independent oversight, confidentiality, and fair complaints and appeals.",
+    path: "/impartiality-policy",
+    keywords: [
+      "accreditation impartiality",
+      "accreditation independence",
+      "conflict of interest accreditation body",
+      "accreditation complaints and appeals",
+      "AAA impartiality policy",
+    ],
+  });
+}
 
 const IMG = "/images/site/impartiality";
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import { requireArea } from "@/lib/admin";
 import { deletePage } from "../../actions";
 import DangerButton from "../../_components/DangerButton";
 
@@ -12,6 +13,7 @@ export default async function PagesAdmin({
 }: {
   searchParams: Promise<{ saved?: string; deleted?: string }>;
 }) {
+  await requireArea("content");
   const { saved, deleted } = await searchParams;
   const pages = await prisma.page.findMany({ orderBy: { updatedAt: "desc" } });
 

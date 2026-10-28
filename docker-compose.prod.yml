@@ -1,0 +1,126 @@
+# AAA website + admin portal — production stack for the Hetzner VPS.
+# (docker-compose.yml is the LOCAL dev database only — don't use it on a server.)
+#
+#   cp deploy/.env.production.example deploy/.env.production   # fill it in
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Reverse proxy — two supported layouts:
+#
+#   1. Host-level nginx (DEFAULT; how the existing AAA Hetzner box is run —
+#      nginx :443 already fronts campaigns.aaa-accreditation.org → 127.0.0.1:3000).
+#      `app` is published on 127.0.0.1:${APP_HOST_PORT:-3100} only, and
+#      deploy/nginx/aaa-accreditation.org.conf proxies to it. 3100, not 3000,
+#      because 3000 is the tepa landing pages on that box.
+#
+#   2. Fresh box with nothing on 80/443: also start the bundled Caddy, which
+#      gets the certificates itself (deploy/Caddyfile):
+#        docker compose -f docker-compose.prod.yml --profile caddy up -d --build
+#
+# Host folders (override with shell variables or a .env file next to this one):
+#   AAA_ADCP_DIR        /opt/aaa-web/adcp                ADCP certificate SPA (QR codes)
+#   AAA_WP_CONTENT_DIR  /opt/aaa-web/wp-content          legacy WordPress uploads
+#   AAA_BACKUP_DIR      /opt/aaa-web/backups             nightly pg_dump files
+# The nginx config reads the first two from those exact paths.
+
+name: aaa-web
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # The tag is what `up` runs. Keep the previous build around for rollbacks:
+    #   docker tag aaa-web:current aaa-web:previous   (before rebuilding)
+    #   AAA_WEB_TAG=previous docker compose -f docker-compose.prod.yml up -d --no-build app
+    image: aaa-web:${AAA_WEB_TAG:-current}
+    restart: unless-stopped
+    init: true
+    env_file:
+      - deploy/.env.production
+    environment:
+      # Docker injects HOSTNAME=<container id>; server.js must bind all interfaces.
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+      NODE_ENV: production
+      POSTGRES_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Loopback only — reachable from the host's nginx, never from the internet.
+      - "127.0.0.1:${APP_HOST_PORT:-3100}:3000"
+    # volumes:
+    #   # Pre-Oct-2026 admin uploads lived in public/uploads. None are referenced
+    #   # by the current content (uploads are stored in Postgres now); mount a
+    #   # copy here only if that ever changes.
+    #   - /opt/aaa-web/uploads:/app/public/uploads:ro
+    logging: *logging
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - deploy/.env.production
+    # No `ports:` — Postgres is reachable only on the compose network. (Docker
+    # bypasses ufw for published ports, so never publish it on a public IP.)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    shm_size: 128mb
+    logging: *logging
+
+  backup:
+    # Same image as the server, so pg_dump's major version always matches.
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - deploy/.env.production
+    environment:
+      PGHOST: db
+      BACKUP_DIR: /backups
+    entrypoint: ["/bin/sh", "/usr/local/bin/aaa-backup"]
+    command: ["loop"]
+    volumes:
+      - ./deploy/backup.sh:/usr/local/bin/aaa-backup:ro
+      - ${AAA_BACKUP_DIR:-/opt/aaa-web/backups}:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+    logging: *logging
+
+  caddy:
+    # Only with `--profile caddy` (a box without host-level nginx).
+    profiles: ["caddy"]
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:-webmaster@aaa-accreditation.org}
+      SITE_DOMAIN: ${SITE_DOMAIN:-aaa-accreditation.org}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${AAA_ADCP_DIR:-/opt/aaa-web/adcp}:/srv/www/adcp:ro
+      - ${AAA_WP_CONTENT_DIR:-/opt/aaa-web/wp-content}:/srv/www/wp-content:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    logging: *logging
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

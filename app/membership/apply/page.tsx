@@ -1,19 +1,23 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
 import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
 import CTA from "../../_components/CTA";
-import { pageMeta, breadcrumbSchema, faqSchema } from "../../../lib/seo";
+import { breadcrumbSchema, faqSchema } from "../../../lib/seo";
+import { seoPage } from "../../../lib/seo-overrides";
 import CombinedApplicationForm from "../_forms/CombinedApplicationForm";
 import ApplyAside from "../_forms/ApplyAside";
 import "../membership.css";
 
-export const metadata = pageMeta({
-  title: "Apply for AAA Membership",
-  description:
-    "Apply for American Accreditation Association membership online — individual ($350 / 2 years) or organizational ($500 / 1 year). Reviewed in two business days.",
-  path: "/membership/apply",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Apply for AAA Membership",
+    description:
+      "Apply for American Accreditation Association membership online — individual ($350 / 2 years) or organizational ($500 / 1 year). Reviewed in two business days.",
+    path: "/membership/apply",
+  });
+}
 
 const NEXT_STEPS = [
   {

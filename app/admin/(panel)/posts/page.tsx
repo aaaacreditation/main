@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ContentStatus, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { requireArea } from "@/lib/admin";
 import { deletePost } from "../../actions";
 import DangerButton from "../../_components/DangerButton";
 
@@ -15,6 +16,7 @@ export default async function PostsAdmin({
 }: {
   searchParams: Promise<{ q?: string; status?: string; page?: string; saved?: string; deleted?: string }>;
 }) {
+  await requireArea("content");
   const { q = "", status = "", page: pageParam = "1", saved, deleted } = await searchParams;
   const pageNum = Math.max(1, parseInt(pageParam, 10) || 1);
 

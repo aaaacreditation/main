@@ -1,0 +1,100 @@
+/* ============================================================
+   ADMIN · CASE STUDIES — page-local rules (list + editor).
+   Every rule is scoped under .adm. Brand tokens only: navy surfaces,
+   gold as a small accent, as on the public home story card.
+   ============================================================ */
+
+/* ---------- List ---------- */
+.adm .cs-list-hint{ margin: -4px 0 14px; }
+.adm .cs-table .adm-row-media{ min-width: 220px; }
+.adm .cs-name{ display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.adm .cs-name .adm-table-title{ max-width: 40ch; }
+.adm .cs-name .adm-table-dim{ white-space: normal; }
+.adm .cs-thumb-initials{
+  display: inline-grid; place-items: center;
+  font-size: 12px; font-weight: 700; color: var(--aaa-blue);
+  background: var(--aaa-blue-50);
+}
+.adm .cs-chips{ display: flex; flex-wrap: wrap; gap: 6px; }
+.adm .cs-order{ display: flex; align-items: center; gap: 10px; }
+.adm .cs-order .adm-table-dim{ min-width: 2.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+.adm .cs-move-group{ display: inline-flex; gap: 4px; }
+.adm .cs-move-group form{ display: contents; }
+.adm .cs-move{
+  width: 28px; height: 28px;
+  display: inline-grid; place-items: center;
+  border-radius: 7px; border: 1px solid var(--ink-200);
+  background: #fff; color: var(--aaa-blue);
+  font-size: 14px; font-weight: 600; line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.adm .cs-move:hover:not(:disabled){ background: var(--aaa-blue-50); border-color: var(--aaa-blue-100); }
+.adm .cs-move:focus-visible{ outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
+.adm .cs-move:disabled{ opacity: .35; cursor: default; }
+.adm .cs-row-moved td{ background: var(--aaa-blue-50); }
+
+/* ---------- Editor ---------- */
+.adm .cs-initials-input{ max-width: 120px; }
+.adm .cs-panel-link{ margin-left: 14px; }
+
+/* Live preview — approximates .homex .hx-story (app/home.css). */
+.adm .cs-pv{
+  margin-top: 12px; padding: 8px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(168deg, var(--aaa-blue-900) 0%, var(--aaa-blue) 62%, var(--aaa-blue-500) 135%);
+  box-shadow: 0 18px 40px -26px rgba(7, 29, 52, .7);
+}
+.adm .cs-pv.featured{ box-shadow: 0 0 0 2px rgba(179, 138, 46, .7), 0 18px 40px -26px rgba(7, 29, 52, .7); }
+.adm .cs-pv-media{
+  position: relative; height: 150px; overflow: hidden;
+  border-radius: 10px; background: var(--aaa-blue-950);
+}
+.adm .cs-pv-media img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm .cs-pv-media::after{
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(0deg, rgba(6, 26, 44, .78), rgba(6, 26, 44, .04) 60%);
+}
+.adm .cs-pv-empty{ position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; color: rgba(255, 255, 255, .55); }
+.adm .cs-pv-sector{
+  position: absolute; top: 8px; left: 8px; z-index: 1;
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; color: var(--aaa-blue); background: rgba(255, 255, 255, .95);
+}
+.adm .cs-pv-country{ position: absolute; bottom: 8px; left: 10px; z-index: 1; font-size: 11.5px; font-weight: 600; color: #fff; }
+.adm .cs-pv-play{
+  position: absolute; top: 50%; left: 50%; z-index: 1;
+  width: 38px; height: 38px; padding-left: 3px;
+  display: grid; place-items: center; border-radius: 50%;
+  font-size: 13px; color: var(--aaa-blue); background: rgba(255, 255, 255, .94);
+  transform: translate(-50%, -50%);
+}
+.adm .cs-pv-body{ display: flex; flex-direction: column; padding: 12px 8px 4px; }
+.adm .cs-pv-tag{
+  align-self: flex-start; margin-bottom: 8px; padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; color: var(--aaa-gold-100);
+  border: 1px solid rgba(179, 138, 46, .55); background: rgba(179, 138, 46, .14);
+}
+.adm .cs-pv-metric{ font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--aaa-gold-400); }
+.adm .cs-pv-org{ display: flex; align-items: center; gap: 10px; margin: 4px 0 8px; }
+.adm .cs-pv-org strong{ font-size: 14.5px; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; }
+.adm .cs-pv-logo{
+  flex: none; width: 72px; height: 40px; overflow: hidden;
+  display: grid; place-items: center;
+  border-radius: 8px; background: #fff;
+}
+.adm .cs-pv-logo img{ width: 100%; height: 100%; object-fit: contain; padding: 4px; display: block; }
+.adm .cs-pv-logo.tight img{ padding: 1px; }
+.adm .cs-pv-logo b{ font-size: 12px; font-weight: 700; color: var(--aaa-blue); }
+.adm .cs-pv-quote{
+  margin: 0; font-size: 12px; font-weight: 500; line-height: 1.55; color: #fff;
+  display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+}
+.adm .cs-pv-foot{ display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; }
+.adm .cs-pv-link{ font-size: 11.5px; font-weight: 600; color: var(--aaa-gold-100); border-bottom: 1px solid rgba(244, 231, 198, .4); }
+.adm .cs-pv-badge{
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; color: var(--aaa-gold-100);
+  border: 1px solid rgba(179, 138, 46, .55); background: rgba(179, 138, 46, .12);
+}

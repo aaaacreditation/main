@@ -1,26 +1,30 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
 import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { PROGRAMS } from "@/lib/facts";
 
 const PATH = PROGRAMS.iso15189.href;
 const IMG = "/images/site/cab-15189";
 
-export const metadata = pageMeta({
-  title: "Medical Laboratories Accreditation (ISO 15189)",
-  description:
-    "ISO 15189 accreditation for medical laboratories: independent recognition of the quality and competence behind accurate, reliable diagnostic services.",
-  path: PATH,
-  keywords: [
-    "ISO 15189 accreditation",
-    "medical laboratory accreditation",
-    "ISO 15189:2022",
-    "clinical laboratory quality",
-    "point-of-care testing accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Medical Laboratories Accreditation (ISO 15189)",
+    description:
+      "ISO 15189 accreditation for medical laboratories: independent recognition of the quality and competence behind accurate, reliable diagnostic services.",
+    path: PATH,
+    keywords: [
+      "ISO 15189 accreditation",
+      "medical laboratory accreditation",
+      "ISO 15189:2022",
+      "clinical laboratory quality",
+      "point-of-care testing accreditation",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "iso15189",

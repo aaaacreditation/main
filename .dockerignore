@@ -1,0 +1,39 @@
+# Build context for the production image (Dockerfile).
+
+# Dependencies and build output — rebuilt inside the image
+node_modules
+.next
+.next.nosync
+.next 2
+out
+build
+coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets — never baked into an image (env comes from deploy/.env.production)
+.env*
+!.env.example
+deploy/.env.production
+
+# VCS, editor and agent state
+.git
+.gitignore
+.vercel
+.claude
+.DS_Store
+*.pem
+npm-debug.log*
+
+# Admin uploads from before Oct 2026 (runtime content, not source)
+public/uploads
+
+# Deployment tooling and docs (the Dockerfile copies the two files it needs
+# from deploy/ explicitly; listing them here would hide them)
+docker-compose*.yml
+docs
+backups
+
+# Large reference documents at the repo root — not used by the build
+AAA Final website content.html
+aaa_homepage_final_refinements.html

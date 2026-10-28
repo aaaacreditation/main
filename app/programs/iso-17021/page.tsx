@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
 import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { PROGRAMS } from "@/lib/facts";
 
 /*
@@ -14,19 +16,21 @@ import { PROGRAMS } from "@/lib/facts";
 const PATH = PROGRAMS.iso17021.href;
 const IMG = "/images/site/cab-17021";
 
-export const metadata = pageMeta({
-  title: PROGRAMS.iso17021.label,
-  description:
-    "ISO/IEC 17021-1 accreditation for management systems certification bodies: independent recognition of impartial audits and reliable certification decisions.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17021-1 accreditation",
-    PROGRAMS.iso17021.label,
-    "certification body accreditation",
-    "ISO 9001 certification body",
-    "ISO/IEC 27001 certification body",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: PROGRAMS.iso17021.label,
+    description:
+      "ISO/IEC 17021-1 accreditation for management systems certification bodies: independent recognition of impartial audits and reliable certification decisions.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17021-1 accreditation",
+      PROGRAMS.iso17021.label,
+      "certification body accreditation",
+      "ISO 9001 certification body",
+      "ISO/IEC 27001 certification body",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "iso17021",

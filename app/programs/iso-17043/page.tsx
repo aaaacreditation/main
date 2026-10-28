@@ -1,26 +1,30 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
 import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { PROGRAMS } from "@/lib/facts";
 
 const PATH = PROGRAMS.iso17043.href;
 const IMG = "/images/site/cab-17043";
 
-export const metadata = pageMeta({
-  title: "Proficiency Testing Accreditation (ISO/IEC 17043)",
-  description:
-    "ISO/IEC 17043 accreditation for proficiency testing providers: independent recognition that your PT schemes are designed, operated and reported competently.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17043 accreditation",
-    "proficiency testing provider accreditation",
-    "interlaboratory comparison",
-    "PT scheme accreditation",
-    "ISO/IEC 17043:2023",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Proficiency Testing Accreditation (ISO/IEC 17043)",
+    description:
+      "ISO/IEC 17043 accreditation for proficiency testing providers: independent recognition that your PT schemes are designed, operated and reported competently.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17043 accreditation",
+      "proficiency testing provider accreditation",
+      "interlaboratory comparison",
+      "PT scheme accreditation",
+      "ISO/IEC 17043:2023",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "iso17043",

@@ -6,7 +6,8 @@ import Icon from "../../_components/Icon";
 import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
 import { CONTACT, PROGRAMS } from "../../../lib/facts";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "../../../lib/seo";
+import { seoPage } from "../../../lib/seo-overrides";
 
 /* -------------------------------------------------------------------------
    Content is the client's own copy, recovered from the live site:
@@ -22,19 +23,21 @@ import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "../../../l
 
 const PATH = "/programs/astm-e2659";
 
-export const metadata: Metadata = pageMeta({
-  title: "Certificate Programs Accreditation (ASTM E2659)",
-  description:
-    "AAA accredits training and education providers to the international American standard ASTM E2659 — competence, qualified trainers and compliant curricula.",
-  path: PATH,
-  keywords: [
-    "ASTM E2659",
-    "certificate program accreditation",
-    "training provider accreditation standard",
-    "ADAO",
-    "ADCP",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Certificate Programs Accreditation (ASTM E2659)",
+    description:
+      "AAA accredits training and education providers to the international American standard ASTM E2659 — competence, qualified trainers and compliant curricula.",
+    path: PATH,
+    keywords: [
+      "ASTM E2659",
+      "certificate program accreditation",
+      "training provider accreditation standard",
+      "ADAO",
+      "ADCP",
+    ],
+  });
+}
 
 const APPLICATION_FORM =
   "https://aaa-accreditation.org/wp-content/uploads/2023/01/Application-form-Training-education-providers.docx";

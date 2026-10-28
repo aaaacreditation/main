@@ -23,7 +23,8 @@ export default function ImageField({
       body.append("file", file);
       const res = await fetch("/api/admin/upload", { method: "POST", body });
       if (!res.ok) {
-        alert("Upload failed — check the file type/size.");
+        const err = (await res.json().catch(() => ({}))) as { error?: string };
+        alert(err.error || "Upload failed — check the file type/size.");
         return;
       }
       const data = (await res.json()) as { url: string };
@@ -67,7 +68,7 @@ export default function ImageField({
       <input
         ref={fileRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
+        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
         hidden
         onChange={(e) => {
           const f = e.target.files?.[0];

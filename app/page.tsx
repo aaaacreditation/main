@@ -7,10 +7,15 @@ import NavyCard from "./_components/site/NavyCard";
 import SectionHead from "./_components/site/SectionHead";
 import Glyph, { type GlyphName } from "./_components/site/Glyph";
 import HomeMetrics, { type HomeMetric } from "./_components/home/HomeMetrics";
-import SuccessCarousel, { type SuccessStory } from "./_components/home/SuccessCarousel";
+import SuccessCarousel from "./_components/home/SuccessCarousel";
 import { CONTACT, EXTERNAL, FACTS, PROGRAMS } from "@/lib/facts";
-import { breadcrumbSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { getHomeStories } from "@/lib/case-studies";
+import { breadcrumbSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./home.css";
+
+// Static with hourly ISR; saving a case study in the admin revalidates "/" at once.
+export const revalidate = 3600;
 
 /* =========================================================================
    HOMEPAGE — Oct 2026 rebuild on the client's final homepage structure
@@ -26,23 +31,23 @@ import "./home.css";
 
 // The root layout's `title.template` does not apply to its own segment, so the
 // homepage carries the brand suffix itself.
-export const metadata: Metadata = pageMeta({
-  title: "International Accreditation Body | AAA",
-  description: `AAA provides international accreditation for healthcare, training and education providers, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
-  path: "/",
-  keywords: [
-    "American Accreditation Association",
-    "international accreditation",
-    "healthcare accreditation",
-    "training provider accreditation",
-    "conformity assessment accreditation",
-    "SME accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "International Accreditation Body | AAA",
+    description: `AAA provides international accreditation for healthcare, training and education providers, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
+    path: "/",
+    keywords: [
+      "American Accreditation Association",
+      "international accreditation",
+      "healthcare accreditation",
+      "training provider accreditation",
+      "conformity assessment accreditation",
+      "SME accreditation",
+    ],
+  });
+}
 
 const IMG = "/images/site/home";
-const STORY_URL =
-  "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
 
 
 /* ------------------------------------------------------------ 01 · Hero */
@@ -109,143 +114,6 @@ const TRUST: { icon: GlyphName; title: string; text: string }[] = [
   },
 ];
 
-/* ------------------------------------------------- 04 · Success stories */
-// Oct 2026: the client's "success stories home page" document — twelve
-// organizations, in the document's order. Testimonials are verbatim (spelling
-// fixed only), except Monarch's, which the document gave as a note ("12% Growth
-// & 500+ students certified and The google reviews become 1500+(5.0⭐)") and is
-// set as a sentence here. Rows supplied with a YouTube video show the video thumbnail
-// and link to it; the rest show the certificate photo and link to the case
-// studies site. Assets live in /public/case-studies.
-const CS = "/case-studies";
-const STORIES: SuccessStory[] = [
-  {
-    featured: true,
-    name: "Monarch Master Injector",
-    sector: "Healthcare",
-    country: "USA",
-    metric: "12% Growth · 500+ Students Certified",
-    quote:
-      "Accreditation impact: 12% growth and 500+ students certified, and Google reviews have grown to 1,500+ (5.0 ★).",
-    img: `${CS}/monarch-master-injectors-certificate.jpg`,
-    alt: "Monarch Master Injectors graduates holding their certificates",
-    logo: `${CS}/monarch-master-injectors-logo.png`,
-    href: STORY_URL,
-  },
-  {
-    name: "Cinute Digital",
-    sector: "Information Technology",
-    country: "India",
-    quote: "AAA’s global recognition has opened more doors with corporate clients, learners, and institutional partners.",
-    img: `${CS}/cinute-digital-video.jpg`,
-    alt: "Cinute Digital team with their AAA accreditation certificate",
-    logo: `${CS}/cinute-digital-logo.jpg`,
-    video: "https://www.youtube.com/watch?v=JN5Z7seQiFY",
-  },
-  {
-    name: "Aldelma Training Center",
-    sector: "Training Center",
-    country: "Jordan, Iraq",
-    quote:
-      "Our main strategic benefits from accreditation are: we gained preferred vendor status with government entities and attracted multinational corporate clients.",
-    img: `${CS}/aldelma-trading-certificate.jpg`,
-    alt: "Aldelma Training Center representative holding the AAA accreditation certificate",
-    logo: `${CS}/aldelma-trading-logo.jpg`,
-  },
-  {
-    name: "Dr. Paul Clinic",
-    sector: "Healthcare",
-    country: "India",
-    quote:
-      "AAA accreditation has strengthened our patients’ trust, demonstrated our commitment to quality care, and supported our clinic’s growth.",
-    img: `${CS}/dr-paul-clinic-certificate.jpg`,
-    alt: "Dr. Paul’s clinic team receiving the AAA accreditation award",
-    logo: `${CS}/dr-paul-clinic-logo.jpg`,
-  },
-  {
-    name: "IIBMS",
-    sector: "Training Center",
-    country: "India",
-    quote:
-      "Since achieving AAA accreditation, we have seen a noticeable improvement. Accreditation has strengthened our credibility and market reputation.",
-    img: `${CS}/iibms-certificate.jpg`,
-    alt: "IIBMS team with the AAA accreditation certificate",
-    logo: `${CS}/iibms-logo.jpg`,
-  },
-  {
-    name: "Domus Salutis",
-    sector: "Healthcare",
-    country: "Italy",
-    quote: "By working with the AAA, Domus Salutis has established a roadmap for ongoing growth in safety and medical technology.",
-    img: `${CS}/domus-salutis-video.jpg`,
-    alt: "Domus Salutis clinical team with the AAA accreditation plaque",
-    logo: `${CS}/domus-salutis-logo.jpg`,
-    video: "https://www.youtube.com/watch?v=SxgILo3vjGU",
-  },
-  {
-    name: "Clarivate",
-    sector: "Information Services",
-    country: "USA, UK",
-    quote:
-      "Our experience with AAA was excellent. The accreditation process was professional, well-structured, and conducted with integrity, providing valuable insights that strengthened our organization.",
-    img: `${CS}/clarivate-certificate.jpg`,
-    alt: "Clarivate team receiving the AAA accreditation certificate",
-    logo: `${CS}/clarivate-logo.jpg`,
-  },
-  {
-    name: "QML",
-    sector: "Certification Body",
-    country: "Spain",
-    quote:
-      "AAA’s accreditation process was professional and smooth, providing valuable learning opportunities that helped us strengthen our certification practices.",
-    img: `${CS}/qml-certificate.jpg`,
-    alt: "QML representatives holding the AAA accreditation certificate",
-    logo: `${CS}/qml-logo.png`,
-  },
-  {
-    name: "RC Growth Consultancies",
-    sector: "Consultation",
-    country: "India",
-    quote:
-      "The value of accreditation extends far beyond recognition. It has helped our consultancy differentiate itself in the market while reinforcing a culture of quality and continual improvement.",
-    img: `${CS}/rc-growth-consultancies-certificate.jpg`,
-    alt: "RC Growth Consultancies founder holding the AAA accreditation certificate",
-    logo: `${CS}/rc-growth-consultancies-logo.png`,
-  },
-  {
-    name: "Namaa Academy",
-    sector: "Academy",
-    country: "Morocco",
-    quote:
-      "AAA’s accreditation recognises Namaa Academy’s commitment to quality education and strengthens our credibility as an ambitious academic institution.",
-    img: `${CS}/namaa-academy-video.jpg`,
-    alt: "Namaa Academy team receiving the AAA accreditation certificate",
-    logo: `${CS}/namaa-academy-logo.png`,
-    video: "https://www.youtube.com/watch?v=9Pluh1W5we8",
-  },
-  {
-    name: "Global Medical City",
-    sector: "Healthcare",
-    country: "Egypt",
-    quote:
-      "Achieving AAA accreditation was a pivotal moment for us. It affirmed our dedication to providing world-class healthcare services and set a new benchmark for quality in Egypt.",
-    img: `${CS}/global-medical-city-video.jpg`,
-    alt: "Global Medical City team with the AAA accreditation award",
-    logo: `${CS}/global-medical-city-logo.jpg`,
-    video: "https://www.youtube.com/watch?v=zpzh6QtLdSI",
-  },
-  {
-    name: "Clinoxy Solutions",
-    sector: "Medical Devices",
-    country: "India",
-    quote:
-      "The accreditation process has added real value to our organization, improving market credibility, increasing customer confidence, and supporting our mission to deliver high-quality healthcare solutions.",
-    img: `${CS}/clinoxy-solutions-certificate.png`,
-    alt: "Clinoxy Solutions director beside the AAA accreditation certificate",
-    logo: `${CS}/clinoxy-solutions-logo.png`,
-  },
-];
-
 /* ------------------------------------------------------- 05 · Insights */
 const INSIGHTS: {
   label: string;
@@ -253,7 +121,6 @@ const INSIGHTS: {
   kicker: string;
   title: string;
   text: string;
-  cta: string;
   img: string;
   alt: string;
   w: number;
@@ -266,7 +133,6 @@ const INSIGHTS: {
     kicker: "Accreditation Insights",
     title: "Is Accreditation Really About Passing the Survey?",
     text: "For many organizations, an accreditation survey can feel like the finish line. Explore why accreditation is better understood as an ongoing journey of quality and improvement.",
-    cta: "Read Article",
     img: `${IMG}/insight-article-1.png`,
     alt: "Healthcare professionals reviewing quality information",
     w: 548,
@@ -279,7 +145,6 @@ const INSIGHTS: {
     kicker: "AAA Event",
     title: "Maintaining Your Accreditation Without Turning It Into a Second Job",
     text: "Join an upcoming AAA session focused on practical ways to maintain accreditation requirements as part of everyday operations and continuous improvement.",
-    cta: "View Event",
     img: `${IMG}/insight-article-2.png`,
     alt: "Team reviewing plans and schedules",
     w: 548,
@@ -292,7 +157,6 @@ const INSIGHTS: {
     kicker: "AAA News & Awareness",
     title: "Blood Cancer Awareness Month: Turning Awareness into Action",
     text: "Awareness can lead to earlier action. AAA joins the global conversation highlighting the importance of awareness, timely diagnosis and appropriate care.",
-    cta: "Read News",
     img: `${IMG}/insight-news.png`,
     alt: "Blood Cancer Awareness Month graphic",
     w: 548,
@@ -316,7 +180,10 @@ const SCHEMA = [
   ),
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Success Stories come from admin → Case Studies (rows with "Show on home").
+  const stories = await getHomeStories();
+
   return (
     <div className="axp homex">
       <JsonLd schema={SCHEMA} />
@@ -484,7 +351,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <SuccessCarousel stories={STORIES} moreHref={EXTERNAL.successStories} />
+        <SuccessCarousel stories={stories} moreHref={EXTERNAL.successStories} />
 
         <div className="container">
           <div className="hx-ss-cta">
@@ -525,7 +392,7 @@ export default function HomePage() {
                     <p>{n.text}</p>
                   </div>
                   <span className="ax-card-go">
-                    {n.cta} <Glyph name="arrow-right" size={14} strokeWidth={2} />
+                    Read More <Glyph name="arrow-right" size={14} strokeWidth={2} />
                   </span>
                 </div>
               </Link>

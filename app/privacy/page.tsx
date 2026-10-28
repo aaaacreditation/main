@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../_components/Icon";
 import PageHero from "../_components/PageHero";
 import PageBody from "../_components/PageBody";
 import JsonLd from "../_components/JsonLd";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./privacy.css";
 
 /**
@@ -12,12 +14,14 @@ import "./privacy.css";
  * rather than boilerplate thin content, and hiding it from search removes a
  * credibility signal without protecting anything. No `noindex` here.
  */
-export const metadata = pageMeta({
-  title: "Privacy Policy",
-  description:
-    "What personal data AAA collects through aaa-accreditation.org, why we collect it, the legal bases for processing, your rights, retention, cookies and security.",
-  path: "/privacy",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Privacy Policy",
+    description:
+      "What personal data AAA collects through aaa-accreditation.org, why we collect it, the legal bases for processing, your rights, retention, cookies and security.",
+    path: "/privacy",
+  });
+}
 
 function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
   return (

@@ -9,7 +9,8 @@ import Icon from "../_components/Icon";
 import { getPublishedPage } from "@/lib/content";
 import { looksLikeHtml, mdishToHtml } from "@/lib/mdish";
 import { CONTACT } from "@/lib/facts";
-import { SITE_URL, breadcrumbSchema, pageMeta } from "@/lib/seo";
+import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 
 /**
  * Catch-all renderer for CMS pages created in the admin. Built-in app routes
@@ -66,7 +67,7 @@ export async function generateMetadata({
     intro ||
     `${page.title} — American Accreditation Association.`;
 
-  return pageMeta({
+  return seoPage({
     title: page.seoTitle?.trim() || page.title,
     description,
     path: `/${page.slug}`,

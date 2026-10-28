@@ -1,27 +1,31 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "../_components/Icon";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
-import { pageMeta, breadcrumbSchema, faqSchema } from "@/lib/seo";
-import { FACTS } from "@/lib/facts";
+import { breadcrumbSchema, faqSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
+import { CONTACT, FACTS } from "@/lib/facts";
 import "./faq.css";
 
-export const metadata = pageMeta({
-  title: "Accreditation FAQ",
-  description:
-    "Answers about AAA accreditation — what accreditation is, which programs we run, how to apply, plus healthcare accreditation and membership questions.",
-  path: "/faq",
-  keywords: [
-    "accreditation FAQ",
-    "how to get accredited",
-    "AAA accreditation process",
-    "healthcare accreditation questions",
-    "accreditation body",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Accreditation FAQ",
+    description:
+      "Answers about AAA accreditation — what accreditation is, which programs we run, how to apply, plus healthcare accreditation and membership questions.",
+    path: "/faq",
+    keywords: [
+      "accreditation FAQ",
+      "how to get accredited",
+      "AAA accreditation process",
+      "healthcare accreditation questions",
+      "accreditation body",
+    ],
+  });
+}
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 
 function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
   return (
@@ -402,8 +406,10 @@ export default function Page() {
                   <path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z" />
                 </LineIcon>
               </span>
-              <b>International / WhatsApp</b>
-              <a href="tel:+447487550737">+44 (748) 755 0737</a>
+              <b>WhatsApp</b>
+              <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
+                {CONTACT.whatsapp}
+              </a>
             </li>
             <li className="faqx-channel">
               <span className="ax-ico" aria-hidden="true">

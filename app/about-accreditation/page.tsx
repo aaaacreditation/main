@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import CTA from "../_components/CTA";
@@ -5,7 +6,8 @@ import JsonLd from "../_components/JsonLd";
 import NavyCard from "../_components/site/NavyCard";
 import SectionHead from "../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../_components/site/Glyph";
-import { pageMeta, breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import "./about-accreditation.css";
 
 /*
@@ -23,20 +25,22 @@ import "./about-accreditation.css";
  * keep its alt text.
  */
 
-export const metadata = pageMeta({
-  title: "About Accreditation",
-  description:
-    "What accreditation is, what it delivers, how it differs from certification, and how the AAA accreditation process works from application to renewal.",
-  path: "/about-accreditation",
-  keywords: [
-    "what is accreditation",
-    "accreditation vs certification",
-    "accreditation process",
-    "benefits of accreditation",
-    "accreditation scope",
-    "American Accreditation Association",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "About Accreditation",
+    description:
+      "What accreditation is, what it delivers, how it differs from certification, and how the AAA accreditation process works from application to renewal.",
+    path: "/about-accreditation",
+    keywords: [
+      "what is accreditation",
+      "accreditation vs certification",
+      "accreditation process",
+      "benefits of accreditation",
+      "accreditation scope",
+      "American Accreditation Association",
+    ],
+  });
+}
 
 const DELIVERS: { icon: GlyphName; title: string; text: string }[] = [
   {

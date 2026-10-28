@@ -1,27 +1,31 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
 import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 import { PROGRAMS } from "@/lib/facts";
 
 const PATH = PROGRAMS.iso17065.href;
 const IMG = "/images/site/cab-17065";
 const TITLE = "Product, Process & Service Certification Bodies Accreditation";
 
-export const metadata = pageMeta({
-  title: "Product Certification Accreditation (ISO/IEC 17065)",
-  description:
-    "ISO/IEC 17065 accreditation for product, process and service certification bodies: recognition of credible schemes and reliable certification decisions.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17065 accreditation",
-    "product certification body accreditation",
-    "process certification",
-    "service certification",
-    "certification scheme accreditation",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Product Certification Accreditation (ISO/IEC 17065)",
+    description:
+      "ISO/IEC 17065 accreditation for product, process and service certification bodies: recognition of credible schemes and reliable certification decisions.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17065 accreditation",
+      "product certification body accreditation",
+      "process certification",
+      "service certification",
+      "certification scheme accreditation",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "iso17065",

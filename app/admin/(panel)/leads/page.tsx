@@ -1,135 +1,289 @@
-import { LeadStatus, type Prisma } from "@prisma/client";
 import Link from "next/link";
+import { LeadStatus, type LeadKind } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { updateLead, deleteLead } from "../../actions";
-import SubmitButton from "../../_components/SubmitButton";
-import DangerButton from "../../_components/DangerButton";
+import { requireArea } from "@/lib/admin";
+import { LEAD_STATUS_LABEL, LEAD_STATUS_ORDER, leadSourceLabel } from "@/lib/leads";
+import { bulkUpdateLeads } from "./actions";
+import { hasActiveFilters, leadQuery, leadWhere, parseLeadFilters } from "./filters";
+import { LEAD_KIND_SHORT, LEAD_KIND_TABS, leadDateFmt, leadStatusTone, leadTimeFmt } from "./format";
+import { LeadsBulkBar, SelectAllLeads } from "./LeadsBulk";
+import "./leads-admin.css";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Leads & Applications" };
 
-const dateFmt = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-});
+const PER_PAGE = 25;
 
-const STATUSES: { key: string; label: string }[] = [
-  { key: "", label: "All" },
-  { key: "NEW", label: "New" },
-  { key: "CONTACTED", label: "Contacted" },
-  { key: "QUALIFIED", label: "Qualified" },
-  { key: "CLOSED", label: "Closed" },
-];
+const ERRORS: Record<string, string> = {
+  missing: "That lead no longer exists — it may have been deleted.",
+  "bulk-none": "Tick at least one lead before applying a bulk change.",
+  "bulk-action": "Choose a status or an owner to apply to the selected leads.",
+  assignee: "That team member can't be assigned — their account is inactive or was removed.",
+};
 
 export default async function LeadsAdmin({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; saved?: string; deleted?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { status = "", saved, deleted } = await searchParams;
+  const session = await requireArea("leads");
+  const sp = await searchParams;
+  const f = parseLeadFilters(sp);
+  const one = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string) : "");
+  const saved = one("saved");
+  const deleted = one("deleted");
+  const error = one("error");
+  const requestedPage = Math.max(1, parseInt(one("page"), 10) || 1);
 
-  const where: Prisma.LeadWhereInput = Object.values(LeadStatus).includes(status as LeadStatus)
-    ? { status: status as LeadStatus }
-    : {};
+  const me = session.user.id;
+  const where = leadWhere(f, me);
 
-  const [leads, counts] = await Promise.all([
-    prisma.lead.findMany({ where, orderBy: { createdAt: "desc" }, take: 100 }),
-    prisma.lead.groupBy({ by: ["status"], _count: true }),
+  const [total, kindCounts, spamHidden, sources, staff] = await Promise.all([
+    prisma.lead.count({ where }),
+    prisma.lead.groupBy({ by: ["kind"], where: leadWhere({ ...f, kind: "" }, me), _count: true }),
+    // The default view hides spam; say how much, with a link to review it.
+    f.status ? Promise.resolve(0) : prisma.lead.count({ where: leadWhere({ ...f, status: LeadStatus.SPAM }, me) }),
+    prisma.lead.groupBy({ by: ["source"], _count: true }),
+    prisma.user.findMany({
+      where: { OR: [{ active: true }, { assignedLeads: { some: {} } }] },
+      select: { id: true, name: true, email: true, active: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
-  const countFor = (key: string) =>
-    key === ""
-      ? counts.reduce((sum, c) => sum + c._count, 0)
-      : counts.find((c) => c.status === key)?._count ?? 0;
+
+  const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+  const pageNum = Math.min(requestedPage, pages); // a bulk change can empty the last page
+  const leads = await prisma.lead.findMany({
+    where,
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    take: PER_PAGE,
+    skip: (pageNum - 1) * PER_PAGE,
+    select: {
+      id: true,
+      business: true,
+      contact: true,
+      sector: true,
+      source: true,
+      kind: true,
+      status: true,
+      createdAt: true,
+      assignedTo: { select: { name: true, email: true } },
+    },
+  });
+
+  const countFor = (k: LeadKind | "") =>
+    k === "" ? kindCounts.reduce((sum, c) => sum + c._count, 0) : kindCounts.find((c) => c.kind === k)?._count ?? 0;
+  const tabs = [
+    { kind: "" as const, label: "All" },
+    ...LEAD_KIND_TABS.filter((t) => t.kind !== "OTHER" || countFor("OTHER") > 0 || f.kind === "OTHER"),
+  ];
+
+  const sourceOptions = sources
+    .map((s) => ({ value: s.source, label: leadSourceLabel(s.source) }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  if (f.source && !sourceOptions.some((o) => o.value === f.source)) {
+    sourceOptions.push({ value: f.source, label: leadSourceLabel(f.source) });
+  }
+  const staffLabel = (u: { name: string; email: string }) => u.name || u.email;
+  const assignable = staff.filter((u) => u.active).map((u) => ({ value: u.id, label: staffLabel(u) }));
+
+  const filtered = hasActiveFilters(f);
+  const backHref = `/admin/leads${leadQuery(f, { page: pageNum > 1 ? String(pageNum) : "" })}`;
+  const pageHref = (p: number) => `/admin/leads${leadQuery(f, { page: p > 1 ? String(p) : "" })}`;
+  const resetHref = `/admin/leads${f.kind ? `?kind=${f.kind}` : ""}`;
+  const savedCount = /^\d+$/.test(saved) ? parseInt(saved, 10) : null;
+  const showKind = !f.kind;
 
   return (
     <>
       <header className="adm-topbar">
         <div>
-          <h1>Applications</h1>
-          <p className="adm-topbar-sub">Funding-readiness applications submitted through the website.</p>
+          <h1>Leads &amp; Applications</h1>
+          <p className="adm-topbar-sub">
+            {total} lead{total === 1 ? "" : "s"}
+            {filtered ? " match these filters" : ""}
+            {spamHidden > 0 ? (
+              <>
+                {" · "}
+                <Link href={`/admin/leads${leadQuery(f, { status: LeadStatus.SPAM })}`} className="adml-topnote">
+                  {spamHidden} spam hidden
+                </Link>
+              </>
+            ) : null}
+          </p>
+        </div>
+        <div className="adm-topbar-actions">
+          {/* A plain <a>: the route answers with a file download, not a page. */}
+          <a href={`/api/admin/leads/export${leadQuery(f)}`} className="btn btn-ghost adm-btn-sm">
+            Export CSV
+          </a>
         </div>
       </header>
 
       <div className="adm-content">
-        {saved ? <p className="adm-toast ok" role="status">Application updated.</p> : null}
-        {deleted ? <p className="adm-toast" role="status">Application deleted.</p> : null}
+        {savedCount !== null ? (
+          <p className="adm-toast ok" role="status">
+            {savedCount === 0
+              ? "No changes — the selected leads already had that status and owner."
+              : `${savedCount} lead${savedCount === 1 ? "" : "s"} updated.`}
+          </p>
+        ) : saved ? (
+          <p className="adm-toast ok" role="status">Lead updated.</p>
+        ) : null}
+        {deleted ? <p className="adm-toast" role="status">Lead deleted.</p> : null}
+        {error && ERRORS[error] ? <p className="adm-error" role="alert">{ERRORS[error]}</p> : null}
 
-        <div className="adm-tabs adm-tabs-loose">
-          {STATUSES.map((s) => (
+        <nav className="adm-tabs adm-tabs-loose" aria-label="Lead type">
+          {tabs.map((t) => (
             <Link
-              key={s.key || "all"}
-              href={s.key ? `/admin/leads?status=${s.key}` : "/admin/leads"}
-              className={"adm-tab" + (status === s.key ? " on" : "")}
+              key={t.kind || "all"}
+              href={`/admin/leads${leadQuery(f, { kind: t.kind })}`}
+              className={"adm-tab" + (f.kind === t.kind ? " on" : "")}
+              aria-current={f.kind === t.kind ? "page" : undefined}
             >
-              {s.label} <em>{countFor(s.key)}</em>
+              {t.label} <em>{countFor(t.kind)}</em>
             </Link>
           ))}
-        </div>
+        </nav>
+
+        <form className="adm-filterbar" action="/admin/leads" method="get" role="search">
+          {f.kind ? <input type="hidden" name="kind" value={f.kind} /> : null}
+          <label className="grow">
+            Search
+            <input
+              className="sme-input"
+              type="search"
+              name="q"
+              defaultValue={f.q}
+              placeholder="Organization, person, email, phone or message…"
+            />
+          </label>
+          <label>
+            Status
+            <select className="sme-select" name="status" defaultValue={f.status}>
+              <option value="">All except spam</option>
+              <option value="pipeline">In the pipeline</option>
+              {LEAD_STATUS_ORDER.map((s) => (
+                <option key={s} value={s}>{LEAD_STATUS_LABEL[s]}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Source
+            <select className="sme-select" name="source" defaultValue={f.source}>
+              <option value="">All forms</option>
+              {sourceOptions.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Owner
+            <select className="sme-select" name="assignee" defaultValue={f.assignee}>
+              <option value="">Anyone</option>
+              <option value="me">Assigned to me</option>
+              <option value="none">Unassigned</option>
+              {staff.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {staffLabel(u)}
+                  {u.active ? "" : " (inactive)"}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            From
+            <input className="sme-input" type="date" name="from" defaultValue={f.from} />
+          </label>
+          <label>
+            To
+            <input className="sme-input" type="date" name="to" defaultValue={f.to} />
+          </label>
+          <div className="adm-filterbar-actions">
+            <button type="submit" className="btn btn-primary adm-btn-sm">Apply</button>
+            {filtered ? <Link href={resetHref} className="btn btn-ghost adm-btn-sm">Reset</Link> : null}
+          </div>
+        </form>
 
         {leads.length === 0 ? (
           <div className="adm-card">
-            <p className="adm-empty">No applications here yet.</p>
+            {filtered || f.kind ? (
+              <p className="adm-empty">
+                No leads match these filters. <Link href="/admin/leads">Show all leads →</Link>
+              </p>
+            ) : (
+              <p className="adm-empty">
+                No leads yet. Enquiries, applications, quote and membership requests from the website&rsquo;s forms
+                appear here the moment they are submitted.
+              </p>
+            )}
           </div>
         ) : (
-          <div className="adm-leads">
-            {leads.map((l) => (
-              <article className="adm-lead" key={l.id}>
-                <header className="adm-lead-head">
-                  <div>
-                    <h2>{l.business}</h2>
-                    <p className="adm-lead-contact">
-                      {l.contact} · <a href={`mailto:${l.email}`}>{l.email}</a>
-                      {l.phone ? <> · <a href={`tel:${l.phone}`}>{l.phone}</a></> : null}
-                    </p>
-                  </div>
-                  <div className="adm-lead-meta">
-                    <span className={"adm-chip " + (l.status === "NEW" ? "new" : l.status === "CLOSED" ? "muted" : "ok")}>
-                      {l.status.toLowerCase()}
-                    </span>
-                    <time>{dateFmt.format(l.createdAt)}</time>
-                  </div>
-                </header>
-
-                <div className="adm-lead-tags">
-                  {l.sector ? <span className="adm-tag">{l.sector}</span> : null}
-                  {l.stage ? <span className="adm-tag">{l.stage}</span> : null}
-                  <span className="adm-tag dim">{l.source}</span>
-                </div>
-
-                {l.message ? <p className="adm-lead-msg">{l.message}</p> : null}
-
-                <form action={updateLead} className="adm-lead-form">
-                  <input type="hidden" name="id" value={l.id} />
-                  <textarea
-                    className="sme-textarea"
-                    name="notes"
-                    rows={2}
-                    defaultValue={l.notes}
-                    placeholder="Internal notes (call outcomes, next steps…)"
-                  />
-                  <div className="adm-lead-form-row">
-                    <select className="sme-select adm-lead-status" name="status" defaultValue={l.status}>
-                      <option value="NEW">New</option>
-                      <option value="CONTACTED">Contacted</option>
-                      <option value="QUALIFIED">Qualified</option>
-                      <option value="CLOSED">Closed</option>
-                    </select>
-                    <SubmitButton className="btn btn-ghost adm-btn-sm" pendingLabel="Saving…">Update</SubmitButton>
-                    <span className="adm-lead-spacer" />
-                  </div>
-                </form>
-                <form action={deleteLead} className="adm-lead-delete">
-                  <input type="hidden" name="id" value={l.id} />
-                  <DangerButton className="adm-danger-link" confirmText={`Delete the application from “${l.business}”?`}>
-                    Delete
-                  </DangerButton>
-                </form>
-              </article>
-            ))}
-          </div>
+          <form action={bulkUpdateLeads} autoComplete="off" className="adm-card adm-card-flush">
+            <input type="hidden" name="back" value={backHref} />
+            <LeadsBulkBar
+              statuses={LEAD_STATUS_ORDER.map((s) => ({ value: s, label: LEAD_STATUS_LABEL[s] }))}
+              assignees={assignable}
+            />
+            <table className="adm-table adml-table">
+              <thead>
+                <tr>
+                  <th className="adml-check">
+                    <SelectAllLeads />
+                  </th>
+                  <th>Organization</th>
+                  {showKind ? <th>Type</th> : null}
+                  <th>Source</th>
+                  <th>Status</th>
+                  <th>Owner</th>
+                  <th>Received</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((l) => (
+                  <tr key={l.id} className={l.status === LeadStatus.NEW ? "adml-new" : undefined}>
+                    <td className="adml-check">
+                      <input type="checkbox" name="ids" value={l.id} aria-label={`Select ${l.business || l.contact}`} />
+                    </td>
+                    <td>
+                      <Link href={`/admin/leads/${l.id}`} className="adm-table-title">
+                        {l.business || l.contact || "(no name)"}
+                      </Link>
+                      <span className="adml-sub">
+                        {l.contact}
+                        {l.sector ? ` · ${l.sector}` : ""}
+                      </span>
+                    </td>
+                    {showKind ? (
+                      <td>
+                        <span className={"adm-tag" + (l.kind === "OTHER" ? " dim" : "")}>{LEAD_KIND_SHORT[l.kind]}</span>
+                      </td>
+                    ) : null}
+                    <td className="adm-table-dim">{leadSourceLabel(l.source)}</td>
+                    <td>
+                      <span className={"adm-chip " + leadStatusTone(l.status)}>{LEAD_STATUS_LABEL[l.status]}</span>
+                    </td>
+                    <td className="adm-table-dim">{l.assignedTo ? staffLabel(l.assignedTo) : "—"}</td>
+                    <td className="adm-table-dim">
+                      <time dateTime={l.createdAt.toISOString()}>{leadDateFmt.format(l.createdAt)}</time>
+                      <span className="adml-sub">{leadTimeFmt.format(l.createdAt)}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </form>
         )}
+
+        {pages > 1 ? (
+          <nav className="adm-pager" aria-label="Pagination">
+            {pageNum > 1 ? <Link href={pageHref(pageNum - 1)} className="btn btn-ghost adm-btn-sm">← Previous</Link> : <span />}
+            <span className="adm-pager-info">
+              Page {pageNum} of {pages} · {total} lead{total === 1 ? "" : "s"}
+            </span>
+            {pageNum < pages ? <Link href={pageHref(pageNum + 1)} className="btn btn-ghost adm-btn-sm">Next →</Link> : <span />}
+          </nav>
+        ) : null}
       </div>
     </>
   );

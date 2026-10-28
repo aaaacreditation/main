@@ -10,7 +10,11 @@ export type SuccessStory = {
   /** Certificate photo, or the video thumbnail when `video` is set. */
   img: string;
   alt: string;
+  /** CSS object-position for the photo crop (default "center"), e.g. "center 35%" to show more of the top. */
+  imgPosition?: string;
   logo: string;
+  /** Near-zero plate padding, for logos that otherwise render small (round or very wide marks). */
+  logoTight?: boolean;
   /** YouTube URL — the card shows a play button and "Watch Video". */
   video?: string;
   /** Story page; falls back to the carousel's `moreHref`. */
@@ -42,10 +46,11 @@ export default function SuccessCarousel({
 }) {
   const group = (clone: boolean) => (
     <ul className="hx-ss-group" inert={clone} aria-hidden={clone || undefined}>
-      {stories.map((s) => {
+      {stories.map((s, i) => {
         const href = s.video ?? s.href ?? moreHref;
         return (
-          <li key={s.name} className="hx-ss-item">
+          // Index in the key: stories are admin-managed, so two can share a name.
+          <li key={`${s.name}-${i}`} className="hx-ss-item">
             <article className={`ax-card navy ax-blue hx-story${s.featured ? " featured" : ""}${s.video ? " video" : ""}`}>
               <figure className="hx-story-media">
                 <Image
@@ -53,6 +58,7 @@ export default function SuccessCarousel({
                   alt={clone ? "" : s.alt}
                   fill
                   sizes="(max-width: 650px) 300px, 460px"
+                  style={s.imgPosition ? { objectPosition: s.imgPosition } : undefined}
                   // Load up front: cards slide into view continuously, and lazy
                   // loading made each photo pop in late. The duplicate set
                   // reuses the same cached files.
@@ -82,7 +88,7 @@ export default function SuccessCarousel({
                 {s.featured && <span className="ax-blue-tag">Featured Story</span>}
                 {s.metric && <span className="hx-story-metric">{s.metric}</span>}
                 <div className="hx-story-org">
-                  <span className="hx-story-logo">
+                  <span className={"hx-story-logo" + (s.logoTight ? " tight" : "")}>
                     <Image src={s.logo} alt={clone ? "" : `${s.name} logo`} fill sizes="96px" />
                   </span>
                   <h3>{s.name}</h3>

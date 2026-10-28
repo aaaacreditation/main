@@ -1,9 +1,11 @@
+import { requireArea } from "@/lib/admin";
 import Link from "next/link";
 import PageForm from "../../../_components/PageForm";
 
 export const metadata = { title: "New page" };
 
-export default function NewCmsPage() {
+export default async function NewCmsPage() {
+  await requireArea("content");
   return (
     <>
       <header className="adm-topbar">

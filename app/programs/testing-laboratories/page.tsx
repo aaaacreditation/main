@@ -1,25 +1,29 @@
+import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
-import { COMMON_DOCS, DOC, POLICIES_LINK, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import { crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
-import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+import { seoPage } from "@/lib/seo-overrides";
 
 const PATH = "/programs/testing-laboratories";
 const IMG = "/images/site/cab-testing-labs";
 
-export const metadata = pageMeta({
-  title: "Testing Laboratories Accreditation (ISO/IEC 17025)",
-  description:
-    "ISO/IEC 17025 accreditation for testing laboratories: independent recognition that your laboratory operates competently and produces valid, reliable results.",
-  path: PATH,
-  keywords: [
-    "ISO/IEC 17025 accreditation",
-    "testing laboratory accreditation",
-    "laboratory competence",
-    "accredited test results",
-    "chemical and microbiological testing",
-  ],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return seoPage({
+    title: "Testing Laboratories Accreditation (ISO/IEC 17025)",
+    description:
+      "ISO/IEC 17025 accreditation for testing laboratories: independent recognition that your laboratory operates competently and produces valid, reliable results.",
+    path: PATH,
+    keywords: [
+      "ISO/IEC 17025 accreditation",
+      "testing laboratory accreditation",
+      "laboratory competence",
+      "accredited test results",
+      "chemical and microbiological testing",
+    ],
+  });
+}
 
 const DATA: SchemeData = {
   slug: "testing-labs",
@@ -85,6 +89,12 @@ const DATA: SchemeData = {
     ],
     image: { src: `${IMG}/laboratory-visit-1bebaa46.jpg`, alt: "Laboratory visit", width: 1600, height: 833 },
     caption: "Supporting technical competence and confidence in laboratory results.",
+    secondImage: {
+      src: `${IMG}/laboratory-assessment-visit.jpg`,
+      alt: "Laboratory specialist walking an AAA assessor through testing equipment",
+      width: 1600,
+      height: 813,
+    },
   },
   areas: {
     intro: "AAA evaluates the laboratory systems and technical controls needed to produce valid and reliable results.",
@@ -148,17 +158,6 @@ const DATA: SchemeData = {
         title: "Accreditation Granted",
         text: "Successful laboratories receive an accreditation certificate and approved scope, valid for three years.",
       },
-    ],
-    resourcesTitle: "Application Documents & Resources",
-    resources: [
-      { label: "Accreditation Application Form", href: DOC.appLabs, meta: "DOC" },
-      { label: "ISO/IEC 17025 Accreditation Requirements", href: DOC.generalRequirements, meta: "PDF" },
-      { label: "Assessment Checklist", href: "/documents", meta: "VIEW" },
-      { label: "Scope of Accreditation Template", href: "/documents", meta: "VIEW" },
-      { label: "Accreditation Symbol Requirements", href: DOC.symbols, meta: "PDF" },
-      { label: "Proficiency Testing Policy", href: DOC.ptPolicy, meta: "PDF" },
-      COMMON_DOCS[2],
-      POLICIES_LINK,
     ],
   },
   testimonial: {

@@ -1,0 +1,61 @@
+/* ============================================================
+   Leads & Applications CRM — page-local rules for /admin/leads and
+   /admin/leads/[id]. Every rule is scoped under .adm (admin shell) and
+   prefixed adml-. Shared primitives live in app/admin/admin.css.
+   ============================================================ */
+
+/* ---------- List table ---------- */
+.adm .adml-table th.adml-check,
+.adm .adml-table td.adml-check{ width: 44px; padding-right: 0; }
+.adm .adml-table .adml-check input{ width: 16px; height: 16px; accent-color: var(--aaa-blue); cursor: pointer; vertical-align: middle; }
+.adm .adml-sub{
+  display: block; margin-top: 3px; max-width: 52ch;
+  font-size: 12.5px; font-weight: 400; color: var(--ink-500);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.adm .adml-table td.adm-table-dim .adml-sub{ font-size: 11.5px; color: var(--ink-400); }
+/* Unworked leads read heavier so they stand out when scanning. */
+.adm .adml-table tr.adml-new .adm-table-title{ font-weight: 600; }
+.adm .adml-table tr.adml-new .adm-table-title::before{
+  content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 8px 1px 0;
+  border-radius: 50%; background: var(--aaa-blue); vertical-align: middle;
+}
+.adm .adml-table tr:has(input[name="ids"]:checked) td{ background: var(--aaa-blue-50); }
+.adm .adml-table .adm-tag{ white-space: nowrap; }
+
+/* ---------- Bulk bar ---------- */
+.adm .adml-bulk{
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+  padding: 10px 18px; border-bottom: 1px solid var(--ink-200); background: #fff;
+}
+.adm .adml-bulk-count{ margin-right: auto; font-size: 12.5px; font-weight: 500; color: var(--ink-500); }
+.adm .adml-bulk[data-active] .adml-bulk-count{ color: var(--aaa-blue); font-weight: 600; }
+.adm .adml-bulk .sme-select{ width: auto; min-width: 170px; padding-top: 8px; padding-bottom: 8px; font-size: 13px; }
+.adm .adml-bulk .btn:disabled{ opacity: .5; cursor: default; }
+
+.adm .adml-topnote{ color: var(--aaa-blue); font-weight: 500; }
+.adm .adml-topnote:hover{ text-decoration: underline; }
+
+/* ---------- Detail page ---------- */
+.adm .adml-meta{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 7px; font-size: 13px; color: var(--ink-500); }
+.adm .adml-nav{ display: flex; gap: 8px; }
+.adm .adml-nav .is-off{ opacity: .45; pointer-events: none; }
+.adm .adml-kv code{
+  margin-left: 6px; padding: 1px 6px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-500); background: var(--ink-100);
+}
+.adm .adml-kv .adml-dim{ color: var(--ink-400); }
+.adm .adml-inline{ display: inline-flex; flex-wrap: wrap; gap: 4px 14px; }
+.adm .adml-msg{ margin-top: 10px; }
+.adm .adml-note-form{ display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 10px; }
+.adm .adml-note-form .adm-label{ margin: 0; }
+.adm .adml-note-form .sme-textarea{ width: 100%; min-height: 0; font-size: 14px; }
+.adm .adml-timeline{ margin-top: 20px; }
+.adm .adml-timeline li.system::before{ background: var(--ink-300); }
+.adm .adml-panel .sme-select,
+.adm .adml-panel .sme-textarea{ width: 100%; font-size: 14px; }
+.adm .adml-panel .sme-textarea{ min-height: 0; }
+.adm .adml-contact{ display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.adm .adml-contact .btn{ justify-content: center; }
+.adm .adml-panel .adm-hint:first-of-type{ margin-top: 6px; }
+.adm .adml-linkform{ margin-top: 10px; }

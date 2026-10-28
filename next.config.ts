@@ -122,8 +122,15 @@ const nextConfig: NextConfig = {
    *
    * Vercel has no iCloud and expects the default ".next" output directory, so
    * we only apply the ".nosync" override for local builds (VERCEL is unset).
+   *
+   * The Docker image (Dockerfile, for the Hetzner VPS) builds with
+   * NEXT_OUTPUT=standalone. That build also uses the default ".next" — the
+   * Dockerfile copies .next/standalone and .next/static out of it — and emits
+   * the self-contained server.js the container runs. Plain local builds and
+   * Vercel builds are unaffected (output stays the default).
    */
-  distDir: process.env.VERCEL ? ".next" : ".next.nosync",
+  distDir: process.env.VERCEL || process.env.NEXT_OUTPUT ? ".next" : ".next.nosync",
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
 
   images: {
     formats: ["image/avif", "image/webp"],
