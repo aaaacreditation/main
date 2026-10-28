@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageHero from "../_components/PageHero";
@@ -136,10 +137,15 @@ export default async function Archive({ page }: { page: number }) {
             </div>
 
             <div className="nx-lead" style={{ marginTop: "clamp(28px, 3.2vw, 42px)" }}>
-              <Link href={`/news/${lead.slug}`} className="nx-lead-main reveal">
+              <Link href={`/news/${lead.slug}`} className={`nx-lead-main reveal${lead.coverImage ? " has-cover" : ""}`}>
+                {lead.coverImage && (
+                  <span className="nx-lead-media" aria-hidden="true">
+                    <Image src={lead.coverImage} alt="" fill priority sizes="(max-width: 980px) 100vw, 760px" />
+                  </span>
+                )}
                 <span className="nx-lead-tag">
                   <i aria-hidden="true" />
-                  Featured story
+                  Featured story · {lead.category}
                 </span>
                 <time className="nx-lead-date" dateTime={isoDate(lead.date)}>
                   {formatDate(lead.date)}
@@ -157,9 +163,16 @@ export default async function Archive({ page }: { page: number }) {
                   <ol>
                     {rail.map((p) => (
                       <li key={p.slug}>
-                        <Link href={`/news/${p.slug}`}>
-                          <time dateTime={isoDate(p.date)}>{formatDateShort(p.date)}</time>
-                          <h3>{p.title}</h3>
+                        <Link href={`/news/${p.slug}`} className={p.coverImage ? "has-thumb" : undefined}>
+                          {p.coverImage && (
+                            <span className="nx-rail-thumb" aria-hidden="true">
+                              <Image src={p.coverImage} alt="" fill sizes="88px" />
+                            </span>
+                          )}
+                          <span>
+                            <time dateTime={isoDate(p.date)}>{formatDateShort(p.date)}</time>
+                            <h3>{p.title}</h3>
+                          </span>
                         </Link>
                       </li>
                     ))}
@@ -181,25 +194,32 @@ export default async function Archive({ page }: { page: number }) {
             </p>
           </div>
 
-          <div className="ax-grid three" style={{ marginTop: "clamp(28px, 3.2vw, 42px)" }}>
+          {/* Oct 2026: image-led cards on the site card (NavyCard surface), with
+              the post's featured image synced from the old site. */}
+          <div className="nx-grid" style={{ marginTop: "clamp(28px, 3.2vw, 42px)" }}>
             {cards.map((p, i) => (
               <Link
                 href={`/news/${p.slug}`}
                 key={p.slug}
-                className="ax-card nx-card reveal"
+                className="ax-card navy ax-blue nx-card reveal"
                 style={{ transitionDelay: `${Math.min(i, 8) * 45}ms` }}
               >
-                <div className="nx-card-top">
-                  <time dateTime={isoDate(p.date)}>{formatDateShort(p.date)}</time>
-                  <span className="nx-card-yr" aria-hidden="true">
-                    {p.date.slice(0, 4)}
+                <figure className={`nx-card-media${p.coverImage ? "" : " empty"}`}>
+                  {p.coverImage ? (
+                    <Image src={p.coverImage} alt="" fill sizes="(max-width: 720px) 92vw, (max-width: 1100px) 46vw, 400px" />
+                  ) : (
+                    <span className="nx-card-seal" aria-hidden="true">AAA</span>
+                  )}
+                  <span className="nx-card-cat">{p.category}</span>
+                </figure>
+                <div className="nx-card-body">
+                  <time dateTime={isoDate(p.date)}>{formatDate(p.date)}</time>
+                  <h3>{p.title}</h3>
+                  {summarize(p) && <p>{summarize(p)}</p>}
+                  <span className="ax-card-go">
+                    Read article <Icon name="arrow" size={13} />
                   </span>
                 </div>
-                <h3>{p.title}</h3>
-                {summarize(p) && <p>{summarize(p)}</p>}
-                <span className="ax-card-go">
-                  Read article <Icon name="arrow" size={13} />
-                </span>
               </Link>
             ))}
           </div>

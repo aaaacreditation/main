@@ -3,8 +3,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * The advisor enquiry card — third column of the hero (client's final TEPA
- * order, Oct 2026: "Hero + enquiry form"). It rises in on a soft spring the
+ * The advisor enquiry card — sits in the final "Take the Next Step" CTA
+ * (moved there from the hero, Oct 23 2026). It rises in on a soft spring the
  * first time it comes into view.
  */
 export default function AdvisorCard({ children }: { children: React.ReactNode }) {

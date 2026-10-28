@@ -34,11 +34,13 @@ export default function PageHero({
   crumbs,
   meta,
   image,
+  background,
   imageAlt = "",
   accent = "gold",
   badge,
   actions,
   caption,
+  visual,
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -46,14 +48,18 @@ export default function PageHero({
   crumbs?: { href?: string; label: string }[];
   meta?: { k: string; v: string }[];
   image?: string;
+  /** Full-bleed photo behind the copy, under a navy scrim. Use instead of `image`. */
+  background?: string;
   /** Alt text for the hero photo; leave empty only when the image is purely decorative. */
   imageAlt?: string;
   /** `red` swaps the hero wash to the flag-red accent — use only where urgency is the story. */
   accent?: "gold" | "red";
-  /** Optional kicker above the h1. Defaults to the eyebrow text. */
-  badge?: string;
+  /** Optional kicker above the h1. Defaults to the eyebrow text; `false` hides it. */
+  badge?: string | false;
   actions?: React.ReactNode;
   caption?: { kicker: string; title: string; chip?: string };
+  /** Custom right-hand column beside the copy (e.g. a product shot). Use instead of `image`. */
+  visual?: React.ReactNode;
 }) {
   const hasVisual = Boolean(image);
   const len = textLength(title);
@@ -61,6 +67,14 @@ export default function PageHero({
 
   return (
     <section className={"ax-hero v2" + (hasVisual ? " has-visual" : "") + (accent === "red" ? " red" : "")}>
+      {background && (
+        <div className="axh-bg">
+          <span className="axh-media">
+            <Image src={background} alt={imageAlt} fill sizes="100vw" priority />
+          </span>
+        </div>
+      )}
+
       <div className="axh-aura" aria-hidden="true">
         <span />
         <span />
@@ -93,7 +107,7 @@ export default function PageHero({
       )}
 
       <div className="container">
-        <div className="ax-hero-grid solo">
+        <div className={visual ? "ax-hero-grid" : "ax-hero-grid solo"}>
           <div className="ax-hero-copy">
             <nav className="ax-crumbs axh-in" style={{ "--d": 0 } as React.CSSProperties} aria-label="Breadcrumb">
               <Link href="/">Home</Link>
@@ -105,13 +119,15 @@ export default function PageHero({
               ))}
             </nav>
 
-            <span
-              className={"ax-hero-badge axh-in" + (accent === "red" ? " red" : "")}
-              style={{ "--d": 1 } as React.CSSProperties}
-            >
-              <i aria-hidden="true" />
-              {badge ?? eyebrow}
-            </span>
+            {badge !== false && (
+              <span
+                className={"ax-hero-badge axh-in" + (accent === "red" ? " red" : "")}
+                style={{ "--d": 1 } as React.CSSProperties}
+              >
+                <i aria-hidden="true" />
+                {badge ?? eyebrow}
+              </span>
+            )}
 
             <h1 className="axh-in" data-size={size} style={{ "--d": 2 } as React.CSSProperties}>
               {title}
@@ -145,6 +161,12 @@ export default function PageHero({
               </ul>
             )}
           </div>
+
+          {visual && (
+            <div className="axh-slot axh-in" style={{ "--d": 3 } as React.CSSProperties}>
+              {visual}
+            </div>
+          )}
         </div>
       </div>
       <span className="axh-rule" aria-hidden="true" />

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 type Status = "idle" | "sending" | "ok" | "error";
-type FieldKey = "org" | "country" | "rep" | "email" | "program" | "scope";
+type FieldKey = "org" | "country" | "rep" | "email" | "program" | "heard" | "phone" | "scope";
 type Errors = Partial<Record<FieldKey, string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -15,6 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  */
 const PROGRAMS = [
   "Healthcare Accreditation",
+  "Training & Education Provider",
   "Medical Laboratories (ISO 15189)",
   "Testing & Calibration (ISO/IEC 17025)",
   "Inspection Bodies (ISO/IEC 17020)",
@@ -22,14 +23,16 @@ const PROGRAMS = [
   "Product Certification (ISO/IEC 17065)",
   "Personnel Certification (ISO/IEC 17024)",
   "Proficiency Testing (ISO/IEC 17043)",
-  "Training Providers (ASTM E-2659)",
 ];
 
-const SITUATIONS = [
-  "First accreditation",
-  "Adding scopes to an existing AAA accreditation",
-  "Renewal / reassessment",
-  "Transfer from another accreditation body",
+const HEARD_ABOUT = [
+  "Google / search engine",
+  "LinkedIn",
+  "Facebook / Instagram",
+  "Referral from a colleague or partner",
+  "Event or webinar",
+  "Email from AAA",
+  "Other",
 ];
 
 const EMPTY = {
@@ -39,7 +42,7 @@ const EMPTY = {
   email: "",
   phone: "",
   program: "",
-  situation: "",
+  heard: "",
   scope: "",
 };
 
@@ -68,6 +71,8 @@ export default function ApplyForm() {
     if (!values.rep.trim()) next.rep = "Please name an authorized representative.";
     if (!EMAIL_RE.test(values.email.trim())) next.email = "Please enter a valid email address.";
     if (!values.program) next.program = "Please choose the program you are applying for.";
+    if (!values.heard) next.heard = "Please tell us where you heard about us.";
+    if (values.phone.replace(/\D/g, "").length < 7) next.phone = "Please enter a phone number with the country code.";
     if (values.scope.trim().length < 10) next.scope = "Please describe the scope you want accredited.";
     return next;
   }
@@ -91,14 +96,11 @@ export default function ApplyForm() {
       email: values.email.trim(),
       phone: values.phone.trim(),
       sector: values.program,
-      stage: values.situation,
       message: [
         `Country of registration: ${values.country.trim()}`,
-        values.situation && `Situation: ${values.situation}`,
+        `Heard about us: ${values.heard}`,
         `Requested scope:\n${values.scope.trim()}`,
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
+      ].join("\n\n"),
       source: "apply-form",
       website: String(fd.get("website") || ""), // honeypot
     };
@@ -130,13 +132,9 @@ export default function ApplyForm() {
         </span>
         <strong>Application enquiry received</strong>
         <p>
-          Thank you — an AAA accreditation advisor will review the scope you described for{" "}
-          <b>{values.org.trim()}</b> and reply to <b>{values.email.trim()}</b> within two business
-          days with the correct application form and the documents to prepare.
-        </p>
-        <p className="apx-form-done-next">
-          You can get a head start by{" "}
-          <a href="#forms">downloading the application form for your program</a>.
+          Thank you for submitting your accreditation request. One of our Accreditation Advisors will
+          contact you within 48 working hours to discuss your requirements and guide you through the
+          next steps.
         </p>
       </div>
     );
@@ -156,10 +154,13 @@ export default function ApplyForm() {
 
       <div className="apx-form-grid">
         <div className="apx-field">
-          <label htmlFor="ap-org">Legal entity name</label>
+          <label htmlFor="ap-org">
+            Legal entity name<span className="req">*</span>
+          </label>
           <input
             id="ap-org"
             name="org"
+            required
             value={values.org}
             onChange={(e) => set("org", e.target.value)}
             autoComplete="organization"
@@ -175,10 +176,13 @@ export default function ApplyForm() {
         </div>
 
         <div className="apx-field">
-          <label htmlFor="ap-country">Country of registration</label>
+          <label htmlFor="ap-country">
+            Country of registration<span className="req">*</span>
+          </label>
           <input
             id="ap-country"
             name="country"
+            required
             value={values.country}
             onChange={(e) => set("country", e.target.value)}
             autoComplete="country-name"
@@ -194,10 +198,13 @@ export default function ApplyForm() {
         </div>
 
         <div className="apx-field">
-          <label htmlFor="ap-rep">Authorized representative</label>
+          <label htmlFor="ap-rep">
+            Authorized representative<span className="req">*</span>
+          </label>
           <input
             id="ap-rep"
             name="rep"
+            required
             value={values.rep}
             onChange={(e) => set("rep", e.target.value)}
             autoComplete="name"
@@ -213,10 +220,13 @@ export default function ApplyForm() {
         </div>
 
         <div className="apx-field">
-          <label htmlFor="ap-email">Email</label>
+          <label htmlFor="ap-email">
+            Email<span className="req">*</span>
+          </label>
           <input
             id="ap-email"
             name="email"
+            required
             type="email"
             value={values.email}
             onChange={(e) => set("email", e.target.value)}
@@ -233,10 +243,13 @@ export default function ApplyForm() {
         </div>
 
         <div className="apx-field full">
-          <label htmlFor="ap-program">Program applied for</label>
+          <label htmlFor="ap-program">
+            Program applied for<span className="req">*</span>
+          </label>
           <select
             id="ap-program"
             name="program"
+            required
             value={values.program}
             onChange={(e) => set("program", e.target.value)}
             aria-invalid={Boolean(errors.program)}
@@ -259,48 +272,69 @@ export default function ApplyForm() {
         </div>
 
         <div className="apx-field">
-          <label htmlFor="ap-situation">
-            Your situation <i>optional</i>
+          <label htmlFor="ap-heard">
+            Where did you hear about us?<span className="req">*</span>
           </label>
           <select
-            id="ap-situation"
-            name="situation"
-            value={values.situation}
-            onChange={(e) => set("situation", e.target.value)}
+            id="ap-heard"
+            name="heard"
+            required
+            value={values.heard}
+            onChange={(e) => set("heard", e.target.value)}
+            aria-invalid={Boolean(errors.heard)}
+            aria-describedby={errors.heard ? "ap-heard-err" : undefined}
           >
-            <option value="">Not sure yet</option>
-            {SITUATIONS.map((s) => (
-              <option key={s} value={s}>
-                {s}
+            <option value="" disabled>
+              Select an option…
+            </option>
+            {HEARD_ABOUT.map((h) => (
+              <option key={h} value={h}>
+                {h}
               </option>
             ))}
           </select>
+          {errors.heard && (
+            <span className="apx-err" id="ap-heard-err">
+              {errors.heard}
+            </span>
+          )}
         </div>
 
         <div className="apx-field">
           <label htmlFor="ap-phone">
-            Phone <i>optional</i>
+            Phone<span className="req">*</span>
           </label>
           <input
             id="ap-phone"
             name="phone"
+            required
             type="tel"
             value={values.phone}
             onChange={(e) => set("phone", e.target.value)}
             autoComplete="tel"
             placeholder="+1 571 000 0000"
+            aria-invalid={Boolean(errors.phone)}
+            aria-describedby={errors.phone ? "ap-phone-err" : undefined}
           />
+          {errors.phone && (
+            <span className="apx-err" id="ap-phone-err">
+              {errors.phone}
+            </span>
+          )}
         </div>
 
         <div className="apx-field full">
-          <label htmlFor="ap-scope">Scope statement</label>
+          <label htmlFor="ap-scope">
+            Scope statement<span className="req">*</span>
+          </label>
           <textarea
             id="ap-scope"
             name="scope"
+            required
             rows={4}
             value={values.scope}
             onChange={(e) => set("scope", e.target.value)}
-            placeholder="Describe the activities you want accredited — tests, methods, technical sectors, certification schemes, inspection types — plus the sites the accreditation should cover."
+            placeholder="What activities are you seeking accreditation for?"
             aria-invalid={Boolean(errors.scope)}
             aria-describedby={errors.scope ? "ap-scope-err" : undefined}
           />
@@ -326,10 +360,6 @@ export default function ApplyForm() {
               </svg>
             )}
           </button>
-          <p className="apx-form-note">
-            This starts the conversation. The formal application is the signed application form for
-            your program, submitted with your fees.
-          </p>
         </div>
       </div>
     </form>

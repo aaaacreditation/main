@@ -27,7 +27,6 @@ const ABOUT_LINKS = [
   { href: "/membership/individual", label: "Individual Membership" },
   { href: "/directory/accredited-organizations", label: "Accredited Organizations" },
   { href: "/news", label: "News & Announcements" },
-  { href: "/documents", label: "Documents" },
 ];
 
 export default function Footer() {
@@ -106,10 +105,9 @@ export default function Footer() {
             <div className="item">
               <Icon name="globe" size={16} className="ico" />
               <div>
-                International Operations
+                WhatsApp
                 <br />
                 <span className="muted">
-                  Tel./WhatsApp{" "}
                   <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
                     {CONTACT.whatsapp}
                   </a>
@@ -129,11 +127,11 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} American Accreditation Association. All rights reserved.</span>
+          <span>© American Accreditation Association. All rights reserved.</span>
           <div className="links">
             <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/impartiality-policy">Impartiality</Link>
-            <Link href="/faq">FAQ</Link>
+            {/* Route handler (app/sitemap.ts), not a page — plain <a> so the client router doesn't try to render it. */}
+            <a href="/sitemap.xml">Sitemap</a>
             <Link href="/contact">Contact</Link>
           </div>
         </div>

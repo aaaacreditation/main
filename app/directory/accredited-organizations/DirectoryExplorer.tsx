@@ -1,121 +1,146 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import Icon from "../../_components/Icon";
-import type { Org } from "@/app/_data/accredited-organizations";
+import Glyph, { type GlyphName } from "../../_components/site/Glyph";
+import {
+  ACCREDITATION_TYPES,
+  PROGRAM_FAMILIES,
+  accreditationType,
+  orgStatus,
+  type Accreditation,
+  type Org,
+  type ProgramFamily,
+} from "@/app/_data/accredited-organizations";
 import { CONTACT } from "@/lib/facts";
 
 export type { Accreditation, Org } from "@/app/_data/accredited-organizations";
 
-const ALL = "All countries";
+const ALL_COUNTRIES = "All countries";
+const PAGE = 24;
 
-/**
- * Focus areas are a *search shortcut*, not a classification AAA assigns.
- *
- * Each chip matches the words an organization uses in its own name and
- * description, so an entry can match several areas or none. Nothing derived
- * here is ever printed on a card as though it were part of the accreditation
- * record — the authoritative scope always comes from the record itself.
- */
-const FOCUS_AREAS: { id: string; label: string; test: RegExp }[] = [
-  {
-    id: "higher-education",
-    label: "Higher education",
-    test: /universit|college|higher education|postgraduate|doctoral|bachelor|master'?s|degree|campus|academia|business school|ects|mba/i,
-  },
-  {
-    id: "training",
-    label: "Training & development",
-    test: /training|academy|learning|course|cpd|ceu|professional development|coaching|skills|workshop|instructor|curricul/i,
-  },
-  {
-    id: "healthcare",
-    label: "Healthcare & clinical",
-    test: /health|medic|clinic|hospital|nursing|dental|patient|pharma|psycholog|therap|wellness|aesthet|cancer|laser|surger|diagnostic|rehabilit/i,
-  },
-  {
-    id: "conformity",
-    label: "Conformity assessment",
-    test: /certification|inspection|laborator|testing|proficiency|calibrat|conformity|registrar|iso\/?iec|iso [0-9]|audit|standards body|assessment body/i,
-  },
-  {
-    id: "schools",
-    label: "Schools & K–12",
-    test: /international school|k-12|k–12|prek|pre-k|primary school|secondary school|kindergarten|pupils/i,
-  },
-  {
-    id: "consulting",
-    label: "Consulting & advisory",
-    test: /consult|advisory|advisor|business development/i,
-  },
-];
+/** Status filter. "Accredited" is the default so the register opens on live listings. */
+const STATUSES = ["Accredited", "Suspended", "Withdrawn", "All"] as const;
+type StatusFilter = (typeof STATUSES)[number];
 
-function haystack(o: Org): string {
-  return `${o.name} ${o.description ?? ""}`;
+const FAMILY_ICON: Record<ProgramFamily, GlyphName> = {
+  training: "graduation",
+  healthcare: "heart-pulse",
+  school: "school",
+  cab: "badge-check",
+};
+
+function families(o: Org): Set<ProgramFamily> {
+  const out = new Set<ProgramFamily>();
+  for (const a of o.accreditations) {
+    const f = ACCREDITATION_TYPES[accreditationType(a)].family;
+    if (f) out.add(f);
+  }
+  return out;
 }
 
-function initials(name: string): string {
-  const words = name
-    .replace(/[^A-Za-z0-9 &]/g, " ")
-    .split(/\s+/)
-    .filter(Boolean);
-  const letters = words
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("");
-  return (letters || name.slice(0, 2)).toUpperCase();
+/** The record a card leads with: the first one carrying the organization's headline status. */
+function primaryRecord(o: Org): Accreditation {
+  const status = orgStatus(o);
+  return o.accreditations.find((a) => a.status === status) ?? o.accreditations[0];
+}
+
+function typeLabel(a: Accreditation): string {
+  const t = ACCREDITATION_TYPES[accreditationType(a)];
+  return t.standard ? `${t.label} · ${t.standard}` : t.label;
+}
+
+function haystack(o: Org): string {
+  const records = o.accreditations.map((a) => `${a.number} ${a.accreditedAs} ${a.scope}`).join(" ");
+  return `${o.name} ${o.location} ${o.country} ${o.description ?? ""} ${records}`.toLowerCase();
+}
+
+function StatusPill({ status }: { status: string }) {
+  const live = status === "Accredited";
+  return (
+    <span className={`dx-status${live ? " live" : " held"}`}>
+      {live ? <Glyph name="check-circle" size={13} strokeWidth={2} /> : <span className="dx-status-dot" aria-hidden="true" />}
+      {status}
+    </span>
+  );
+}
+
+function Logo({ o, size }: { o: Org; size: "card" | "modal" }) {
+  return (
+    <span className={`dx-logo ${size}`}>
+      {o.logo ? (
+        <Image src={o.logo} alt={`${o.name} logo`} fill sizes={size === "card" ? "140px" : "180px"} />
+      ) : (
+        <span className="dx-logo-mono" aria-hidden="true">
+          {o.name.slice(0, 2).toUpperCase()}
+        </span>
+      )}
+    </span>
+  );
 }
 
 export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
   const [query, setQuery] = useState("");
-  const [country, setCountry] = useState(ALL);
-  const [focus, setFocus] = useState<string | null>(null);
-  const [onlyRecord, setOnlyRecord] = useState(false);
+  const [country, setCountry] = useState(ALL_COUNTRIES);
+  const [family, setFamily] = useState<ProgramFamily | null>(null);
+  const [status, setStatus] = useState<StatusFilter>("Accredited");
+  // How many cards are revealed, keyed to the filters so any change starts from the top.
+  const [paging, setPaging] = useState({ key: "", count: PAGE });
   const [active, setActive] = useState<Org | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const lastTrigger = useRef<HTMLButtonElement | null>(null);
 
-  const countries = useMemo(
-    () => [
-      ALL,
-      ...Array.from(new Set(orgs.map((o) => o.country))).sort((a, b) => a.localeCompare(b)),
-    ],
+  const index = useMemo(
+    () => orgs.map((o) => ({ o, text: haystack(o), fams: families(o), status: orgStatus(o) })),
     [orgs]
   );
 
-  const focusCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const area of FOCUS_AREAS) {
-      counts[area.id] = orgs.filter((o) => area.test.test(haystack(o))).length;
+  const countries = useMemo(
+    () => [ALL_COUNTRIES, ...Array.from(new Set(orgs.map((o) => o.country))).sort((a, b) => a.localeCompare(b))],
+    [orgs]
+  );
+
+  const statusCounts = useMemo(() => {
+    const c: Record<string, number> = { All: index.length };
+    for (const r of index) c[r.status] = (c[r.status] ?? 0) + 1;
+    return c;
+  }, [index]);
+
+  // Program counts follow the status filter, so the chips never promise more than they show.
+  const familyCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    for (const r of index) {
+      if (status !== "All" && r.status !== status) continue;
+      for (const f of r.fams) c[f] = (c[f] ?? 0) + 1;
     }
-    return counts;
-  }, [orgs]);
+    return c;
+  }, [index, status]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const area = FOCUS_AREAS.find((a) => a.id === focus);
-    return orgs
-      .filter((o) => country === ALL || o.country === country)
-      .filter((o) => !onlyRecord || Boolean(o.accreditation))
-      .filter((o) => !area || area.test.test(haystack(o)))
-      .filter(
-        (o) =>
-          !q ||
-          `${o.name} ${o.location} ${o.country} ${o.description ?? ""}`.toLowerCase().includes(q)
-      )
+    return index
+      .filter((r) => status === "All" || r.status === status)
+      .filter((r) => country === ALL_COUNTRIES || r.o.country === country)
+      .filter((r) => !family || r.fams.has(family))
+      .filter((r) => !q || r.text.includes(q))
+      .map((r) => r.o)
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [orgs, query, country, focus, onlyRecord]);
+  }, [index, query, country, family, status]);
 
-  const hasFilters = query !== "" || country !== ALL || focus !== null || onlyRecord;
+  const filterKey = `${query}|${country}|${family}|${status}`;
+  const shown = paging.key === filterKey ? paging.count : PAGE;
+
+  const hasFilters = query !== "" || country !== ALL_COUNTRIES || family !== null || status !== "Accredited";
 
   function reset() {
     setQuery("");
-    setCountry(ALL);
-    setFocus(null);
-    setOnlyRecord(false);
+    setCountry(ALL_COUNTRIES);
+    setFamily(null);
+    setStatus("Accredited");
   }
 
-  // Dialog: lock scroll, close on Escape, move focus to the close button.
+  // Dialog: lock scroll, close on Escape, focus the close button, restore focus on close.
   useEffect(() => {
     if (!active) return;
     const prev = document.body.style.overflow;
@@ -128,17 +153,21 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
     return () => {
       document.body.style.overflow = prev;
       document.removeEventListener("keydown", onKey);
+      lastTrigger.current?.focus();
     };
   }, [active]);
+
+  const familyLabel = PROGRAM_FAMILIES.find((f) => f.id === family)?.label;
+  const visible = filtered.slice(0, shown);
 
   return (
     <div className="dx">
       <div className="dx-tools reveal">
         <div className="dx-search">
-          <Icon name="search" size={18} />
+          <Glyph name="search" size={18} />
           <input
             type="search"
-            placeholder="Search organizations, cities, keywords…"
+            placeholder="Search name, city or accreditation no."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search the register of accredited organizations"
@@ -151,12 +180,8 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
         </div>
 
         <div className="dx-select">
-          <Icon name="globe" size={16} />
-          <select
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            aria-label="Filter by country"
-          >
+          <Glyph name="globe" size={16} />
+          <select value={country} onChange={(e) => setCountry(e.target.value)} aria-label="Filter by country">
             {countries.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -166,43 +191,48 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
           <span className="dx-caret" aria-hidden="true" />
         </div>
 
-        <button
-          type="button"
-          className={"dx-toggle" + (onlyRecord ? " on" : "")}
-          onClick={() => setOnlyRecord((v) => !v)}
-          aria-pressed={onlyRecord}
-        >
-          <Icon name="shield" size={15} /> Record on file
-        </button>
+        <div className="dx-seg" role="group" aria-label="Filter by status">
+          {STATUSES.map((s) => (
+            <button
+              type="button"
+              key={s}
+              className={status === s ? "on" : undefined}
+              aria-pressed={status === s}
+              onClick={() => setStatus(s)}
+            >
+              {s === "All" ? "All statuses" : s}
+              <b>{statusCounts[s] ?? 0}</b>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="dx-chips reveal">
-        <span className="dx-chips-label">Focus area</span>
-        {FOCUS_AREAS.map((area) => (
+      <div className="dx-chips reveal" role="group" aria-label="Filter by accreditation program">
+        <span className="dx-chips-label">Accredited as</span>
+        <button type="button" className={"dx-chip" + (family === null ? " on" : "")} aria-pressed={family === null} onClick={() => setFamily(null)}>
+          All programs
+        </button>
+        {PROGRAM_FAMILIES.map((f) => (
           <button
             type="button"
-            key={area.id}
-            className={"dx-chip" + (focus === area.id ? " on" : "")}
-            aria-pressed={focus === area.id}
-            onClick={() => setFocus((f) => (f === area.id ? null : area.id))}
+            key={f.id}
+            className={"dx-chip" + (family === f.id ? " on" : "")}
+            aria-pressed={family === f.id}
+            onClick={() => setFamily((cur) => (cur === f.id ? null : f.id))}
+            disabled={!familyCounts[f.id]}
           >
-            {area.label} <b>{focusCounts[area.id]}</b>
+            <Glyph name={FAMILY_ICON[f.id]} size={14} strokeWidth={1.9} /> {f.label} <b>{familyCounts[f.id] ?? 0}</b>
           </button>
         ))}
-        <p className="dx-chips-note">
-          Focus areas search the wording each organization uses to describe itself, so an entry can
-          appear under more than one. The authoritative scope of any accreditation is the one shown
-          on its record.
-        </p>
       </div>
 
-      <div className="dx-meta reveal">
+      <div className="dx-meta reveal" aria-live="polite">
         <span>
-          <strong>{filtered.length}</strong>{" "}
-          {filtered.length === 1 ? "organization" : "organizations"}
-          {country !== ALL && <> in {country}</>}
-          {focus && <> under {FOCUS_AREAS.find((a) => a.id === focus)?.label.toLowerCase()}</>}
-          {query && <> matching “{query}”</>}
+          <strong>{filtered.length}</strong> {filtered.length === 1 ? "organization" : "organizations"}
+          {status !== "All" && <> · {status.toLowerCase()}</>}
+          {familyLabel && <> · {familyLabel.toLowerCase()}</>}
+          {country !== ALL_COUNTRIES && <> · {country}</>}
+          {query && <> · matching “{query}”</>}
         </span>
         {hasFilters && (
           <button type="button" className="dx-reset" onClick={reset}>
@@ -213,121 +243,145 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
 
       {filtered.length === 0 ? (
         <div className="dx-empty">
-          <Icon name="search" size={30} />
+          <Glyph name="search" size={30} />
           <h3>No organizations match those filters</h3>
-          <p>Try a different search term, another country, or reset the filters.</p>
+          <p>
+            Try another search term, country or status — or{" "}
+            <Link href={CONTACT.formHref}>ask AAA to verify a listing</Link>.
+          </p>
         </div>
       ) : (
-        <div className="dx-grid">
-          {filtered.map((o) => (
-            <button
-              type="button"
-              className="dx-card reveal"
-              key={`${o.name}-${o.location}`}
-              onClick={() => setActive(o)}
-              aria-haspopup="dialog"
-            >
-              <span className="dx-card-top">
-                <span className="dx-mono" aria-hidden="true">
-                  {initials(o.name)}
-                </span>
-                {o.accreditation && (
-                  <span className="dx-badge">
-                    <Icon name="shield" size={11} /> Record on file
-                  </span>
-                )}
-              </span>
-              <h3>{o.name}</h3>
-              <p className="dx-loc">
-                <Icon name="pin" size={13} /> {o.location}
+        <>
+          <ul className="dx-grid">
+            {visible.map((o) => {
+              const rec = primaryRecord(o);
+              const more = o.accreditations.length - 1;
+              const st = orgStatus(o);
+              return (
+                <li key={`${o.name}-${o.location}`}>
+                  <article className={`ax-card navy ax-blue dx-card${st === "Accredited" ? "" : " is-held"}`}>
+                    <div className="dx-card-head">
+                      <Logo o={o} size="card" />
+                      <StatusPill status={st} />
+                    </div>
+                    <h3>{o.name}</h3>
+                    <p className="dx-loc">
+                      <Glyph name="pin" size={13} strokeWidth={2} /> {o.location}
+                    </p>
+                    <span className="dx-type">{typeLabel(rec)}</span>
+                    {o.description && <p className="dx-desc">{o.description}</p>}
+                    <dl className="dx-facts">
+                      <div>
+                        <dt>Accreditation no.</dt>
+                        <dd>{rec.number}</dd>
+                      </div>
+                      <div>
+                        <dt>Valid until</dt>
+                        <dd>{rec.expiry}</dd>
+                      </div>
+                    </dl>
+                    <div className="dx-card-foot">
+                      <button
+                        type="button"
+                        className="dx-open"
+                        aria-haspopup="dialog"
+                        onClick={(e) => {
+                          lastTrigger.current = e.currentTarget;
+                          setActive(o);
+                        }}
+                      >
+                        View record <Glyph name="arrow-right" size={14} strokeWidth={2} />
+                        <span className="sr-only"> for {o.name}</span>
+                      </button>
+                      {more > 0 && (
+                        <span className="dx-more-n">
+                          +{more} more {more === 1 ? "accreditation" : "accreditations"}
+                        </span>
+                      )}
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+
+          {filtered.length > shown && (
+            <div className="dx-pager">
+              <p>
+                Showing {visible.length} of {filtered.length}
               </p>
-              {o.description && <p className="dx-desc">{o.description}</p>}
-              <span className="dx-more">
-                View details <Icon name="arrow" size={13} />
-              </span>
-            </button>
-          ))}
-        </div>
+              <button type="button" className="ax-btn ax-btn-ghost-navy" onClick={() => setPaging({ key: filterKey, count: shown + PAGE })}>
+                Show more organizations <Glyph name="plus" size={14} strokeWidth={2} />
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {active && (
-        <div
-          className="dx-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={active.name}
-          onClick={() => setActive(null)}
-        >
+        <div className="dx-modal" role="dialog" aria-modal="true" aria-labelledby="dx-modal-title" onClick={() => setActive(null)}>
           <div className="dx-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button
-              ref={closeRef}
-              className="dx-modal-x"
-              onClick={() => setActive(null)}
-              aria-label="Close"
-            >
+            <button ref={closeRef} className="dx-modal-x" onClick={() => setActive(null)} aria-label="Close">
               ×
             </button>
 
             <div className="dx-modal-head">
-              {active.logo ? (
-                <span className="dx-modal-logo">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={active.logo} alt={`${active.name} logo`} />
-                </span>
-              ) : (
-                <span className="dx-mono" aria-hidden="true">
-                  {initials(active.name)}
-                </span>
-              )}
+              <Logo o={active} size="modal" />
               <div>
-                <h2>{active.name}</h2>
+                <StatusPill status={orgStatus(active)} />
+                <h2 id="dx-modal-title">{active.name}</h2>
                 <p className="dx-loc">
-                  <Icon name="pin" size={14} /> {active.location} · {active.country}
+                  <Glyph name="pin" size={14} strokeWidth={2} /> {active.location}
+                  {!active.location.includes(active.country) && <> · {active.country}</>}
                 </p>
               </div>
             </div>
 
             {active.description && <p className="dx-modal-desc">{active.description}</p>}
 
-            {active.accreditation ? (
-              <div className="dx-record">
-                <div className="dx-record-h">
-                  <Icon name="shield" size={13} /> Accreditation record
-                </div>
-                <dl>
-                  <div>
-                    <dt>Accredited as</dt>
-                    <dd>{active.accreditation.accreditedAs}</dd>
-                  </div>
-                  <div>
-                    <dt>Accreditation no.</dt>
-                    <dd>{active.accreditation.number}</dd>
-                  </div>
-                  <div>
-                    <dt>Scope</dt>
-                    <dd>{active.accreditation.scope}</dd>
-                  </div>
-                  <div>
-                    <dt>Valid until</dt>
-                    <dd>{active.accreditation.expiry}</dd>
-                  </div>
-                  <div>
-                    <dt>Status</dt>
-                    <dd>{active.accreditation.status}</dd>
-                  </div>
-                </dl>
+            <div className="dx-records">
+              <div className="dx-record-h">
+                <Glyph name="shield-check" size={14} strokeWidth={2} />
+                {active.accreditations.length === 1
+                  ? "Accreditation record"
+                  : `${active.accreditations.length} accreditation records`}
               </div>
-            ) : (
-              <p className="dx-modal-note">
-                A structured accreditation record is not published for this entry. To confirm the
-                current scope, validity or status of any listing, contact AAA and we will verify it
-                against the accreditation file.
-              </p>
-            )}
+              {active.accreditations.map((a) => (
+                <div className={`dx-record${a.status === "Accredited" ? "" : " is-held"}`} key={a.number + a.accreditedAs}>
+                  <div className="dx-record-top">
+                    <span className="dx-record-type">{typeLabel(a)}</span>
+                    <StatusPill status={a.status} />
+                  </div>
+                  <dl>
+                    <div>
+                      <dt>Accredited as</dt>
+                      <dd>{a.accreditedAs}</dd>
+                    </div>
+                    <div>
+                      <dt>Accreditation no.</dt>
+                      <dd className="dx-num">{a.number}</dd>
+                    </div>
+                    <div>
+                      <dt>Scope</dt>
+                      <dd>{a.scope}</dd>
+                    </div>
+                    <div>
+                      <dt>Valid until</dt>
+                      <dd>{a.expiry}</dd>
+                    </div>
+                  </dl>
+                </div>
+              ))}
+            </div>
+
+            <p className="dx-modal-note">
+              Status is shown as published in the AAA register. To confirm the current scope, validity
+              or status of any listing, contact AAA with the accreditation number.
+            </p>
 
             <div className="dx-modal-actions">
-              <Link href="/contact" className="ax-btn ax-btn-blue sm">
-                Verify this listing <Icon name="arrow" size={14} />
+              <Link href={CONTACT.formHref} className="ax-btn ax-btn-blue sm">
+                Verify this listing <Glyph name="arrow-right" size={14} strokeWidth={2} />
               </Link>
               <Link href={CONTACT.quoteHref} className="ax-btn ax-btn-ghost-navy sm">
                 Get a quote

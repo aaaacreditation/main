@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Icon from "../../_components/Icon";
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 
 /**
  * The sticky rail beside every membership application form: what happens after
@@ -73,7 +73,7 @@ export default function ApplyAside({
             <span className="ax-ico" aria-hidden="true">
               <Icon name="globe" size={16} />
             </span>
-            <a href="tel:+447487550737">+44 (748) 755 0737 — international / WhatsApp</a>
+            <a href="https://wa.me/15716302066" target="_blank" rel="noopener noreferrer">+1 (571) 630-2066 — WhatsApp</a>
           </li>
           <li>
             <span className="ax-ico" aria-hidden="true">

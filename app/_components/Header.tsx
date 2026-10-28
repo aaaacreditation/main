@@ -26,8 +26,8 @@ const GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     label: "Accreditation Programs",
     href: "/programs",
     items: [
-      { href: P.training.href, label: "Training & Education Providers" },
       { href: P.healthcare.href, label: "Healthcare Organizations" },
+      { href: P.training.href, label: "Training & Education Providers" },
       { href: P.cab.href, label: "Conformity Assessment Bodies" },
       { href: P.sme.href, label: "SMEs Accreditation" },
     ],
@@ -132,9 +132,10 @@ function NavLinks() {
   );
 }
 
-/* The official logo (seal + wordmark, as on the live site). Its lettering is
-   white, so it is only placed on dark surfaces: the skyline band, the navy
-   sticky bar and the footer. */
+/* The official logo (seal + wordmark). AAA-Logo.png has white lettering, so
+   it is used where the header sits on dark: the logo band over the hero photo,
+   the navy sticky bar (and the footer). Below 1025px the band turns white and
+   CSS swaps in AAA-Logo-navy.png — the same file with the wordmark in navy. */
 function Brand({ compact = false, tabbable = true }: { compact?: boolean; tabbable?: boolean }) {
   return (
     <Link href="/" className="brand sh2-brand" aria-label="American Accreditation Association — home" tabIndex={tabbable ? 0 : -1}>
@@ -145,8 +146,18 @@ function Brand({ compact = false, tabbable = true }: { compact?: boolean; tabbab
         height={141}
         priority={!compact}
         sizes={compact ? "120px" : "200px"}
-        className="sh2-logo"
+        className="sh2-logo sh2-logo-light"
       />
+      {!compact && (
+        <Image
+          src="/logo/AAA-Logo-navy.png"
+          alt=""
+          width={349}
+          height={141}
+          sizes="200px"
+          className="sh2-logo sh2-logo-navy"
+        />
+      )}
     </Link>
   );
 }

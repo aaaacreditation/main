@@ -116,9 +116,9 @@
   gap: clamp(28px, 3.6vw, 52px);
   margin-top: clamp(30px, 3.4vw, 46px);
 }
+/* Left column: the photo card (plus an optional second one), sticky as a unit. */
+.schx .schx-figures { position: sticky; top: 110px; display: grid; gap: 20px; }
 .schx .schx-figure {
-  position: sticky;
-  top: 110px;
   margin: 0;
   overflow: hidden;
   border: 1px solid var(--ax-border);
@@ -234,6 +234,43 @@
 }
 .schx .schx-rail-card h4 { margin: 4px 0 6px; font-size: 17px; font-weight: 600; line-height: 1.3; color: var(--aaa-blue); }
 .schx .schx-rail-card p { margin: 0; font-size: 14px; line-height: 1.68; color: var(--ink-600); }
+
+/* No side column (Oct 23 2026, client): the steps run left to right in one
+   row, numbers on a horizontal gold track, cards stretched to equal height.
+   `--n` (the step count) is set inline on the list. Wraps to three per row,
+   then back to the vertical rail on phones. */
+.schx .schx-process.flow { grid-template-columns: minmax(0, 1fr); }
+/* Heading and the "Accreditation Process" label centred above the row, each
+   with its leading rule only (client: no rule on the right). */
+.schx .schx-process-head { margin-bottom: 0; }
+.schx .schx-process-head .eyebrow::after { content: none; }
+.schx .schx-process.flow .schx-label { justify-content: center; }
+.schx .schx-process.flow .schx-rail {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 16px;
+}
+/* Numbers sit centred over their cards, so the track runs from the first
+   column's centre to the last one's (half a column in from each side). */
+.schx .schx-process.flow .schx-rail::before {
+  top: 25px;
+  right: calc((100% - (var(--n) - 1) * 16px) / var(--n) / 2);
+  bottom: auto;
+  left: calc((100% - (var(--n) - 1) * 16px) / var(--n) / 2);
+  width: auto;
+  height: 2px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-blue-100) 70%, var(--aaa-blue));
+}
+.schx .schx-process.flow .schx-rail li {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  align-items: stretch;
+  gap: 14px;
+}
+.schx .schx-process.flow .schx-rail li + li { margin-top: 0; }
+.schx .schx-process.flow .schx-rail-no { justify-self: center; }
+.schx .schx-process.flow .schx-rail li:hover .schx-rail-card { transform: translateY(-4px); }
 
 /* Side column: application card + resources */
 .schx .schx-side { position: sticky; top: 110px; display: grid; gap: 20px; }
@@ -487,7 +524,9 @@
 /* ------------------------------ Responsive ---------------------------- */
 @media (max-width: 1100px) {
   .schx .schx-benefits { grid-template-columns: 1fr; }
-  .schx .schx-figure { position: static; max-width: 640px; }
+  .schx .schx-figures { position: static; max-width: 640px; }
+  .schx .schx-process.flow .schx-rail { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 28px; }
+  .schx .schx-process.flow .schx-rail::before { display: none; }
 }
 @media (max-width: 980px) {
   .schx .schx-suit,
@@ -508,6 +547,22 @@
   .schx .schx-rail-card { padding: 14px 16px 16px; }
   .schx .schx-docs a { grid-template-columns: auto minmax(0, 1fr); }
   .schx .schx-docs a i { grid-column: 2; }
+  /* Back to the vertical rail, label left-aligned like the heading. */
+  .schx .schx-process.flow .schx-label { justify-content: flex-start; }
+  .schx .schx-process.flow .schx-rail { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
+  .schx .schx-process.flow .schx-rail::before {
+    display: block;
+    top: 26px;
+    right: auto;
+    bottom: 26px;
+    left: 20px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--aaa-gold), var(--aaa-blue-100) 70%, var(--aaa-blue));
+  }
+  .schx .schx-process.flow .schx-rail li { grid-template-columns: 42px minmax(0, 1fr); grid-template-rows: none; gap: 12px; }
+  .schx .schx-process.flow .schx-rail-no { justify-self: start; }
+  .schx .schx-process.flow .schx-rail li:hover .schx-rail-card { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .schx .schx-rail li:hover .schx-rail-card,

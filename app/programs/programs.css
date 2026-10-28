@@ -1,0 +1,5 @@
+/* /programs — page-local overrides, scoped under .prgx. */
+
+/* Oct 22 2026: a little more air between the two lines of the hero title
+   (the shared inner-page hero sets 1.03). */
+.prgx .ax-hero.v2 h1 { line-height: 1.14; }

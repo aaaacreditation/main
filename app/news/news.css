@@ -60,6 +60,18 @@
 }
 .nxp a.nx-lead-main:hover { transform: translateY(-5px); box-shadow: 0 38px 90px -34px rgba(7, 29, 52, 0.6); }
 
+/* Oct 2026: the lead story carries its featured image behind a navy scrim. */
+.nxp .nx-lead-main.has-cover { min-height: 420px; }
+.nxp .nx-lead-media { position: absolute; inset: 0; z-index: -2; }
+.nxp .nx-lead-media img { object-fit: cover; transition: transform 0.9s var(--ease-out); }
+.nxp a.nx-lead-main:hover .nx-lead-media img { transform: scale(1.04); }
+.nxp .nx-lead-main.has-cover::before {
+  opacity: 1;
+  background: linear-gradient(0deg, rgba(6, 26, 44, 0.94) 8%, rgba(6, 26, 44, 0.62) 48%, rgba(6, 26, 44, 0.12) 100%);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
 .nxp .nx-lead-tag {
   display: inline-flex;
   align-items: center;
@@ -142,6 +154,17 @@
   padding: 16px 0;
   transition: transform 0.25s var(--ease-out);
 }
+.nxp .nx-rail a.has-thumb { display: flex; align-items: flex-start; gap: 14px; }
+.nxp .nx-rail-thumb {
+  position: relative;
+  flex: none;
+  width: 76px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--aaa-blue-950);
+}
+.nxp .nx-rail-thumb img { object-fit: cover; }
 .nxp .nx-rail a:hover { transform: translateX(4px); }
 .nxp .nx-rail time {
   display: block;
@@ -164,40 +187,94 @@
 .nxp .nx-rail a:hover h3 { color: var(--aaa-gold-700); }
 
 /* ============================ Archive cards ============================= */
-.nxp .nx-card { gap: 0; }
-.nxp .nx-card .nx-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--ink-100);
+/* Oct 2026: image-led cards on the site card surface (.ax-card.navy.ax-blue),
+   cover from the post's featured image, category chip over the photo. The
+   orbiting border accent rests until hover — 20 rotating layers per page is
+   wasted compositing. */
+.nxp .nx-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.nxp .nx-card.ax-blue { min-height: 0; padding: 0; gap: 0; overflow: hidden; }
+.nxp .nx-card.ax-blue::before { animation-play-state: paused; opacity: 0.55; }
+.nxp .nx-card.ax-blue:hover::before,
+.nxp .nx-card.ax-blue:focus-visible::before { animation-play-state: running; opacity: 1; }
+.nxp .nx-card-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  overflow: hidden;
+  border-radius: calc(var(--ax-radius) - 2px) calc(var(--ax-radius) - 2px) 0 0;
+  background: var(--aaa-blue-950);
 }
+.nxp .nx-card-media img { object-fit: cover; transition: transform 0.8s var(--ease-out); }
+.nxp a.nx-card:hover .nx-card-media img { transform: scale(1.05); }
+.nxp .nx-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(6, 26, 44, 0.45), transparent 45%);
+  pointer-events: none;
+}
+.nxp .nx-card-media.empty {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 80% 15%, rgba(36, 79, 147, 0.6), transparent 50%),
+    linear-gradient(150deg, var(--aaa-blue-900), var(--aaa-blue-950));
+}
+.nxp .nx-card-seal {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(244, 231, 198, 0.2);
+}
+.nxp .nx-card-cat {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--aaa-blue);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+.nxp .nx-card-body { display: flex; flex: 1; flex-direction: column; padding: 18px 22px 22px; }
 .nxp .nx-card time {
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--aaa-gold-700);
+  color: var(--aaa-gold-100);
 }
-.nxp .nx-card .nx-card-yr {
-  font-size: 26px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: rgba(23, 61, 115, 0.13);
-  user-select: none;
-}
-.nxp .nx-card h3 {
-  margin: 18px 0 10px;
+.nxp .nx-card.ax-blue h3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 10px 0 8px;
   font-size: 17px;
   line-height: 1.34;
-  color: var(--aaa-blue);
+  color: #fff;
   transition: color 0.2s ease;
 }
-.nxp a.nx-card:hover h3 { color: var(--aaa-gold-700); }
-.nxp .nx-card p { flex: 1; }
-.nxp .nx-card .ax-card-go { margin-top: 20px; }
+.nxp a.nx-card:hover h3 { color: var(--aaa-gold-100); }
+.nxp .nx-card p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.74);
+}
+.nxp .nx-card .ax-card-go { margin-top: auto; padding-top: 18px; }
+@media (max-width: 1100px) { .nxp .nx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .nxp .nx-grid { grid-template-columns: 1fr; } }
 
 /* =============================== Pager ================================== */
 .nxp .nx-pager {

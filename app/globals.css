@@ -4539,11 +4539,9 @@ section.block.tight{ padding: var(--section-pad-tight) 0; }
   stroke: #fff;
   stroke-width: .5;
   transition: fill .25s ease;
-  cursor: pointer;
 }
-.wm-country:hover,
-.wm-country.hot{ fill: #1b3e63; }
-.wm-country.on{ fill: var(--aaa-blue); }   /* AAA accredited */
+/* Only accredited countries are interactive (tooltip + hover); Oct 22 2026. */
+.wm-country.on{ fill: var(--aaa-blue); cursor: pointer; }   /* AAA accredited */
 .wm-country.on:hover,
 .wm-country.on.hot{ fill: var(--aaa-blue-500); }
 

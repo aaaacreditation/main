@@ -235,8 +235,6 @@
   text-align: center;
   color: var(--aaa-blue);
 }
-.hcx .hcx-recog-note { max-width: 880px; margin: clamp(28px, 3vw, 40px) auto 0; }
-
 /* ------------------------------ 04b Team ------------------------------ */
 .hcx .hcx-team {
   display: grid;

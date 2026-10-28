@@ -102,7 +102,13 @@ export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) 
     tip.style.top = `${e.clientY - r.top}px`;
   };
 
+  // Only accredited countries get the name tooltip (client, Oct 22 2026);
+  // adding a country to ACCREDITED is all it takes to give it one.
   const activate = (e: React.PointerEvent, name: string) => {
+    if (!ACCREDITED.has(name)) {
+      setActive(null);
+      return;
+    }
     positionTip(e);
     setActive(name);
   };
@@ -131,6 +137,7 @@ export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) 
                 active === c.name ? " hot" : ""
               }`}
               onPointerEnter={(e) => activate(e, c.name)}
+              onPointerLeave={() => setActive(null)}
             />
           ))}
           {markers.map((c, i) => (
@@ -139,6 +146,7 @@ export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) 
               className="wm-marker"
               style={{ "--wm-delay": `${(i % 8) * 0.35}s` } as React.CSSProperties}
               onPointerEnter={(e) => activate(e, c.name)}
+              onPointerLeave={() => setActive(null)}
             >
               <circle className="halo" cx={c.cx} cy={c.cy} r={7} />
               <circle className="dot" cx={c.cx} cy={c.cy} r={4} />
@@ -147,9 +155,7 @@ export function WorldMapFigure({ showLegend = true }: { showLegend?: boolean }) 
         </svg>
         <div ref={tipRef} className={`wm-tip${active ? " show" : ""}`} aria-hidden={!active}>
           <strong>{active}</strong>
-          <span className={`sub${active && ACCREDITED.has(active) ? " on" : ""}`}>
-            {active && ACCREDITED.has(active) ? "AAA accredited presence" : "No AAA presence yet"}
-          </span>
+          <span className="sub on">AAA accredited presence</span>
         </div>
       </div>
       {showLegend && (

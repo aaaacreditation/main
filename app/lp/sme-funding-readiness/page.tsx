@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 
 const FUNDING_GAP = [
   {
@@ -671,9 +671,9 @@ export default function Page() {
                 <span className="ico"><Icon name="phone" size={18} /></span>
                 <span><strong>Call us</strong>+1 (571) 601 2616</span>
               </div>
-              <a className="sme-contact-item" href="https://wa.me/447487550737" target="_blank" rel="noopener noreferrer">
+              <a className="sme-contact-item" href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
                 <span className="ico"><Icon name="phone" size={18} /></span>
-                <span><strong>International / WhatsApp</strong>+44 (748) 755 0737</span>
+                <span><strong>WhatsApp</strong>{CONTACT.whatsapp}</span>
               </a>
               <div className="sme-contact-item">
                 <span className="ico"><Icon name="pin" size={18} /></span>

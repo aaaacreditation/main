@@ -1469,9 +1469,9 @@ a.ax-card .ax-card-go svg { transition: transform 0.2s ease; }
    AAA-Logo.png has white lettering, so it only ever sits on the photo band,
    the navy sticky bar and the footer — never on white.
    Selectors are doubled/qualified to beat globals.css, which loads after this
-   file. --header-h = 34px utility bar + 110px logo band + 52px menu bar.
+   file. --header-h = 34px utility bar + 134px logo band + 52px menu bar.
    ========================================================================== */
-html:root { --header-h: 196px; }
+html:root { --header-h: 220px; }
 
 .sh2 .utility-bar { border-bottom: 0; }
 .sh2 .sh2-utility { display: flex; align-items: center; justify-content: flex-end; height: 34px; }
@@ -1484,35 +1484,38 @@ html:root { --header-h: 196px; }
 .sh2 .sh2-utility a:last-child { padding-right: 0; border-right: 0; }
 .sh2 .sh2-utility a:hover { color: var(--aaa-gold-100); }
 
-/* Logo band — the live site's skyline, lightly scrimmed so the white
-   lettering holds on the bright half of the photo. */
-.sh2 .sh2-band {
-  position: relative;
-  background: var(--aaa-blue-950) url("/images/site/header-skyline.webp") center 50% / cover no-repeat;
-}
-.sh2 .sh2-band::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(6, 26, 44, 0.06), rgba(6, 26, 44, 0.24));
-  pointer-events: none;
+/* Logo band — transparent, so the hero photo runs up behind the logo (client,
+   Oct 22 2026; it was plain white from Oct 17), carrying the white-lettered
+   logo. The utility and menu bars go translucent so the photo reads through
+   the whole header. Below 1025px the header stops overlaying the hero, so the
+   band turns white again with the navy-lettered logo. */
+.sh2 .sh2-band { position: relative; background: transparent; }
+.sh2 .utility-bar { background: rgba(6, 26, 44, 0.6); }
+.sh2-band .sh2-logo-navy { display: none; }
+@media (max-width: 1024px) {
+  .sh2 .sh2-band { background: #fff; }
+  .sh2-band .sh2-logo-light { display: none; }
+  .sh2-band .sh2-logo-navy { display: block; }
 }
 .sh2-band-row {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  height: 110px;
+  height: 134px;
 }
 .sh2-band-row .brand { grid-column: 2; }
 .sh2-brand { display: flex; align-items: center; text-decoration: none; }
-.sh2-logo { display: block; width: auto; height: 80px; filter: drop-shadow(0 4px 10px rgba(6, 26, 44, 0.28)); }
-.sh2-compact .sh2-logo { height: 54px; filter: none; }
+/* Enlarged Oct 22 2026 (client: "make the logo bigger"); was 80px in a 110px band. */
+.sh2-logo { display: block; width: auto; height: 108px; }
+.sh2-compact .sh2-logo { height: 54px; }
 
 /* Menu bar — white text on navy, gold hover underline */
 .sh2 .sh2-navbar {
   position: relative;
-  background: var(--aaa-blue);
+  background: rgba(23, 61, 115, 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   box-shadow: 0 16px 34px -26px rgba(7, 29, 52, 0.7);
 }
 .sh2 .sh2-navbar .container { display: flex; justify-content: center; }
@@ -1579,14 +1582,14 @@ html:root { --header-h: 196px; }
   place-items: center;
   width: 42px;
   height: 42px;
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;
   color: #fff;
-  background: rgba(6, 26, 44, 0.28);
+  background: rgba(6, 26, 44, 0.32);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
-.sh2 .sh2-search:hover { background: rgba(6, 26, 44, 0.5); }
+.sh2 .sh2-search:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.6); }
 .sh2-apply.sh2-apply {
   display: inline-flex;
   align-items: center;
@@ -1611,6 +1614,10 @@ html:root { --header-h: 196px; }
   color: #fff;
   border-color: rgba(255, 255, 255, 0.45);
   background: rgba(6, 26, 44, 0.3);
+}
+/* Once the logo band turns white (<=1024px) the burger is navy. */
+@media (max-width: 1024px) {
+  .site-header.sh2 .sh2-band .menu-toggle { color: var(--aaa-blue); border-color: var(--ink-200); background: #fff; }
 }
 
 /* Pinned single row on scroll — navy, so the white-lettered logo reads */
@@ -1657,7 +1664,7 @@ html:root { --header-h: 196px; }
   .site-header.sh2 .menu-toggle, .header-compact.sh2-compact .menu-toggle { display: grid; }
   .site-header.site-header.sh2 { border-bottom: 0; }
   .sh2-band-row { display: flex; justify-content: space-between; height: 72px; }
-  .sh2-logo { height: 52px; }
+  .sh2-logo { height: 60px; }
   .mobile-menu { top: 106px; }
 }
 @media (max-width: 1024px) {
@@ -1829,6 +1836,18 @@ html:root { --header-h: 196px; }
 }
 .axh-media { position: absolute; inset: 0; display: block; animation: axh-settle 1.6s cubic-bezier(0.22, 1, 0.36, 1) both, axh-breathe 20s ease-in-out 1.6s infinite alternate; }
 .ax-hero.v2 .ax-hero-visual:hover .ax-hero-photo img { transform: none; }
+/* Full-bleed background photo (PageHero `background`, Oct 22 2026). Navy at the
+   top keeps the overlaid header legible; deepest behind the copy on the left. */
+.ax-hero.v2 .axh-bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.ax-hero.v2 .axh-bg img { object-fit: cover; object-position: center 35%; }
+.ax-hero.v2 .axh-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 26, 44, 0.6) 0%, rgba(6, 26, 44, 0) 34%),
+    linear-gradient(100deg, rgba(6, 26, 44, 0.95) 0%, rgba(11, 45, 80, 0.88) 40%, rgba(23, 61, 115, 0.66) 72%, rgba(23, 61, 115, 0.5) 100%);
+}
 @keyframes axh-wipe { from { clip-path: inset(0 0 0 34%); } to { clip-path: inset(0 0 0 0); } }
 @keyframes axh-settle { from { transform: scale(1.1); } to { transform: scale(1); } }
 @keyframes axh-breathe { to { transform: scale(1.045); } }

@@ -87,6 +87,8 @@ export type SchemeData = {
     image?: SchemeImage;
     captionTitle?: string;
     caption: string;
+    /** Optional second photo card stacked under the first. */
+    secondImage?: SchemeImage;
   };
   areas: {
     intro: string;

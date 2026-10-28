@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Status = "idle" | "sending" | "ok" | "error";
-type FieldKey = "first" | "last" | "email" | "topic" | "message";
+type FieldKey = "first" | "last" | "email" | "phone" | "organization" | "country" | "topic" | "message";
 type Errors = Partial<Record<FieldKey, string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -73,6 +73,9 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
     if (!values.first.trim()) next.first = "Please enter your first name.";
     if (!values.last.trim()) next.last = "Please enter your last name.";
     if (!EMAIL_RE.test(values.email.trim())) next.email = "Please enter a valid email address.";
+    if (values.phone.replace(/\D/g, "").length < 7) next.phone = "Please enter a phone number with the country code.";
+    if (!values.organization.trim()) next.organization = "Please enter your organization name.";
+    if (!values.country.trim()) next.country = "Please enter your country.";
     if (!values.topic) next.topic = "Please choose a topic.";
     if (values.message.trim().length < 10) next.message = "Please tell us a little more (10 characters or more).";
     return next;
@@ -93,17 +96,12 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
     const fd = new FormData(e.currentTarget);
     const payload = {
       contact: `${values.first.trim()} ${values.last.trim()}`.trim(),
-      business: values.organization.trim() || "Individual enquiry",
+      business: values.organization.trim(),
       email: values.email.trim(),
       phone: values.phone.trim(),
       sector: values.topic,
       stage: "",
-      message: [
-        values.country.trim() && `Country: ${values.country.trim()}`,
-        values.message.trim(),
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
+      message: [`Country: ${values.country.trim()}`, values.message.trim()].join("\n\n"),
       source: "contact-form",
       website: String(fd.get("website") || ""), // honeypot
     };
@@ -157,10 +155,13 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
 
       <div className="ctx-form-grid">
         <div className="ctx-field">
-          <label htmlFor="ct-first">First name</label>
+          <label htmlFor="ct-first">
+            First name<span className="req">*</span>
+          </label>
           <input
             id="ct-first"
             name="first"
+            required
             value={values.first}
             onChange={(e) => set("first", e.target.value)}
             autoComplete="given-name"
@@ -172,10 +173,13 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
         </div>
 
         <div className="ctx-field">
-          <label htmlFor="ct-last">Last name</label>
+          <label htmlFor="ct-last">
+            Last name<span className="req">*</span>
+          </label>
           <input
             id="ct-last"
             name="last"
+            required
             value={values.last}
             onChange={(e) => set("last", e.target.value)}
             autoComplete="family-name"
@@ -187,10 +191,13 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
         </div>
 
         <div className="ctx-field">
-          <label htmlFor="ct-email">Email</label>
+          <label htmlFor="ct-email">
+            Email<span className="req">*</span>
+          </label>
           <input
             id="ct-email"
             name="email"
+            required
             type="email"
             value={values.email}
             onChange={(e) => set("email", e.target.value)}
@@ -204,52 +211,67 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
 
         <div className="ctx-field">
           <label htmlFor="ct-phone">
-            Phone <i>optional</i>
+            Phone<span className="req">*</span>
           </label>
           <input
             id="ct-phone"
             name="phone"
+            required
             type="tel"
             value={values.phone}
             onChange={(e) => set("phone", e.target.value)}
             autoComplete="tel"
             placeholder="+1 571 000 0000"
+            aria-invalid={Boolean(errors.phone)}
+            aria-describedby={errors.phone ? "ct-phone-err" : undefined}
           />
+          {errors.phone && <span className="ctx-err" id="ct-phone-err">{errors.phone}</span>}
         </div>
 
         <div className="ctx-field">
           <label htmlFor="ct-organization">
-            Organization <i>optional</i>
+            Organization<span className="req">*</span>
           </label>
           <input
             id="ct-organization"
             name="organization"
+            required
             value={values.organization}
             onChange={(e) => set("organization", e.target.value)}
             autoComplete="organization"
             placeholder="Organization name"
+            aria-invalid={Boolean(errors.organization)}
+            aria-describedby={errors.organization ? "ct-organization-err" : undefined}
           />
+          {errors.organization && <span className="ctx-err" id="ct-organization-err">{errors.organization}</span>}
         </div>
 
         <div className="ctx-field">
           <label htmlFor="ct-country">
-            Country <i>optional</i>
+            Country<span className="req">*</span>
           </label>
           <input
             id="ct-country"
             name="country"
+            required
             value={values.country}
             onChange={(e) => set("country", e.target.value)}
             autoComplete="country-name"
             placeholder="Country"
+            aria-invalid={Boolean(errors.country)}
+            aria-describedby={errors.country ? "ct-country-err" : undefined}
           />
+          {errors.country && <span className="ctx-err" id="ct-country-err">{errors.country}</span>}
         </div>
 
         <div className="ctx-field full">
-          <label htmlFor="ct-topic">Topic</label>
+          <label htmlFor="ct-topic">
+            Topic<span className="req">*</span>
+          </label>
           <select
             id="ct-topic"
             name="topic"
+            required
             value={values.topic}
             onChange={(e) => set("topic", e.target.value)}
             aria-invalid={Boolean(errors.topic)}
@@ -268,10 +290,13 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
         </div>
 
         <div className="ctx-field full">
-          <label htmlFor="ct-message">Message</label>
+          <label htmlFor="ct-message">
+            Message<span className="req">*</span>
+          </label>
           <textarea
             id="ct-message"
             name="message"
+            required
             rows={4}
             value={values.message}
             onChange={(e) => set("message", e.target.value)}

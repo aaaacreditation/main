@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 /**
- * Hero enquiry form for the Training & Education Providers page.
+ * Enquiry form for the Training & Education Providers page (final CTA).
  *
  * Fields follow the client's TEPA developer package (Sept 2026): name,
  * organization, email, phone, country, a read-only program field and a free

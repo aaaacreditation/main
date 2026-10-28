@@ -78,7 +78,7 @@
 .ctx .ctx-field.full,
 .ctx .ctx-form-err.full { grid-column: 1 / -1; }
 .ctx .ctx-field label { font-size: 12.5px; font-weight: 500; color: var(--aaa-blue-950); }
-.ctx .ctx-field label i { font-style: normal; font-weight: 400; color: var(--ink-400); }
+.ctx .ctx-field label .req { margin-left: 3px; color: var(--aaa-red); }
 .ctx .ctx-field input,
 .ctx .ctx-field select,
 .ctx .ctx-field textarea {
@@ -159,65 +159,6 @@
 .ctx .ctx-channel-lines a { color: var(--aaa-blue); font-weight: 500; border-bottom: 1px solid rgba(23, 61, 115, 0.24); }
 .ctx .ctx-channel-lines a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
 
-/* ------------------------------- Routing -------------------------------- */
-.ctx .ctx-route-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.ctx .ctx-route {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 18px;
-  border: 1px solid var(--ax-border);
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: var(--ax-shadow-sm);
-  transition: transform 0.25s var(--ease-out), border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.ctx .ctx-route:hover { transform: translateX(4px); border-color: rgba(179, 138, 46, 0.5); box-shadow: var(--ax-shadow); }
-.ctx .ctx-route-ico {
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  border: 1px solid var(--aaa-blue-100);
-  border-radius: 12px;
-  color: var(--aaa-blue);
-  background: var(--aaa-blue-50);
-}
-.ctx .ctx-route b { display: block; font-size: 15px; font-weight: 600; line-height: 1.3; color: var(--aaa-blue); }
-.ctx .ctx-route span { display: block; margin-top: 3px; font-size: 13px; line-height: 1.55; color: var(--ink-600); }
-.ctx .ctx-route-go {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-  white-space: nowrap;
-}
-.ctx .ctx-route:hover .ctx-route-go svg { transform: translateX(3px); }
-.ctx .ctx-route-go svg { transition: transform 0.2s ease; }
-
-/* ------------------------------ Map / visit ----------------------------- */
-.ctx .ctx-visit-card {
-  padding: clamp(24px, 3vw, 34px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(6px);
-}
-.ctx .ctx-visit-card h3 { margin: 0 0 12px; font-size: 18px; font-weight: 600; color: #fff; }
-.ctx .ctx-visit-card address {
-  margin: 0;
-  font-size: 15px;
-  font-style: normal;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, 0.8);
-}
-.ctx .ctx-visit-card address b { display: block; font-weight: 600; color: #fff; }
-
 /* ------------------------------ Responsive ------------------------------ */
 @media (max-width: 980px) {
   .ctx .ctx-card { grid-template-columns: 1fr; gap: 26px; }
@@ -228,10 +169,39 @@
   .ctx .ctx-form-foot { flex-direction: column; align-items: stretch; }
   .ctx .ctx-form-foot .ax-btn { width: 100%; }
   .ctx .ctx-form-note { max-width: none; text-align: center; }
-  .ctx .ctx-route { grid-template-columns: 40px minmax(0, 1fr); }
-  .ctx .ctx-route-go { grid-column: 2; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .ctx .ctx-route,
-  .ctx .ctx-route-go svg { transition: none; }
+/* Oct 22 2026: the hero photo is a full-bleed background (PageHero
+   `background`) instead of the right-hand panel. Mirror the panel layout's
+   `.has-visual` sizing (aaa-ds.css) so the hero keeps its height, copy width
+   and stat sizes. `:not(.has-visual)` matches the specificity it overrides. */
+.ctx .ax-hero.v2:not(.has-visual) { display: flex; align-items: center; min-height: calc(var(--header-h) + clamp(500px, 60vh, 660px)); }
+.ctx .ax-hero.v2:not(.has-visual) .ax-hero-copy { max-width: min(640px, 47vw); }
+.ctx .ax-hero.v2:not(.has-visual) .ax-stats:not(.three) .ax-stat { padding: 16px 14px; }
+.ctx .ax-hero.v2:not(.has-visual) .ax-stats:not(.three) .ax-stat b { font-size: clamp(17px, 1.45vw, 23px); overflow-wrap: normal; }
+.ctx .ax-hero.v2:not(.has-visual) .ax-stats:not(.three) .ax-stat > span { font-size: 10.5px; }
+@media (max-width: 980px) {
+  .ctx .ax-hero.v2:not(.has-visual) { display: block; min-height: 0; }
+  .ctx .ax-hero.v2:not(.has-visual) .ax-hero-copy { max-width: none; }
+}
+/* The team photo already carries its own navy tint, so the shared scrim is
+   replaced by a lighter left-to-right one in the photo's navy: darker behind
+   the copy, clear over the people on the right. */
+.ctx .ax-hero.v2 .axh-bg::after {
+  background: linear-gradient(
+    90deg,
+    rgba(5, 41, 96, 0.88) 0%,
+    rgba(5, 41, 96, 0.78) 30%,
+    rgba(5, 41, 96, 0.4) 52%,
+    rgba(5, 41, 96, 0) 72%
+  );
+}
+/* The team image is only 1200px wide, so cropping it to fill the hero zoomed it
+   ~1.5x. On wide screens show the whole image instead (~1.26x) and fill the
+   leftover edges with the image's own navy frame colour, #052960, so the seam
+   doesn't show. Phones keep the crop-to-fill. */
+@media (min-width: 981px) {
+  .ctx .ax-hero.v2:not(.has-visual) { background: #052960; }
+  /* Sit the photo at the bottom so faces clear the overlaid menu bar. */
+  .ctx .ax-hero.v2 .axh-bg img { object-fit: contain; object-position: center bottom; }
+  .ctx .ax-hero.v2 .axh-bg .axh-media { animation: none; }
 }

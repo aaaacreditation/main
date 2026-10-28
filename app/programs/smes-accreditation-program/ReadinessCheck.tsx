@@ -5,7 +5,7 @@ import Link from "next/link";
 import Icon from "../../_components/Icon";
 import { CONTACT } from "@/lib/facts";
 
-const CONSULT = "https://calendly.com/aaa-accreditation4/30min";
+const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 
 const CATS: { cat: string; qs: [string, string] }[] = [
   {

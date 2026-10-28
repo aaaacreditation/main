@@ -78,7 +78,7 @@
 .apx .apx-field.full,
 .apx .apx-form-err.full { grid-column: 1 / -1; }
 .apx .apx-field label { font-size: 12.5px; font-weight: 500; color: var(--aaa-blue-950); }
-.apx .apx-field label i { font-style: normal; font-weight: 400; color: var(--ink-400); }
+.apx .apx-field label .req { margin-left: 3px; color: var(--aaa-red); }
 .apx .apx-field input,
 .apx .apx-field select,
 .apx .apx-field textarea {
@@ -124,7 +124,6 @@
   gap: 12px 18px;
   margin-top: 4px;
 }
-.apx .apx-form-note { max-width: 46ch; margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-500); }
 .apx .apx-form-err {
   margin: 0;
   padding: 10px 13px;
@@ -148,78 +147,16 @@
 .apx .apx-form-done .tick svg { width: 27px; height: 27px; }
 .apx .apx-form-done strong { display: block; margin-bottom: 8px; font-size: 19px; color: var(--aaa-blue); }
 .apx .apx-form-done p { max-width: 54ch; margin: 0 auto; font-size: 13.5px; line-height: 1.7; color: var(--ink-600); }
-.apx .apx-form-done-next { margin-top: 12px !important; font-size: 12.5px !important; }
 .apx .apx-form-done a { font-weight: 600; color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); }
 .apx .apx-form-done a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
-
-/* ------------------------------- Stages --------------------------------- */
-.apx .apx-stage { gap: 0; }
-.apx .apx-stage-cap {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-}
-.apx .apx-stage h3 { margin: 6px 0 12px; }
-.apx .apx-stage .ax-checks { margin-top: 0; }
-.apx .apx-stage .ax-checks li { font-size: 13px; line-height: 1.55; }
-
-/* --------------------------- Application forms -------------------------- */
-.apx .apx-forms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
-.apx .apx-form-link {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
-  border: 1px solid var(--ax-border);
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: var(--ax-shadow-sm);
-  transition: transform 0.25s var(--ease-out), border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.apx .apx-form-link:hover { transform: translateY(-4px); border-color: rgba(179, 138, 46, 0.5); box-shadow: var(--ax-shadow); }
-.apx .apx-form-ico {
-  width: 42px;
-  height: 42px;
-  padding: 11px;
-  border: 1px solid var(--aaa-blue-100);
-  border-radius: 12px;
-  color: var(--aaa-blue);
-  background: var(--aaa-blue-50);
-}
-.apx .apx-form-link b { display: block; font-size: 14.5px; font-weight: 600; line-height: 1.35; color: var(--aaa-blue); }
-.apx .apx-form-link span.meta { display: block; margin-top: 3px; font-size: 12px; color: var(--ink-500); }
-.apx .apx-form-dl {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-700);
-  white-space: nowrap;
-}
 
 /* ------------------------------ Responsive ------------------------------ */
 @media (max-width: 980px) {
   .apx .apx-card { grid-template-columns: 1fr; gap: 26px; }
-}
-@media (max-width: 860px) {
-  .apx .apx-forms { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .apx .apx-card { margin-top: -74px; padding: 24px 20px; }
   .apx .apx-form-grid { grid-template-columns: 1fr; }
   .apx .apx-form-foot { flex-direction: column; align-items: stretch; }
   .apx .apx-form-foot .ax-btn { width: 100%; }
-  .apx .apx-form-note { max-width: none; text-align: center; }
-  .apx .apx-form-link { grid-template-columns: 42px minmax(0, 1fr); }
-  .apx .apx-form-dl { grid-column: 2; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .apx .apx-form-link { transition: none; }
 }

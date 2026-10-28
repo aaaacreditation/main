@@ -2,8 +2,9 @@
    /programs/training-education — page-local styles.
 
    Sept 2026 motion rebuild, brought onto the client's FINAL TEPA package in
-   Oct 2026: hero = copy | photo | enquiry form, and every card is the SME
-   blue card (`.ax-card.navy.ax-blue` from aaa-ds.css, mostly via NavyCard).
+   Oct 2026: hero = copy | photo, enquiry form in the final CTA, and every
+   card is the SME blue card (`.ax-card.navy.ax-blue` from aaa-ds.css, mostly
+   via NavyCard).
    Motion: GSAP + ScrollTrigger drive the scroll choreography (TepaMotion.tsx);
    Framer Motion handles the form card, magnetic buttons, FAQ and play button.
    Everything is scoped under `.tepx`.
@@ -58,13 +59,13 @@
 }
 
 /* ---------------------------------------------------------------- Hero -- */
-/* Copy | photo | enquiry form — the client's three-element hero (final
-   package, Oct 2026). Two columns with the form full-width underneath below
-   1180px, one column below 980px. The shared `.ax-hero-grid` still supplies
-   the header clearance; only the columns change here. */
+/* Copy | photo. The enquiry form that used to be the third column moved to
+   the final CTA (Oct 23 2026), so the photo takes the whole right column.
+   One column below 980px. The shared `.ax-hero-grid` still supplies the
+   header clearance; only the columns change here. */
 .tepx .tepx-hero-grid {
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.62fr) minmax(0, 0.82fr);
-  gap: clamp(22px, 2.4vw, 32px);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(36px, 4.6vw, 72px);
   align-items: center;
   padding-bottom: clamp(56px, 6vw, 84px);
 }
@@ -171,9 +172,14 @@
 .tepx .tepx-hero .ax-actions { margin-top: 24px; }
 .tepx-magnetic { display: inline-flex; }
 
+/* Close to the photo's own 493×549 shape, so neither the faces nor the
+   certificate are cropped; capped near its native width because it is a
+   low-resolution file. */
 .tepx-hero-photo.ax-hero-photo {
   width: 100%;
-  aspect-ratio: 0.62 / 1;
+  max-width: 540px;
+  justify-self: end;
+  aspect-ratio: 0.9 / 1;
   border-radius: 20px;
 }
 .tepx-hero-photo img { object-position: center 30%; }
@@ -181,14 +187,17 @@
 .tepx-hero-photo .ax-cap { padding: 10px 12px; border-left: 3px solid var(--aaa-gold); border-radius: 8px; background: rgba(6, 26, 44, 0.82); }
 .tepx-hero-photo .ax-cap strong { margin: 0; font-size: 12.5px; }
 
-/* Advisor enquiry form — white panel with a gold top bar in the hero, as in
-   the client's package. A form, not a content card, so it stays light for
-   legibility. */
+/* Advisor enquiry form — white panel with a gold top bar, centred under the
+   final CTA's heading where the two buttons used to be. A form, not a content
+   card, so it stays light for legibility. */
 .tepx-advisor {
   position: relative;
   z-index: 2;
+  max-width: 760px;
+  margin: clamp(30px, 3.4vw, 40px) auto 0;
   overflow: hidden;
-  padding: clamp(20px, 2vw, 26px) clamp(18px, 2vw, 24px) 22px;
+  padding: clamp(22px, 2.4vw, 30px) clamp(20px, 2.6vw, 32px) 24px;
+  text-align: left;
   border-radius: var(--ax-radius-lg);
   color: var(--ink-800);
   background: #fff;
@@ -203,10 +212,9 @@
   height: 4px;
   background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, var(--aaa-gold));
 }
-/* globals.css caps every h2 with !important; the form title is a card title. */
-.tepx-advisor h2 {
+.tepx-advisor h3 {
   margin: 0;
-  font-size: 20px !important;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -375,9 +383,8 @@
 .tepx .tepx-proof-person { margin: 14px 0 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.7); }
 .tepx-proof-person b { display: block; font-size: 14.5px; font-weight: 600; color: #fff; }
 .tepx .tepx-proof-copy { margin: 14px 0 0; font-size: 14px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); }
-.tepx-proof-points { margin-top: 16px; }
-.tepx-proof-points li { font-size: 13.5px; font-weight: 500; }
-/* Figures on a hairline strip rather than in boxes — one row of four. */
+/* Figures on a hairline strip rather than in boxes — one row of four
+   (Monarch) or three (Landmark). */
 .tepx-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -386,6 +393,7 @@
   padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
+.tepx-stats.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tepx-stats > div + div { padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, 0.14); }
 .tepx-stats b {
   display: block;
@@ -508,6 +516,8 @@
 .tepx .tepx-side-card .tepx-side-ico { justify-self: center; width: 60px; height: 60px; padding: 15px; }
 .tepx .tepx-side-card.ax-blue h3 { margin: 0; font-size: 16px; line-height: 1.3; }
 .tepx .tepx-side-card p { margin: 6px 0 0; font-size: 13px; line-height: 1.6; }
+/* Compact link button under a side card's copy (directory card). */
+.tepx .tepx-side-card .tepx-side-btn { gap: 8px; margin-top: 14px; padding: 8px 14px; font-size: 12.5px; }
 
 /* --------------------------------------------------- How it works ---- */
 .tepx-steps {
@@ -625,9 +635,7 @@
 
 /* ------------------------------------------------------- Responsive --- */
 @media (max-width: 1180px) {
-  .tepx .tepx-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(280px, 0.62fr); gap: 36px; }
-  .tepx-advisor { grid-column: 1 / -1; width: 100%; max-width: 780px; justify-self: center; }
-  .tepx-hero-photo.ax-hero-photo { aspect-ratio: 0.82 / 1; }
+  .tepx .tepx-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr); gap: 36px; }
   .tepx-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 14px; }
   .tepx-steps-line { display: none; }
   .tepx-benefits { grid-template-columns: 1fr; }
@@ -636,7 +644,7 @@
 }
 @media (max-width: 980px) {
   .tepx .tepx-hero-grid { grid-template-columns: 1fr; }
-  .tepx-hero-photo.ax-hero-photo { width: 100%; max-width: 560px; aspect-ratio: 1.1 / 1; justify-self: center; }
+  .tepx-hero-photo.ax-hero-photo { width: 100%; max-width: 520px; aspect-ratio: 1 / 1; justify-self: center; }
   .tepx-proof { grid-template-columns: 1fr; }
   .tepx-side { grid-template-columns: 1fr; }
   .tepx .ax-card.navy.ax-blue.tepx-side-card { grid-template-columns: 76px minmax(0, 1fr); align-content: center; }
@@ -652,6 +660,9 @@
   .tepx-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; }
   .tepx-stats > div + div { padding-left: 0; border-left: 0; }
   .tepx-stats > div:nth-child(even) { padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, 0.14); }
+  /* Three figures stay on one row rather than leaving one orphaned. */
+  .tepx-stats.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tepx-stats.three > div + div { padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, 0.14); }
   .tepx-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tepx-subhead p { max-width: none; }
   .tepx-adcp .ax-checks { grid-template-columns: 1fr; }

@@ -93,6 +93,7 @@ function DocLink({ d }: { d: SchemeDoc }) {
 
 export default function SchemePage({ data }: { data: SchemeData }) {
   const { hero, advisor, suitability, benefits, areas, process, testimonial: tm, faq, cta } = data;
+  const hasSide = Boolean(process.application || process.resources?.length);
   const areaCols = areas.tiles.length % 4 === 0 ? "four" : "";
 
   return (
@@ -172,31 +173,46 @@ export default function SchemePage({ data }: { data: SchemeData }) {
         <div className="container">
           <SectionHead eyebrow="Benefits" title={benefits.title} />
           <div className="schx-benefits">
-            {benefits.image ? (
-              <figure className="schx-figure reveal">
-                <div className="schx-figure-img">
-                  <Image
-                    src={benefits.image.src}
-                    alt={benefits.image.alt}
-                    width={benefits.image.width}
-                    height={benefits.image.height}
-                    sizes="(max-width: 980px) 92vw, 460px"
-                  />
-                </div>
-                <figcaption>
+            <div className="schx-figures">
+              {benefits.image ? (
+                <figure className="schx-figure reveal">
+                  <div className="schx-figure-img">
+                    <Image
+                      src={benefits.image.src}
+                      alt={benefits.image.alt}
+                      width={benefits.image.width}
+                      height={benefits.image.height}
+                      sizes="(max-width: 980px) 92vw, 460px"
+                    />
+                  </div>
+                  <figcaption>
+                    {benefits.captionTitle && <strong>{benefits.captionTitle}</strong>}
+                    <span>{benefits.caption}</span>
+                  </figcaption>
+                </figure>
+              ) : (
+                <div className="schx-figure schx-figure-panel reveal">
+                  <span className="ax-card-ico">
+                    <Glyph name="chart" />
+                  </span>
                   {benefits.captionTitle && <strong>{benefits.captionTitle}</strong>}
-                  <span>{benefits.caption}</span>
-                </figcaption>
-              </figure>
-            ) : (
-              <div className="schx-figure schx-figure-panel reveal">
-                <span className="ax-card-ico">
-                  <Glyph name="chart" />
-                </span>
-                {benefits.captionTitle && <strong>{benefits.captionTitle}</strong>}
-                <p>{benefits.caption}</p>
-              </div>
-            )}
+                  <p>{benefits.caption}</p>
+                </div>
+              )}
+              {benefits.secondImage && (
+                <figure className="schx-figure reveal">
+                  <div className="schx-figure-img">
+                    <Image
+                      src={benefits.secondImage.src}
+                      alt={benefits.secondImage.alt}
+                      width={benefits.secondImage.width}
+                      height={benefits.secondImage.height}
+                      sizes="(max-width: 980px) 92vw, 460px"
+                    />
+                  </div>
+                </figure>
+              )}
+            </div>
             <div className="ax-blue-grid two">
               {benefits.items.map((b, i) => (
                 <NavyCard key={b.title} icon={b.icon} no={pad(i)} title={b.title}>
@@ -228,14 +244,20 @@ export default function SchemePage({ data }: { data: SchemeData }) {
       {/* 05 — Process + application / resources */}
       <section className="ax-section cream" id="process">
         <div className="container">
-          <SectionHead eyebrow="How It Works" title={process.title} />
-          <div className="schx-process">
+          <SectionHead
+            center={!hasSide}
+            className={hasSide ? "" : "schx-process-head"}
+            eyebrow="How It Works"
+            title={process.title}
+          />
+          {/* Without an application card or resources the steps run left to right. */}
+          <div className={hasSide ? "schx-process" : "schx-process flow"}>
             <div className="schx-rail-wrap">
               <h3 className="schx-label">
                 <span aria-hidden="true" />
                 Accreditation Process
               </h3>
-              <ol className="schx-rail">
+              <ol className="schx-rail" style={{ "--n": process.steps.length } as React.CSSProperties}>
                 {process.steps.map((s, i) => (
                   <li key={s.title} className="reveal">
                     <span className="schx-rail-no" aria-hidden="true">
@@ -251,37 +273,39 @@ export default function SchemePage({ data }: { data: SchemeData }) {
               </ol>
             </div>
 
-            <aside className="schx-side">
-              {process.application && (
-                <div className="schx-app reveal">
-                  <span className="schx-app-ico" aria-hidden="true">
-                    <Glyph name="file-text" />
-                  </span>
-                  <h3>Accreditation Application Form</h3>
-                  <p>{process.application.text}</p>
-                  <a
-                    href={process.application.href}
-                    className="ax-btn ax-btn-gold"
-                    target={isExternal(process.application.href) ? "_blank" : undefined}
-                    rel={isExternal(process.application.href) ? "noopener noreferrer" : undefined}
-                  >
-                    <Glyph name="download" size={15} strokeWidth={2} /> Download Application Form
-                  </a>
-                  <p className="schx-app-note">{process.application.note}</p>
-                </div>
-              )}
+            {hasSide && (
+              <aside className="schx-side">
+                {process.application && (
+                  <div className="schx-app reveal">
+                    <span className="schx-app-ico" aria-hidden="true">
+                      <Glyph name="file-text" />
+                    </span>
+                    <h3>Accreditation Application Form</h3>
+                    <p>{process.application.text}</p>
+                    <a
+                      href={process.application.href}
+                      className="ax-btn ax-btn-gold"
+                      target={isExternal(process.application.href) ? "_blank" : undefined}
+                      rel={isExternal(process.application.href) ? "noopener noreferrer" : undefined}
+                    >
+                      <Glyph name="download" size={15} strokeWidth={2} /> Download Application Form
+                    </a>
+                    <p className="schx-app-note">{process.application.note}</p>
+                  </div>
+                )}
 
-              {process.resources && process.resources.length > 0 && (
-                <div className="schx-docs reveal">
-                  <h3>{process.resourcesTitle ?? "Application Documents & Resources"}</h3>
-                  <ul>
-                    {process.resources.map((d) => (
-                      <DocLink key={d.label} d={d} />
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </aside>
+                {process.resources && process.resources.length > 0 && (
+                  <div className="schx-docs reveal">
+                    <h3>{process.resourcesTitle ?? "Application Documents & Resources"}</h3>
+                    <ul>
+                      {process.resources.map((d) => (
+                        <DocLink key={d.label} d={d} />
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </aside>
+            )}
           </div>
         </div>
       </section>

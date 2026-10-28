@@ -48,15 +48,15 @@ export const CONTACT = {
   email: "info@aaa-accreditation.org",
   phone: "+1 (571) 601 2616",
   phoneHref: "tel:+15716012616",
-  whatsapp: "+44 (748) 755 0737",
-  whatsappHref: "https://wa.me/447487550737",
+  whatsapp: "+1 (571) 630-2066",
+  whatsappHref: "https://wa.me/15716302066",
   street: "8609 Westwood Center Drive",
   city: "Tysons Corner",
   region: "VA",
   postalCode: "22182",
   country: "USA",
   addressLine: "8609 Westwood Center Drive, Tysons Corner, VA 22182, USA",
-  consultationUrl: "https://calendly.com/aaa-accreditation4/30min",
+  consultationUrl: "https://calendly.com/accreditationaaa/consultation-call-am",
   /** The enquiry form on /contact. Every "talk to us" CTA lands here (Oct 2026). */
   formHref: "/contact#enquiry",
   /** Same form with "Quote request" pre-selected — the separate /quote page was retired (Oct 2026). */

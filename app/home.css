@@ -172,7 +172,7 @@
   padding-bottom: 16px;
   font-size: clamp(42px, 5.6vw, 82px);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.1; /* Oct 22 2026: a little more air between the two lines (was 1) */
   letter-spacing: -0.045em;
   /* Oct 2026: white headline at the client's request; the gold underline
      bar below carries the accent. */
@@ -331,7 +331,8 @@
 /* ============================ 03 · Trust ============================== */
 .homex .hx-trust-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  /* Oct 22 2026: map column widened (was 1fr / 1.08fr) so the map reads larger. */
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.18fr);
   align-items: stretch;
   gap: clamp(22px, 2.6vw, 36px);
 }
@@ -403,10 +404,20 @@
   flex: 1;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(16px, 2vw, 26px);
+  /* Oct 22 2026: slimmer side padding so the map fills more of the card. */
+  padding: clamp(16px, 2vw, 26px) clamp(6px, 0.8vw, 12px);
 }
 .homex .hx-reach-map .wm-wrap { margin-top: 0; }
 .homex .hx-reach-map .wm-legend { margin-top: 16px; }
+/* Oct 22 2026 (client): countries not yet covered are #005ac2 (the shared map
+   uses #0e2a47); accredited countries keep brand navy. Home map only. */
+.homex .hx-reach-map .wm-country { fill: #005ac2; }
+/* Restated at this specificity so the rule above doesn't repaint them. */
+.homex .hx-reach-map .wm-country.on { fill: var(--aaa-blue); }
+.homex .hx-reach-map .wm-country.on:hover,
+.homex .hx-reach-map .wm-country.on.hot { fill: var(--aaa-blue-500); }
+.homex .hx-reach-map .wm-legend .sw { background: #005ac2; }
+.homex .hx-reach-map .wm-legend .sw.on { background: var(--aaa-blue); }
 
 /* ========================== 04 · Success stories ======================= */
 .homex .hx-stories { overflow: hidden; background: linear-gradient(180deg, #fff 0%, var(--ax-cream) 100%); }
@@ -494,16 +505,20 @@
   padding: 0;
   overflow: hidden;
 }
+/* Oct 22 2026 (client: cards too tall): a thin 10px frame around an inset,
+   fully rounded photo, replacing the shared blue card's 22-24px padding that
+   the body padding then doubled. Qualified to outrank .ax-card.navy.ax-blue. */
+.homex .hx-story.ax-card.ax-blue { padding: 10px; }
 .homex .hx-story.featured {
   width: 460px;
   box-shadow: 0 0 0 2px rgba(195, 154, 61, 0.7), 0 34px 66px -30px rgba(7, 29, 52, 0.7);
 }
 .homex .hx-story-media {
   position: relative;
-  height: 250px;
+  height: 220px;
   margin: 0;
   overflow: hidden;
-  border-radius: calc(var(--ax-radius) - 2px) calc(var(--ax-radius) - 2px) 0 0;
+  border-radius: 12px;
   background: var(--aaa-blue-950);
 }
 .homex .hx-story-media img { object-fit: cover; transition: transform 0.8s var(--ease-out); }
@@ -516,10 +531,10 @@
 }
 .homex .hx-story-sector {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 12px;
+  left: 12px;
   z-index: 2;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
@@ -529,8 +544,8 @@
 }
 .homex .hx-story-country {
   position: absolute;
-  bottom: 14px;
-  left: 16px;
+  bottom: 12px;
+  left: 12px;
   z-index: 2;
   display: inline-flex;
   align-items: center;
@@ -544,7 +559,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 20px 24px 22px;
+  padding: 16px 12px 6px;
 }
 .homex .hx-story-body .ax-blue-tag { margin: 0 0 10px; }
 .homex .hx-story-metric {
@@ -558,7 +573,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin: 8px 0 14px;
+  margin: 2px 0 12px;
 }
 .homex .hx-story-logo {
   position: relative;
@@ -571,6 +586,7 @@
   box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.6);
 }
 .homex .hx-story-logo img { object-fit: contain; padding: 6px; }
+.homex .hx-story-logo.tight img { padding: 2px; }
 .homex .hx-story.ax-blue .hx-story-org h3 { margin: 0; font-size: 19px; line-height: 1.25; }
 .homex .hx-story-play {
   position: absolute;
@@ -579,8 +595,8 @@
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 62px;
-  height: 62px;
+  width: 54px;
+  height: 54px;
   padding-left: 4px;
   border-radius: 50%;
   color: var(--aaa-blue);
@@ -593,9 +609,9 @@
 .homex .hx-story-play:hover { background: #fff; transform: translate(-50%, -50%) scale(1.08); }
 .homex .hx-story-quote {
   margin: 0;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
-  line-height: 1.6;
+  line-height: 1.55;
   color: #fff;
 }
 .homex .hx-story-foot {
@@ -604,7 +620,7 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: auto;
-  padding-top: 18px;
+  padding-top: 14px;
 }
 .homex .hx-story-link {
   display: inline-flex;
@@ -646,13 +662,20 @@
 }
 
 /* ========================== 05 · Insights ============================= */
-.homex .hx-insight { padding: 0; overflow: hidden; }
+/* Oct 22 2026 (client: "modern and elegant"): same thin 10px frame and inset,
+   fully rounded image as the success-story cards (replacing the shared blue
+   card's 22-24px padding that the body padding then doubled); glass label
+   chip; gold kicker with a short rule; three-line excerpt so the row aligns;
+   a hairline footer with the CTA and a round arrow that fills gold on hover.
+   The images are designed graphics with text, so they keep their full ratio. */
+.homex .hx-insight { overflow: hidden; }
+.homex .hx-insight.ax-card.ax-blue { padding: 10px; }
 .homex .hx-insight-media {
   position: relative;
   margin: 0;
   aspect-ratio: 548 / 345;
   overflow: hidden;
-  border-radius: calc(var(--ax-radius) - 2px) calc(var(--ax-radius) - 2px) 0 0;
+  border-radius: 12px;
   background: var(--aaa-blue-950);
 }
 .homex .hx-insight-media img {
@@ -662,29 +685,84 @@
   object-fit: cover;
   transition: transform 0.8s var(--ease-out);
 }
-.homex .hx-insight:hover .hx-insight-media img { transform: scale(1.05); }
+.homex .hx-insight:hover .hx-insight-media img { transform: scale(1.04); }
 .homex .hx-insight-label {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 12px;
+  left: 12px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--aaa-blue);
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 18px -8px rgba(6, 26, 44, 0.45);
+}
+.homex .hx-insight.event .hx-insight-label { color: var(--aaa-gold-700); }
+.homex .hx-insight-body { display: flex; flex: 1; flex-direction: column; padding: 18px 12px 4px; }
+.homex .hx-insight-body .ax-blue-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
   font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #fff;
-  background: var(--aaa-blue);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+  color: var(--aaa-gold-100);
 }
-.homex .hx-insight.event .hx-insight-label { background: linear-gradient(135deg, var(--aaa-gold), var(--aaa-gold-700)); }
-.homex .hx-insight.news .hx-insight-label { color: var(--aaa-blue); background: #fff; }
-.homex .hx-insight-body { display: flex; flex: 1; flex-direction: column; padding: 20px 24px 24px; }
-.homex .hx-insight-body .ax-blue-kicker { margin: 0 0 4px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
-.homex .hx-insight.ax-blue h3 { margin: 4px 0 10px; font-size: 18px; }
+.homex .hx-insight-body .ax-blue-kicker::before {
+  content: "";
+  flex: none;
+  width: 22px;
+  height: 1.5px;
+  background: var(--aaa-gold);
+}
+.homex .hx-insight.ax-blue h3 { margin: 0 0 10px; font-size: 18px; line-height: 1.35; letter-spacing: -0.01em; }
+.homex .hx-insight .ax-blue-body p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  color: rgba(255, 255, 255, 0.74);
+}
+/* Qualified to outrank .ax-card.navy.ax-blue .ax-card-go (padding-top 18px). */
+.homex .hx-insight.ax-card .ax-card-go {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: var(--aaa-gold-100);
+}
+.homex .hx-insight .ax-blue-body { margin-bottom: 18px; }
+.homex .hx-insight .ax-card-go svg {
+  box-sizing: content-box;
+  width: 14px;
+  height: 14px;
+  padding: 8px;
+  border: 1px solid rgba(244, 231, 198, 0.35);
+  border-radius: 50%;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.homex .hx-insight:hover .ax-card-go svg {
+  color: var(--aaa-blue-950);
+  background: var(--aaa-gold);
+  border-color: var(--aaa-gold);
+  transform: translateX(3px);
+}
 
 /* ============================ 06 · Final CTA ========================== */
 /* Subtle dotted "global" texture behind the closing band (client brief). */
@@ -723,7 +801,7 @@
 @media (max-width: 650px) {
   .homex .hx-story,
   .homex .hx-story.featured { width: 300px; }
-  .homex .hx-story-media { height: 210px; }
+  .homex .hx-story-media { height: 190px; }
 }
 @media (max-width: 560px) {
   .homex .hx-metric { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px 16px; }
