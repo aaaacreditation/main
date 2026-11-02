@@ -133,7 +133,6 @@
 }
 .prt .prt-cert-frame:hover { transform: rotate(0deg) translateY(-6px); }
 .prt .prt-cert-frame img { display: block; width: 100%; height: auto; border-radius: 8px; }
-.prt .prt-recog-note { max-width: 880px; margin: clamp(28px, 3vw, 40px) auto 0; }
 
 /* ------------------------ 03 Professional networks -------------------- */
 .prt .prt-net.ax-card.ax-blue { padding-top: 26px; }
@@ -321,3 +320,7 @@
   .prt .prt-cert-frame,
   .prt .prt-mosaic img { transition: none; }
 }
+
+/* Country chips on the cooperation cards: the flag is shown large beside the name. */
+.prt .prt-coop-grid .ax-blue-tag { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 6px; }
+.prt .prt-flag { font-size: 28px; line-height: 1; letter-spacing: 0; }

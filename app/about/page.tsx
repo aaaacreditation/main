@@ -38,6 +38,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const IMG = "/images/site/about";
 
+/* The Principal Director's message, verbatim from the client's artwork. */
+const DIRECTOR_MESSAGE = [
+  "At the American Accreditation Association, we believe accreditation is more than a formal recognition of compliance with standards. It is a commitment to quality, competence, accountability, and continual improvement.",
+  "Organizations today face growing expectations from clients, patients, learners, regulators, and the wider community. Our responsibility is to provide credible, impartial accreditation services that help organizations demonstrate their capabilities, strengthen their performance, and build lasting confidence among their stakeholders.",
+  "As AAA continues to expand its international presence, our focus remains on maintaining the integrity of our accreditation processes, strengthening our technical expertise, and developing accreditation programs that respond to the evolving needs of different sectors.",
+  "We recognise that every organization has its own challenges, ambitions & opportunities. Through our international network of professionals & assessors, we aim to make accreditation a meaningful process that supports organizational development while maintaining the essential independence & credibility.",
+  "Our vision is to contribute to a global environment where quality is demonstrated, excellence is recognised, and confidence is earned.",
+  "We look forward to continuing this journey with the organizations and professionals who share our commitment to quality.",
+];
+
 const GLANCE = [
   { v: "Virginia, USA", k: "Head Office" },
   { v: FACTS.countriesPlus, k: "Countries Served" },
@@ -112,13 +122,12 @@ export default function AboutPage() {
         crumbs={[{ label: "About AAA" }]}
         title={
           <>
-            About the <span className="abt-gold">American Accreditation Association</span>
+            About AAA – <em>American Accreditation Association</em>
           </>
         }
         intro="The American Accreditation Association is an international accreditation body working with organizations around the world to strengthen quality, demonstrate competence and create new opportunities through independent accreditation."
-        image={`${IMG}/aaa-about-team-hero.webp`}
-        imageAlt="International team behind the American Accreditation Association"
-        caption={{ kicker: "Independent • Impartial • International", title: `Accreditation across ${FACTS.countriesPlus} countries` }}
+        background="/images/site/contact/contact-hero-team.png"
+        imageAlt="The team behind AAA: assessors, technical experts and advisors"
         actions={
           <>
             <Link href="/programs" className="ax-btn ax-btn-gold">
@@ -186,6 +195,50 @@ export default function AboutPage() {
             </dl>
             <p className="abt-glance-foot">Independent • Impartial • International</p>
           </aside>
+        </div>
+      </section>
+
+      {/* Message from the Principal Director (Oct 29 2026, client) */}
+      <section className="ax-section" id="principal-director-message">
+        <div className="container">
+          <article className="abt-msg reveal">
+            <div className="abt-msg-side">
+              <figure className="abt-msg-photo">
+                <Image
+                  src={`${IMG}/principal-director-orlando-santana.webp`}
+                  alt="Orlando Santana, Principal Director of the American Accreditation Association"
+                  fill
+                  sizes="(max-width: 980px) 100vw, 480px"
+                />
+              </figure>
+              <footer className="abt-msg-sign">
+                <Image
+                  src={`${IMG}/principal-director-signature.png`}
+                  alt=""
+                  width={229}
+                  height={62}
+                  className="abt-msg-sig"
+                />
+                <strong>Orlando Santana</strong>
+                <span>Principal Director</span>
+                <span>American Accreditation Association (AAA)</span>
+              </footer>
+            </div>
+            <div className="abt-msg-body">
+              <span className="abt-msg-mark" aria-hidden="true">
+                <Glyph name="quote" size={64} strokeWidth={1.2} />
+              </span>
+              <SectionHead
+                eyebrow="A Message from Our Principal Director"
+                title="Building Confidence Through Quality and Accreditation"
+              />
+              <div className="abt-msg-text">
+                {DIRECTOR_MESSAGE.map((p) => (
+                  <p key={p.slice(0, 24)}>{p}</p>
+                ))}
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -324,11 +377,6 @@ export default function AboutPage() {
             </figure>
           </div>
 
-          <p className="ax-note reveal abt-recog-note">
-            ISQua institutional membership is separate from ISQua EEA accreditation, which applies specifically to
-            AAA&apos;s Accreditation Standards for Healthcare Facilities and does not automatically apply to all AAA
-            programs.
-          </p>
           <div className="abt-center reveal">
             <Link href="/partnerships" className="ax-btn ax-btn-ghost-navy">
               Explore Recognition &amp; Partnerships <Glyph name="arrow-right" size={14} strokeWidth={2} />

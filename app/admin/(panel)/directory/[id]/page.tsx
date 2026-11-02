@@ -59,6 +59,7 @@ export default async function EditOrganizationPage({
             country: org.country,
             description: org.description,
             logo: org.logo,
+            flag: org.flag,
             website: org.website,
             order: org.order,
             status: org.status,

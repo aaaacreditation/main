@@ -13,8 +13,8 @@ import "./ind.css";
 /*
  * Individual Membership — rebuilt Oct 2026 on the client's final page
  * structure ("Indivdual membership" package: Hero → Who Should Consider →
- * Benefits → Professional Engagement Platform → Eligibility & How to Join →
- * Meet Our Individual Members → Final CTA), rendered in the AAA design system
+ * Professional Engagement Platform → Eligibility & How to Join → Meet Our
+ * Individual Members → Final CTA; the Benefits section was removed Oct 30 2026), rendered in the AAA design system
  * with the SME blue card. Page styles live in ./ind.css under `.mind`
  * (membership.css is shared by the other membership routes and is
  * intentionally not imported here).
@@ -61,39 +61,6 @@ const FIT: { icon: GlyphName; title: string; text: string }[] = [
     icon: "network",
     title: "Professionals Seeking Greater Engagement",
     text: "Individuals interested in professional visibility, knowledge sharing, networking and participation in relevant AAA activities and initiatives.",
-  },
-];
-
-const BENEFITS: { icon: GlyphName; title: string; text: string }[] = [
-  {
-    icon: "certificate",
-    title: "Professional Recognition",
-    text: "Receive an official AAA Individual Membership Certificate with online validation and a unique verification link.",
-  },
-  {
-    icon: "graduation",
-    title: "Professional Development",
-    text: "Benefit from one complimentary AAA training course each year, together with access to educational webinars and professional learning opportunities.",
-  },
-  {
-    icon: "id-card",
-    title: "Professional Visibility",
-    text: "Strengthen your professional presence through eligible ADCP listing and QR-coded membership communication and email-signature benefits.",
-  },
-  {
-    icon: "lightbulb",
-    title: "Knowledge & Thought Leadership",
-    text: "Contribute up to two articles or papers annually through applicable AAA channels, subject to editorial and publication requirements.",
-  },
-  {
-    icon: "globe",
-    title: "Professional Community",
-    text: "Connect with professionals from different countries and fields through networking, knowledge exchange and AAA community activities.",
-  },
-  {
-    icon: "handshake",
-    title: "Participation & Contribution",
-    text: "Eligible members may participate in relevant AAA Technical Committees and other professional activities, subject to applicable requirements.",
   },
 ];
 
@@ -158,6 +125,7 @@ const MEMBERS = [
     name: "Dr. Abdualrahman Alshehry",
     role: "Associate Professor, King Saud University, College of Nursing",
     country: "Saudi Arabia",
+    flag: "🇸🇦",
     img: `${IMG}/dr-abdualrahman-alshehry.png`,
     w: 244,
     h: 250,
@@ -166,6 +134,7 @@ const MEMBERS = [
     name: "Dr. Marcel Hetu",
     role: "Professor & Director of Academic Affairs, University of Phoenix",
     country: "USA",
+    flag: "🇺🇸",
     img: `${IMG}/dr-marcel-hetu.webp`,
     w: 597,
     h: 597,
@@ -175,6 +144,7 @@ const MEMBERS = [
     name: "Francesco Serini",
     role: "Director of Training Academy L' importanza di Ser Frank",
     country: "Italy",
+    flag: "🇮🇹",
     img: `${IMG}/dr-francesco-serini.png`,
     w: 352,
     h: 319,
@@ -214,9 +184,6 @@ export default function IndividualMembershipPage() {
             <Link href={APPLY} className="ax-btn ax-btn-gold">
               Become an Individual Member <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
-            <a href="#benefits" className="ax-btn ax-btn-ghost">
-              Explore Member Benefits
-            </a>
             <ul className="mind-chips" aria-label="Individual Membership at a glance">
               <li>
                 <strong>$350</strong> 2-Year Membership
@@ -248,54 +215,11 @@ export default function IndividualMembershipPage() {
               </NavyCard>
             ))}
           </div>
-          <p className="ax-note mind-note reveal">
-            <Glyph name="scale" size={20} />
-            <span>
-              <strong>Important:</strong>
-              Individual Membership represents professional affiliation with AAA. It does not constitute personnel
-              certification, accreditation, or independent certification of an individual&apos;s competence.
-            </span>
-          </p>
         </div>
       </section>
 
-      {/* 03 — Benefits */}
-      <section className="ax-section cream" id="benefits">
-        <div className="container">
-          <SectionHead
-            center
-            eyebrow="Your Membership Benefits"
-            title="Benefits That Support Your Professional Journey"
-            intro="Individual Membership combines professional recognition with practical opportunities to learn, contribute, connect and increase your visibility within the AAA quality community."
-          />
-          <div className="ax-blue-grid">
-            {BENEFITS.map((b, i) => (
-              <NavyCard key={b.title} icon={b.icon} no={String(i + 1).padStart(2, "0")} title={b.title}>
-                <p>{b.text}</p>
-              </NavyCard>
-            ))}
-          </div>
-
-          <div className="mind-training reveal">
-            <span className="mind-training-fig" aria-hidden="true">
-              1×
-            </span>
-            <div>
-              <h3>Complimentary AAA Training Every Year</h3>
-              <p>
-                Individual Members benefit from one complimentary AAA training course each year during their membership
-                period, providing a practical professional-development benefit alongside membership recognition.
-              </p>
-            </div>
-            <span className="mind-training-ico" aria-hidden="true">
-              <Glyph name="graduation" />
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* 04 — Professional engagement platform */}
-      <section className="ax-section" id="professional-platform">
+      {/* 03 — Professional engagement platform */}
+      <section className="ax-section cream" id="professional-platform">
         <div className="container">
           <SectionHead
             center
@@ -335,8 +259,8 @@ export default function IndividualMembershipPage() {
         </div>
       </section>
 
-      {/* 05 — Eligibility & how to join */}
-      <section className="ax-section cream" id="membership-eligibility-process">
+      {/* 04 — Eligibility & how to join */}
+      <section className="ax-section" id="membership-eligibility-process">
         <div className="container">
           <SectionHead
             center
@@ -356,6 +280,9 @@ export default function IndividualMembershipPage() {
                 One membership fee provides two years of access to applicable Individual Membership benefits,
                 professional-development opportunities and AAA community activities.
               </p>
+              <Link href={APPLY} className="ax-btn ax-btn-gold mind-join-apply">
+                Apply for Membership <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </Link>
             </div>
             <div className="mind-join-elig">
               <h3>Eligibility Requirements</h3>
@@ -400,8 +327,8 @@ export default function IndividualMembershipPage() {
         </div>
       </section>
 
-      {/* 06 — Meet our individual members */}
-      <section className="ax-section" id="meet-our-members">
+      {/* 05 — Meet our individual members */}
+      <section className="ax-section cream" id="meet-our-members">
         <div className="container">
           <SectionHead
             center
@@ -416,7 +343,10 @@ export default function IndividualMembershipPage() {
                   <Image src={m.img} alt={m.name} width={m.w} height={m.h} sizes="144px" />
                 </span>
                 <span className="mind-member-country">
-                  <Glyph name="pin" size={14} strokeWidth={2} /> {m.country}
+                  <span className="mind-member-flag" aria-hidden="true">
+                    {m.flag}
+                  </span>
+                  {m.country}
                 </span>
               </NavyCard>
             ))}
@@ -429,7 +359,7 @@ export default function IndividualMembershipPage() {
         </div>
       </section>
 
-      {/* 07 — Final CTA (hand-rolled .ax-close so the facts + note stay in the same band) */}
+      {/* 06 — Final CTA (hand-rolled .ax-close so the facts + note stay in the same band) */}
       <section className="ax-close" id="join-aaa-individual-membership">
         <span className="ax-close-corner" aria-hidden="true" />
         <div className="container">

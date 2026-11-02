@@ -45,6 +45,8 @@ export type Org = {
   description?: string;
   /** Local copy of the organization's logo (public/accredited/logos). */
   logo?: string;
+  /** Flag artwork uploaded in the admin; falls back to `countryArt(country)`. */
+  flag?: string;
   accreditations: Accreditation[];
 };
 
@@ -123,6 +125,33 @@ export function orgStatus(o: Org): string {
   return o.accreditations.some((a) => a.status === "Accredited")
     ? "Accredited"
     : o.accreditations[0]?.status ?? "Accredited";
+}
+
+/* --------------------------------------------------------- country art */
+
+/**
+ * The flag artwork behind each card's flip side, one per country — the
+ * images the old aaa-accreditation.org register used (Nov 2026, client).
+ * Files live in public/accredited/countries/<slug>.webp; a country without
+ * one (Thailand, or any new country added in the admin) gets the navy panel.
+ */
+const COUNTRY_ART = new Set([
+  "angola", "australia", "azerbaijan", "bangladesh", "brazil", "canada", "cote-d-ivoire",
+  "czech-republic", "egypt", "france", "georgia", "germany", "guyana", "india", "iraq", "italy",
+  "jamaica", "jordan", "lebanon", "malaysia", "mongolia", "morocco", "nigeria", "pakistan",
+  "panama", "poland", "qatar", "saudi-arabia", "south-africa", "spain", "switzerland",
+  "trinidad-and-tobago", "tunisia", "turkey", "united-arab-emirates", "united-kingdom",
+  "united-states", "uzbekistan",
+]);
+
+export function countryArt(country: string): string | undefined {
+  const slug = country
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return COUNTRY_ART.has(slug) ? `/accredited/countries/${slug}.webp` : undefined;
 }
 
 /* ----------------------------------------------------------------- stats */

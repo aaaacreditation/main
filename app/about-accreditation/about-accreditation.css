@@ -80,9 +80,6 @@
   color: var(--aaa-blue);
 }
 .acc .acc-pull span { display: block; margin-top: 8px; font-size: 15px; line-height: 1.7; color: var(--ink-700); }
-.acc .acc-scope-note { align-items: flex-start; margin: 22px 0 0; }
-.acc .acc-scope-note svg,
-.acc .acc-ongoing svg { flex: none; margin-top: 2px; color: var(--aaa-blue); }
 
 .acc .acc-delivers {
   position: sticky;
@@ -168,11 +165,7 @@
   height: 4px;
   background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
 }
-.acc .acc-col-certification .acc-col-head::before {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 45%, transparent 80%);
-}
 .acc .acc-col-head .ax-card-ico { color: #fff; border-color: var(--ax-ring-gold); background: transparent; }
-.acc .acc-col-certification .acc-col-head .ax-card-ico { border-color: rgba(255, 255, 255, 0.5); }
 .acc .acc-col-head h3 { margin: 0; font-size: clamp(20px, 2vw, 24px); font-weight: 600; color: #fff; }
 .acc .acc-row {
   padding: 18px 28px;
@@ -189,6 +182,17 @@
   color: var(--aaa-gold-100);
 }
 .acc .acc-row dd { margin: 6px 0 0; font-size: 14px; line-height: 1.7; color: rgba(255, 255, 255, 0.86); }
+/* Certification is the inverse of the Accreditation card (Oct 29 2026, client):
+   white card, navy text, deep-gold labels. */
+.acc .acc-col-certification { border-color: var(--ax-border); color: var(--aaa-blue); background: #fff; box-shadow: var(--ax-shadow); }
+.acc .acc-col-certification .acc-col-head { border-bottom-color: var(--ax-border); }
+.acc .acc-col-certification .acc-col-head .ax-card-ico { color: var(--aaa-blue); border-color: var(--aaa-blue); }
+.acc .acc-col-certification .acc-col-head h3 { color: var(--aaa-blue); }
+.acc .acc-col-certification .acc-row { border-bottom-color: var(--ax-border); }
+.acc .acc-col-certification .acc-row:last-child { border-bottom: 0; }
+.acc .acc-col-certification .acc-row:hover { background: var(--aaa-blue-50); }
+.acc .acc-col-certification .acc-row dt { color: var(--aaa-gold-700); }
+.acc .acc-col-certification .acc-row dd { color: var(--aaa-blue); }
 .acc .acc-vs {
   position: absolute;
   top: 46px;
@@ -279,8 +283,6 @@
 }
 .acc .acc-rail-step:hover .acc-rail-node { color: #fff; background: var(--aaa-blue); }
 .acc .acc-rail-step .ax-card { flex: 1; width: 100%; }
-.acc .acc-ongoing { align-items: flex-start; max-width: 880px; margin: clamp(30px, 3.4vw, 44px) auto 0; }
-.acc .acc-ongoing svg { color: var(--aaa-gold-700); }
 
 /* ------------------------------ CTA note ------------------------------ */
 .acc .acc-cta-note {

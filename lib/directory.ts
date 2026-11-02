@@ -47,6 +47,7 @@ function toOrg(r: OrgRow): Org {
     country: r.country,
     ...(r.description ? { description: r.description } : {}),
     ...(r.logo ? { logo: r.logo } : {}),
+    ...(r.flag ? { flag: r.flag } : {}),
     accreditations: r.accreditations.map((a) => ({
       accreditedAs: a.accreditedAs,
       number: a.number,

@@ -57,54 +57,6 @@
 }
 .mind .mind-hero-note svg { flex: none; margin-top: 1px; color: var(--aaa-gold-100); }
 
-/* ---------------------------- Notes ----------------------------------- */
-.mind .mind-note { max-width: 880px; margin: clamp(26px, 3vw, 38px) auto 0; align-items: flex-start; }
-.mind .mind-note > svg { flex: none; margin-top: 2px; color: var(--aaa-blue); }
-.mind .mind-note strong { display: inline; margin: 0 6px 0 0; }
-
-/* ------------------------ Training highlight -------------------------- */
-.mind .mind-training {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 18px clamp(22px, 3vw, 40px);
-  margin-top: clamp(30px, 3.4vw, 44px);
-  padding: clamp(24px, 3vw, 34px) clamp(24px, 3.4vw, 44px);
-  border-radius: var(--ax-radius-lg);
-  color: #fff;
-  background: var(--ax-navy-bg);
-  box-shadow: var(--ax-navy-shadow);
-}
-.mind .mind-training::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 4px;
-  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 80%);
-}
-.mind .mind-training-fig {
-  font-size: clamp(54px, 6vw, 80px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.05em;
-  color: var(--aaa-gold-100);
-}
-.mind .mind-training h3 { margin: 0; font-size: clamp(19px, 1.8vw, 23px); font-weight: 600; line-height: 1.3; color: #fff; }
-.mind .mind-training p { max-width: 70ch; margin: 8px 0 0; font-size: 14.5px; line-height: 1.7; color: rgba(255, 255, 255, 0.8); }
-.mind .mind-training-ico {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  padding: 16px;
-  border: 1.5px solid var(--ax-ring-gold);
-  border-radius: 50%;
-  color: #fff;
-}
-.mind .mind-training-ico svg { width: 100%; height: 100%; }
-
 /* ------------------------------ Platform ------------------------------ */
 .mind .mind-platform {
   display: grid;
@@ -190,6 +142,7 @@
   background: rgba(179, 138, 46, 0.14);
 }
 .mind .mind-join-fee p { margin: 18px 0 0; font-size: 14px; line-height: 1.7; color: rgba(255, 255, 255, 0.78); }
+.mind .mind-join-apply { margin-top: 22px; }
 .mind .mind-join-elig { padding: clamp(28px, 3.2vw, 40px); }
 .mind .mind-join-elig h3 { margin: 0; font-size: 19px; font-weight: 600; color: #fff; }
 .mind .mind-join-list { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
@@ -315,17 +268,17 @@
 .mind .mind-member-country {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  padding: 5px 12px;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 6px 16px 6px 10px;
   border-radius: 999px;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 600;
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
-.mind .mind-member-country svg { color: var(--aaa-gold-100); }
+.mind .mind-member-flag { font-size: 24px; line-height: 1; }
 .mind .mind-global {
   display: flex;
   align-items: center;
@@ -384,12 +337,9 @@
   .mind .mind-join { grid-template-columns: 1fr; }
   .mind .mind-testimonial { position: static; max-width: 560px; margin: 0 auto; }
   .mind .mind-join-fee { border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
-  .mind .mind-training { grid-template-columns: auto minmax(0, 1fr); }
-  .mind .mind-training-ico { display: none; }
 }
 @media (max-width: 560px) {
   .mind .mind-steps { grid-template-columns: 1fr; }
-  .mind .mind-training { grid-template-columns: 1fr; }
   .mind .mind-testimonial-frame { transform: none; }
   .mind .mind-join-cta .ax-btn { width: 100%; }
   .mind .mind-global { flex-direction: column; }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
-import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import { crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
@@ -137,7 +137,7 @@ const DATA: SchemeData = {
     ],
   },
   process: {
-    title: "Accreditation Process & Application",
+    title: "Accreditation Process & Resources",
     steps: [
       {
         title: "Submit Your Application",
@@ -145,7 +145,7 @@ const DATA: SchemeData = {
       },
       {
         title: "Document Review",
-        text: "AAA reviews management-system documentation, scheme requirements, evaluation procedures, personnel competence, impartiality arrangements, and the proposed scope.",
+        text: "AAA reviews management-system documentation, scheme requirements, and evaluation procedures.",
       },
       {
         title: "Accreditation Assessment",
@@ -163,16 +163,6 @@ const DATA: SchemeData = {
         title: "Accreditation Granted",
         text: "Successful certification bodies receive an accreditation certificate and approved scope, valid for three years.",
       },
-    ],
-    application: {
-      text: "Complete the application form to provide information about your organization, certification schemes, product or service categories, evaluation methods, locations, and proposed accreditation scope.",
-      href: DOC.appSystemProduct2023,
-      note: "Additional technical requirements and supporting information will be provided by the AAA accreditation team as applicable to your requested scope.",
-    },
-    resourcesTitle: "Supporting Documents",
-    resources: [
-      { label: "Application form for accreditation of Halal certification bodies", href: DOC.appHalal, meta: "DOC" },
-      ...COMMON_DOCS,
     ],
   },
   testimonial: {

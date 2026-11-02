@@ -71,8 +71,8 @@ export default function ProgramsPage() {
 
       <PageHero
         eyebrow="Accreditation Programs"
-        background="/images/site/programs/programs-hero.jpg"
-        imageAlt="Monarch Master Injectors training cohort holding an accreditation certificate"
+        background="/images/site/programs/programs-hero-group.webp"
+        imageAlt="Training cohort holding an AAA accreditation certificate"
         crumbs={[{ label: "Accreditation Programs" }]}
         title="Find the Right Accreditation Program"
         intro="Choose the pathway that matches your organization type and quality objectives. AAA provides accreditation across education, healthcare, conformity assessment and SME sectors."

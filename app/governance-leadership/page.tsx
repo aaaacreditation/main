@@ -83,7 +83,16 @@ const SUPPORT: { icon: GlyphName; title: string; text: string }[] = [
   },
 ];
 
-type Trustee = { name: string; img: string; w: number; h: number; summary: string; bio: string };
+type Trustee = {
+  name: string;
+  /** Kicker under the name; defaults to "Board of Trustees". */
+  role?: string;
+  img: string;
+  w: number;
+  h: number;
+  summary: string;
+  bio: string;
+};
 
 const BOARD: Trustee[] = [
   {
@@ -105,13 +114,14 @@ const BOARD: Trustee[] = [
     bio: "Willena is an AAA board member and Founder and CEO of Uplifted Abilities. With over 20 years of experience in healthcare, project management, education, and consulting services, she guides new and existing Non-Emergency Medical Transportation (NEMT) providers through accreditation, regulatory compliance, and business planning.",
   },
   {
-    name: "Michael Peters",
-    img: "michael.jpg",
-    w: 1245,
-    h: 1245,
+    name: "Orlando Santana",
+    role: "Board of Trustees - Principal Director",
+    img: "orlando.png",
+    w: 476,
+    h: 637,
     summary:
-      "CEO of Lazarus Alliance Certification and internationally recognized cybersecurity expert with extensive IT, business leadership, and curriculum development experience.",
-    bio: "Michael is the CEO of Lazarus Alliance Certification and has served as an independent information cybersecurity consultant, executive, researcher, and author. He is an internationally recognized and awarded security expert with years of IT and business leadership experience. He has contributed significantly to curriculum development for graduate degree programs in information security, advanced technology, cyberspace law, and privacy, and to industry-standard professional certifications.",
+      "Brings over 30 years of development, health and safety experience across multinational organizations, including leadership roles at American Airlines.",
+    bio: "With over 30 years of experience in development, Health and Safety across multinational organizations including American Airlines as the International Safety Head Lead, Orlando brings a wealth of expertise and a deep commitment to quality education in accreditation.",
   },
   {
     name: "Dr. Samir Aziz",
@@ -123,13 +133,13 @@ const BOARD: Trustee[] = [
     bio: "Dr. Samir Aziz is an academic leader and strategic management consultant currently serving as Dean of the School of Business & Economics at American International Theism University (AITU). He holds a PhD in Strategic Management and is an academic member of the European Corporate Governance Institute (ECGI). With over 25 years of global experience, he is a Certified Strategy Professional (CSP) and Certified Governance Professional (CGP), specializing in corporate governance, strategic planning, and higher education performance standards.",
   },
   {
-    name: "Orlando Santana",
-    img: "orlando.png",
-    w: 476,
-    h: 637,
+    name: "Michael Peters",
+    img: "michael.jpg",
+    w: 1245,
+    h: 1245,
     summary:
-      "Brings over 30 years of development, health and safety experience across multinational organizations, including leadership roles at American Airlines.",
-    bio: "With over 30 years of experience in development, Health and Safety across multinational organizations including American Airlines as the International Safety Head Lead, Orlando brings a wealth of expertise and a deep commitment to quality education in accreditation.",
+      "CEO of Lazarus Alliance Certification and internationally recognized cybersecurity expert with extensive IT, business leadership, and curriculum development experience.",
+    bio: "Michael is the CEO of Lazarus Alliance Certification and has served as an independent information cybersecurity consultant, executive, researcher, and author. He is an internationally recognized and awarded security expert with years of IT and business leadership experience. He has contributed significantly to curriculum development for graduate degree programs in information security, advanced technology, cyberspace law, and privacy, and to industry-standard professional certifications.",
   },
   {
     name: "Dr. Dawn Lindsey",
@@ -218,8 +228,8 @@ export default function GovernanceLeadershipPage() {
             support the integrity, impartiality, and effectiveness of its accreditation activities.
           </>
         }
-        image={`${IMG}/governance-hero.webp`}
-        imageAlt="AAA governance and leadership in accreditation activity"
+        background="/images/site/programs/programs-hero-group.webp"
+        imageAlt="Training cohort holding an AAA accreditation certificate"
         actions={
           <>
             <a href="#leadership" className="ax-btn ax-btn-gold gov-jump">
@@ -286,7 +296,7 @@ export default function GovernanceLeadershipPage() {
               <article key={p.name} className="ax-card navy ax-blue reveal gov-person">
                 <Portrait src={p.img} alt={p.name} w={p.w} h={p.h} size={116} />
                 <h3>{p.name}</h3>
-                <span className="ax-blue-kicker">Board of Trustees</span>
+                <span className="ax-blue-kicker">{p.role ?? "Board of Trustees"}</span>
                 <div className="ax-blue-body">
                   <p>{p.summary}</p>
                 </div>

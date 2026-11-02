@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { countryArt } from "@/app/_data/accredited-organizations";
 import ImageField from "../../_components/ImageField";
 import SubmitButton from "../../_components/SubmitButton";
 import AccreditationsRepeater, { type RecordInput } from "./AccreditationsRepeater";
@@ -13,6 +14,7 @@ export type OrgFormData = {
   country?: string;
   description?: string;
   logo?: string | null;
+  flag?: string | null;
   website?: string | null;
   order?: number;
   status?: "PUBLISHED" | "DRAFT";
@@ -23,6 +25,7 @@ export const ORG_FORM_ERRORS: Record<string, string> = {
   name: "Give the organization a name.",
   country: "Choose the organization’s country — the public register filters by it.",
   logo: "The logo must be an uploaded image or a path on this site (or aaa-accreditation.org).",
+  flag: "The country flag must be an uploaded image or a path on this site (or aaa-accreditation.org).",
   website: "The website isn’t a valid web address.",
   records: "The accreditation records couldn’t be read. Reload the page and try again.",
   accreditedAs: "Every accreditation record needs an “Accredited as” value.",
@@ -44,6 +47,7 @@ export default function OrgForm({
   accreditedAsOptions: string[];
 }) {
   const editing = Boolean(org?.id);
+  const builtInFlag = !org?.flag && org?.country ? countryArt(org.country) : undefined;
 
   return (
     <form action={saveOrganization} className="adm-form">
@@ -167,6 +171,25 @@ export default function OrgForm({
             <h3>Logo</h3>
             <ImageField name="logo" label="" initial={org?.logo ?? ""} />
             <p className="adm-hint">Shown on the register card. Use a transparent PNG, WebP or SVG.</p>
+          </div>
+
+          <div className="adm-panel">
+            <h3>Country flag</h3>
+            <ImageField name="flag" label="" initial={org?.flag ?? ""} />
+            {builtInFlag ? (
+              <div className="dir-flag-builtin">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={builtInFlag} alt="" />
+                <p className="adm-hint">
+                  Using the built-in {org?.country} artwork. Upload an image only to replace it.
+                </p>
+              </div>
+            ) : null}
+            <p className="adm-hint">
+              Shown behind the description when a visitor hovers the register card. Leave it empty to use the
+              built-in artwork for the country (available for every country already on the register); upload one
+              for a new country. A portrait image around 800 × 960 px works best.
+            </p>
           </div>
 
           <div className="adm-panel">

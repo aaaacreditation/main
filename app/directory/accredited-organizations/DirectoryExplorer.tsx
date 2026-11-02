@@ -8,6 +8,7 @@ import {
   ACCREDITATION_TYPES,
   PROGRAM_FAMILIES,
   accreditationType,
+  countryArt,
   orgStatus,
   type Accreditation,
   type Org,
@@ -40,12 +41,6 @@ function families(o: Org): Set<ProgramFamily> {
   return out;
 }
 
-/** The record a card leads with: the first one carrying the organization's headline status. */
-function primaryRecord(o: Org): Accreditation {
-  const status = orgStatus(o);
-  return o.accreditations.find((a) => a.status === status) ?? o.accreditations[0];
-}
-
 function typeLabel(a: Accreditation): string {
   const t = ACCREDITATION_TYPES[accreditationType(a)];
   return t.standard ? `${t.label} · ${t.standard}` : t.label;
@@ -70,7 +65,7 @@ function Logo({ o, size }: { o: Org; size: "card" | "modal" }) {
   return (
     <span className={`dx-logo ${size}`}>
       {o.logo ? (
-        <Image src={o.logo} alt={`${o.name} logo`} fill sizes={size === "card" ? "140px" : "180px"} />
+        <Image src={o.logo} alt={`${o.name} logo`} fill sizes={size === "card" ? "260px" : "180px"} />
       ) : (
         <span className="dx-logo-mono" aria-hidden="true">
           {o.name.slice(0, 2).toUpperCase()}
@@ -88,6 +83,7 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
   // How many cards are revealed, keyed to the filters so any change starts from the top.
   const [paging, setPaging] = useState({ key: "", count: PAGE });
   const [active, setActive] = useState<Org | null>(null);
+  const [flipped, setFlipped] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const lastTrigger = useRef<HTMLButtonElement | null>(null);
 
@@ -101,13 +97,7 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
     [orgs]
   );
 
-  const statusCounts = useMemo(() => {
-    const c: Record<string, number> = { All: index.length };
-    for (const r of index) c[r.status] = (c[r.status] ?? 0) + 1;
-    return c;
-  }, [index]);
-
-  // Program counts follow the status filter, so the chips never promise more than they show.
+  // Programs with nothing under the current status filter are disabled, so a chip never leads to an empty list.
   const familyCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const r of index) {
@@ -201,7 +191,6 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
               onClick={() => setStatus(s)}
             >
               {s === "All" ? "All statuses" : s}
-              <b>{statusCounts[s] ?? 0}</b>
             </button>
           ))}
         </div>
@@ -221,14 +210,14 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
             onClick={() => setFamily((cur) => (cur === f.id ? null : f.id))}
             disabled={!familyCounts[f.id]}
           >
-            <Glyph name={FAMILY_ICON[f.id]} size={14} strokeWidth={1.9} /> {f.label} <b>{familyCounts[f.id] ?? 0}</b>
+            <Glyph name={FAMILY_ICON[f.id]} size={14} strokeWidth={1.9} /> {f.label}
           </button>
         ))}
       </div>
 
       <div className="dx-meta reveal" aria-live="polite">
         <span>
-          <strong>{filtered.length}</strong> {filtered.length === 1 ? "organization" : "organizations"}
+          Organizations
           {status !== "All" && <> · {status.toLowerCase()}</>}
           {familyLabel && <> · {familyLabel.toLowerCase()}</>}
           {country !== ALL_COUNTRIES && <> · {country}</>}
@@ -254,50 +243,49 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
         <>
           <ul className="dx-grid">
             {visible.map((o) => {
-              const rec = primaryRecord(o);
-              const more = o.accreditations.length - 1;
               const st = orgStatus(o);
+              const key = `${o.name}-${o.location}`;
+              const art = o.flag || countryArt(o.country);
               return (
-                <li key={`${o.name}-${o.location}`}>
-                  <article className={`ax-card navy ax-blue dx-card${st === "Accredited" ? "" : " is-held"}`}>
-                    <div className="dx-card-head">
-                      <Logo o={o} size="card" />
-                      <StatusPill status={st} />
-                    </div>
-                    <h3>{o.name}</h3>
-                    <p className="dx-loc">
-                      <Glyph name="pin" size={13} strokeWidth={2} /> {o.location}
-                    </p>
-                    <span className="dx-type">{typeLabel(rec)}</span>
-                    {o.description && <p className="dx-desc">{o.description}</p>}
-                    <dl className="dx-facts">
-                      <div>
-                        <dt>Accreditation no.</dt>
-                        <dd>{rec.number}</dd>
+                <li key={key}>
+                  {/* White front (logo, name, location); on hover or focus the country
+                      artwork slides up with the organization's own description. Touch
+                      screens have no hover, so a tap slides it up instead. */}
+                  <article
+                    className={"dx-flip" + (st === "Accredited" ? "" : " is-held") + (flipped === key ? " is-flipped" : "")}
+                    onClick={() => setFlipped((cur) => (cur === key ? null : key))}
+                  >
+                    <div className="dx-flip-inner">
+                      <div className="dx-face dx-front">
+                        <Logo o={o} size="card" />
+                        <span className="dx-rule" aria-hidden="true" />
+                        <h3>{o.name}</h3>
+                        <p className="dx-loc">
+                          <Glyph name="pin" size={13} strokeWidth={2} /> {o.location}
+                        </p>
+                        {st !== "Accredited" && <StatusPill status={st} />}
                       </div>
-                      <div>
-                        <dt>Valid until</dt>
-                        <dd>{rec.expiry}</dd>
+                      <div className={"dx-face dx-back" + (art ? "" : " no-art")}>
+                        {art && <Image className="dx-back-art" src={art} alt="" fill sizes="(max-width: 720px) 92vw, 300px" />}
+                        <div className="dx-back-body">
+                          <p className="dx-desc">
+                            {o.description || `${o.name} is accredited by AAA. Open the record for its accreditation details.`}
+                          </p>
+                          <button
+                            type="button"
+                            className="ax-btn ax-btn-white sm dx-open"
+                            aria-haspopup="dialog"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              lastTrigger.current = e.currentTarget;
+                              setActive(o);
+                            }}
+                          >
+                            Learn More <Glyph name="arrow-right" size={14} strokeWidth={2} />
+                            <span className="sr-only"> about {o.name}</span>
+                          </button>
+                        </div>
                       </div>
-                    </dl>
-                    <div className="dx-card-foot">
-                      <button
-                        type="button"
-                        className="dx-open"
-                        aria-haspopup="dialog"
-                        onClick={(e) => {
-                          lastTrigger.current = e.currentTarget;
-                          setActive(o);
-                        }}
-                      >
-                        View record <Glyph name="arrow-right" size={14} strokeWidth={2} />
-                        <span className="sr-only"> for {o.name}</span>
-                      </button>
-                      {more > 0 && (
-                        <span className="dx-more-n">
-                          +{more} more {more === 1 ? "accreditation" : "accreditations"}
-                        </span>
-                      )}
                     </div>
                   </article>
                 </li>

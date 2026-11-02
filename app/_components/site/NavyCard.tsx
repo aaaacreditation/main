@@ -31,7 +31,7 @@ export default function NavyCard({
   /** Ghost numeral, e.g. "01". Pass `true` is not supported — format it yourself. */
   no?: string;
   /** Small gold chip above the title, e.g. "ISO/IEC 17025". */
-  tag?: string;
+  tag?: React.ReactNode;
   title: React.ReactNode;
   /** Short gold line under the title (e.g. a tagline or a role). */
   kicker?: React.ReactNode;

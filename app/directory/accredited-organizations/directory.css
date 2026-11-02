@@ -131,14 +131,12 @@
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
-.dxp .dx-seg button b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-400); }
 .dxp .dx-seg button:hover { color: var(--aaa-blue); }
 .dxp .dx-seg button.on {
   color: #fff;
   background: linear-gradient(145deg, var(--aaa-blue-500), var(--aaa-blue));
   box-shadow: 0 10px 20px -12px rgba(23, 61, 115, 0.8);
 }
-.dxp .dx-seg button.on b { color: var(--aaa-gold-100); }
 .dxp .dx-seg button:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
 
 /* ============================ Program chips ============================= */
@@ -168,14 +166,12 @@
 .dxp .dx-chip svg { color: var(--aaa-gold-700); }
 .dxp .dx-chip:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--aaa-gold); color: var(--aaa-gold-700); }
 .dxp .dx-chip:disabled { opacity: 0.45; cursor: default; }
-.dxp .dx-chip b { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-400); }
 .dxp .dx-chip.on {
   border-color: transparent;
   color: var(--aaa-blue-950);
   background: linear-gradient(135deg, #faf3e0, var(--aaa-gold-100));
   box-shadow: 0 12px 26px -18px rgba(142, 107, 24, 0.9);
 }
-.dxp .dx-chip.on b { color: var(--aaa-gold-700); }
 
 /* ============================ Result meta =============================== */
 .dxp .dx-meta {
@@ -215,32 +211,147 @@
 .dxp .dx-empty a { font-weight: 600; color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); }
 
 /* ============================== Cards =================================== */
-/* The site card (NavyCard: .ax-card.navy.ax-blue) with a light logo plate,
-   as on the home success stories. The orbiting border accent rests until
-   hover — dozens of rotating layers on one page is wasted compositing. */
+/* Nov 2 2026 (client): the old register's flip card, modernised — a white
+   front with the logo, name and location; on hover (or keyboard focus, or a
+   tap on touch screens) it lifts and the country artwork slides up over it
+   with the organization's own description and a Learn More button that opens
+   the record dialog. Four to a row. (A 3D flip was tried first; the client
+   preferred the slide.) */
 .dxp .dx-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .dxp .dx-grid > li { display: flex; }
 
-.dxp .dx-card.ax-blue {
+.dxp .dx-flip {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  cursor: pointer;
+  transition: transform 0.35s var(--ease-out);
+}
+.dxp .dx-flip-inner {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  transition: box-shadow 0.35s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 34px -26px rgba(23, 61, 115, 0.45);
+}
+.dxp .dx-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+/* Front */
+.dxp .dx-front {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  min-height: 0;
-  padding: 20px 22px 18px;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 22px;
+  border: 1px solid var(--aaa-blue-100);
+  background: #fff;
+  text-align: center;
 }
-.dxp .dx-card.ax-blue::before { animation-play-state: paused; opacity: 0.55; }
-.dxp .dx-card.ax-blue:hover::before,
-.dxp .dx-card.ax-blue:focus-within::before { animation-play-state: running; opacity: 1; }
-.dxp .dx-card.ax-blue:focus-within { transform: translateY(-5px); }
+.dxp .dx-front::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--aaa-blue), var(--aaa-gold));
+}
+.dxp .dx-front h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue);
+  text-wrap: balance;
+}
+.dxp .dx-front .dx-loc {
+  justify-content: center;
+  margin-top: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--aaa-gold-700);
+}
+.dxp .dx-front .dx-loc svg { color: var(--aaa-gold); }
+.dxp .dx-rule {
+  width: 34px;
+  height: 2px;
+  margin: 18px 0 16px;
+  border-radius: 2px;
+  background: var(--aaa-gold);
+}
+.dxp .dx-front .dx-status { margin-top: 14px; }
+.dxp .dx-front .dx-status.held { border-color: var(--ink-200); color: var(--ink-500); }
 
-.dxp .dx-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+/* Back */
+.dxp .dx-back {
+  transform: translateY(101%);
+  background: var(--aaa-blue-950);
+  transition: transform 0.55s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+.dxp .dx-back.no-art { background: linear-gradient(150deg, var(--aaa-blue-950), var(--aaa-blue) 70%, var(--aaa-blue-500)); }
+.dxp .dx-back-art { object-fit: cover; }
+.dxp .dx-back::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 26, 44, 0.5), rgba(6, 26, 44, 0.82));
+}
+.dxp .dx-back-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  height: 100%;
+  padding: 26px 22px;
+  text-align: center;
+}
+.dxp .dx-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 9;
+  line-clamp: 9;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.dxp .dx-open { flex: none; }
+.dxp .dx-open svg { transition: transform 0.2s ease; }
+.dxp .dx-open:hover svg { transform: translateX(4px); }
+.dxp .dx-open:focus-visible { outline: 2px solid var(--aaa-gold-100); outline-offset: 3px; }
+
+/* Slide up: hover/focus where there is a pointer, tap where there isn't. */
+@media (hover: hover) {
+  .dxp .dx-flip:hover,
+  .dxp .dx-flip:focus-within { transform: translateY(-8px); }
+  .dxp .dx-flip:hover .dx-flip-inner,
+  .dxp .dx-flip:focus-within .dx-flip-inner { box-shadow: 0 30px 50px -30px rgba(6, 26, 44, 0.75); }
+  .dxp .dx-flip:hover .dx-back,
+  .dxp .dx-flip:focus-within .dx-back { transform: translateY(0); }
+}
+@media (hover: none) {
+  .dxp .dx-flip.is-flipped .dx-back,
+  .dxp .dx-flip:focus-within .dx-back { transform: translateY(0); }
+}
+
+.dxp .dx-flip.is-held .dx-logo { filter: grayscale(0.6); opacity: 0.85; }
 
 .dxp .dx-logo {
   position: relative;
@@ -250,12 +361,23 @@
   overflow: hidden;
   border-radius: 12px;
   background: #fff;
-  box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.7);
 }
-.dxp .dx-logo.card { width: 112px; height: 62px; }
-.dxp .dx-logo.modal { width: 132px; height: 76px; border: 1px solid var(--ink-100); box-shadow: none; }
+.dxp .dx-logo.card { width: 100%; height: 112px; }
+.dxp .dx-logo.card img { padding: 0 6px; }
+.dxp .dx-logo.modal { width: 132px; height: 76px; border: 1px solid var(--ink-100); }
 .dxp .dx-logo img { object-fit: contain; padding: 8px; }
-.dxp .dx-logo-mono { font-size: 18px; font-weight: 700; color: var(--aaa-blue); }
+.dxp .dx-logo-mono {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border: 1.5px solid var(--aaa-blue);
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--aaa-blue);
+}
+.dxp .dx-logo.modal .dx-logo-mono { width: auto; height: auto; border: 0; font-size: 18px; }
 
 .dxp .dx-status {
   display: inline-flex;
@@ -281,13 +403,6 @@
 }
 .dxp .dx-status-dot { width: 7px; height: 7px; border: 1.5px solid currentColor; border-radius: 50%; }
 
-.dxp .dx-card.ax-blue h3 {
-  margin: 18px 0 6px;
-  font-size: 17px;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-}
-.dxp .dx-card .dx-loc { color: rgba(255, 255, 255, 0.72); }
 .dxp .dx-loc {
   display: flex;
   align-items: center;
@@ -298,80 +413,6 @@
   color: var(--ink-500);
 }
 .dxp .dx-loc svg { flex: none; color: var(--aaa-gold-400); }
-.dxp .dx-type {
-  align-self: flex-start;
-  margin-top: 14px;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 11.5px;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-}
-.dxp .dx-desc {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  margin: 12px 0 0;
-  font-size: 13px;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.76);
-}
-.dxp .dx-facts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 16px 0 0;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
-.dxp .dx-facts dt {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-}
-.dxp .dx-facts dd {
-  margin: 3px 0 0;
-  font-size: 13.5px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: #fff;
-}
-.dxp .dx-card-foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 12px;
-  margin-top: auto;
-  padding-top: 16px;
-}
-/* The button's hit area covers the whole card (stretched link). */
-.dxp .dx-open {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--aaa-gold-100);
-  cursor: pointer;
-}
-.dxp .dx-open::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
-.dxp .dx-open svg { transition: transform 0.2s ease; }
-.dxp .dx-card:hover .dx-open svg { transform: translateX(4px); }
-.dxp .dx-open:focus-visible { outline: none; }
-.dxp .dx-card:has(.dx-open:focus-visible) { outline: 2px solid var(--aaa-gold); outline-offset: 3px; }
-.dxp .dx-more-n { font-size: 11.5px; font-weight: 500; color: rgba(255, 255, 255, 0.6); }
-.dxp .dx-card.is-held .dx-logo { filter: grayscale(0.6); opacity: 0.85; }
 
 .dxp .dx-pager {
   display: grid;
@@ -511,11 +552,18 @@
   .dxp .dx-seg button { flex: 1; justify-content: center; }
 }
 @media (max-width: 1100px) {
+  .dxp .dx-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
   .dxp .dx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 560px) {
   .dxp .dx-grid { grid-template-columns: 1fr; }
+  .dxp .dx-flip { height: 330px; }
+}
+
+@media (max-width: 720px) {
   .dxp .dx-tools { grid-template-columns: 1fr; }
   .dxp .dx-seg { height: auto; flex-wrap: wrap; }
   .dxp .dx-seg button { flex: 1 1 40%; height: 38px; }
@@ -527,8 +575,14 @@
   .dxp .dx-modal-actions .ax-btn { width: 100%; }
 }
 
+/* Reduced motion: no slide — the back simply fades in over the front. */
 @media (prefers-reduced-motion: reduce) {
-  .dxp .dx-card,
+  .dxp .dx-flip,
+  .dxp .dx-flip-inner { transition: none; transform: none !important; }
+  .dxp .dx-back { transform: none; opacity: 0; transition: opacity 0.2s ease; }
+  .dxp .dx-flip:hover .dx-back,
+  .dxp .dx-flip:focus-within .dx-back,
+  .dxp .dx-flip.is-flipped .dx-back { opacity: 1; }
   .dxp .dx-chip,
   .dxp .dx-seg button { transition: none; }
   .dxp .dx-modal,

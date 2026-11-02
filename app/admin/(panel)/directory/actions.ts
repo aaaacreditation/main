@@ -100,7 +100,6 @@ async function uniqueOrgSlug(base: string, excludeId?: string) {
 }
 
 function revalidateDirectory() {
-  revalidatePath("/directory");
   revalidatePath("/directory/accredited-organizations");
   revalidatePath("/admin/directory");
 }
@@ -120,6 +119,8 @@ export async function saveOrganization(formData: FormData) {
 
   const logo = str(formData, "logo", 600);
   if (!validLogo(logo)) redirect(back("logo"));
+  const flag = str(formData, "flag", 600);
+  if (!validLogo(flag)) redirect(back("flag"));
 
   const website = normalizeWebsite(str(formData, "website", 500));
   if (website === false) redirect(back("website"));
@@ -139,6 +140,7 @@ export async function saveOrganization(formData: FormData) {
     country,
     description,
     logo: logo || null,
+    flag: flag || null,
     website,
     status,
   };

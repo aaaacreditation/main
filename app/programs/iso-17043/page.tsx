@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
-import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import { crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
@@ -132,7 +132,7 @@ const DATA: SchemeData = {
     ],
   },
   process: {
-    title: "Accreditation Process & Application",
+    title: "Accreditation Process & Resources",
     steps: [
       {
         title: "Submit Your Application",
@@ -140,7 +140,7 @@ const DATA: SchemeData = {
       },
       {
         title: "Document Review",
-        text: "AAA reviews management-system documentation, PT scheme procedures, statistical methods, personnel competence, sample preparation controls, and the proposed scope.",
+        text: "AAA reviews management-system documentation, PT scheme procedures, statistical methods, and personnel competence.",
       },
       {
         title: "Accreditation Assessment",
@@ -158,17 +158,6 @@ const DATA: SchemeData = {
         title: "Accreditation Granted",
         text: "Successful proficiency testing providers receive an accreditation certificate and approved scope, valid for three years.",
       },
-    ],
-    application: {
-      text: "Complete the application form to provide information about your organization, proficiency testing schemes, technical fields, personnel, locations, and proposed accreditation scope.",
-      href: DOC.appPT,
-      note: "Additional technical requirements and supporting information will be provided by the AAA accreditation team as applicable to your requested scope.",
-    },
-    resourcesTitle: "Supporting Documents",
-    resources: [
-      { label: "Checklist for ISO/IEC 17043", href: DOC.checklist17043, meta: "DOCX" },
-      { label: "Proficiency Testing policy", href: DOC.ptPolicy, meta: "PDF" },
-      ...COMMON_DOCS,
     ],
   },
   testimonial: {

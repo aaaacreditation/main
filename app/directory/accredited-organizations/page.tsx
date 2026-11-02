@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHero from "../../_components/PageHero";
 import CTA from "../../_components/CTA";
+import PageHero from "../../_components/PageHero";
 import JsonLd from "../../_components/JsonLd";
 import Icon from "../../_components/Icon";
 import DirectoryExplorer from "./DirectoryExplorer";
@@ -18,11 +18,10 @@ import "./directory.css";
  * getAccreditedOrganizations(), with the bundled JSON snapshot as the
  * no-database fallback; saving in the admin revalidates this page.
  *
- * Two different country figures appear on this page and they are deliberately
- * distinct: registerStats(orgs).countries is how many countries the entries
- * below come from, while FACTS.countries is AAA's canonical worldwide reach.
- * Country counts inside an organization's own description belong to that
- * organization and are never rewritten.
+ * No "Before you search" primer or register intro (Oct 30 2026, client): the
+ * hero leads straight into the filters and cards. registerStats(orgs).countries is how many countries
+ * the entries come from; country counts inside an organization's own
+ * description belong to that organization and are never rewritten.
  */
 export const revalidate = 3600;
 
@@ -58,44 +57,6 @@ function LineIcon({ children }: { children: React.ReactNode }) {
   );
 }
 
-const MEANING: { title: string; text: string; icon: React.ReactNode }[] = [
-  {
-    title: "An independent judgement of competence",
-    text: "Accreditation is a formal, third-party attestation that an organization has the people, procedures and controls to do what it says it does — assessed against an international standard rather than self-declared.",
-    icon: (
-      <>
-        <path d="M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6l-8-3Z" />
-        <path d="m8.8 12 2.3 2.3 4.1-4.4" />
-      </>
-    ),
-  },
-  {
-    title: "Impartiality, evidenced",
-    text: "Every accreditation decision is taken independently of the assessment team, and risks to impartiality and conflicts of interest are identified, controlled and monitored throughout the cycle.",
-    icon: <path d="M12 3v18M8 21h8M2 8h20M5 8l-3 6a3 3 0 0 0 6 0L5 8zM19 8l-3 6a3 3 0 0 0 6 0l-3-6z" />,
-  },
-  {
-    title: "Scope is specific",
-    text: "Accreditation is granted for a defined scope — the standards, sectors, activities and locations named on the certificate. A listing in this register is not a blanket endorsement of everything an organization does.",
-    icon: (
-      <>
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <path d="M14 2v6h6M9 13h6M9 17h4" />
-      </>
-    ),
-  },
-  {
-    title: "Maintained, not awarded once",
-    text: `AAA accreditation runs on a ${FACTS.cycleLabel} with annual surveillance. Status can change between cycles, so confirm any listing with AAA before relying on it.`,
-    icon: (
-      <>
-        <path d="M21 12a9 9 0 0 1-15.36 6.36L3 16M3 21v-5h5" />
-        <path d="M3 12a9 9 0 0 1 15.36-6.36L21 8M21 3v5h-5" />
-      </>
-    ),
-  },
-];
-
 const VERIFY: { title: string; text: string }[] = [
   {
     title: "Find the organization",
@@ -120,10 +81,7 @@ export default async function Page() {
   const stats = registerStats(orgs);
 
   const schema = [
-    breadcrumbSchema([
-      { name: "Directory", path: "/directory" },
-      { name: "Accredited Organizations", path: "/directory/accredited-organizations" },
-    ]),
+    breadcrumbSchema([{ name: "Accredited Organizations", path: "/directory/accredited-organizations" }]),
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
@@ -166,78 +124,18 @@ export default async function Page() {
           </>
         }
         intro="The public register of organizations holding AAA accreditation — universities, training and education providers, certification and inspection bodies, laboratories, schools and healthcare institutions."
-        crumbs={[{ href: "/directory", label: "Directory" }, { label: "Accredited Organizations" }]}
+        crumbs={[{ label: "Accredited Organizations" }]}
         meta={[
-          { k: "Organizations listed", v: String(stats.organizations) },
+          { k: "Accredited organizations", v: FACTS.organizations },
           { k: "Countries in this register", v: String(stats.countries) },
           { k: "Countries AAA serves", v: FACTS.countriesPlus },
         ]}
       />
 
-      {/* 01 — What a listing means */}
-      <section className="ax-section" id="what-it-means">
-        <div className="container">
-          <div className="ax-head center reveal">
-            <span className="eyebrow">Before you search</span>
-            <h2>What accreditation in this register means</h2>
-            <p>
-              Accreditation is not a marketing badge. It is an independent, evidence-based
-              judgement about an organization&rsquo;s competence, impartiality and consistency —
-              held to a defined scope and re-tested on a fixed cycle.
-            </p>
-          </div>
-
-          <div className="ax-grid four">
-            {MEANING.map((m, i) => (
-              <article className="ax-card reveal" key={m.title} style={{ transitionDelay: `${i * 50}ms` }}>
-                <div className="ax-card-top">
-                  <span className="ax-card-ico" aria-hidden="true">
-                    <LineIcon>{m.icon}</LineIcon>
-                  </span>
-                  <span className="ax-card-no" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3>{m.title}</h3>
-                <p>{m.text}</p>
-                <span className="ax-card-rule" aria-hidden="true" />
-              </article>
-            ))}
-          </div>
-
-          <div className="ax-note gold reveal" style={{ marginTop: 28 }}>
-            <div>
-              <strong>About the figures on this page</strong>
-              The {stats.organizations} entries below come from{" "}
-              {stats.countries} countries. AAA itself serves{" "}
-              {FACTS.countriesLabel} worldwide and works with {FACTS.organizationsLabel}; this
-              page lists the organizations currently published in the register. Any country or
-              client figure inside an organization&rsquo;s own description is that
-              organization&rsquo;s statement about itself.
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 02 — The register */}
       <section className="ax-section cream" id="register">
         <div className="container">
-          <div className="ax-head reveal">
-            <span className="eyebrow">The register</span>
-            <h2>
-              {stats.organizations} organizations, {stats.countries} countries.
-            </h2>
-            <p>
-              Search by name, city, keyword or accreditation number; narrow by program, status or
-              country; and open any entry for its full accreditation record —{" "}
-              {stats.records} records in all. Descriptions are supplied by the organizations
-              themselves.
-            </p>
-          </div>
-
-          <div style={{ marginTop: "clamp(28px, 3.2vw, 42px)" }}>
-            <DirectoryExplorer orgs={orgs} />
-          </div>
+          <DirectoryExplorer orgs={orgs} />
         </div>
       </section>
 
@@ -386,7 +284,6 @@ export default async function Page() {
         title="Ready to add your organization to this register?"
         text="Tell us about your organization — sector, applicable standards and the countries you operate in — and our team will scope the right accreditation route and come back with a tailored quote."
         related={[
-          { href: "/directory", label: "All AAA directories" },
           { href: "/about-accreditation", label: "About accreditation" },
           { href: "/news", label: "Newly accredited organizations" },
         ]}

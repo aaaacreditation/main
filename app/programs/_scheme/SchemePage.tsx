@@ -8,7 +8,7 @@ import Glyph from "../../_components/site/Glyph";
 import { CONTACT } from "@/lib/facts";
 import SchemeVideo from "./SchemeVideo";
 import SchemeAdvisorForm from "./SchemeAdvisorForm";
-import type { SchemeData, SchemeDoc, SchemeQuote, SchemeTile } from "./types";
+import type { SchemeData, SchemeQuote, SchemeTile } from "./types";
 import "./scheme.css";
 
 /*
@@ -17,14 +17,11 @@ import "./scheme.css";
  * and behaviour stay identical; only the data object changes per scheme.
  *
  *   01 Hero · 02 Who should apply · 03 Benefits · 04 Assessment areas ·
- *   05 Process + application/resources · 06 Testimonial · 07 FAQ · 08 CTA
+ *   05 Process · 06 Testimonial · 07 FAQ · 08 CTA
  */
 
 const pad = (i: number) => String(i + 1).padStart(2, "0");
 
-function isExternal(href: string) {
-  return href.startsWith("http");
-}
 
 function Quote({ q, compact }: { q: SchemeQuote; compact?: boolean }) {
   return (
@@ -33,12 +30,24 @@ function Quote({ q, compact }: { q: SchemeQuote; compact?: boolean }) {
         <Glyph name="quote" size={compact ? 30 : 38} strokeWidth={1.5} />
       </span>
       <blockquote>{q.quote}</blockquote>
-      <figcaption>
-        <strong>{q.name}</strong>
-        {q.lines?.map((l) => (
-          <span key={l}>{l}</span>
-        ))}
-      </figcaption>
+      {q.photo ? (
+        <figcaption className="schx-quote-by">
+          <Image className="schx-quote-photo" src={q.photo} alt={q.name} width={112} height={112} sizes="56px" />
+          <div>
+            <strong>{q.name}</strong>
+            {q.lines?.map((l) => (
+              <span key={l}>{l}</span>
+            ))}
+          </div>
+        </figcaption>
+      ) : (
+        <figcaption>
+          <strong>{q.name}</strong>
+          {q.lines?.map((l) => (
+            <span key={l}>{l}</span>
+          ))}
+        </figcaption>
+      )}
     </figure>
   );
 }
@@ -65,35 +74,9 @@ function Tiles({
   );
 }
 
-function DocLink({ d }: { d: SchemeDoc }) {
-  const view = d.meta === "VIEW";
-  const inner = (
-    <>
-      <Glyph name={view ? "folder" : "file-text"} size={18} />
-      <span className="schx-doc-label">{d.label}</span>
-      <i>
-        {view ? "View" : "Download"}
-        {d.meta && !view ? ` · ${d.meta}` : ""}
-        <Glyph name={view ? "arrow-right" : "download"} size={13} strokeWidth={2} />
-      </i>
-    </>
-  );
-  return (
-    <li>
-      {isExternal(d.href) ? (
-        <a href={d.href} target="_blank" rel="noopener noreferrer">
-          {inner}
-        </a>
-      ) : (
-        <Link href={d.href}>{inner}</Link>
-      )}
-    </li>
-  );
-}
 
 export default function SchemePage({ data }: { data: SchemeData }) {
   const { hero, advisor, suitability, benefits, areas, process, testimonial: tm, faq, cta } = data;
-  const hasSide = Boolean(process.application || process.resources?.length);
   const areaCols = areas.tiles.length % 4 === 0 ? "four" : "";
 
   return (
@@ -241,17 +224,12 @@ export default function SchemePage({ data }: { data: SchemeData }) {
         </div>
       </section>
 
-      {/* 05 — Process + application / resources */}
+      {/* 05 — Process */}
       <section className="ax-section cream" id="process">
         <div className="container">
-          <SectionHead
-            center={!hasSide}
-            className={hasSide ? "" : "schx-process-head"}
-            eyebrow="How It Works"
-            title={process.title}
-          />
-          {/* Without an application card or resources the steps run left to right. */}
-          <div className={hasSide ? "schx-process" : "schx-process flow"}>
+          <SectionHead center className="schx-process-head" eyebrow="How It Works" title={process.title} />
+          {/* Steps run left to right on every scheme page. */}
+          <div className="schx-process flow">
             <div className="schx-rail-wrap">
               <h3 className="schx-label">
                 <span aria-hidden="true" />
@@ -273,39 +251,6 @@ export default function SchemePage({ data }: { data: SchemeData }) {
               </ol>
             </div>
 
-            {hasSide && (
-              <aside className="schx-side">
-                {process.application && (
-                  <div className="schx-app reveal">
-                    <span className="schx-app-ico" aria-hidden="true">
-                      <Glyph name="file-text" />
-                    </span>
-                    <h3>Accreditation Application Form</h3>
-                    <p>{process.application.text}</p>
-                    <a
-                      href={process.application.href}
-                      className="ax-btn ax-btn-gold"
-                      target={isExternal(process.application.href) ? "_blank" : undefined}
-                      rel={isExternal(process.application.href) ? "noopener noreferrer" : undefined}
-                    >
-                      <Glyph name="download" size={15} strokeWidth={2} /> Download Application Form
-                    </a>
-                    <p className="schx-app-note">{process.application.note}</p>
-                  </div>
-                )}
-
-                {process.resources && process.resources.length > 0 && (
-                  <div className="schx-docs reveal">
-                    <h3>{process.resourcesTitle ?? "Application Documents & Resources"}</h3>
-                    <ul>
-                      {process.resources.map((d) => (
-                        <DocLink key={d.label} d={d} />
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </aside>
-            )}
           </div>
         </div>
       </section>

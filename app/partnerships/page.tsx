@@ -48,7 +48,12 @@ const IMG = "/images/site/partnerships";
 
 const NETWORKS = [
   {
-    logo: { src: `${IMG}/conies-logo.png`, w: 592, h: 460, alt: "International Confederation of Higher Education logo" },
+    logo: {
+      src: `${IMG}/conies-logo.png`,
+      w: 592,
+      h: 460,
+      alt: "International Confederation of Higher Education logo",
+    },
     tag: "International Collaboration & Recognition",
     title: "International Confederation of Higher Education",
     kicker: "Council on International Higher Education Supervision (CONIES)",
@@ -56,7 +61,12 @@ const NETWORKS = [
     areas: ["Accreditation", "Quality Assurance", "Higher Education"],
   },
   {
-    logo: { src: `${IMG}/aaace-logo.png`, w: 676, h: 384, alt: "American Association for Adult and Continuing Education logo" },
+    logo: {
+      src: `${IMG}/aaace-logo.png`,
+      w: 676,
+      h: 384,
+      alt: "American Association for Adult and Continuing Education logo",
+    },
     tag: "Professional Membership",
     title: "American Association for Adult and Continuing Education",
     kicker: "Adult and continuing education professional network",
@@ -64,10 +74,16 @@ const NETWORKS = [
     areas: ["Adult Education", "Professional Standards", "Best Practices"],
   },
   {
-    logo: { src: `${IMG}/agcas-logo.png`, w: 722, h: 229, alt: "Association of Graduate Careers Advisory Services logo" },
+    logo: {
+      src: `${IMG}/agcas-logo.png`,
+      w: 722,
+      h: 229,
+      alt: "Association of Graduate Careers Advisory Services logo",
+    },
     tag: "Professional Membership",
     title: "Association of Graduate Careers Advisory Services",
-    kicker: "Higher education career development and graduate employment network",
+    kicker:
+      "Higher education career development and graduate employment network",
     text: "AAA is a member of AGCAS, the professional membership organization supporting higher education career development and graduate employment professionals.",
     areas: ["Higher Education", "Career Development", "Graduate Outcomes"],
   },
@@ -119,7 +135,10 @@ export default function PartnershipsPage() {
       {/* 01 — Hero */}
       <PageHero
         eyebrow="Recognition & Partnerships"
-        crumbs={[{ href: "/about", label: "About AAA" }, { label: "Recognition & Partnerships" }]}
+        crumbs={[
+          { href: "/about", label: "About AAA" },
+          { label: "Recognition & Partnerships" },
+        ]}
         title={
           <>
             Recognition &amp; <span className="prt-gold">Partnerships</span>
@@ -127,19 +146,27 @@ export default function PartnershipsPage() {
         }
         intro={
           <>
-            <span className="prt-tagline">International Recognition. Meaningful Partnerships. Greater Confidence.</span>
-            AAA builds relationships with international organizations, professional institutions, and partners to
-            advance quality, strengthen professional cooperation, and support the wider adoption of credible
-            accreditation practices.
+            <span className="prt-tagline">
+              International Recognition. Meaningful Partnerships. Greater
+              Confidence.
+            </span>
+            AAA builds relationships with international organizations,
+            professional institutions, and partners to advance quality,
+            strengthen professional cooperation, and support the wider adoption
+            of credible accreditation practices.
           </>
         }
         image={`${IMG}/recognition-partnerships-hero.webp`}
         imageAlt="AAA international partnership ceremony"
-        caption={{ kicker: "International cooperation", title: "AAA international partnership ceremony" }}
+        caption={{
+          kicker: "International cooperation",
+          title: "AAA international partnership ceremony",
+        }}
         actions={
           <>
             <a href="#recognition" className="ax-btn ax-btn-gold">
-              Explore Our Recognition <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              Explore Our Recognition{" "}
+              <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </a>
             <a href="#cta" className="ax-btn ax-btn-ghost">
               Partner With AAA
@@ -175,14 +202,18 @@ export default function PartnershipsPage() {
                     sizes="240px"
                   />
                 </span>
-                <span className="ax-blue-tag">ISQua EEA Accredited Standards</span>
+                <span className="ax-blue-tag">
+                  ISQua EEA Accredited Standards
+                </span>
               </div>
               <h3>AAA Healthcare Standards Accredited by ISQua EEA</h3>
               <p className="prt-recog-text">
-                AAA&apos;s Accreditation Standards for Healthcare Facilities have been accredited by the International
-                Society for Quality in Health Care External Evaluation Association (ISQua EEA), following independent
-                external evaluation against internationally recognized principles for the development of health and
-                social care standards.
+                AAA&apos;s Accreditation Standards for Healthcare Facilities
+                have been accredited by the International Society for Quality in
+                Health Care External Evaluation Association (ISQua EEA),
+                following independent external evaluation against
+                internationally recognized principles for the development of
+                health and social care standards.
               </p>
 
               <dl className="prt-recog-facts">
@@ -213,11 +244,14 @@ export default function PartnershipsPage() {
                 <div>
                   <h4>ISQua Institutional Membership</h4>
                   <p>
-                    AAA is also an institutional member of the International Society for Quality in Health Care (ISQua),
-                    supporting engagement with the international healthcare quality community.
+                    AAA is also an institutional member of the International
+                    Society for Quality in Health Care (ISQua), supporting
+                    engagement with the international healthcare quality
+                    community.
                   </p>
                   <span className="prt-member-dates">
-                    <b>Membership Period</b> 21 September 2026 – 21 September 2027
+                    <b>Membership Period</b> 21 September 2026 – 21 September
+                    2027
                   </span>
                   <a
                     href="/docs/site/isqua-institutional-membership-certificate-2026-2027.pdf"
@@ -225,7 +259,8 @@ export default function PartnershipsPage() {
                     rel="noopener noreferrer"
                     className="prt-textlink"
                   >
-                    View Membership Certificate <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
+                    View Membership Certificate{" "}
+                    <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
                   </a>
                 </div>
               </div>
@@ -247,15 +282,11 @@ export default function PartnershipsPage() {
                 rel="noopener noreferrer"
                 className="ax-btn ax-btn-blue"
               >
-                View Recognition Certificate <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
+                View Recognition Certificate{" "}
+                <Glyph name="arrow-up-right" size={14} strokeWidth={2} />
               </a>
             </figure>
           </div>
-
-          <p className="ax-note reveal prt-recog-note">
-            ISQua EEA accreditation applies specifically to AAA&apos;s Accreditation Standards for Healthcare
-            Facilities. Institutional membership is a separate relationship with ISQua.
-          </p>
         </div>
       </section>
 
@@ -270,9 +301,18 @@ export default function PartnershipsPage() {
           />
           <div className="ax-blue-grid">
             {NETWORKS.map((n) => (
-              <article key={n.title} className="ax-card navy ax-blue reveal prt-net">
+              <article
+                key={n.title}
+                className="ax-card navy ax-blue reveal prt-net"
+              >
                 <span className="prt-plate prt-net-logo">
-                  <Image src={n.logo.src} alt={n.logo.alt} width={n.logo.w} height={n.logo.h} sizes="200px" />
+                  <Image
+                    src={n.logo.src}
+                    alt={n.logo.alt}
+                    width={n.logo.w}
+                    height={n.logo.h}
+                    sizes="200px"
+                  />
                 </span>
                 <span className="ax-blue-tag">{n.tag}</span>
                 <h3>{n.title}</h3>
@@ -329,51 +369,87 @@ export default function PartnershipsPage() {
                 />
               </div>
               <figcaption>
-                <Glyph name="handshake" size={16} /> International cooperation in action
+                <Glyph name="handshake" size={16} /> International cooperation
+                in action
               </figcaption>
             </figure>
           </div>
 
           <div className="ax-blue-grid prt-coop-grid">
-            <NavyCard icon="handshake" no="01" tag="🇲🇳 Mongolia" title="Two Cooperation Agreements">
+            <NavyCard
+              icon="handshake"
+              no="01"
+              tag={
+                <>
+                  <span className="prt-flag" aria-hidden="true">
+                    🇲🇳
+                  </span>
+                  Mongolia
+                </>
+              }
+              title="Two Cooperation Agreements"
+            >
               <h4>Healthcare Cooperation</h4>
               <p>
-                AAA and Mongolia&apos;s Ministry of Health cooperate to build the capacity of healthcare accreditation
-                staff and specialists.
+                AAA and Mongolia&apos;s Ministry of Health cooperate to build
+                the capacity of healthcare accreditation staff and specialists.
               </p>
               <h4>Education Cooperation</h4>
               <p>
-                AAA and the Mongolian National Council for Education Accreditation cooperate on joint school
-                accreditation assessments, professional networking, and training in international standards, quality
-                assurance, internal audits, and assessment preparation.
+                AAA and the Mongolian National Council for Education
+                Accreditation cooperate on joint school accreditation
+                assessments, professional networking, and training in
+                international standards, quality assurance, internal audits, and
+                assessment preparation.
               </p>
             </NavyCard>
             <NavyCard
               icon="graduation"
               no="02"
-              tag="🇰🇿 Kazakhstan"
+              tag={
+                <>
+                  <span className="prt-flag" aria-hidden="true">
+                    🇰🇿
+                  </span>
+                  Kazakhstan
+                </>
+              }
               title="Education Quality Cooperation"
               kicker="International Agency for Independent Accreditation & Assessment of the Quality of Education «MANAoCO»"
             >
               <p>
-                AAA&apos;s cooperation with MANAoCO supports the quality and relevance of educational institutions and
-                programs in Kazakhstan, helping them meet the needs of students, parents, and the wider community.
+                AAA&apos;s cooperation with MANAoCO supports the quality and
+                relevance of educational institutions and programs in
+                Kazakhstan, helping them meet the needs of students, parents,
+                and the wider community.
               </p>
-              <p className="prt-focus">Education Quality • Accreditation • International Cooperation</p>
+              <p className="prt-focus">
+                Education Quality • Accreditation • International Cooperation
+              </p>
             </NavyCard>
             <NavyCard
               icon="layers"
               no="03"
-              tag="🇸🇴 Somalia"
+              tag={
+                <>
+                  <span className="prt-flag" aria-hidden="true">
+                    🇸🇴
+                  </span>
+                  Somalia
+                </>
+              }
               title="Accreditation Capacity Building"
               kicker="Somalia's National Accreditation Body"
             >
               <p>
-                AAA signed an MoU with Somalia&apos;s National Accreditation Body to support its professional team
-                through training, opportunities to observe selected assessments, and focused training on relevant
-                accreditation standards.
+                AAA signed an MoU with Somalia&apos;s National Accreditation
+                Body to support its professional team through training,
+                opportunities to observe selected assessments, and focused
+                training on relevant accreditation standards.
               </p>
-              <p className="prt-focus">Capacity Building • Assessment Experience • Standards Training</p>
+              <p className="prt-focus">
+                Capacity Building • Assessment Experience • Standards Training
+              </p>
             </NavyCard>
           </div>
         </div>
@@ -417,10 +493,15 @@ export default function PartnershipsPage() {
                 <h3>Our Local Representation</h3>
               </div>
               <p>
-                AAA works with appointed local representatives in selected markets to facilitate communication, provide
-                information about accreditation pathways, and connect organizations with the appropriate AAA team.
+                AAA works with appointed local representatives in selected
+                markets to facilitate communication, provide information about
+                accreditation pathways, and connect organizations with the
+                appropriate AAA team.
               </p>
-              <ul className="prt-flags" aria-label="Countries with AAA local representatives">
+              <ul
+                className="prt-flags"
+                aria-label="Countries with AAA local representatives"
+              >
                 {REPS.map(([flag, name]) => (
                   <li key={name}>
                     <span aria-hidden="true">{flag}</span>

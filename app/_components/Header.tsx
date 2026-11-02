@@ -54,11 +54,10 @@ const GROUPS: { label: string; href: string; items: NavItem[] }[] = [
   },
   {
     label: "Accredited Directory",
-    href: "/directory",
+    href: "/directory/accredited-organizations",
     items: [
       { href: "/directory/accredited-organizations", label: "Accredited Organizations" },
       { href: EXTERNAL.accreditedPersonnel, label: "Accredited Personnel", external: true },
-      { href: "/directory", label: "Verification Portal" },
     ],
   },
   {

@@ -70,7 +70,9 @@ const LEGACY_PAGES: Record<string, string> = {
   // Directories
   "/accredited-organizations": "/directory/accredited-organizations",
   "/adao": "/directory/accredited-organizations",
-  "/accredited-personnel": "/directory",
+  "/accredited-personnel": "/directory/accredited-organizations",
+  // The /directory hub ("Verification Portal") was removed Oct 30 2026 (client).
+  "/directory": "/directory/accredited-organizations",
 
   // Accredited-organisation profile pages — no per-client pages in the rebuild,
   // so they land on the register that lists them.

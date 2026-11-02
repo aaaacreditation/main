@@ -95,7 +95,6 @@ const STATIC_ROUTES: Entry[] = [
   page("/privacy", 0.3, "yearly"),
 
   // Registers.
-  page("/directory", 0.7, "weekly"),
   page("/directory/accredited-organizations", 0.8, "weekly"),
 
   // News archive.

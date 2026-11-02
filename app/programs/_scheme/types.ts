@@ -4,7 +4,7 @@ import type { GlyphName } from "../../_components/site/Glyph";
  * Data contract for the eight conformity-assessment scheme pages (Oct 2026
  * client structure). Every scheme page shares the same eight sections:
  * 01 Hero · 02 Suitability · 03 Benefits · 04 Assessment areas ·
- * 05 Process + application/resources · 06 Testimonial(s) · 07 FAQ · 08 CTA.
+ * 05 Process · 06 Testimonial(s) · 07 FAQ · 08 CTA.
  * Copy in these objects is the client's approved text — keep it verbatim.
  */
 
@@ -26,6 +26,8 @@ export type SchemeQuote = {
   name: string;
   /** Lines under the name (role, organization, country). */
   lines?: string[];
+  /** Optional portrait shown in a circle beside the name. */
+  photo?: string;
 };
 
 export type SchemeTestimonial = {
@@ -98,11 +100,6 @@ export type SchemeData = {
   process: {
     title: string;
     steps: SchemeStep[];
-    /** "Accreditation Application Form" card (5 of the 8 pages). */
-    application?: { text: string; href: string; note: string };
-    /** Resources list title + items. */
-    resourcesTitle?: string;
-    resources?: SchemeDoc[];
   };
   testimonial: SchemeTestimonial;
   faq: { intro: string; items: { q: string; a: string }[] };

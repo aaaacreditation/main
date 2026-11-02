@@ -181,6 +181,9 @@ model Organization {
   /// The organization's own wording — never edited to match AAA's figures.
   description    String          @default("")
   logo           String?
+  /// Flag artwork behind the register card's slide-up panel (Nov 2026). Empty
+  /// = the built-in artwork for `country` (public/accredited/countries).
+  flag           String?
   website        String?
   /// Register order: lower first. New entries go on top (most recent first).
   order          Int             @default(0)

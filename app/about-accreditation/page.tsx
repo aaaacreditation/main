@@ -243,13 +243,6 @@ export default function AboutAccreditationPage() {
                 applicable requirements and continual improvement.
               </span>
             </blockquote>
-            <p className="ax-note reveal acc-scope-note">
-              <Glyph name="lightbulb" size={18} />
-              <span>
-                Accreditation applies to a defined scope and does not automatically mean that every activity performed
-                by an organization is accredited.
-              </span>
-            </p>
           </div>
 
           <aside className="acc-delivers reveal" aria-labelledby="acc-delivers-h">
@@ -360,15 +353,6 @@ export default function AboutAccreditationPage() {
               </li>
             ))}
           </ol>
-
-          <p className="ax-note gold reveal acc-ongoing">
-            <Glyph name="refresh" size={18} />
-            <span>
-              <strong>Accreditation is an ongoing commitment.</strong>
-              Maintaining accreditation requires continued conformity with applicable requirements and participation in
-              the monitoring and renewal activities relevant to the accreditation program.
-            </span>
-          </p>
         </div>
       </section>
 

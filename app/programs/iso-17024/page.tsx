@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "../../_components/JsonLd";
 import SchemePage from "../_scheme/SchemePage";
-import { COMMON_DOCS, DOC, crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
+import { crumbsFor, heroStats, relatedFor } from "../_scheme/shared";
 import type { SchemeData } from "../_scheme/types";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
@@ -149,7 +149,7 @@ const DATA: SchemeData = {
     },
   },
   process: {
-    title: "Accreditation Process & Application",
+    title: "Accreditation Process & Resources",
     steps: [
       {
         title: "Submit Your Application",
@@ -176,13 +176,6 @@ const DATA: SchemeData = {
         text: "Successful certification bodies receive an accreditation certificate and approved personnel certification scope, valid for three years.",
       },
     ],
-    application: {
-      text: "Complete the application form to provide information about your organization, certification schemes, candidate requirements, assessment methods, examination processes, locations, and proposed accreditation scope.",
-      href: DOC.appPersonnel,
-      note: "Additional technical requirements and supporting information will be provided by the AAA accreditation team as applicable to your requested scope.",
-    },
-    resourcesTitle: "Supporting Documents",
-    resources: COMMON_DOCS,
   },
   testimonial: {
     title: "Hear From an AAA-Accredited Personnel Certification Body",

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
@@ -177,14 +176,6 @@ export default function ImpartialityPage() {
               ))}
             </div>
           </div>
-          <p className="ax-note gold reveal imp-note">
-            <Glyph name="badge-check" size={22} className="imp-note-ico" />
-            <span>
-              <strong>Impartiality supports the credibility of accreditation.</strong>
-              It helps ensure that organizations are evaluated against the same applicable requirements without
-              favoritism, bias, or undue influence.
-            </span>
-          </p>
         </div>
       </section>
 
@@ -301,19 +292,6 @@ export default function ImpartialityPage() {
               </p>
             </NavyCard>
           </div>
-          <div className="imp-ca-foot reveal">
-            <p>
-              <Glyph name="scale" size={20} className="imp-note-ico" />
-              <span>
-                <strong>Protecting impartiality in review.</strong> Complaints and appeals are handled in a manner
-                intended to ensure that those involved in reviewing the matter are appropriately independent from the
-                issue being considered.
-              </span>
-            </p>
-            <Link href="/contact" className="ax-btn ax-btn-blue">
-              View Complaints &amp; Appeals Procedure <Glyph name="arrow-right" size={14} strokeWidth={2} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -323,7 +301,6 @@ export default function ImpartialityPage() {
         title="We're Here to Help"
         text="If you have questions about AAA's impartiality, confidentiality, complaints, appeals, or accreditation processes, our team can provide guidance and direct you to the appropriate information or procedure."
         primary={{ href: "/contact", label: "Contact AAA" }}
-        secondary={{ href: "/impartiality-policy#complaints-appeals", label: "View Complaints & Appeals" }}
       />
     </div>
   );

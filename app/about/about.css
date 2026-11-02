@@ -3,7 +3,6 @@
    Cards come from the shared NavyCard (`.ax-blue`) in app/aaa-ds.css.
    ========================================================================== */
 
-.abt .abt-gold { color: var(--aaa-gold); }
 
 /* Hero chips sit on their own row under the buttons */
 .abt .abt-chips {
@@ -186,7 +185,6 @@
 }
 .abt .abt-cert-frame:hover { transform: rotate(0deg) translateY(-6px); }
 .abt .abt-cert-frame img { display: block; width: 100%; height: auto; border-radius: 8px; }
-.abt .abt-recog-note { max-width: 880px; margin: clamp(28px, 3vw, 40px) auto 0; }
 .abt .abt-center { display: flex; justify-content: center; margin-top: 26px; }
 
 /* ------------------------------ Responsive ---------------------------- */
@@ -202,4 +200,87 @@
   .abt .abt-glance-grid > div { padding: 16px 18px; }
   .abt .abt-member { flex-direction: column; }
   .abt .abt-cert-frame { transform: none; }
+}
+
+/* Oct 29 2026 (client): same hero as /contact: the contact team photo as a
+   full-bleed background (PageHero `background`) instead of the right-hand panel. Mirror the panel layout's
+   `.has-visual` sizing (aaa-ds.css) so the hero keeps its height, copy width
+   and stat sizes. `:not(.has-visual)` matches the specificity it overrides. */
+.abt .ax-hero.v2:not(.has-visual) { display: flex; align-items: center; min-height: calc(var(--header-h) + clamp(500px, 60vh, 660px)); }
+.abt .ax-hero.v2:not(.has-visual) .ax-hero-copy { max-width: min(640px, 47vw); }
+.abt .ax-hero.v2:not(.has-visual) .ax-stats:not(.three) .ax-stat { padding: 16px 14px; }
+.abt .ax-hero.v2:not(.has-visual) .ax-stats:not(.three) .ax-stat b { font-size: clamp(17px, 1.45vw, 23px); overflow-wrap: normal; }
+.abt .ax-hero.v2:not(.has-visual) .ax-stats:not(.three) .ax-stat > span { font-size: 10.5px; }
+@media (max-width: 980px) {
+  .abt .ax-hero.v2:not(.has-visual) { display: block; min-height: 0; }
+  .abt .ax-hero.v2:not(.has-visual) .ax-hero-copy { max-width: none; }
+}
+/* The team photo already carries its own navy tint, so the shared scrim is
+   replaced by a lighter left-to-right one in the photo's navy: darker behind
+   the copy, clear over the people on the right. */
+.abt .ax-hero.v2 .axh-bg::after {
+  background: linear-gradient(
+    90deg,
+    rgba(5, 41, 96, 0.88) 0%,
+    rgba(5, 41, 96, 0.78) 30%,
+    rgba(5, 41, 96, 0.4) 52%,
+    rgba(5, 41, 96, 0) 72%
+  );
+}
+/* The team image is only 1200px wide, so cropping it to fill the hero zoomed it
+   ~1.5x. On wide screens show the whole image instead (~1.26x) and fill the
+   leftover edges with the image's own navy frame colour, #052960, so the seam
+   doesn't show. Phones keep the crop-to-fill. */
+@media (min-width: 981px) {
+  .abt .ax-hero.v2:not(.has-visual) { background: #052960; }
+  /* Sit the photo at the bottom so faces clear the overlaid menu bar. */
+  .abt .ax-hero.v2 .axh-bg img { object-fit: contain; object-position: center bottom; }
+  .abt .ax-hero.v2 .axh-bg .axh-media { animation: none; }
+}
+
+/* Principal Director's message (Oct 29 2026, client): a parchment panel with
+   his portrait (cut from the client's artwork) on the left and the letter as
+   live text on the right, closed by his signature. */
+.abt .abt-msg {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  overflow: hidden;
+  border: 1px solid #ece7db;
+  border-radius: var(--ax-radius-lg);
+  background: linear-gradient(135deg, #f6f3ec 0%, #fff 55%, #fbf8f1 100%);
+  box-shadow: var(--ax-shadow);
+}
+.abt .abt-msg::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, var(--aaa-gold), var(--aaa-gold-100) 45%, transparent 85%);
+}
+/* Left column: the portrait at its natural proportions (as in the client's
+   artwork), with the signature and name beneath it. */
+.abt .abt-msg-side { display: flex; flex-direction: column; }
+.abt .abt-msg-photo { position: relative; aspect-ratio: 700 / 887; margin: 0; }
+.abt .abt-msg-photo img { object-fit: cover; object-position: center top; }
+.abt .abt-msg-body { position: relative; padding: clamp(30px, 3.6vw, 52px) clamp(26px, 4vw, 58px) clamp(28px, 3.4vw, 46px); }
+.abt .abt-msg-mark { position: absolute; top: clamp(20px, 3vw, 40px); right: clamp(20px, 3vw, 44px); color: var(--aaa-gold); opacity: 0.22; }
+.abt .abt-msg .ax-head { margin-bottom: clamp(18px, 2vw, 26px); padding-right: 56px; }
+.abt .abt-msg-text p { margin: 0; font-size: 14.5px; line-height: 1.68; color: var(--ink-600); text-wrap: pretty; }
+.abt .abt-msg-text p + p { margin-top: 12px; }
+.abt .abt-msg-text p:first-child { font-size: 16px; font-weight: 500; line-height: 1.65; color: var(--aaa-blue); }
+.abt .abt-msg-sign { display: grid; flex: 1; align-content: center; justify-items: start; gap: 2px; padding: 22px clamp(24px, 3vw, 44px) 28px; }
+.abt .abt-msg-sig { width: 180px; height: auto; margin-bottom: 10px; }
+.abt .abt-msg-sign strong { font-size: 16px; font-weight: 600; color: var(--aaa-blue); }
+.abt .abt-msg-sign span { font-size: 13.5px; color: #5a6a7a; }
+@media (max-width: 980px) {
+  .abt .abt-msg { grid-template-columns: minmax(0, 1fr); }
+  /* Stack: portrait, letter, then signature. */
+  .abt .abt-msg-side { display: contents; }
+  .abt .abt-msg-photo { width: min(100%, 460px); justify-self: center; }
+  .abt .abt-msg-body { order: 1; padding-bottom: 0; }
+  .abt .abt-msg-sign { order: 2; padding-top: 18px; }
+  .abt .abt-msg .ax-head { padding-right: 0; }
+  .abt .abt-msg-mark { display: none; }
 }
