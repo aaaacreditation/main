@@ -51,7 +51,18 @@ profile, ufw 22/80/443.
   Logins are the Neon ones (same as the Vercel admin). Neon runs **Postgres
   18**, so the server's `db`/`backup` run 18 (`POSTGRES_MAJOR`, with `PGDATA`
   pinned to the volume in the compose file).
-- `/adcp/` and `/wp-content/uploads/` 404 there (empty folders) — expected.
+- `/adcp/` and `/wp-content/uploads/` are filled by `sh deploy/legacy-assets.sh`
+  (over HTTPS — no Cloudways SSH needed): the ADCP build is mirrored from the
+  ADCP team's origin (`wordpress-1540360-5951805.cloudwaysapps.com/adcp`, source
+  maps skipped — the origin 403s them), and the files listed by
+  `wp-uploads-manifest.sh` are downloaded from the old site with a MIME check.
+  Re-run it whenever the ADCP team ships a new build. Nov 10 2026: 141 of 150
+  uploads copied; **9 Word forms (`2020/04/Application-form-*.doc`,
+  `Checklist-ISO-17020.docx`, `Checklist-for-ISO-17043.docx`) return 403 on the
+  old site itself** — they need to come from the client or the Cloudways file
+  manager, then go into `/opt/aaa-web/wp-content/uploads/2020/04/`.
+- The server is the only target from Nov 10 2026 (the user dropped Vercel):
+  edit content in the preview admin; the Vercel/Neon admin no longer feeds it.
 
 ---
 
