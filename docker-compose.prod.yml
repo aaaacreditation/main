@@ -63,10 +63,19 @@ services:
     logging: *logging
 
   db:
-    image: postgres:16-alpine
+    # Major version = the SOURCE database's (restoring a dump into an older
+    # major fails). Neon runs 18, so the preview server sets POSTGRES_MAJOR=18
+    # in /opt/aaa-web/app/.env. Changing it on an existing volume needs a
+    # dump → fresh volume → restore; Postgres cannot open another major's files.
+    image: postgres:${POSTGRES_MAJOR:-16}-alpine
     restart: unless-stopped
     env_file:
       - deploy/.env.production
+    environment:
+      # Pinned so the named volume below holds the data on every major: the 18+
+      # images default PGDATA to /var/lib/postgresql/18/docker, which is NOT
+      # inside this mount — data would vanish when the container is recreated.
+      PGDATA: /var/lib/postgresql/data
     # No `ports:` — Postgres is reachable only on the compose network. (Docker
     # bypasses ufw for published ports, so never publish it on a public IP.)
     volumes:
@@ -81,7 +90,7 @@ services:
 
   backup:
     # Same image as the server, so pg_dump's major version always matches.
-    image: postgres:16-alpine
+    image: postgres:${POSTGRES_MAJOR:-16}-alpine
     restart: unless-stopped
     env_file:
       - deploy/.env.production
@@ -111,7 +120,8 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # CADDYFILE=Caddyfile.preview for a single staging hostname (no www block).
+      - ./deploy/${CADDYFILE:-Caddyfile}:/etc/caddy/Caddyfile:ro
       - ${AAA_ADCP_DIR:-/opt/aaa-web/adcp}:/srv/www/adcp:ro
       - ${AAA_WP_CONTENT_DIR:-/opt/aaa-web/wp-content}:/srv/www/wp-content:ro
       - caddy_data:/data

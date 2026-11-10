@@ -27,6 +27,34 @@ admin, lead capture and `/media/...` do need it.
 
 ---
 
+## Preview server — preview.aaa-accreditation.org (Contabo, Nov 10 2026)
+
+A full staging copy (site + admin + its own Postgres + nightly backups + Caddy
+HTTPS) runs on the Contabo VPS **94.72.110.40** (Ubuntu 24.04, 6 vCPU, 11 GB),
+laid out exactly as section (b)'s "fresh box": `/opt/aaa-web/app`, Caddy
+profile, ufw 22/80/443.
+
+- **Access**: SSH key `~/.ssh/aaa` on the developer Mac (`ssh -i ~/.ssh/aaa root@94.72.110.40`).
+- **Deploy**: `sh deploy/preview-deploy.sh` — rsyncs the *working copy*
+  (uncommitted changes included; no `.env*`, `.git`, `node_modules`), backs
+  up the database, builds on the server, restarts, waits for healthy, reloads
+  Caddy. Rollback command in the script header.
+- **Server-only files** (never synced, never committed): `deploy/.env.production`
+  (generated secrets, `AUTH_URL=https://preview.aaa-accreditation.org`,
+  `NOINDEX=true`, SMTP deliberately empty so test leads email no one) and
+  `.env` (`CADDYFILE=Caddyfile.preview`, `SITE_DOMAIN=preview.aaa-accreditation.org`,
+  `POSTGRES_MAJOR=18`).
+- `deploy/Caddyfile.preview` = one hostname, no www block, `X-Robots-Tag: noindex`.
+- Data: a **copy of the Neon production database** (restored Nov 10 2026 from
+  `/opt/aaa-web/backups/neon-*.dump`), then the three migrations Neon lacked
+  were applied and `seed --only=case-studies` added the 30 case-study rows.
+  Logins are the Neon ones (same as the Vercel admin). Neon runs **Postgres
+  18**, so the server's `db`/`backup` run 18 (`POSTGRES_MAJOR`, with `PGDATA`
+  pinned to the volume in the compose file).
+- `/adcp/` and `/wp-content/uploads/` 404 there (empty folders) — expected.
+
+---
+
 ## (a) Now: Vercel
 
 ### Environment variables (Project → Settings → Environment Variables)

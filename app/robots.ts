@@ -1,6 +1,14 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "../lib/seo";
 
+/*
+ * Rendered per request so NOINDEX is read at RUNTIME. Statically, the value
+ * was frozen at build time — and the Docker image is built without the
+ * server's env file (Nov 10 2026: the preview server served "Allow: /" with
+ * NOINDEX=true set). It touches no database, so this stays cheap.
+ */
+export const dynamic = "force-dynamic";
+
 /**
  * robots.txt.
  *
