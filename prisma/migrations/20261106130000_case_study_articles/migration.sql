@@ -1,0 +1,10 @@
+-- AlterTable
+ALTER TABLE "CaseStudy" ADD COLUMN     "body" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "excerpt" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "pages" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN     "publishedAt" TIMESTAMP(3),
+ADD COLUMN     "quoteBy" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "scope" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "subtitle" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "title" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "website" TEXT;

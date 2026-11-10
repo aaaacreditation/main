@@ -139,9 +139,55 @@
 }
 .dxp .dx-seg button:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
 
-/* ============================ Program chips ============================= */
-.dxp .dx-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 18px; }
+/* ======================= "Accredited as" chips ========================== */
+/* Every accreditation type in one row that scrolls sideways (Nov 2026,
+   client). Edge fades and arrow buttons appear only where there is more to
+   reveal (`.more-l` / `.more-r`, set from the scroll position). */
+.dxp .dx-chips { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.dxp .dx-chips-scroller { position: relative; flex: 1; min-width: 0; }
+.dxp .dx-chips-track {
+  --fl: 0px;
+  --fr: 0px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 44px;
+  padding: 4px 2px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 138, 46, 0.45) transparent;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fl), #000 calc(100% - var(--fr)), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 var(--fl), #000 calc(100% - var(--fr)), transparent 100%);
+}
+.dxp .dx-chips-track.more-l { --fl: 56px; }
+.dxp .dx-chips-track.more-r { --fr: 56px; }
+.dxp .dx-chips-track::-webkit-scrollbar { height: 6px; }
+.dxp .dx-chips-track::-webkit-scrollbar-thumb { border-radius: 6px; background: rgba(179, 138, 46, 0.45); }
+.dxp .dx-chips-nav {
+  position: absolute;
+  top: calc(50% - 3px);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--ax-border);
+  border-radius: 50%;
+  color: var(--aaa-blue);
+  background: #fff;
+  box-shadow: 0 10px 22px -14px rgba(7, 29, 52, 0.6);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.dxp .dx-chips-nav:hover { border-color: var(--aaa-gold); color: var(--aaa-gold-700); }
+.dxp .dx-chips-nav.prev { left: 0; }
+.dxp .dx-chips-nav.prev svg { transform: rotate(180deg); }
+.dxp .dx-chips-nav.next { right: 0; }
 .dxp .dx-chips-label {
+  flex: none;
   margin-right: 4px;
   font-size: 11px;
   font-weight: 600;
@@ -151,8 +197,11 @@
 }
 .dxp .dx-chip {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+  scroll-snap-align: start;
   padding: 8px 14px;
   border: 1px solid var(--ax-border);
   border-radius: 999px;
@@ -488,6 +537,21 @@
   color: var(--aaa-blue);
 }
 .dxp .dx-modal-card .dx-loc { margin-top: 7px; font-size: 13px; }
+/* Every type the organization is listed under (records + admin tags). */
+.dxp .dx-modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 0; padding: 0; list-style: none; }
+.dxp .dx-modal-tags li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid rgba(179, 138, 46, 0.35);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--aaa-blue);
+  background: #fdf9ef;
+}
+.dxp .dx-modal-tags svg { color: var(--aaa-gold-700); }
 .dxp .dx-modal-desc {
   margin: 22px 0 0;
   padding-top: 20px;
@@ -564,6 +628,10 @@
 }
 
 @media (max-width: 720px) {
+  /* Label above the row; touch scrolling replaces the arrow buttons. */
+  .dxp .dx-chips { flex-wrap: wrap; gap: 6px; }
+  .dxp .dx-chips-scroller { flex-basis: 100%; }
+  .dxp .dx-chips-nav { display: none; }
   .dxp .dx-tools { grid-template-columns: 1fr; }
   .dxp .dx-seg { height: auto; flex-wrap: wrap; }
   .dxp .dx-seg button { flex: 1 1 40%; height: 38px; }
@@ -584,6 +652,7 @@
   .dxp .dx-flip:focus-within .dx-back,
   .dxp .dx-flip.is-flipped .dx-back { opacity: 1; }
   .dxp .dx-chip,
+  .dxp .dx-chips-nav,
   .dxp .dx-seg button { transition: none; }
   .dxp .dx-modal,
   .dxp .dx-modal-card { animation: none; }

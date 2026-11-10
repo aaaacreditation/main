@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { ContentStatus } from "@prisma/client";
 import { SITE_URL } from "../lib/seo";
 import { getPublishedPosts } from "../lib/content";
+import { getCaseStudyArticles } from "../lib/case-studies";
 import { prisma } from "../lib/db";
 
 /**
@@ -99,6 +100,9 @@ const STATIC_ROUTES: Entry[] = [
 
   // News archive.
   page("/news", 0.8, "daily"),
+
+  // Case studies (imported Nov 2026 from casestudies.aaa-accreditation.org).
+  page("/case-studies", 0.7, "monthly"),
 ];
 
 /** Keep in sync with app/news/helpers.ts. */
@@ -138,7 +142,14 @@ const pathOf = (url: string) => url.replace(SITE_URL, "") || "/";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let posts: Entry[] = [];
   let archives: Entry[] = [];
-  const [cms, hidden] = await Promise.all([cmsPages(), noindexPaths()]);
+  const [cms, hidden, caseStudies] = await Promise.all([
+    cmsPages(),
+    noindexPaths(),
+    // Falls back to the bundled snapshot without a database.
+    getCaseStudyArticles().then((list) =>
+      list.map((a) => ({ ...page(`/case-studies/${a.slug}`, 0.5, "yearly"), lastModified: new Date(a.publishedAt) })),
+    ),
+  ]);
 
   try {
     const published = await getPublishedPosts();
@@ -162,7 +173,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Built-in routes win over a CMS page with the same slug (as they do when
   // rendering), and each URL is listed once.
   const seen = new Set<string>();
-  return [...STATIC_ROUTES, ...archives, ...cms, ...posts].filter((e) => {
+  return [...STATIC_ROUTES, ...archives, ...cms, ...posts, ...caseStudies].filter((e) => {
     const path = pathOf(e.url);
     if (seen.has(e.url) || hidden.has(path) || EXCLUDED.some((x) => path.startsWith(x))) return false;
     seen.add(e.url);

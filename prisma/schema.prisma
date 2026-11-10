@@ -160,6 +160,22 @@ model CaseStudy {
   initials      String        @default("")
   videoUrl      String?
   link          String?
+  /// Full case-study article (Nov 2026, imported from casestudies.aaa-accreditation.org).
+  /// A row with a non-empty `body` has a public page at /case-studies/{slug}.
+  title         String        @default("")
+  subtitle      String        @default("")
+  excerpt       String        @default("")
+  /// Article HTML from the admin editor; YouTube links alone in a paragraph render as players.
+  body          String        @default("")
+  /// What the organization does / its accredited scope, shown beside the article.
+  scope         String        @default("")
+  website       String?
+  publishedAt   DateTime?
+  /// Program pages this card appears on (keys of PROGRAM_PAGES in
+  /// app/_data/page-case-studies.ts), e.g. ["training-education"].
+  pages         String[]      @default([])
+  /// Who gave the quote — "Name, Role" (program-page cards).
+  quoteBy       String        @default("")
   featured      Boolean       @default(false)
   showOnHome    Boolean       @default(false)
   showOnSme     Boolean       @default(false)
@@ -184,6 +200,11 @@ model Organization {
   /// Flag artwork behind the register card's slide-up panel (Nov 2026). Empty
   /// = the built-in artwork for `country` (public/accredited/countries).
   flag           String?
+  /// Extra "Accredited as" tags ticked in the admin (Nov 2026): accreditation
+  /// type ids from app/_data/accredited-organizations (e.g. "testing-lab").
+  /// The register lists the organization under these plus every type its
+  /// records name.
+  tags           String[]        @default([])
   website        String?
   /// Register order: lower first. New entries go on top (most recent first).
   order          Int             @default(0)

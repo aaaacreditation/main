@@ -7,7 +7,7 @@ import { prisma } from "@/lib/db";
 import { audit, int, requireArea, str } from "@/lib/admin";
 import { parseExpiry } from "@/lib/directory";
 import { slugify } from "@/lib/slug";
-import { ACCREDITATION_STATUSES } from "@/app/_data/accredited-organizations";
+import { ACCREDITATION_STATUSES, REGISTER_TYPES } from "@/app/_data/accredited-organizations";
 
 /**
  * Directory admin server actions: save (create / update) and delete an
@@ -126,6 +126,9 @@ export async function saveOrganization(formData: FormData) {
   if (website === false) redirect(back("website"));
 
   const status = str(formData, "status") === "DRAFT" ? ContentStatus.DRAFT : ContentStatus.PUBLISHED;
+  // "Accredited as" tags: only known type ids, once each, in the register's order.
+  const ticked = new Set(formData.getAll("tags").map(String));
+  const tags = REGISTER_TYPES.filter((t) => ticked.has(t));
 
   const parsed = parseRecords(str(formData, "accreditations", 400_000));
   if ("error" in parsed) redirect(back(parsed.error));
@@ -143,6 +146,7 @@ export async function saveOrganization(formData: FormData) {
     flag: flag || null,
     website,
     status,
+    tags,
   };
 
   const summary = `${name} — ${records.length} accreditation record${records.length === 1 ? "" : "s"}${

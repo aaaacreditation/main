@@ -615,14 +615,9 @@ export default async function Page() {
         </div>
         <div className="container">
           <div className="smex-legacy-cta reveal">
-            <a
-              href="https://casestudies-alpha.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="smex-btn smex-btn-blue"
-            >
+            <Link href="/case-studies" className="smex-btn smex-btn-blue">
               View All Success Stories
-            </a>
+            </Link>
             <Link href="/apply" className="smex-btn smex-btn-gold">
               Apply for Accreditation <Icon name="arrow" size={16} />
             </Link>

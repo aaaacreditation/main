@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import ImageField from "../../_components/ImageField";
+import RichTextEditor from "../../_components/RichTextEditor";
 import SubmitButton from "../../_components/SubmitButton";
+import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
 import { saveCaseStudy } from "./actions";
 import { CASE_STUDY_ERRORS, IMAGE_POSITIONS } from "./shared";
 
@@ -28,7 +30,22 @@ export interface CaseStudyFormData {
   showOnSme?: boolean;
   order?: number | null;
   status?: string;
+  /** Program pages the card appears on (PROGRAM_PAGES keys). */
+  pages?: string[];
+  quoteBy?: string;
+  /* Case study page (the full article at /case-studies/{slug}). */
+  title?: string;
+  subtitle?: string;
+  excerpt?: string;
+  body?: string;
+  scope?: string;
+  website?: string | null;
+  /** yyyy-mm-dd */
+  publishedAt?: string;
 }
+
+/** A case study page the story link can point at. */
+export type CaseStudyPageOption = { path: string; label: string };
 
 type Preview = {
   name: string;
@@ -94,7 +111,13 @@ function readForm(form: HTMLFormElement): Preview {
 }
 
 /** Case study editor: fields on the left, publishing + placement + a live card preview on the right. */
-export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
+export default function CaseStudyForm({
+  cs,
+  caseStudyPages = [],
+}: {
+  cs?: CaseStudyFormData;
+  caseStudyPages?: CaseStudyPageOption[];
+}) {
   const editing = Boolean(cs?.id);
   const formRef = useRef<HTMLFormElement>(null);
   const [pv, setPv] = useState<Preview>(() => fromData(cs));
@@ -179,6 +202,17 @@ export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
             rewording. The card adds the quote marks.
           </p>
 
+          <label className="adm-label" htmlFor="cs-quote-by">Quote by</label>
+          <input
+            id="cs-quote-by"
+            className="sme-input"
+            name="quoteBy"
+            maxLength={200}
+            defaultValue={cs?.quoteBy ?? ""}
+            placeholder="Name, Role — e.g. Brenda Rocha, CEO, Monarch Master Injectors"
+          />
+          <p className="adm-hint">Shown under the quote on the program pages: the name, then everything after the first comma as the role.</p>
+
           <label className="adm-label" htmlFor="cs-metric">Metric</label>
           <input
             id="cs-metric"
@@ -188,7 +222,11 @@ export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
             defaultValue={cs?.metric ?? ""}
             placeholder="e.g. 12% Growth · 500+ Students Certified"
           />
-          <p className="adm-hint">Short gold kicker shown above the organization name.</p>
+          <p className="adm-hint">
+            Home: the gold kicker above the name. Training &amp; Education page: the figures strip — write
+            “VALUE Label” pairs separated by “ · ”, e.g. “500+ Students Certified · 7 New Courses Launched”.
+            Healthcare page: the theme tag.
+          </p>
 
           <label className="adm-label" htmlFor="cs-desc">Impact detail</label>
           <textarea
@@ -226,11 +264,22 @@ export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
                 className="sme-input"
                 name="link"
                 inputMode="url"
+                list="cs-case-study-pages"
                 maxLength={500}
                 defaultValue={cs?.link ?? ""}
-                placeholder="https://… or /news/…"
+                placeholder="/case-studies/… or https://…"
               />
-              <p className="adm-hint">“Read Story” target. Blank uses the all-success-stories page.</p>
+              <datalist id="cs-case-study-pages">
+                {caseStudyPages.map((o) => (
+                  <option key={o.path} value={o.path}>
+                    {o.label}
+                  </option>
+                ))}
+              </datalist>
+              <p className="adm-hint">
+                “Read Story” target — pick one of the case study pages from the list. Blank: the card’s own
+                case study page if it has one, else the all-case-studies page.
+              </p>
             </div>
           </div>
 
@@ -281,6 +330,73 @@ export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
             placeholder="e.g. MM"
           />
           <p className="adm-hint">Fallback where a surface shows an avatar instead of the logo.</p>
+
+          <h3 className="adm-section-title">Case study page</h3>
+          <p className="adm-hint" style={{ marginTop: 4 }}>
+            Write the full case study here to publish it at /case-studies/{cs?.slug || "slug"} and list it on the
+            Case Studies page. Leave the article empty for a card-only entry (home, SME or program page card).
+          </p>
+          <label className="adm-label" htmlFor="cs-title">Case study title</label>
+          <input
+            id="cs-title"
+            className="sme-input"
+            name="title"
+            maxLength={300}
+            defaultValue={cs?.title ?? ""}
+            placeholder="e.g. Accreditation Impact: 12% Growth & 500+ students certified"
+          />
+          <div className="adm-fields">
+            <div>
+              <label className="adm-label" htmlFor="cs-subtitle">Subtitle</label>
+              <input id="cs-subtitle" className="sme-input" name="subtitle" maxLength={300} defaultValue={cs?.subtitle ?? ""} />
+            </div>
+            <div>
+              <label className="adm-label" htmlFor="cs-published">Publication date</label>
+              <input id="cs-published" className="sme-input" name="publishedAt" type="date" defaultValue={cs?.publishedAt ?? ""} />
+            </div>
+          </div>
+          <label className="adm-label" htmlFor="cs-excerpt">Summary</label>
+          <textarea
+            id="cs-excerpt"
+            className="sme-textarea"
+            name="excerpt"
+            rows={2}
+            maxLength={600}
+            defaultValue={cs?.excerpt ?? ""}
+            placeholder="One or two sentences for the Case Studies grid and search results"
+          />
+          <div className="adm-fields">
+            <div>
+              <label className="adm-label" htmlFor="cs-scope">Scope</label>
+              <input
+                id="cs-scope"
+                className="sme-input"
+                name="scope"
+                maxLength={600}
+                defaultValue={cs?.scope ?? ""}
+                placeholder="e.g. Medical education · Cosmetic Injections"
+              />
+            </div>
+            <div>
+              <label className="adm-label" htmlFor="cs-website">Organization website</label>
+              <input
+                id="cs-website"
+                className="sme-input"
+                name="website"
+                inputMode="url"
+                maxLength={500}
+                defaultValue={cs?.website ?? ""}
+                placeholder="https://"
+              />
+            </div>
+          </div>
+          <label className="adm-label">Article</label>
+          <RichTextEditor name="body" initialHTML={cs?.body ?? ""} placeholder="The organization’s case study…" />
+          <p className="adm-hint">
+            To show a video, paste its YouTube link as a paragraph on its own — the page turns it into a
+            player. The photo above is the page’s hero image; Sector, Country and Scope appear beside the
+            article.
+          </p>
         </div>
 
         <aside className="adm-form-side">
@@ -306,6 +422,16 @@ export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
                     View SME page ↗
                   </a>
                 ) : null}
+                {cs.body ? (
+                  <a href={`/case-studies/${cs.slug}`} target="_blank" rel="noopener noreferrer" className="adm-panel-link cs-panel-link">
+                    View case study page ↗
+                  </a>
+                ) : null}
+                {PROGRAM_PAGES.filter((pg) => cs.pages?.includes(pg.key)).map((pg) => (
+                  <a key={pg.key} href={pg.path} target="_blank" rel="noopener noreferrer" className="adm-panel-link cs-panel-link">
+                    View {pg.label} page ↗
+                  </a>
+                ))}
               </>
             ) : null}
           </div>
@@ -326,6 +452,22 @@ export default function CaseStudyForm({ cs }: { cs?: CaseStudyFormData }) {
                 <small>The SME Accreditation page story marquee. Needs a photo.</small>
               </span>
             </label>
+            <p className="adm-label cs-pages-label">Program pages</p>
+            {PROGRAM_PAGES.map((pg) => (
+              <label className="adm-check" key={pg.key}>
+                <input type="checkbox" name="pages" value={pg.key} defaultChecked={cs?.pages?.includes(pg.key) ?? false} />
+                <span>
+                  {pg.label}
+                  <small>
+                    {pg.key === "healthcare"
+                      ? "Video testimonial card — needs a photo and a video."
+                      : pg.key === "conformity-assessment-bodies"
+                        ? "The first card with a video leads; the next shows as a short quote."
+                        : "Proof card — a photo, or a video; figures from the metric."}
+                  </small>
+                </span>
+              </label>
+            ))}
             <label className="adm-check">
               <input type="checkbox" name="featured" defaultChecked={Boolean(cs?.featured)} />
               <span>

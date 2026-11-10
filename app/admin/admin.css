@@ -217,3 +217,12 @@ html:has(.adm), html:has(.adm) body{ overflow-x: clip; }
    taller than the screen hides its lower controls. They never stuck before
    the fix above, so keep them in normal flow. */
 .adm .adm-form-side{ position: static; }
+
+/* Tables inside the rich-text editor (Nov 2026 — case-study before/after tables). */
+.adm .rte-body .tiptap table{ width: 100%; margin: 14px 0; border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+.adm .rte-body .tiptap th,
+.adm .rte-body .tiptap td{ position: relative; padding: 8px 10px; border: 1px solid var(--ink-200); vertical-align: top; }
+.adm .rte-body .tiptap th{ font-weight: 600; text-align: left; color: var(--aaa-blue); background: var(--aaa-blue-50); }
+.adm .rte-body .tiptap th p,
+.adm .rte-body .tiptap td p{ margin: 0; }
+.adm .rte-body .tiptap .selectedCell::after{ content: ""; position: absolute; inset: 0; background: rgba(23, 61, 115, .08); pointer-events: none; }

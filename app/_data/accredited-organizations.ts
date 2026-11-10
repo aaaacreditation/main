@@ -47,6 +47,8 @@ export type Org = {
   logo?: string;
   /** Flag artwork uploaded in the admin; falls back to `countryArt(country)`. */
   flag?: string;
+  /** Extra "Accredited as" tags ticked in the admin — see `orgTypes()`. */
+  tags?: AccreditationTypeId[];
   accreditations: Accreditation[];
 };
 
@@ -75,31 +77,31 @@ export type AccreditationTypeId =
   | "proficiency"
   | "other";
 
-export type ProgramFamily = "training" | "healthcare" | "school" | "cab";
-
-export const ACCREDITATION_TYPES: Record<
-  AccreditationTypeId,
-  { label: string; standard?: string; family: ProgramFamily | null }
-> = {
-  training: { label: "Training & Education Provider", family: "training" },
-  healthcare: { label: "Healthcare Organization", family: "healthcare" },
-  school: { label: "School", family: "school" },
-  "management-systems": { label: "Management Systems Certification Body", standard: "ISO/IEC 17021-1", family: "cab" },
-  personnel: { label: "Personnel Certification Body", standard: "ISO/IEC 17024", family: "cab" },
-  product: { label: "Product Certification Body", standard: "ISO/IEC 17065", family: "cab" },
-  "testing-lab": { label: "Testing Laboratory", standard: "ISO/IEC 17025", family: "cab" },
-  "calibration-lab": { label: "Calibration Laboratory", standard: "ISO/IEC 17025", family: "cab" },
-  inspection: { label: "Inspection Body", standard: "ISO/IEC 17020", family: "cab" },
-  proficiency: { label: "Proficiency Testing Provider", standard: "ISO/IEC 17043", family: "cab" },
-  other: { label: "Accredited Organization", family: null },
+export const ACCREDITATION_TYPES: Record<AccreditationTypeId, { label: string; standard?: string }> = {
+  training: { label: "Training & Education Provider" },
+  healthcare: { label: "Healthcare Organization" },
+  school: { label: "School" },
+  "management-systems": { label: "Management Systems Certification Body", standard: "ISO/IEC 17021-1" },
+  personnel: { label: "Personnel Certification Body", standard: "ISO/IEC 17024" },
+  product: { label: "Product Certification Body", standard: "ISO/IEC 17065" },
+  "testing-lab": { label: "Testing Laboratory", standard: "ISO/IEC 17025" },
+  "calibration-lab": { label: "Calibration Laboratory", standard: "ISO/IEC 17025" },
+  inspection: { label: "Inspection Body", standard: "ISO/IEC 17020" },
+  proficiency: { label: "Proficiency Testing Provider", standard: "ISO/IEC 17043" },
+  other: { label: "Accredited Organization" },
 };
 
-export const PROGRAM_FAMILIES: { id: ProgramFamily; label: string }[] = [
-  { id: "training", label: "Training & Education" },
-  { id: "healthcare", label: "Healthcare" },
-  { id: "school", label: "Schools" },
-  { id: "cab", label: "Conformity Assessment" },
-];
+/**
+ * The types the public register's "Accredited as" filter offers, in display
+ * order — and the tags staff can tick on an organization in the admin.
+ */
+export const REGISTER_TYPES = (Object.keys(ACCREDITATION_TYPES) as AccreditationTypeId[]).filter(
+  (t) => t !== "other"
+);
+
+export function isRegisterType(v: string): v is AccreditationTypeId {
+  return (REGISTER_TYPES as string[]).includes(v);
+}
 
 /** Order matters: calibration before testing, proficiency before testing. */
 const TYPE_RULES: [RegExp, AccreditationTypeId][] = [
@@ -118,6 +120,20 @@ const TYPE_RULES: [RegExp, AccreditationTypeId][] = [
 export function accreditationType(a: Accreditation): AccreditationTypeId {
   for (const [test, id] of TYPE_RULES) if (test.test(a.accreditedAs)) return id;
   return "other";
+}
+
+/**
+ * Every type an organization is listed under in the register: the ones its
+ * records name, plus any tags ticked for it in the admin.
+ */
+export function orgTypes(o: Org): Set<AccreditationTypeId> {
+  const out = new Set<AccreditationTypeId>();
+  for (const a of o.accreditations) {
+    const t = accreditationType(a);
+    if (t !== "other") out.add(t);
+  }
+  for (const t of o.tags ?? []) out.add(t);
+  return out;
 }
 
 /** The organization's headline status: Accredited if any record is. */

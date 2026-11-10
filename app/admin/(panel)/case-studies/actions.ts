@@ -6,13 +6,19 @@ import { ContentStatus } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { audit, bool, int, requireArea, str } from "@/lib/admin";
 import { isAllowedImageSrc } from "@/lib/case-studies";
+import { recordSlugChange } from "@/lib/seo-overrides";
 import { slugify } from "@/lib/slug";
+import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
 import { IMAGE_POSITIONS, listHref, parseTab, placementWhere } from "./shared";
 
 /** Every public route that renders case studies, plus the admin list. */
-function revalidateCaseStudies() {
+function revalidateCaseStudies(...slugs: string[]) {
   revalidatePath("/");
   revalidatePath("/programs/smes-accreditation-program");
+  for (const pg of PROGRAM_PAGES) revalidatePath(pg.path);
+  revalidatePath("/case-studies");
+  for (const slug of slugs) revalidatePath(`/case-studies/${slug}`);
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin/case-studies");
 }
 
@@ -61,6 +67,22 @@ export async function saveCaseStudy(formData: FormData) {
   const showOnHome = bool(formData, "showOnHome");
   const showOnSme = bool(formData, "showOnSme");
   const status = str(formData, "status") === "PUBLISHED" ? ContentStatus.PUBLISHED : ContentStatus.DRAFT;
+  const ticked = new Set(formData.getAll("pages").map(String));
+  const pages = PROGRAM_PAGES.filter((pg) => ticked.has(pg.key)).map((pg) => pg.key);
+  const quoteBy = str(formData, "quoteBy", 200);
+
+  // Case study page (the full article). Staff-authored HTML from the admin
+  // editor, rendered as-is like the news posts.
+  const title = str(formData, "title", 300);
+  const subtitle = str(formData, "subtitle", 300);
+  const excerpt = str(formData, "excerpt", 600);
+  const scope = str(formData, "scope", 600);
+  const websiteRaw = str(formData, "website", 500);
+  const website = websiteRaw ? (/^https?:\/\//i.test(websiteRaw) ? websiteRaw : `https://${websiteRaw}`) : null;
+  const rawBody = str(formData, "body", 400_000);
+  // TipTap leaves "<p></p>" in an emptied editor; treat that as no article.
+  const body = rawBody.replace(/<p>\s*<\/p>/g, "").trim() ? rawBody : "";
+  const dateRaw = str(formData, "publishedAt", 10);
 
   if (!name) fail("name");
   // Both cards render through next/image, which only accepts site paths and
@@ -70,6 +92,15 @@ export async function saveCaseStudy(formData: FormData) {
   if (showOnHome && (!image || !imageAlt || !logo)) fail("home-media");
   if (showOnSme && !image) fail("sme-image");
   if (videoUrl && !HTTP_URL.test(videoUrl)) fail("video");
+  if (website && !HTTP_URL.test(website)) fail("link");
+  let publishedAt: Date | null = existing?.publishedAt ?? null;
+  if (dateRaw) {
+    const d = new Date(`${dateRaw}T12:00:00Z`);
+    if (Number.isNaN(d.getTime())) fail("date");
+    publishedAt = d;
+  } else if (body && !publishedAt) {
+    publishedAt = new Date();
+  }
   if (link && !HTTP_URL.test(link) && !isSitePath(link)) fail("link");
   // Lands in an inline style, so only the listed values (or the stored one) pass.
   if (
@@ -93,7 +124,13 @@ export async function saveCaseStudy(formData: FormData) {
     order = (_max.order ?? -1) + 1;
   }
 
-  const slug = await uniqueSlug(slugify(str(formData, "slug", 120) || name), existing?.id);
+  // An unchanged slug is kept exactly — imported case studies keep the old
+  // site's slugs (one ends in "-") so its URLs redirect one-for-one.
+  const requested = str(formData, "slug", 120);
+  const slug =
+    existing && requested === existing.slug
+      ? existing.slug
+      : await uniqueSlug(slugify(requested || name), existing?.id);
 
   const data = {
     slug,
@@ -114,6 +151,15 @@ export async function saveCaseStudy(formData: FormData) {
     featured,
     showOnHome,
     showOnSme,
+    pages,
+    quoteBy,
+    title,
+    subtitle,
+    excerpt,
+    body,
+    scope,
+    website,
+    publishedAt,
     order,
     status,
   };
@@ -121,12 +167,16 @@ export async function saveCaseStudy(formData: FormData) {
   if (existing) {
     await prisma.caseStudy.update({ where: { id: existing.id }, data });
     await audit(session.user.id, "update", "case-study", existing.id, `Updated case study “${name}”`);
+    // A published case study page that moved keeps its old URL working.
+    if (existing.slug !== slug && existing.body && existing.status === ContentStatus.PUBLISHED) {
+      await recordSlugChange(`/case-studies/${existing.slug}`, `/case-studies/${slug}`);
+    }
   } else {
     const created = await prisma.caseStudy.create({ data });
     await audit(session.user.id, "create", "case-study", created.id, `Added case study “${name}”`);
   }
 
-  revalidateCaseStudies();
+  revalidateCaseStudies(slug, ...(existing && existing.slug !== slug ? [existing.slug] : []));
   redirect("/admin/case-studies?saved=1");
 }
 
@@ -142,7 +192,7 @@ export async function deleteCaseStudy(formData: FormData) {
   if (!row) redirect(listHref(tab, { error: "notfound" }));
 
   await audit(session.user.id, "delete", "case-study", id, `Deleted case study “${row.name}”`);
-  revalidateCaseStudies();
+  revalidateCaseStudies(row.slug);
   redirect(listHref(tab, { deleted: "1" }));
 }
 

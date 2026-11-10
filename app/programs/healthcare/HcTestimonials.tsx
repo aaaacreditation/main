@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type Testimonial = {
@@ -12,6 +13,8 @@ export type Testimonial = {
   video: string;
   image: string;
   alt: string;
+  /** The full case study, when there is one. */
+  href?: string;
 };
 
 /**
@@ -75,9 +78,16 @@ export default function HcTestimonials({ items }: { items: Testimonial[] }) {
               <span className="ax-blue-tag">{t.theme}</span>
               <blockquote>{t.quote}</blockquote>
               {t.note && <p className="hcx-testi-note">{t.note}</p>}
-              <button type="button" className="hcx-testi-link" onClick={(e) => open(t, e.currentTarget)}>
-                Watch Their Story <span aria-hidden="true">→</span>
-              </button>
+              <div className="hcx-testi-links">
+                <button type="button" className="hcx-testi-link" onClick={(e) => open(t, e.currentTarget)}>
+                  Watch Their Story <span aria-hidden="true">→</span>
+                </button>
+                {t.href && (
+                  <Link href={t.href} className="hcx-testi-link">
+                    Read the Case Study <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+              </div>
             </div>
           </article>
         ))}

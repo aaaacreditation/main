@@ -466,6 +466,9 @@
   cursor: pointer;
   background: none;
 }
+/* "Watch Their Story" + "Read the Case Study" (when the card has one), pinned to the foot. */
+.hcx .hcx-testi-links { display: flex; flex-wrap: wrap; gap: 0 24px; margin-top: auto; }
+.hcx .hcx-testi-links .hcx-testi-link { margin-top: 0; text-decoration: none; }
 .hcx .hcx-testi-link span { display: inline-block; transition: transform 0.25s ease; }
 .hcx .hcx-testi-link:hover span { transform: translateX(4px); }
 .hcx .hcx-testi-link:focus-visible { outline: 2px solid var(--aaa-gold); outline-offset: 3px; border-radius: 4px; }

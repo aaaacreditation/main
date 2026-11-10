@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { requireArea } from "@/lib/admin";
 import DangerButton from "../../../_components/DangerButton";
 import CaseStudyForm from "../CaseStudyForm";
+import { caseStudyPageOptions } from "../options";
+import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
 import { deleteCaseStudy } from "../actions";
 import { CASE_STUDY_ERRORS } from "../shared";
 import "../case-studies-admin.css";
@@ -20,10 +22,17 @@ export default async function EditCaseStudyPage({
 }) {
   await requireArea("case-studies");
   const [{ id }, { error }] = await Promise.all([params, searchParams]);
-  const cs = await prisma.caseStudy.findUnique({ where: { id } });
+  const [cs, caseStudyPages] = await Promise.all([prisma.caseStudy.findUnique({ where: { id } }), caseStudyPageOptions()]);
   if (!cs) notFound();
 
-  const placement = [cs.showOnHome && "Home carousel", cs.showOnSme && "SME page"].filter(Boolean).join(" · ");
+  const placement = [
+    cs.showOnHome && "Home carousel",
+    cs.showOnSme && "SME page",
+    ...PROGRAM_PAGES.filter((pg) => cs.pages.includes(pg.key)).map((pg) => pg.label),
+    cs.body && "Case study page",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <>
@@ -71,7 +80,17 @@ export default async function EditCaseStudyPage({
             showOnSme: cs.showOnSme,
             order: cs.order,
             status: cs.status,
+            pages: cs.pages,
+            quoteBy: cs.quoteBy,
+            title: cs.title,
+            subtitle: cs.subtitle,
+            excerpt: cs.excerpt,
+            body: cs.body,
+            scope: cs.scope,
+            website: cs.website,
+            publishedAt: cs.publishedAt ? cs.publishedAt.toISOString().slice(0, 10) : "",
           }}
+          caseStudyPages={caseStudyPages}
         />
       </div>
     </>

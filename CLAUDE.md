@@ -337,6 +337,20 @@ Hetzner Docker later — `Dockerfile`, `docker-compose.prod.yml`, `deploy/`).
   work. Public pages stay static/ISR; admin saves `revalidatePath()` the routes they feed
   (SEO saves use `updateTag("seo")`). Once the DB is live, edit content in the admin — the
   snapshot files are only the seed (`prisma/seed.mjs`) and the fallback.
+- **Case studies** (Nov 6 2026, client): the 23 case studies of the retired
+  casestudies.aaa-accreditation.org app were imported (`scripts/import-case-studies.mjs` →
+  `app/_data/case-study-articles.json`, images in `public/images/site/case-studies/{slug}/`) and
+  are public at `/case-studies` and `/case-studies/{slug}` (old slugs kept, so the old domain can
+  redirect path-for-path). A CaseStudy row with a non-empty `body` is an article; rows without one
+  are cards. Program-page cards (TEPA, Healthcare, CAB) are rows ticked under "Program pages"
+  (`CaseStudy.pages`, keys in `app/_data/page-case-studies.ts`), each linking to its case study;
+  `getPageCaseStudies(page)` feeds the page. Links to the old domain are rewritten by
+  `caseStudyHref()`. The admin editor can hold tables; a YouTube link alone in a paragraph renders
+  as a player.
+- **Register "Accredited as" types** (Nov 6 2026, client): the public filter offers every type
+  in `REGISTER_TYPES` (`app/_data/accredited-organizations.ts`) in a sideways-scrolling chip row.
+  An organization is listed under every type its records name (`accreditationType()`) plus any
+  `Organization.tags` ticked on the admin form — `orgTypes()` is the single rule.
 - **Leads**: all site forms post to `/api/leads`; it derives `kind` (CONTACT / APPLICATION /
   QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new form by picking a
   `source` that `leadKindFromSource()` classifies.

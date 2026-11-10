@@ -8,7 +8,7 @@ import SectionHead from "./_components/site/SectionHead";
 import Glyph, { type GlyphName } from "./_components/site/Glyph";
 import HomeMetrics, { type HomeMetric } from "./_components/home/HomeMetrics";
 import SuccessCarousel from "./_components/home/SuccessCarousel";
-import { CONTACT, EXTERNAL, FACTS, PROGRAMS } from "@/lib/facts";
+import { CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
 import { getHomeStories } from "@/lib/case-studies";
 import { breadcrumbSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
@@ -351,13 +351,13 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <SuccessCarousel stories={stories} moreHref={EXTERNAL.successStories} />
+        <SuccessCarousel stories={stories} moreHref="/case-studies" />
 
         <div className="container">
           <div className="hx-ss-cta">
-            <a href={EXTERNAL.successStories} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-blue">
+            <Link href="/case-studies" className="ax-btn ax-btn-blue">
               View All Success Stories <Glyph name="arrow-right" size={14} strokeWidth={2} />
-            </a>
+            </Link>
           </div>
         </div>
       </section>

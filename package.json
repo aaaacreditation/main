@@ -25,6 +25,7 @@
     "@gsap/react": "^2.1.2",
     "@prisma/client": "^6.19.3",
     "@tiptap/extension-image": "^3.27.1",
+    "@tiptap/extension-table": "^3.27.1",
     "@tiptap/extensions": "^3.27.1",
     "@tiptap/react": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",

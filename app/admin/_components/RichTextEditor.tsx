@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TiptapImage from "@tiptap/extension-image";
+import { TableKit } from "@tiptap/extension-table";
 import { Placeholder } from "@tiptap/extensions";
 import { useRef, useState } from "react";
 
@@ -31,6 +32,8 @@ export default function RichTextEditor({
         link: { openOnClick: false, autolink: true, defaultProtocol: "https" },
       }),
       TiptapImage.configure({ inline: false }),
+      // Tables (Nov 2026): the imported case studies carry before/after tables.
+      TableKit.configure({ table: { resizable: false } }),
       Placeholder.configure({ placeholder }),
     ],
     content: initialHTML,
@@ -97,6 +100,24 @@ export default function RichTextEditor({
         <button type="button" className={btn(editor.isActive("link"))} onClick={setLink} title="Link">Link</button>
         <button type="button" className="rte-btn" onClick={addImageByUrl} title="Image from URL">Img URL</button>
         <button type="button" className="rte-btn" onClick={() => fileRef.current?.click()} title="Upload image">Upload</button>
+        <span className="rte-sep" />
+        <button
+          type="button"
+          className={btn(editor.isActive("table"))}
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+          title="Insert table"
+        >
+          Table
+        </button>
+        {editor.isActive("table") ? (
+          <>
+            <button type="button" className="rte-btn" onClick={() => editor.chain().focus().addRowAfter().run()} title="Add row below">+Row</button>
+            <button type="button" className="rte-btn" onClick={() => editor.chain().focus().addColumnAfter().run()} title="Add column right">+Col</button>
+            <button type="button" className="rte-btn" onClick={() => editor.chain().focus().deleteRow().run()} title="Delete row">−Row</button>
+            <button type="button" className="rte-btn" onClick={() => editor.chain().focus().deleteColumn().run()} title="Delete column">−Col</button>
+            <button type="button" className="rte-btn" onClick={() => editor.chain().focus().deleteTable().run()} title="Delete table">Del table</button>
+          </>
+        ) : null}
         <span className="rte-sep" />
         <button type="button" className="rte-btn" onClick={() => editor.chain().focus().undo().run()} title="Undo">↶</button>
         <button type="button" className="rte-btn" onClick={() => editor.chain().focus().redo().run()} title="Redo">↷</button>

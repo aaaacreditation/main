@@ -3,6 +3,7 @@ import { ContentStatus, type Prisma } from "@prisma/client";
 import { prisma } from "./db";
 import {
   ACCREDITED_ORGANIZATIONS,
+  isRegisterType,
   registerCountries,
   registerStats,
   type Org,
@@ -48,6 +49,7 @@ function toOrg(r: OrgRow): Org {
     ...(r.description ? { description: r.description } : {}),
     ...(r.logo ? { logo: r.logo } : {}),
     ...(r.flag ? { flag: r.flag } : {}),
+    ...(r.tags.length ? { tags: r.tags.filter(isRegisterType) } : {}),
     accreditations: r.accreditations.map((a) => ({
       accreditedAs: a.accreditedAs,
       number: a.number,

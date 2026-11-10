@@ -6,13 +6,14 @@ import Link from "next/link";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
 import {
   ACCREDITATION_TYPES,
-  PROGRAM_FAMILIES,
+  REGISTER_TYPES,
   accreditationType,
   countryArt,
   orgStatus,
+  orgTypes,
   type Accreditation,
+  type AccreditationTypeId,
   type Org,
-  type ProgramFamily,
 } from "@/app/_data/accredited-organizations";
 import { CONTACT } from "@/lib/facts";
 
@@ -25,21 +26,19 @@ const PAGE = 24;
 const STATUSES = ["Accredited", "Suspended", "Withdrawn", "All"] as const;
 type StatusFilter = (typeof STATUSES)[number];
 
-const FAMILY_ICON: Record<ProgramFamily, GlyphName> = {
+const TYPE_ICON: Record<AccreditationTypeId, GlyphName> = {
   training: "graduation",
   healthcare: "heart-pulse",
   school: "school",
-  cab: "badge-check",
+  "management-systems": "layers",
+  personnel: "id-card",
+  product: "package",
+  "testing-lab": "flask",
+  "calibration-lab": "gauge",
+  inspection: "search-check",
+  proficiency: "target",
+  other: "badge-check",
 };
-
-function families(o: Org): Set<ProgramFamily> {
-  const out = new Set<ProgramFamily>();
-  for (const a of o.accreditations) {
-    const f = ACCREDITATION_TYPES[accreditationType(a)].family;
-    if (f) out.add(f);
-  }
-  return out;
-}
 
 function typeLabel(a: Accreditation): string {
   const t = ACCREDITATION_TYPES[accreditationType(a)];
@@ -78,7 +77,7 @@ function Logo({ o, size }: { o: Org; size: "card" | "modal" }) {
 export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
   const [query, setQuery] = useState("");
   const [country, setCountry] = useState(ALL_COUNTRIES);
-  const [family, setFamily] = useState<ProgramFamily | null>(null);
+  const [tag, setTag] = useState<AccreditationTypeId | null>(null);
   const [status, setStatus] = useState<StatusFilter>("Accredited");
   // How many cards are revealed, keyed to the filters so any change starts from the top.
   const [paging, setPaging] = useState({ key: "", count: PAGE });
@@ -86,9 +85,12 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
   const [flipped, setFlipped] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const lastTrigger = useRef<HTMLButtonElement | null>(null);
+  // The "Accredited as" row scrolls sideways; these track whether there is more to either side.
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [more, setMore] = useState({ left: false, right: false });
 
   const index = useMemo(
-    () => orgs.map((o) => ({ o, text: haystack(o), fams: families(o), status: orgStatus(o) })),
+    () => orgs.map((o) => ({ o, text: haystack(o), types: orgTypes(o), status: orgStatus(o) })),
     [orgs]
   );
 
@@ -97,12 +99,12 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
     [orgs]
   );
 
-  // Programs with nothing under the current status filter are disabled, so a chip never leads to an empty list.
-  const familyCounts = useMemo(() => {
+  // Types with nothing under the current status filter are disabled, so a chip never leads to an empty list.
+  const typeCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const r of index) {
       if (status !== "All" && r.status !== status) continue;
-      for (const f of r.fams) c[f] = (c[f] ?? 0) + 1;
+      for (const t of r.types) c[t] = (c[t] ?? 0) + 1;
     }
     return c;
   }, [index, status]);
@@ -112,22 +114,45 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
     return index
       .filter((r) => status === "All" || r.status === status)
       .filter((r) => country === ALL_COUNTRIES || r.o.country === country)
-      .filter((r) => !family || r.fams.has(family))
+      .filter((r) => !tag || r.types.has(tag))
       .filter((r) => !q || r.text.includes(q))
       .map((r) => r.o)
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [index, query, country, family, status]);
+  }, [index, query, country, tag, status]);
 
-  const filterKey = `${query}|${country}|${family}|${status}`;
+  const filterKey = `${query}|${country}|${tag}|${status}`;
   const shown = paging.key === filterKey ? paging.count : PAGE;
 
-  const hasFilters = query !== "" || country !== ALL_COUNTRIES || family !== null || status !== "Accredited";
+  const hasFilters = query !== "" || country !== ALL_COUNTRIES || tag !== null || status !== "Accredited";
 
   function reset() {
     setQuery("");
     setCountry(ALL_COUNTRIES);
-    setFamily(null);
+    setTag(null);
     setStatus("Accredited");
+  }
+
+  // Show the scroll arrows / edge fades only where the chip row has more to reveal.
+  // The ResizeObserver fires once on observe, which sets the initial state.
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const update = () =>
+      setMore({ left: el.scrollLeft > 2, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 2 });
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, []);
+
+  function scrollChips(dir: -1 | 1) {
+    const el = trackRef.current;
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: reduce ? "auto" : "smooth" });
   }
 
   // Dialog: lock scroll, close on Escape, focus the close button, restore focus on close.
@@ -147,7 +172,7 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
     };
   }, [active]);
 
-  const familyLabel = PROGRAM_FAMILIES.find((f) => f.id === family)?.label;
+  const tagLabel = tag ? ACCREDITATION_TYPES[tag].label : undefined;
   const visible = filtered.slice(0, shown);
 
   return (
@@ -196,30 +221,56 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
         </div>
       </div>
 
-      <div className="dx-chips reveal" role="group" aria-label="Filter by accreditation program">
-        <span className="dx-chips-label">Accredited as</span>
-        <button type="button" className={"dx-chip" + (family === null ? " on" : "")} aria-pressed={family === null} onClick={() => setFamily(null)}>
-          All programs
-        </button>
-        {PROGRAM_FAMILIES.map((f) => (
-          <button
-            type="button"
-            key={f.id}
-            className={"dx-chip" + (family === f.id ? " on" : "")}
-            aria-pressed={family === f.id}
-            onClick={() => setFamily((cur) => (cur === f.id ? null : f.id))}
-            disabled={!familyCounts[f.id]}
+      <div className="dx-chips reveal">
+        <span className="dx-chips-label" id="dx-chips-label">
+          Accredited as
+        </span>
+        <div className="dx-chips-scroller">
+          <div
+            ref={trackRef}
+            className={"dx-chips-track" + (more.left ? " more-l" : "") + (more.right ? " more-r" : "")}
+            role="group"
+            aria-labelledby="dx-chips-label"
           >
-            <Glyph name={FAMILY_ICON[f.id]} size={14} strokeWidth={1.9} /> {f.label}
-          </button>
-        ))}
+            <button type="button" className={"dx-chip" + (tag === null ? " on" : "")} aria-pressed={tag === null} onClick={() => setTag(null)}>
+              All
+            </button>
+            {REGISTER_TYPES.map((t) => {
+              const { label, standard } = ACCREDITATION_TYPES[t];
+              return (
+                <button
+                  type="button"
+                  key={t}
+                  className={"dx-chip" + (tag === t ? " on" : "")}
+                  aria-pressed={tag === t}
+                  title={standard}
+                  onClick={() => setTag((cur) => (cur === t ? null : t))}
+                  disabled={!typeCounts[t]}
+                >
+                  <Glyph name={TYPE_ICON[t]} size={14} strokeWidth={1.9} /> {label}
+                </button>
+              );
+            })}
+          </div>
+          {/* Pointer affordance only — keyboard users reach every chip with Tab, which scrolls it into view. */}
+          {more.left && (
+            <button type="button" className="dx-chips-nav prev" tabIndex={-1} aria-hidden="true" onClick={() => scrollChips(-1)}>
+              <Glyph name="arrow-right" size={15} strokeWidth={2} />
+            </button>
+          )}
+          {more.right && (
+            <button type="button" className="dx-chips-nav next" tabIndex={-1} aria-hidden="true" onClick={() => scrollChips(1)}>
+              <Glyph name="arrow-right" size={15} strokeWidth={2} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="dx-meta reveal" aria-live="polite">
         <span>
           Organizations
           {status !== "All" && <> · {status.toLowerCase()}</>}
-          {familyLabel && <> · {familyLabel.toLowerCase()}</>}
+          {tagLabel && <> · {tagLabel.toLowerCase()}</>}
           {country !== ALL_COUNTRIES && <> · {country}</>}
           {query && <> · matching “{query}”</>}
         </span>
@@ -324,6 +375,19 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
                 </p>
               </div>
             </div>
+
+            {(() => {
+              const types = orgTypes(active);
+              return types.size > 0 ? (
+                <ul className="dx-modal-tags" aria-label="Listed in the register as">
+                  {REGISTER_TYPES.filter((t) => types.has(t)).map((t) => (
+                    <li key={t}>
+                      <Glyph name={TYPE_ICON[t]} size={13} strokeWidth={1.9} /> {ACCREDITATION_TYPES[t].label}
+                    </li>
+                  ))}
+                </ul>
+              ) : null;
+            })()}
 
             {active.description && <p className="dx-modal-desc">{active.description}</p>}
 

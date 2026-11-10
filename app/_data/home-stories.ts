@@ -8,8 +8,7 @@ import type { SuccessStory } from "../_components/home/SuccessCarousel";
  * fallback when the database is unreachable. Edit stories in the admin, not
  * here, once the database is live.
  */
-const STORY_URL =
-  "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
+const STORY_URL = "/case-studies/accreditation-impact-12-growth-500-students-certified";
 
 /* ------------------------------------------------- 04 · Success stories */
 // Oct 2026: the client's "success stories home page" document — twelve

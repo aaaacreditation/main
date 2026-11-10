@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Case studies — index + article (Nov 2026). Scoped under `.csx`.
+   Cards are the SME blue card (`.ax-card.navy.ax-blue`) with the cover photo
+   inset at the top; the article body is the shared `.cms-prose` plus the
+   tables, images and video players the imported case studies carry.
+   ========================================================================== */
+
+/* ------------------------------------------------------------ Grid/cards */
+.csx .csx-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: clamp(28px, 3.2vw, 42px);
+}
+.csx .ax-card.navy.ax-blue.csx-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px 12px 22px;
+  color: #fff;
+  text-decoration: none;
+}
+.csx .csx-card-media {
+  position: relative;
+  display: block;
+  flex: none;
+  height: 210px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--aaa-blue-950);
+}
+.csx .csx-card-media img { object-fit: cover; transition: transform 0.9s var(--ease-out); }
+.csx .csx-card:hover .csx-card-media img { transform: scale(1.04); }
+.csx .csx-card-mono {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 40px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.25);
+}
+.csx .csx-card-body { display: flex; flex: 1; flex-direction: column; padding: 18px 10px 0; }
+.csx .ax-card.navy.ax-blue.csx-card h3 { margin: 12px 0 0; font-size: 18px; line-height: 1.35; letter-spacing: -0.01em; color: #fff; }
+.csx .csx-card-org { display: block; margin-top: 8px; font-size: 12.5px; font-weight: 600; color: var(--aaa-gold-100); }
+.csx .csx-card p { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: rgba(255, 255, 255, 0.78); }
+.csx .csx-card-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+}
+.csx .csx-card-go svg { color: var(--aaa-gold-100); transition: transform 0.25s var(--ease-out); }
+.csx .csx-card:hover .csx-card-go svg { transform: translateX(3px); }
+.csx .csx-card:focus-visible { outline: 3px solid var(--aaa-gold); outline-offset: 3px; }
+.csx .csx-empty { margin: 30px 0 0; text-align: center; color: var(--ink-600); }
+
+/* -------------------------------------------------------------- Article */
+/* Video split points wrap the HTML in chunks; they don't affect layout. */
+.csx .csx-chunk { display: contents; }
+.csx .csx-prose { max-width: none; }
+.csx .csx-prose img { display: block; width: 100%; height: auto; }
+.csx .csx-prose table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 24px 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.csx .csx-prose th,
+.csx .csx-prose td { padding: 10px 14px; border: 1px solid var(--ink-200); text-align: left; vertical-align: top; }
+.csx .csx-prose th { font-weight: 600; color: var(--aaa-blue); background: var(--aaa-blue-50); }
+.csx .csx-prose th p,
+.csx .csx-prose td p { margin: 0; }
+/* `.ax-prose` draws the gold bullet; drop the browser disc `.cms-prose` adds. */
+.csx .csx-prose ul { list-style: none; }
+.csx .csx-prose li > p { margin: 0; }
+.csx .csx-prose li > ul { margin: 8px 0 0; }
+
+.csx .csx-video {
+  position: relative;
+  overflow: hidden;
+  margin: 26px 0;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--ax-radius-lg);
+  background: var(--aaa-blue-950);
+  box-shadow: var(--ax-shadow);
+}
+.csx .csx-video iframe,
+.csx .csx-video-btn { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.csx .csx-video-btn { display: block; padding: 0; background: var(--aaa-blue-950); cursor: pointer; }
+.csx .csx-video-btn img { width: 100%; height: 100%; margin: 0; object-fit: cover; border-radius: 0; box-shadow: none; opacity: 0.88; }
+.csx .csx-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(150deg, var(--aaa-gold), var(--aaa-gold-700));
+  box-shadow: 0 0 0 10px rgba(179, 138, 46, 0.22), 0 18px 34px -14px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
+  transition: transform 0.35s var(--ease-out);
+}
+.csx .csx-play svg { width: 26px; height: 26px; margin-left: 4px; }
+.csx .csx-video-btn:hover .csx-play { transform: translate(-50%, -50%) scale(1.08); }
+.csx .csx-video-btn:focus-visible { outline: 3px solid var(--aaa-gold); outline-offset: -3px; }
+
+.csx .csx-back { margin: 30px 0 0; }
+
+/* Organization panel beside the article */
+.csx .csx-org-logo {
+  position: relative;
+  display: block;
+  height: 96px;
+  margin-bottom: 16px;
+  border: 1px solid var(--ax-border);
+  border-radius: 12px;
+  background: #fff;
+}
+.csx .csx-org-logo img { object-fit: contain; padding: 12px; }
+.csx .csx-facts { display: grid; gap: 12px; margin: 14px 0 20px; }
+.csx .csx-facts dt { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--aaa-gold-700); }
+.csx .csx-facts dd { margin: 3px 0 0; font-size: 14px; line-height: 1.55; color: var(--ink-800); }
+.csx .csx-facts a { color: var(--aaa-blue); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+
+/* ----------------------------------------------------------- Responsive */
+@media (max-width: 1100px) {
+  .csx .csx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .csx .csx-grid { grid-template-columns: 1fr; }
+  .csx .csx-card-media { height: 200px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .csx .csx-card-media img,
+  .csx .csx-card-go svg,
+  .csx .csx-play { transition: none; }
+}

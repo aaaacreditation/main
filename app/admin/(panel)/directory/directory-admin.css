@@ -38,3 +38,17 @@
 .adm .dir-flag-builtin{ display: flex; align-items: center; gap: 12px; margin-top: 10px; }
 .adm .dir-flag-builtin img{ flex: none; width: 56px; height: 66px; object-fit: cover; border: 1px solid var(--ink-200); border-radius: 8px; }
 .adm .dir-flag-builtin .adm-hint{ margin: 0; }
+
+/* "Accredited as" tag checklist on the organization form (Nov 2026). */
+.adm .dir-tags{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0 8px; }
+.adm .dir-tag{
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--ink-200); border-radius: 10px; background: #fff;
+  font-size: 13.5px; font-weight: 500; line-height: 1.35; color: var(--ink-800); cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.adm .dir-tag:hover{ border-color: var(--aaa-blue-100); }
+.adm .dir-tag:has(input:checked){ border-color: var(--aaa-blue); background: var(--aaa-blue-50); }
+.adm .dir-tag input{ flex: none; margin: 2px 0 0; accent-color: var(--aaa-blue); }
+.adm .dir-tag small{ display: block; margin-top: 2px; font-size: 11.5px; font-weight: 400; color: var(--ink-500); }
+@media (max-width: 720px){ .adm .dir-tags{ grid-template-columns: 1fr; } }

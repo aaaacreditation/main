@@ -7,6 +7,7 @@ import NavyCard from "../../_components/site/NavyCard";
 import { CONTACT, FACTS } from "../../../lib/facts";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "../../../lib/seo";
 import { seoPage } from "../../../lib/seo-overrides";
+import { getPageCaseStudies, metricStats, splitQuoteBy } from "../../../lib/case-studies";
 import AdvisorCard from "./AdvisorCard";
 import AdvisorForm from "./AdvisorForm";
 import FaqAccordion from "./FaqAccordion";
@@ -58,11 +59,6 @@ export async function generateMetadata(): Promise<Metadata> {
 const APPLY = "/apply";
 const ADCP_URL = "https://adcp.aaa-accreditation.org";
 const DIRECTORY = "/directory/accredited-organizations";
-const MONARCH_STORY =
-  "https://casestudies-alpha.vercel.app/case-studies/accreditation-impact-12-growth-500-students-certified";
-const LANDMARK_STORY =
-  "https://casestudies-alpha.vercel.app/case-studies/landmark-management-partner-story-of-success-and-innovation";
-const LANDMARK_VIDEO_ID = "C193YkDYYVU";
 
 const Arrow = () => <Glyph name="arrow-right" size={14} strokeWidth={2} />;
 
@@ -93,9 +89,9 @@ const VALUES = [
 /* 3 — Accreditation in Practice */
 type Metric = { v: string; k: string; count?: { to: string; suffix?: string; decimals?: string } };
 
-/* Figures on a hairline strip inside each proof card (four for Monarch, three
-   for Landmark); TepaMotion counts every `data-count` up from zero when it
-   scrolls into view. */
+/* Figures on a hairline strip inside each proof card (three or four, from the
+   case study's metric); TepaMotion counts every `data-count` up from zero
+   when it scrolls into view. */
 function Stats({ items }: { items: Metric[] }) {
   return (
     <div className={items.length === 3 ? "tepx-stats three" : "tepx-stats"}>
@@ -111,34 +107,18 @@ function Stats({ items }: { items: Metric[] }) {
   );
 }
 
-const MONARCH = {
-  name: "Monarch Master Injectors",
-  kicker: "Measured Business Impact",
-  label: "AAA Accredited Training & Education Provider · Texas, United States",
-  quote:
-    "AAA Accreditation has opened new doors for Monarch Master Injectors. We have established partnerships with renowned medical providers and clinics, expanded our reach to a wider market, and strengthened the confidence our students place in our programs.",
-  person: "Brenda Rocha",
-  role: "CEO, Monarch Master Injectors",
-  metrics: [
-    { v: "500+", k: "Students Certified", count: { to: "500", suffix: "+" } },
-    { v: "+8–12%", k: "Enrollment Growth" },
-    { v: "4.9/5", k: "Average Learner Feedback", count: { to: "4.9", decimals: "1", suffix: "/5" } },
-    { v: "7", k: "New Courses Launched", count: { to: "7" } },
-  ] as Metric[],
-};
-
-const LANDMARK = {
-  name: "Landmark Management Partners",
-  kicker: "Video Testimonial",
-  meta: "Training & Education Provider · Cairo, Egypt",
-  copy: "Landmark Management Partners is featured by AAA as a training and education provider in Cairo and as a pioneer in pharmaceutical training. Watch the organization’s testimonial to hear directly about its experience with AAA accreditation.",
-  /* The year is not counted up — it would read as a running total. */
-  metrics: [
-    { v: "9", k: "Programs Accredited", count: { to: "9" } },
-    { v: "25%", k: "Client Growth", count: { to: "25", suffix: "%" } },
-    { v: "2019", k: "Established in the Market" },
-  ] as Metric[],
-};
+/**
+ * Count-up settings for a figure typed in the admin ("500+", "4.9/5", "25%").
+ * Ranges ("+8–12%") stay as typed, and so does a year — counting up to 2019
+ * would read as a running total.
+ */
+function countOf(v: string): Metric["count"] {
+  const m = v.match(/^(\d+)(?:\.(\d+))?([^\d.].*)?$/);
+  if (!m) return undefined;
+  const [, whole, frac, suffix] = m;
+  if (!frac && !suffix && Number(whole) >= 1900 && Number(whole) <= 2100) return undefined;
+  return { to: frac ? `${whole}.${frac}` : whole, suffix: suffix || undefined, decimals: frac ? String(frac.length) : undefined };
+}
 
 /* 4 — What We Evaluate */
 const EVALUATE = [
@@ -282,7 +262,8 @@ const REASSURE = [
   "Receive guidance on eligibility and next steps",
 ];
 
-export default function Page() {
+export default async function Page() {
+  const stories = await getPageCaseStudies("training-education");
   return (
     <TepaMotion>
       <JsonLd
@@ -433,59 +414,60 @@ export default function Page() {
             </p>
           </div>
 
+          {/* Cards are the case studies assigned to this page in the admin
+              (Case Studies → "Show on program pages"): a photo card, or a
+              video card when the row has a video; figures come from its metric. */}
           <div className="tepx-proof">
-            <article className="ax-card navy ax-blue reveal tepx-proof-card">
-              <div className="tepx-proof-media">
-                <Image
-                  src={`${IMG}/monarch-master-injectors.webp`}
-                  alt="Monarch Master Injectors training session"
-                  fill
-                  sizes="(max-width: 980px) 100vw, 580px"
-                />
-                <span className="tepx-proof-label">{MONARCH.label}</span>
-              </div>
-              <div className="tepx-proof-body">
-                <span className="ax-blue-tag">{MONARCH.kicker}</span>
-                <h3>{MONARCH.name}</h3>
-                <blockquote className="tepx-proof-quote">
-                  <Glyph name="quote" size={26} className="tepx-quote-mark" />
-                  <p>{MONARCH.quote}</p>
-                </blockquote>
-                <p className="tepx-proof-person">
-                  <b>{MONARCH.person}</b>
-                  {MONARCH.role}
-                </p>
-                <Stats items={MONARCH.metrics} />
-                <div className="tepx-proof-cta">
-                  <a href={MONARCH_STORY} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-white">
-                    Read the Full Success Story <Arrow />
-                  </a>
-                </div>
-              </div>
-            </article>
-
-            <article className="ax-card navy ax-blue reveal tepx-proof-card">
-              <div className="tepx-proof-media">
-                <VideoEmbed
-                  id={LANDMARK_VIDEO_ID}
-                  title="Landmark Management Partners testimonial about AAA accreditation"
-                  poster="/programs/training-education/landmark-video.jpg"
-                  label="Watch the testimonial · Landmark Management Partners"
-                />
-              </div>
-              <div className="tepx-proof-body">
-                <span className="ax-blue-tag">{LANDMARK.kicker}</span>
-                <h3>{LANDMARK.name}</h3>
-                <p className="tepx-proof-meta">{LANDMARK.meta}</p>
-                <p className="tepx-proof-copy">{LANDMARK.copy}</p>
-                <Stats items={LANDMARK.metrics} />
-                <div className="tepx-proof-cta">
-                  <a href={LANDMARK_STORY} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-white">
-                    View Landmark Success Story <Arrow />
-                  </a>
-                </div>
-              </div>
-            </article>
+            {stories.map((st) => {
+              const by = splitQuoteBy(st.quoteBy);
+              const place = [st.sector, st.country].filter(Boolean).join(" · ");
+              const stats = metricStats(st.metric).map((m) => ({ ...m, count: countOf(m.v) }));
+              return (
+                <article className="ax-card navy ax-blue reveal tepx-proof-card" key={st.name}>
+                  <div className="tepx-proof-media">
+                    {st.videoId ? (
+                      <VideoEmbed
+                        id={st.videoId}
+                        title={`${st.name} testimonial about AAA accreditation`}
+                        poster={st.image ?? `https://i.ytimg.com/vi/${st.videoId}/hqdefault.jpg`}
+                        label={`Watch the testimonial · ${st.name}`}
+                      />
+                    ) : st.image ? (
+                      <>
+                        <Image src={st.image} alt={st.imageAlt} fill sizes="(max-width: 980px) 100vw, 580px" />
+                        {place && <span className="tepx-proof-label">AAA Accredited {place}</span>}
+                      </>
+                    ) : null}
+                  </div>
+                  <div className="tepx-proof-body">
+                    <span className="ax-blue-tag">{st.videoId ? "Video Testimonial" : "Measured Business Impact"}</span>
+                    <h3>{st.name}</h3>
+                    {st.videoId && place && <p className="tepx-proof-meta">{place}</p>}
+                    {st.quote && (
+                      <blockquote className="tepx-proof-quote">
+                        <Glyph name="quote" size={26} className="tepx-quote-mark" />
+                        <p>{st.quote}</p>
+                      </blockquote>
+                    )}
+                    {by.name && (
+                      <p className="tepx-proof-person">
+                        <b>{by.name}</b>
+                        {by.role}
+                      </p>
+                    )}
+                    {st.description && <p className="tepx-proof-copy">{st.description}</p>}
+                    {stats.length > 0 && <Stats items={stats} />}
+                    {st.href && (
+                      <div className="tepx-proof-cta">
+                        <Link href={st.href} className="ax-btn ax-btn-white">
+                          Read the Full Success Story <Arrow />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>

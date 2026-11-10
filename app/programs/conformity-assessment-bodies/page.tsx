@@ -10,6 +10,7 @@ import Glyph, { type GlyphName } from "../../_components/site/Glyph";
 import { CAB_SCHEMES, CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
+import { getPageCaseStudies, splitQuoteBy } from "@/lib/case-studies";
 import AdvisorForm from "./AdvisorForm";
 import CabVideo from "./CabVideo";
 import "./cab.css";
@@ -242,12 +243,15 @@ const FAQ = [
 
 const TRUST = ["International accreditation services", "Technical guidance", "Support from enquiry to application"];
 
-const VIDEO_ID = "GPGwbCsk7CY";
-const VIDEO_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
 
 /* ------------------------------------------------------------------ page */
 
-export default function CabHubPage() {
+export default async function CabHubPage() {
+  const stories = await getPageCaseStudies("conformity-assessment-bodies");
+  const lead = stories.find((c) => c.videoId);
+  const second = stories.find((c) => c !== lead && c.quote);
+  const leadBy = splitQuoteBy(lead?.quoteBy ?? "");
+  const secondBy = splitQuoteBy(second?.quoteBy ?? "");
   return (
     <div className="axp cabh">
       <JsonLd
@@ -450,77 +454,86 @@ export default function CabHubPage() {
             intro="Discover how AAA accreditation has supported certification bodies through technical expertise, professional collaboration, and stronger credibility."
           />
 
-          <div className="cabh-story">
-            <div className="reveal">
-              <CabVideo
-                id={VIDEO_ID}
-                title="Lazarus Alliance — AAA accreditation experience"
-                poster={`${IMG}/michael-peters-ceo-of-lazarus-alliance-s-7faa5977.webp`}
-                alt="Michael Peters, CEO of Lazarus Alliance, speaking about the AAA accreditation experience"
-                label="Watch the Lazarus Alliance Story"
-                sub="AAA Accredited Certification Body · Arizona, United States"
-              />
-            </div>
-
-            <div className="ax-quote cabh-quote reveal">
-              <span className="ax-quote-mark" aria-hidden="true">
-                <Glyph name="quote" size={40} />
-              </span>
-              <blockquote>
-                The AAA team is very technically precise, with strong subject-matter expertise and great
-                collaboration. I do not hesitate to endorse AAA to prospective customers.
-              </blockquote>
-              <div className="ax-quote-person">
-                <strong>Michael Peters</strong>
-                <span>CEO, Lazarus Alliance</span>
-                <span className="cabh-quote-org">AAA Accredited Certification Body · United States</span>
+          {/* The case studies assigned to this page in the admin (Case Studies →
+              "Show on program pages"): the first with a video leads, the next
+              one follows as a shorter quote. */}
+          {lead && lead.videoId && (
+            <div className="cabh-story">
+              <div className="reveal">
+                <CabVideo
+                  id={lead.videoId}
+                  title={`${lead.name} — AAA accreditation experience`}
+                  poster={lead.image ?? `https://i.ytimg.com/vi/${lead.videoId}/hqdefault.jpg`}
+                  alt={lead.imageAlt}
+                  label={`Watch the ${lead.name} Story`}
+                  sub={`AAA Accredited ${[lead.sector, lead.country].filter(Boolean).join(" · ")}`}
+                />
               </div>
 
-              <ul className="cabh-impacts">
-                {IMPACTS.map((m) => (
-                  <li key={m.t}>
-                    <Glyph name={m.icon} size={20} />
-                    <div>
-                      <strong>{m.t}</strong>
-                      <span>{m.d}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="ax-quote cabh-quote reveal">
+                <span className="ax-quote-mark" aria-hidden="true">
+                  <Glyph name="quote" size={40} />
+                </span>
+                <blockquote>{lead.quote}</blockquote>
+                <div className="ax-quote-person">
+                  <strong>{leadBy.name}</strong>
+                  {leadBy.role && <span>{leadBy.role}</span>}
+                  <span className="cabh-quote-org">AAA Accredited {[lead.sector, lead.country].filter(Boolean).join(" · ")}</span>
+                </div>
 
-              <div className="cabh-quote-actions">
-                <a href={VIDEO_URL} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-blue sm">
-                  Watch the Full Story <Glyph name="play" size={14} strokeWidth={2} />
-                </a>
-                <Link href="/news" className="ax-btn ax-btn-ghost-navy sm">
-                  Read the Success Story
-                </Link>
+                <ul className="cabh-impacts">
+                  {IMPACTS.map((m) => (
+                    <li key={m.t}>
+                      <Glyph name={m.icon} size={20} />
+                      <div>
+                        <strong>{m.t}</strong>
+                        <span>{m.d}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="cabh-quote-actions">
+                  <a
+                    href={`https://www.youtube.com/watch?v=${lead.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ax-btn ax-btn-blue sm"
+                  >
+                    Watch the Full Story <Glyph name="play" size={14} strokeWidth={2} />
+                  </a>
+                  {lead.href && (
+                    <Link href={lead.href} className="ax-btn ax-btn-ghost-navy sm">
+                      Read the Success Story
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="cabh-second reveal">
-            <div className="cabh-second-photo">
-              <Image
-                src={`${IMG}/christiano-baros-of-kcertification-holdi-977c68f7.webp`}
-                alt="Christiano Baros of KCertification holding an AAA accreditation certificate"
-                width={1380}
-                height={863}
-                sizes="(max-width: 720px) 90vw, 260px"
-              />
-            </div>
-            <div className="cabh-second-copy">
-              <span className="cabh-second-kicker">Another Accredited Organization’s Experience</span>
-              <blockquote>
-                We began the process seeking a reliable partner to accredit our services, and from start to finish,
-                everything was handled with professionalism.
-              </blockquote>
-              <div className="cabh-second-person">
-                <strong>Christiano Baros</strong>
-                <span>CEO, KCertification · São Paulo, Brazil</span>
+          {second && (
+            <div className="cabh-second reveal">
+              {second.image && (
+                <div className="cabh-second-photo">
+                  <Image src={second.image} alt={second.imageAlt} width={1380} height={863} sizes="(max-width: 720px) 90vw, 260px" />
+                </div>
+              )}
+              <div className="cabh-second-copy">
+                <span className="cabh-second-kicker">Another Accredited Organization’s Experience</span>
+                <blockquote>{second.quote}</blockquote>
+                <div className="cabh-second-person">
+                  <strong>{secondBy.name}</strong>
+                  <span>{[secondBy.role, second.country].filter(Boolean).join(" · ")}</span>
+                </div>
+                {second.href && (
+                  <Link href={second.href} className="cabh-second-link">
+                    Read the case study <Glyph name="arrow-right" size={14} strokeWidth={2} />
+                  </Link>
+                )}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 

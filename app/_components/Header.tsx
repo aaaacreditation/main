@@ -64,7 +64,7 @@ const GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     label: "Resources",
     href: "/news",
     items: [
-      { href: EXTERNAL.successStories, label: "Success Stories", external: true },
+      { href: "/case-studies", label: "Success Stories" },
       { href: "/news", label: "Articles" },
       { href: "/news", label: "News & Announcements" },
     ],

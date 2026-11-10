@@ -5,6 +5,7 @@ import { requireArea } from "@/lib/admin";
 import DangerButton from "../../_components/DangerButton";
 import { deleteCaseStudy, moveCaseStudy } from "./actions";
 import { CASE_STUDY_ERRORS, CASE_STUDY_TABS, listHref, parseTab, placementWhere } from "./shared";
+import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
 import "./case-studies-admin.css";
 
 export const dynamic = "force-dynamic";
@@ -55,7 +56,7 @@ export default async function CaseStudiesAdmin({
         <div>
           <h1>Case Studies</h1>
           <p className="adm-topbar-sub">
-            Success stories on the home carousel and the SME Accreditation page · {total} total
+            Case study pages and the success-story cards on the home, SME and program pages · {total} total
           </p>
         </div>
         <div className="adm-topbar-actions">
@@ -146,7 +147,13 @@ export default async function CaseStudiesAdmin({
                       <div className="cs-chips">
                         {r.showOnHome ? <span className="adm-chip navy">Home</span> : null}
                         {r.showOnSme ? <span className="adm-chip ok">SME page</span> : null}
-                        {!r.showOnHome && !r.showOnSme ? <span className="adm-chip warn">Not placed</span> : null}
+                        {PROGRAM_PAGES.filter((pg) => r.pages.includes(pg.key)).map((pg) => (
+                          <span className="adm-chip navy" key={pg.key}>{pg.label}</span>
+                        ))}
+                        {r.body ? <span className="adm-chip ok">Case study page</span> : null}
+                        {!r.showOnHome && !r.showOnSme && r.pages.length === 0 && !r.body ? (
+                          <span className="adm-chip warn">Not placed</span>
+                        ) : null}
                         {r.featured ? <span className="adm-chip gold">Featured</span> : null}
                       </div>
                     </td>

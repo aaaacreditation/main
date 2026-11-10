@@ -82,9 +82,13 @@ export function hasRecordFilters(f: DirectoryFilters): boolean {
   return Boolean(f.type || f.rstatus || f.expiry);
 }
 
-/** Record-level filters: program type, record status and expiry window (date only). */
-function recordMatches(a: AdminRecord, f: DirectoryFilters, now: number): boolean {
-  if (f.type && accreditationType(a) !== f.type) return false;
+/**
+ * Record-level filters: program type, record status and expiry window (date
+ * only). `typeByTag` skips the type test when the organization carries the
+ * filtered type as an "Accredited as" tag — then every record qualifies on type.
+ */
+function recordMatches(a: AdminRecord, f: DirectoryFilters, now: number, typeByTag = false): boolean {
+  if (f.type && !typeByTag && accreditationType(a) !== f.type) return false;
   if (f.rstatus && a.status !== f.rstatus) return false;
   if (f.expiry) {
     if (!a.expiresOn) return false;
@@ -124,8 +128,9 @@ export function filterOrganizations(
         .toLowerCase();
       if (!text.includes(q)) continue;
     }
+    const typeByTag = Boolean(f.type) && org.tags.includes(f.type);
     const matched = byRecord
-      ? org.accreditations.filter((a) => recordMatches(a, f, t))
+      ? org.accreditations.filter((a) => recordMatches(a, f, t, typeByTag))
       : org.accreditations;
     if (byRecord && matched.length === 0) continue;
     out.push({ org, matched });

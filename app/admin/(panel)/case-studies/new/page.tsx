@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireArea } from "@/lib/admin";
 import CaseStudyForm from "../CaseStudyForm";
+import { caseStudyPageOptions } from "../options";
 import { CASE_STUDY_ERRORS } from "../shared";
 import "../case-studies-admin.css";
 
@@ -13,7 +14,7 @@ export default async function NewCaseStudyPage({
   searchParams: Promise<{ error?: string; placement?: string }>;
 }) {
   await requireArea("case-studies");
-  const { error, placement } = await searchParams;
+  const [{ error, placement }, caseStudyPages] = await Promise.all([searchParams, caseStudyPageOptions()]);
 
   return (
     <>
@@ -31,6 +32,7 @@ export default async function NewCaseStudyPage({
             showOnHome: placement === "home",
             showOnSme: placement === "sme",
           }}
+          caseStudyPages={caseStudyPages}
         />
       </div>
     </>

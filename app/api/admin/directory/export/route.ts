@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStaffSession } from "@/lib/admin";
-import { ACCREDITATION_TYPES, accreditationType } from "@/app/_data/accredited-organizations";
+import { ACCREDITATION_TYPES, accreditationType, isRegisterType } from "@/app/_data/accredited-organizations";
 import {
   filterOrganizations,
   loadAdminOrganizations,
@@ -28,6 +28,7 @@ const HEADER = [
   "Listing",
   "Register order",
   "Slug",
+  "Accredited as tags",
   "Accredited as",
   "Program",
   "Accreditation number",
@@ -64,6 +65,7 @@ export async function GET(req: Request) {
       cell(org.status === "PUBLISHED" ? "Published" : "Draft"),
       cell(org.order, false),
       cell(org.slug),
+      cell(org.tags.map((t) => (isRegisterType(t) ? ACCREDITATION_TYPES[t].label : t)).join("; ")),
     ];
     const records = matched.length > 0 ? matched : [null];
     for (const a of records) {

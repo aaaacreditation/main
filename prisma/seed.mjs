@@ -19,6 +19,14 @@ import { readFileSync } from "node:fs";
 const prisma = new PrismaClient();
 
 async function main() {
+  // `node prisma/seed.mjs --only=case-studies` adds just the imported case
+  // studies and program-page cards — safe against production, where the
+  // admin user and news posts must not be touched.
+  if (process.argv.includes("--only=case-studies")) {
+    await seedCaseStudyPages();
+    return;
+  }
+
   const email = process.env.ADMIN_EMAIL || "admin@aaa-accreditation.org";
   const password = process.env.ADMIN_PASSWORD || "ChangeMe!2026";
   const passwordHash = await bcrypt.hash(password, 12);
@@ -84,6 +92,7 @@ async function main() {
   console.log(`Backfilled cover/category on ${backfilled} posts.`);
 
   await seedCaseStudies();
+  await seedCaseStudyPages();
   await seedOrganizations();
 }
 
@@ -158,6 +167,62 @@ async function seedCaseStudies() {
   ];
   const res = await prisma.caseStudy.createMany({ data: rows });
   console.log(`Seeded ${res.count} case studies (${HOME_STORIES.length} home, ${CASE_STUDIES.length} SME).`);
+}
+
+/**
+ * Nov 2026: the case studies imported from casestudies.aaa-accreditation.org
+ * (app/_data/case-study-articles.json, scripts/import-case-studies.mjs) and
+ * the program-page cards (app/_data/page-case-studies.ts). Runs every time but
+ * only creates slugs that don't exist yet — rows already in the table, edited
+ * in the admin or not, are never overwritten.
+ */
+async function seedCaseStudyPages() {
+  const articles = JSON.parse(
+    readFileSync(new URL("../app/_data/case-study-articles.json", import.meta.url), "utf8")
+  );
+  const { PAGE_CASE_STUDIES } = await import("../app/_data/page-case-studies.ts");
+
+  const rows = [
+    ...articles.map((a) => ({
+      slug: a.slug,
+      name: a.name,
+      title: a.title,
+      subtitle: a.subtitle,
+      excerpt: a.excerpt,
+      body: a.body,
+      sector: a.sector,
+      country: a.country,
+      scope: a.scope,
+      website: a.website,
+      image: a.image,
+      imageAlt: a.imageAlt,
+      logo: a.logo,
+      videoUrl: a.videoUrl,
+      featured: a.featured,
+      publishedAt: new Date(a.publishedAt),
+      order: 200 + a.order,
+    })),
+    ...PAGE_CASE_STUDIES.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      sector: c.sector,
+      country: c.country,
+      metric: c.metric,
+      quote: c.quote,
+      quoteBy: c.quoteBy,
+      description: c.description,
+      image: c.image,
+      imageAlt: c.imageAlt,
+      videoUrl: c.videoUrl,
+      link: c.link,
+      pages: c.pages,
+      order: c.order,
+    })),
+  ];
+  const res = await prisma.caseStudy.createMany({ data: rows, skipDuplicates: true });
+  console.log(
+    `Case study pages: ${res.count} new of ${rows.length} (${articles.length} articles, ${PAGE_CASE_STUDIES.length} program-page cards); existing slugs left as they are.`
+  );
 }
 
 /* ---------------------------------------------------- accredited register */

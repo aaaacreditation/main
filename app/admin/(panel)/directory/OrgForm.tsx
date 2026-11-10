@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { countryArt } from "@/app/_data/accredited-organizations";
+import {
+  ACCREDITATION_TYPES,
+  REGISTER_TYPES,
+  accreditationType,
+  countryArt,
+} from "@/app/_data/accredited-organizations";
 import ImageField from "../../_components/ImageField";
 import SubmitButton from "../../_components/SubmitButton";
 import AccreditationsRepeater, { type RecordInput } from "./AccreditationsRepeater";
@@ -18,6 +23,7 @@ export type OrgFormData = {
   website?: string | null;
   order?: number;
   status?: "PUBLISHED" | "DRAFT";
+  tags?: string[];
   accreditations?: RecordInput[];
 };
 
@@ -48,6 +54,10 @@ export default function OrgForm({
 }) {
   const editing = Boolean(org?.id);
   const builtInFlag = !org?.flag && org?.country ? countryArt(org.country) : undefined;
+  // Types the saved records already put the organization under (no tick needed for these).
+  const recordTypes = Array.from(
+    new Set((org?.accreditations ?? []).map((a) => accreditationType(a)).filter((t) => t !== "other"))
+  ).map((t) => ACCREDITATION_TYPES[t].label);
 
   return (
     <form action={saveOrganization} className="adm-form">
@@ -138,6 +148,27 @@ export default function OrgForm({
             defaultValue={org?.website ?? ""}
             placeholder="https://"
           />
+
+          <h3 className="adm-section-title">Accredited as tags</h3>
+          <p className="adm-hint" style={{ marginTop: 4 }}>
+            Tick every type this organization should appear under in the public register’s “Accredited as”
+            filter — it shows under each one. It is also listed automatically under the types its records name
+            {recordTypes.length > 0 ? <> ({recordTypes.join(", ")})</> : null}, so those don’t need a tick.
+          </p>
+          <div className="dir-tags">
+            {REGISTER_TYPES.map((t) => {
+              const { label, standard } = ACCREDITATION_TYPES[t];
+              return (
+                <label className="dir-tag" key={t}>
+                  <input type="checkbox" name="tags" value={t} defaultChecked={org?.tags?.includes(t) ?? false} />
+                  <span>
+                    {label}
+                    {standard ? <small>{standard}</small> : null}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
 
           <h3 className="adm-section-title">Accreditation records</h3>
           <p className="adm-hint" style={{ marginTop: 4 }}>

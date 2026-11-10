@@ -194,7 +194,6 @@ export const CAB_SCHEMES = [
  * on-site page until one is supplied.
  */
 export const EXTERNAL = {
-  successStories: "https://casestudies-alpha.vercel.app/",
   accreditedPersonnel: "https://adcp.aaa-accreditation.org",
   /** TODO(client): AAA Academy URL. */
   academy: "/about-accreditation",

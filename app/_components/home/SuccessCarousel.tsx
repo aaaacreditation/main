@@ -48,6 +48,8 @@ export default function SuccessCarousel({
     <ul className="hx-ss-group" inert={clone} aria-hidden={clone || undefined}>
       {stories.map((s, i) => {
         const href = s.video ?? s.href ?? moreHref;
+        // On-site case-study pages open in place; videos and other sites in a new tab.
+        const offsite = /^https?:\/\//.test(href);
         return (
           // Index in the key: stories are admin-managed, so two can share a name.
           <li key={`${s.name}-${i}`} className="hx-ss-item">
@@ -95,10 +97,19 @@ export default function SuccessCarousel({
                 </div>
                 <p className="hx-story-quote">“{s.quote}”</p>
                 <div className="hx-story-foot">
-                  <a href={href} target="_blank" rel="noopener noreferrer" className="hx-story-link">
+                  <a
+                    href={href}
+                    target={offsite ? "_blank" : undefined}
+                    rel={offsite ? "noopener noreferrer" : undefined}
+                    className="hx-story-link"
+                  >
                     {s.video ? "Watch Video" : "Read Story"}{" "}
                     <Glyph name={s.video ? "play" : "arrow-right"} size={14} strokeWidth={2} />
-                    <span className="sr-only"> about {s.name} (opens in a new tab)</span>
+                    <span className="sr-only">
+                      {" "}
+                      about {s.name}
+                      {offsite ? " (opens in a new tab)" : ""}
+                    </span>
                   </a>
                   <span className="hx-story-badge">
                     <Glyph name="badge-check" size={14} strokeWidth={2} /> Accredited

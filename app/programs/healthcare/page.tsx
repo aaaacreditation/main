@@ -11,6 +11,7 @@ import { breadcrumbSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import HcVideo from "./HcVideo";
 import HcTestimonials, { type Testimonial } from "./HcTestimonials";
+import { getPageCaseStudies } from "@/lib/case-studies";
 import "./healthcare.css";
 
 /*
@@ -153,44 +154,25 @@ const STAGES: { icon: GlyphName; title: string; text: string; badge?: string }[]
   },
 ];
 
-const TESTIMONIALS: Testimonial[] = [
-  {
-    org: "Global Medical City",
-    country: "Egypt",
-    theme: "Patient Safety & Trust",
-    quote:
-      "“AAA accreditation helps ensure patient safety and supports patients in receiving the best possible medical care.”",
-    note: "Translated from Arabic",
-    video: "AZd-Wi2o5UI",
-    image: `${IMG}/testimonial-gmc.webp`,
-    alt: "Global Medical City healthcare accreditation testimonial",
-  },
-  {
-    org: "Domus Salutis",
-    country: "Italy",
-    theme: "Consistency & Quality",
-    quote:
-      "“Accreditation means greater safety in procedures and protocols, and greater confidence that staff follow patients using consistent methods.”",
-    note: "Translated from Italian",
-    video: "SxgILo3vjGU",
-    image: `${IMG}/testimonial-domus.webp`,
-    alt: "Domus Salutis healthcare accreditation testimonial",
-  },
-  {
-    org: "Dr. Paul’s",
-    country: "India",
-    theme: "Systems & Organizational Improvement",
-    quote:
-      "“The accreditation journey has been a structured and valuable process that helped us strengthen our systems, documentation, patient safety practices and overall operational experience.”",
-    video: "zpzh6QtLdSI",
-    image: `${IMG}/testimonial-dr-paul.webp`,
-    alt: "Dr. Paul’s healthcare accreditation testimonial",
-  },
-];
-
 const arrow = <Glyph name="arrow-right" size={14} strokeWidth={2} />;
 
-export default function HealthcarePage() {
+export default async function HealthcarePage() {
+  // Section 07 — the case studies assigned to this page in the admin
+  // (Case Studies → "Show on program pages"). Each card plays its video, so
+  // rows without a video or photo are left out.
+  const testimonials: Testimonial[] = (await getPageCaseStudies("healthcare"))
+    .filter((c) => c.videoId && c.image)
+    .map((c) => ({
+      org: c.name,
+      country: c.country,
+      theme: c.metric,
+      quote: `“${c.quote}”`,
+      note: c.description || undefined,
+      video: c.videoId as string,
+      image: c.image as string,
+      alt: c.imageAlt,
+      href: c.href ?? undefined,
+    }));
   return (
     <div className="axp hcx">
       <JsonLd
@@ -503,10 +485,10 @@ export default function HealthcarePage() {
             title="Hear From AAA-Accredited Healthcare Organizations"
             intro="Healthcare organizations across different countries share how AAA accreditation has supported patient safety, stronger systems, consistent practices, and greater confidence."
           />
-          <HcTestimonials items={TESTIMONIALS} />
+          <HcTestimonials items={testimonials} />
           <p className="hcx-testi-foot reveal">
             <strong>Real Healthcare Organizations. Real Accreditation Experiences.</strong>
-            <span>Egypt • Italy • India</span>
+            <span>{testimonials.map((t) => t.country).join(" • ")}</span>
           </p>
         </div>
       </section>

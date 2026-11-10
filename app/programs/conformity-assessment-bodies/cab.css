@@ -344,6 +344,19 @@
 }
 .cabh .cabh-second-person strong { display: block; font-size: 15px; color: var(--aaa-blue); }
 .cabh .cabh-second-person span { display: block; margin-top: 2px; font-size: 13px; color: var(--ink-600); }
+/* Link to the second organization's full case study (Nov 2026). */
+.cabh .cabh-second-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+}
+.cabh .cabh-second-link:hover { color: var(--aaa-gold-700); }
+.cabh .cabh-second-link svg { transition: transform 0.25s ease; }
+.cabh .cabh-second-link:hover svg { transform: translateX(3px); }
 
 /* ------------------------------- Final CTA ---------------------------- */
 .cabh .cabh-trust {

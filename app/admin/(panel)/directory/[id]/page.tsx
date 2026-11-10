@@ -63,6 +63,7 @@ export default async function EditOrganizationPage({
             website: org.website,
             order: org.order,
             status: org.status,
+            tags: org.tags,
             accreditations: org.accreditations.map((a) => ({
               accreditedAs: a.accreditedAs,
               number: a.number,

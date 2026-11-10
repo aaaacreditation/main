@@ -10,6 +10,8 @@ export const CASE_STUDY_TABS = [
   { key: "", label: "All" },
   { key: "home", label: "Home carousel" },
   { key: "sme", label: "SME page" },
+  { key: "program", label: "Program pages" },
+  { key: "pages", label: "Case study pages" },
   { key: "drafts", label: "Drafts" },
 ] as const;
 
@@ -26,6 +28,10 @@ export function placementWhere(tab: CaseStudyTab): Prisma.CaseStudyWhereInput {
       return { showOnHome: true };
     case "sme":
       return { showOnSme: true };
+    case "program":
+      return { NOT: { pages: { isEmpty: true } } };
+    case "pages":
+      return { NOT: { body: "" } };
     case "drafts":
       return { status: "DRAFT" };
     default:
@@ -62,5 +68,6 @@ export const CASE_STUDY_ERRORS: Record<string, string> = {
   video: "The video URL must be a full link starting with https://.",
   link: "The story link must be a full link (https://…) or a site path starting with “/”.",
   position: "Pick a crop position from the list.",
+  date: "The publication date isn’t a valid date.",
   notfound: "That case study no longer exists.",
 };
