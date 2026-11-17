@@ -6,7 +6,7 @@ import PageHero from "../../_components/PageHero";
 import NavyCard from "../../_components/site/NavyCard";
 import SectionHead from "../../_components/site/SectionHead";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
-import { FACTS } from "@/lib/facts";
+import { CONSULT, FACTS, applyHref } from "@/lib/facts";
 import { breadcrumbSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import HcVideo from "./HcVideo";
@@ -210,7 +210,7 @@ export default async function HealthcarePage() {
         caption={{ kicker: "ISQua EEA Accredited Standards", title: "Accreditation Standards for Healthcare Facilities" }}
         actions={
           <>
-            <Link href="/apply" className="ax-btn ax-btn-gold">
+            <Link href={applyHref("healthcare")} className="ax-btn ax-btn-gold">
               Apply for Accreditation {arrow}
             </Link>
             <Link href="/contact" className="ax-btn ax-btn-ghost">
@@ -279,9 +279,10 @@ export default async function HealthcarePage() {
           </div>
           <p className="hcx-elig-contact reveal">
             Not sure if your organization is eligible?{" "}
-            <Link href="/contact">
+            {/* Nov 2026 (client): books Sara, the healthcare advisor, directly. */}
+            <a href={CONSULT.healthcare} target="_blank" rel="noopener noreferrer">
               Contact our healthcare team <span aria-hidden="true">→</span>
-            </Link>
+            </a>
           </p>
         </div>
       </section>
@@ -505,7 +506,7 @@ export default async function HealthcarePage() {
               organizational performance through AAA Healthcare Accreditation.
             </p>
             <div className="ax-close-actions">
-              <Link href="/apply" className="ax-btn ax-btn-gold">
+              <Link href={applyHref("healthcare")} className="ax-btn ax-btn-gold">
                 Apply for Accreditation {arrow}
               </Link>
               <Link href="/contact" className="ax-btn ax-btn-ghost">

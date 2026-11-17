@@ -5,7 +5,7 @@ import Icon from "../../_components/Icon";
 import { getSmeCaseStudies } from "@/lib/case-studies";
 import ReadinessLauncher from "./ReadinessLauncher";
 import BareChrome from "./BareChrome";
-import { FACTS } from "@/lib/facts";
+import { FACTS, CONSULT, applyHref } from "@/lib/facts";
 import { withSeoOverride } from "@/lib/seo-overrides";
 import { SITE_URL } from "@/lib/seo";
 import "./sme.css";
@@ -20,9 +20,9 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
+const BOOKING = CONSULT.sme;
 /* Closing "Book a Meeting" button — client-requested booking page (Sept 2026). */
-const MEETING = "https://calendly.com/accreditationaaa/consultation-call-am";
+const MEETING = CONSULT.sme;
 const APPLICATION_FORM = "/documents/AAA-SME-Accreditation-Application-Form.docx";
 
 function LineIcon({ children }: { children: React.ReactNode }) {
@@ -301,7 +301,7 @@ export default async function Page() {
                 Check Your Readiness for Free
                 <Icon name="arrow" size={16} />
               </Link>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
+              <a href={BOOKING} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
                 Book Your Consultation
               </a>
             </div>
@@ -478,10 +478,10 @@ export default async function Page() {
                 and credibility.
               </p>
               <div className="smex-proc-ctas">
-                <Link href="/apply" className="smex-btn smex-btn-blue">
+                <Link href={applyHref("sme")} className="smex-btn smex-btn-blue">
                   Apply for Accreditation <Icon name="arrow" size={16} />
                 </Link>
-                <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost-navy">
+                <a href={BOOKING} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost-navy">
                   Book Your Consultation
                 </a>
               </div>
@@ -618,7 +618,7 @@ export default async function Page() {
             <Link href="/case-studies" className="smex-btn smex-btn-blue">
               View All Success Stories
             </Link>
-            <Link href="/apply" className="smex-btn smex-btn-gold">
+            <Link href={applyHref("sme")} className="smex-btn smex-btn-gold">
               Apply for Accreditation <Icon name="arrow" size={16} />
             </Link>
           </div>
@@ -671,7 +671,7 @@ export default async function Page() {
               />
             </figure>
             <div className="smex-close-actions">
-              <Link href="/apply" className="smex-btn smex-btn-gold">
+              <Link href={applyHref("sme")} className="smex-btn smex-btn-gold">
                 Apply for Accreditation <Icon name="arrow" size={16} />
               </Link>
               <a href={MEETING} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">

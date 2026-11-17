@@ -5,7 +5,18 @@ import CTA from "../../_components/CTA";
 import NavyCard from "../../_components/site/NavyCard";
 import SectionHead from "../../_components/site/SectionHead";
 import Glyph from "../../_components/site/Glyph";
-import { CONTACT } from "@/lib/facts";
+import { CONTACT, applyHref, type ApplyProgram } from "@/lib/facts";
+
+/** The /apply form's program key for each scheme page (by `data.slug`). */
+const APPLY_KEY: Record<string, ApplyProgram> = {
+  "testing-labs": "testing-labs",
+  "calibration-labs": "calibration-labs",
+  iso15189: "medical-labs",
+  inspection: "inspection",
+  iso17024: "personnel",
+  iso17043: "proficiency-testing",
+  iso17065: "product",
+};
 import SchemeVideo from "./SchemeVideo";
 import SchemeAdvisorForm from "./SchemeAdvisorForm";
 import type { SchemeData, SchemeQuote, SchemeTile } from "./types";
@@ -97,7 +108,7 @@ export default function SchemePage({ data }: { data: SchemeData }) {
         meta={hero.stats}
         actions={
           <>
-            <Link href="/apply" className="ax-btn ax-btn-gold">
+            <Link href={applyHref(APPLY_KEY[data.slug])} className="ax-btn ax-btn-gold">
               Apply for Accreditation <Glyph name="arrow-right" size={14} strokeWidth={2} />
             </Link>
             <a href={CONTACT.consultationUrl} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
@@ -373,7 +384,7 @@ export default function SchemePage({ data }: { data: SchemeData }) {
         eyebrow="Take the Next Step"
         title={cta.title}
         text={cta.text}
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
+        primary={{ href: applyHref(APPLY_KEY[data.slug]), label: "Apply for Accreditation" }}
         secondary={{ href: CONTACT.consultationUrl, label: "Book a Free Consultation" }}
         related={data.related}
       />

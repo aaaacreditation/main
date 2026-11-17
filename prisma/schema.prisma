@@ -167,6 +167,10 @@ model CaseStudy {
   excerpt       String        @default("")
   /// Article HTML from the admin editor; YouTube links alone in a paragraph render as players.
   body          String        @default("")
+  /// Page-builder layout (Nov 2026): sections of 1–3 columns holding text,
+  /// image, video and quote blocks — see lib/case-study-layout.ts. When set,
+  /// the public page renders it; `body` is kept in step as plain HTML.
+  layout        Json?
   /// What the organization does / its accredited scope, shown beside the article.
   scope         String        @default("")
   website       String?
@@ -336,4 +340,35 @@ model AuditLog {
 
   @@index([createdAt(sort: Desc)])
   @@index([entity, entityId])
+}
+
+/// Which managed list a Term belongs to (Nov 2026).
+enum TermKind {
+  /// News & blog categories (Post.category holds the term's name).
+  POST_CATEGORY
+  /// News & blog tags (Post.tags holds term names).
+  POST_TAG
+  /// Extra "Accredited as" tags for the register (Organization.tags holds the
+  /// term's slug, next to the built-in REGISTER_TYPES ids).
+  ORG_TAG
+}
+
+/// Admin-managed vocabularies (Nov 2026, client): staff add, rename and remove
+/// blog categories, blog tags and register tags in Admin → Categories & Tags.
+/// Posts and organizations keep plain strings, so a term is the list those
+/// strings are picked from; renaming a term rewrites the strings that use it.
+model Term {
+  id        String   @id @default(cuid())
+  kind      TermKind
+  name      String
+  slug      String
+  /// POST_CATEGORY only: the Resources page that lists it — "news" (News &
+  /// Announcements, /news) or "articles" (Articles, /articles).
+  section   String   @default("news")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([kind, slug])
+  @@index([kind, order])
 }

@@ -99,7 +99,8 @@ export const PAGE_CASE_STUDIES: PageCaseStudySeed[] = [
     description: "Translated from Arabic",
     image: "/images/site/healthcare/testimonial-gmc.webp",
     imageAlt: "Global Medical City healthcare accreditation testimonial",
-    videoUrl: yt("AZd-Wi2o5UI"),
+    // Nov 2026: was swapped with Dr. Paul’s (client feedback; YouTube titles confirm).
+    videoUrl: yt("zpzh6QtLdSI"),
     link: "/case-studies/global-medical-city-hospital-pioneering-excellence-in-egyptian-healthcare",
     pages: ["healthcare"],
     order: 0,
@@ -134,7 +135,7 @@ export const PAGE_CASE_STUDIES: PageCaseStudySeed[] = [
     description: "",
     image: "/images/site/healthcare/testimonial-dr-paul.webp",
     imageAlt: "Dr. Paul’s healthcare accreditation testimonial",
-    videoUrl: yt("zpzh6QtLdSI"),
+    videoUrl: yt("AZd-Wi2o5UI"),
     link: null,
     pages: ["healthcare"],
     order: 2,

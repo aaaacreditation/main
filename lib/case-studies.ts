@@ -6,6 +6,7 @@ import { HOME_STORIES } from "@/app/_data/home-stories";
 import { CASE_STUDIES, type CaseStudy } from "@/app/_data/case-studies";
 import articlesJson from "@/app/_data/case-study-articles.json";
 import { PAGE_CASE_STUDIES, type PageCaseStudySeed, type ProgramPageKey } from "@/app/_data/page-case-studies";
+import { parseLayout, type CaseStudyLayout } from "./case-study-layout";
 
 /**
  * Public access to the Case Studies / Success Stories admin module.
@@ -147,6 +148,8 @@ export type CaseStudyArticle = {
   publishedAt: string;
   /** Article HTML (admin editor output). */
   body: string;
+  /** Page-builder layout (Nov 2026); null renders `body` as before. */
+  layout?: CaseStudyLayout | null;
 };
 
 const BUNDLED_ARTICLES = articlesJson as CaseStudyArticle[];
@@ -182,6 +185,7 @@ function toArticle(r: CaseStudyRow): CaseStudyArticle {
     featured: r.featured,
     publishedAt: (r.publishedAt ?? r.createdAt).toISOString(),
     body: r.body,
+    layout: parseLayout(r.layout),
   };
 }
 

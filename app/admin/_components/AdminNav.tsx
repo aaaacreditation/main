@@ -16,6 +16,7 @@ const GROUPS: { label?: string; items: Item[] }[] = [
     label: "Content",
     items: [
       { href: "/admin/posts", label: "News & Blog", icon: "✎", area: "content" },
+      { href: "/admin/taxonomy", label: "Categories & Tags", icon: "#", area: "content" },
       { href: "/admin/case-studies", label: "Case Studies", icon: "★", area: "case-studies" },
       { href: "/admin/pages", label: "Pages", icon: "▤", area: "content" },
       { href: "/admin/media", label: "Media Library", icon: "▣", area: "content" },

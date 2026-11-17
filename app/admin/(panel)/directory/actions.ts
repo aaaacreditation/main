@@ -2,12 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ContentStatus } from "@prisma/client";
+import { ContentStatus, TermKind } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { audit, int, requireArea, str } from "@/lib/admin";
 import { parseExpiry } from "@/lib/directory";
 import { slugify } from "@/lib/slug";
-import { ACCREDITATION_STATUSES, REGISTER_TYPES } from "@/app/_data/accredited-organizations";
+import { ensureTerms, parseNames, termSlug } from "@/lib/taxonomy";
+import { ACCREDITATION_STATUSES, REGISTER_TYPES, isRegisterType } from "@/app/_data/accredited-organizations";
 
 /**
  * Directory admin server actions: save (create / update) and delete an
@@ -126,9 +127,20 @@ export async function saveOrganization(formData: FormData) {
   if (website === false) redirect(back("website"));
 
   const status = str(formData, "status") === "DRAFT" ? ContentStatus.DRAFT : ContentStatus.PUBLISHED;
-  // "Accredited as" tags: only known type ids, once each, in the register's order.
+  // "Accredited as" tags: the built-in type ids in the register's order, then
+  // the custom register tags (Admin → Categories & Tags), then any typed in
+  // "Add new tags", which join that list. Unknown values are dropped.
   const ticked = new Set(formData.getAll("tags").map(String));
-  const tags = REGISTER_TYPES.filter((t) => ticked.has(t));
+  const custom = await prisma.term.findMany({ where: { kind: TermKind.ORG_TAG }, orderBy: [{ order: "asc" }, { name: "asc" }] });
+  const added = await ensureTerms(
+    TermKind.ORG_TAG,
+    parseNames(str(formData, "newTags", 300), 10).filter((n) => !isRegisterType(termSlug(n)))
+  );
+  const tags = [
+    ...REGISTER_TYPES.filter((t) => ticked.has(t)),
+    ...custom.filter((t) => ticked.has(t.slug)).map((t) => t.slug),
+    ...added.map((t) => t.slug),
+  ].filter((t, i, all) => all.indexOf(t) === i);
 
   const parsed = parseRecords(str(formData, "accreditations", 400_000));
   if ("error" in parsed) redirect(back(parsed.error));

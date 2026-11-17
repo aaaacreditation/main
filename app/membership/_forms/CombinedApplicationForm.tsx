@@ -84,7 +84,7 @@ export default function CombinedApplicationForm({ source }: { source: string }) 
 
   if (status === "ok") {
     return (
-      <FormDone title="Application received">
+      <FormDone title="Application received" subject="AAA membership – supporting documents">
         <p>
           Thank you for your interest in AAA membership. Our membership team will confirm your
           membership type, send payment instructions for the method you selected, and let you know

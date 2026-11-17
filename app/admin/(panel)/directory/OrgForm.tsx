@@ -47,10 +47,13 @@ export default function OrgForm({
   org,
   countries,
   accreditedAsOptions,
+  customTags = [],
 }: {
   org?: OrgFormData;
   countries: string[];
   accreditedAsOptions: string[];
+  /** Register tags from Admin → Categories & Tags. */
+  customTags?: { slug: string; name: string }[];
 }) {
   const editing = Boolean(org?.id);
   const builtInFlag = !org?.flag && org?.country ? countryArt(org.country) : undefined;
@@ -168,7 +171,30 @@ export default function OrgForm({
                 </label>
               );
             })}
+            {customTags.map((t) => (
+              <label className="dir-tag custom" key={t.slug}>
+                <input type="checkbox" name="tags" value={t.slug} defaultChecked={org?.tags?.includes(t.slug) ?? false} />
+                <span>
+                  {t.name}
+                  <small>Custom tag</small>
+                </span>
+              </label>
+            ))}
           </div>
+          <label className="adm-label" htmlFor="of-newtags">
+            Add new tags
+          </label>
+          <input
+            id="of-newtags"
+            className="sme-input"
+            name="newTags"
+            maxLength={300}
+            placeholder="e.g. ISO 45001 Training, Online Academy — separate with commas"
+          />
+          <p className="adm-hint">
+            New tags are ticked for this organization and become filters on the public register.{" "}
+            <Link href="/admin/taxonomy?tab=register">Manage register tags</Link>
+          </p>
 
           <h3 className="adm-section-title">Accreditation records</h3>
           <p className="adm-hint" style={{ marginTop: 4 }}>

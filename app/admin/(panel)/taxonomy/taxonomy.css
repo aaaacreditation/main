@@ -1,0 +1,65 @@
+/* Admin → Categories & Tags (Nov 2026). Scoped to .adm .txn. */
+.adm .txn .txn-list { margin: 0; padding: 0; list-style: none; }
+.adm .txn .txn-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--ink-200, #e2e8f0);
+}
+.adm .txn .txn-row:last-child { border-bottom: 0; }
+.adm .txn .txn-edit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; min-width: 0; }
+.adm .txn .txn-edit.has-sec { grid-template-columns: minmax(0, 1fr) 220px auto; }
+.adm .txn .txn-edit .sme-input,
+.adm .txn .txn-edit .sme-select { width: 100%; min-width: 0; margin: 0; }
+.adm .txn .txn-meta { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.adm .txn .txn-link { font-size: 13px; color: var(--aaa-blue); }
+.adm .txn .txn-link:hover { text-decoration: underline; }
+.adm .txn .txn-actions { display: flex; align-items: center; gap: 6px; }
+.adm .txn .txn-move {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--ink-200, #e2e8f0);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--aaa-blue);
+  font-size: 15px;
+  cursor: pointer;
+}
+.adm .txn .txn-move:hover:not(:disabled) { border-color: var(--aaa-blue); }
+.adm .txn .txn-move:disabled { opacity: 0.35; cursor: default; }
+.adm .txn .txn-delete { position: relative; }
+.adm .txn .txn-delete summary {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--danger, #b3261e);
+  cursor: pointer;
+  list-style: none;
+}
+.adm .txn .txn-delete summary::-webkit-details-marker { display: none; }
+.adm .txn .txn-delete summary:hover { background: var(--danger-50, #fdf0ef); }
+.adm .txn .txn-delete form {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 6px);
+  right: 0;
+  display: grid;
+  gap: 8px;
+  width: 260px;
+  padding: 14px;
+  border: 1px solid var(--danger-200, #f2c6c2);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 18px 40px -18px rgba(6, 26, 44, 0.35);
+}
+.adm .txn .txn-add { display: grid; gap: 6px; }
+.adm .txn .txn-add .adm-btn-block { margin-top: 8px; }
+.adm .txn .txn-builtin { margin: 8px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--ink-600, #475569); }
+@media (max-width: 900px) {
+  .adm .txn .txn-row { grid-template-columns: 1fr; }
+  .adm .txn .txn-edit.has-sec { grid-template-columns: minmax(0, 1fr) auto; }
+  .adm .txn .txn-edit.has-sec .sme-select { grid-column: 1; }
+  .adm .txn .txn-delete form { left: 0; right: auto; }
+}

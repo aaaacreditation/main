@@ -70,4 +70,5 @@ export const CASE_STUDY_ERRORS: Record<string, string> = {
   position: "Pick a crop position from the list.",
   date: "The publication date isn’t a valid date.",
   notfound: "That case study no longer exists.",
+  layout: "The page builder content couldn’t be read. Reload the page and try again — your other changes were not saved.",
 };

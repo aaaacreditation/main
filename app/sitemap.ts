@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
-import { ContentStatus } from "@prisma/client";
+import { ContentStatus, TermKind } from "@prisma/client";
 import { SITE_URL } from "../lib/seo";
 import { getPublishedPosts } from "../lib/content";
+import { getTerms, sectionOf, termSlug } from "../lib/taxonomy";
 import { getCaseStudyArticles } from "../lib/case-studies";
 import { prisma } from "../lib/db";
 
@@ -98,8 +99,9 @@ const STATIC_ROUTES: Entry[] = [
   // Registers.
   page("/directory/accredited-organizations", 0.8, "weekly"),
 
-  // News archive.
+  // Resources: News & Announcements and Articles (Nov 2026 split).
   page("/news", 0.8, "daily"),
+  page("/articles", 0.8, "weekly"),
 
   // Case studies (imported Nov 2026 from casestudies.aaa-accreditation.org).
   page("/case-studies", 0.7, "monthly"),
@@ -160,11 +162,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     }));
 
-    // Paginated archive: /news is page 1, /news/archive/2..N follow.
-    const pageCount = Math.max(1, Math.ceil(published.length / NEWS_PER_PAGE));
-    archives = Array.from({ length: pageCount - 1 }, (_, i) =>
-      page(`/news/archive/${i + 2}`, 0.4, "weekly"),
-    );
+    // Paginated listings (Nov 2026): /news and /articles are page 1 of their
+    // section, /…/archive/2..N follow; then one page per category in use.
+    const categories = await getTerms(TermKind.POST_CATEGORY);
+    const count = (sec: string) => published.filter((p) => sectionOf(categories, p.category) === sec).length;
+    archives = [
+      ...(["news", "articles"] as const).flatMap((sec) =>
+        Array.from({ length: Math.max(1, Math.ceil(count(sec) / NEWS_PER_PAGE)) - 1 }, (_, i) =>
+          page(`${sec === "news" ? "/news" : "/articles"}/archive/${i + 2}`, 0.4, "weekly"),
+        ),
+      ),
+      ...categories
+        .filter((c) => published.some((p) => termSlug(p.category || "News") === c.slug))
+        .map((c) => page(`/news/category/${c.slug}`, 0.4, "weekly")),
+    ];
   } catch {
     // A sitemap missing the news archive still beats a build failure.
     posts = [];

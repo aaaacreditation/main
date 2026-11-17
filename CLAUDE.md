@@ -300,6 +300,10 @@ Rules:
   (`FACTS`, `CONTACT`, `PROGRAMS`, `CAB_SCHEMES`, `SOCIAL`). The site previously published
   nine different values for "countries served"; the canonical figure is **59** (raised from 58
   by the client in Oct 2026).
+- **Consultation bookings** (Nov 2026, client): never hardcode a Calendly URL. `ADVISORS` / `CONSULT`
+  in `lib/facts.ts` map each area to its advisor — Adam (TEPA, general, CAB), Sara (Healthcare),
+  Babita (SMEs, Memberships); /contact lists all three. Apply buttons link `applyHref(program)` so
+  /apply pre-selects the program. Every WhatsApp number shows `WhatsAppIcon` (currentColor).
 - The ISO/IEC 17021-1 program is named **"Management Systems Certification Bodies
   Accreditation"** (renamed Aug 2026 from "System Certification Bodies"). Use
   `PROGRAMS.iso17021.label`.
@@ -351,7 +355,20 @@ Hetzner Docker later — `Dockerfile`, `docker-compose.prod.yml`, `deploy/`).
   in `REGISTER_TYPES` (`app/_data/accredited-organizations.ts`) in a sideways-scrolling chip row.
   An organization is listed under every type its records name (`accreditationType()`) plus any
   `Organization.tags` ticked on the admin form — `orgTypes()` is the single rule.
-- **Leads**: all site forms post to `/api/leads`; it derives `kind` (CONTACT / APPLICATION /
+- **Categories & Tags** (Nov 16 2026, client): Admin → Categories & Tags (`app/admin/(panel)/taxonomy/`)
+  manages the `Term` table: blog categories, blog tags and register tags. Posts keep `category`/`tags`
+  as names and organizations keep tag slugs; renaming or deleting a term rewrites them (`lib/taxonomy.ts`).
+  Each category belongs to a Resources section: **News & Announcements** (`/news`) or **Articles**
+  (`/articles`); category and tag pages are `/news/category/{slug}` and `/news/tag/{slug}`, all from
+  `app/news/Archive.tsx` + `scope.ts`. New categories/tags can also be typed in the article and
+  organization editors. Custom register tags appear after the built-in `REGISTER_TYPES` chips.
+- **Case study page builder** (Nov 16 2026, client): `CaseStudy.layout` (JSON, `lib/case-study-layout.ts`)
+  holds sections of 1–3 columns with text / image / YouTube video / quote blocks, arranged by drag and
+  drop (plus arrow buttons) in `CaseStudyBuilder.tsx`. `body` is regenerated from the layout on save so
+  "non-empty body = article" still holds; an untouched case study is saved without regenerating it.
+  Rows without a layout render `body` as before.
+- **Leads**: all site forms post to `/api/leads`; the lead is saved first and the notification email is
+  best-effort (Nov 2026 — SMTP is off on the preview server, and the email used to be required); it derives `kind` (CONTACT / APPLICATION /
   QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new form by picking a
   `source` that `leadKindFromSource()` classifies.
 - **Uploads** go to the Media table (bytea) and are served from `/media/<id>/<name>` — works

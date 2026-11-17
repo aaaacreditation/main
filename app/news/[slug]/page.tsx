@@ -15,7 +15,9 @@ import {
   readingTime,
   summarize,
 } from "../helpers";
+import { TermKind } from "@prisma/client";
 import { getPublishedPost, getPublishedPosts, type PublicPost } from "@/lib/content";
+import { SECTIONS, categoryFor, getTerms, sectionOf, termSlug } from "@/lib/taxonomy";
 import { CONTACT } from "@/lib/facts";
 import { SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema } from "@/lib/seo";
 import { withSeoOverride } from "@/lib/seo-overrides";
@@ -109,7 +111,18 @@ export default async function Page({
   const post = await getPublishedPost(slug);
   if (!post) notFound();
 
-  const all = await getPublishedPosts();
+  const [all, categories, tagTerms] = await Promise.all([
+    getPublishedPosts(),
+    getTerms(TermKind.POST_CATEGORY),
+    getTerms(TermKind.POST_TAG),
+  ]);
+  // Its Resources section (News & Announcements or Articles), its category
+  // page, and the tags that have a page of their own (Nov 2026).
+  const section = SECTIONS[sectionOf(categories, post.category)];
+  const category = categoryFor(categories, post.category);
+  const tags = post.tags
+    .map((t) => tagTerms.find((x) => x.slug === termSlug(t)))
+    .filter((t): t is NonNullable<typeof t> => Boolean(t));
   const index = all.findIndex((p) => p.slug === post.slug);
   // `all` is newest-first: the previous item is newer, the next item is older.
   const newer = index > 0 ? all[index - 1] : undefined;
@@ -131,7 +144,7 @@ export default async function Page({
       <JsonLd
         schema={[
           breadcrumbSchema([
-            { name: "AAA News", path: "/news" },
+            { name: section.label, path: section.path },
             { name: post.title, path: `/news/${post.slug}` },
           ]),
           articleSchema({
@@ -148,7 +161,7 @@ export default async function Page({
         badge={`AAA Newsroom · ${formatDate(post.date)}`}
         title={post.title}
         intro={summarize(post, 260) || undefined}
-        crumbs={[{ href: "/news", label: "AAA News" }, { label: crumbTitle }]}
+        crumbs={[{ href: section.path, label: section.label }, { label: crumbTitle }]}
         meta={[
           { k: "Published", v: formatDate(post.date) },
           { k: "Reading time", v: `${minutes} min` },
@@ -189,8 +202,8 @@ export default async function Page({
                   </Link>
                 </li>
                 <li>
-                  <Link href="/news">
-                    All newsroom articles <i>ARCHIVE</i>
+                  <Link href={section.path}>
+                    All {section.label.toLowerCase()} <i>ARCHIVE</i>
                   </Link>
                 </li>
               </ul>
@@ -205,14 +218,29 @@ export default async function Page({
           <PostBody content={post.content} title={post.title} />
         </article>
 
+        {(category || tags.length > 0) && (
+          <div className="nx-post-terms">
+            {category && (
+              <Link href={`/news/category/${category.slug}`} className="nx-cat on">
+                {category.name}
+              </Link>
+            )}
+            {tags.map((t) => (
+              <Link key={t.slug} href={`/news/tag/${t.slug}`} className="nx-cat">
+                #{t.name}
+              </Link>
+            ))}
+          </div>
+        )}
+
         <nav className="nx-updown" aria-label="More newsroom articles">
           <NavCard post={older} direction="prev" />
           <NavCard post={newer} direction="next" />
         </nav>
 
         <p className="nx-share-free">
-          <Link href="/news" className="ax-link">
-            Back to all news
+          <Link href={section.path} className="ax-link">
+            Back to all {section.label.toLowerCase()}
           </Link>
         </p>
       </PageBody>

@@ -17,6 +17,8 @@ export interface PublicPost {
   images: string[];
   coverImage: string | null;
   category: string;
+  /** Tag names (admin-managed list, Nov 2026). */
+  tags: string[];
   /** Search-result overrides set in the article editor (DB only). */
   seoTitle?: string | null;
   seoDescription?: string | null;
@@ -48,6 +50,7 @@ const fallbackPosts: PublicPost[] = (postsJson as unknown as RawPost[])
     // Never fall back to images[0]: those are old-site wp-content URLs.
     coverImage: p.cover ?? null,
     category: p.category ?? "News",
+    tags: [],
   }))
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
@@ -66,6 +69,7 @@ export async function getPublishedPosts(): Promise<PublicPost[]> {
       images: r.images,
       coverImage: r.coverImage,
       category: r.category,
+      tags: r.tags,
       seoTitle: r.seoTitle,
       seoDescription: r.seoDescription,
     }));
@@ -90,6 +94,7 @@ export async function getPublishedPost(slug: string): Promise<PublicPost | null>
       images: r.images,
       coverImage: r.coverImage,
       category: r.category,
+      tags: r.tags,
       seoTitle: r.seoTitle,
       seoDescription: r.seoDescription,
     };

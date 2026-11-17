@@ -342,6 +342,35 @@
   color: var(--aaa-blue);
 }
 .memx .memx-form-done p { max-width: 54ch; margin: 0 auto; font-size: 14px; line-height: 1.72; color: var(--ink-600); }
+.memx .memx-form-done .memx-done-mail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 12px;
+  margin: 20px auto 0;
+  padding: 12px 16px;
+  max-width: 460px;
+  border: 1px dashed var(--aaa-blue-100);
+  border-radius: 12px;
+  background: var(--aaa-blue-50);
+  font-size: 13.5px;
+  color: var(--ink-600);
+}
+.memx .memx-form-done .memx-done-mail a { font-weight: 600; color: var(--aaa-blue); user-select: all; }
+.memx .memx-form-done .memx-done-mail button {
+  padding: 4px 12px;
+  border: 1px solid var(--aaa-blue);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--aaa-blue);
+  cursor: pointer;
+}
+.memx .memx-form-done .memx-done-mail button:hover { background: var(--aaa-blue); color: #fff; }
+.memx .memx-form-done .memx-done-mail button:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
 .memx .memx-form-done .memx-done-actions {
   display: flex;
   flex-wrap: wrap;

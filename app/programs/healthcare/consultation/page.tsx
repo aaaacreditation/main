@@ -8,6 +8,7 @@ import { breadcrumbSchema, faqSchema, serviceSchema } from "../../../../lib/seo"
 import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, HC_CONSULT, HC_EMAIL, LineIcon, hcRelated } from "../cluster";
 import "../hc.css";
+import { applyHref } from "@/lib/facts";
 
 const SELF = "/programs/healthcare/consultation";
 const PHONE = "+1 (571) 601 2616";
@@ -449,7 +450,7 @@ export default function Page() {
         }
         text="Book a free 30-minute consultation and we will scope the gap between where your facility is today and the AAA Accreditation Standards for Healthcare Facilities."
         primary={{ href: "/contact", label: "Contact the healthcare team" }}
-        secondary={{ href: "/apply", label: "Apply for Accreditation" }}
+        secondary={{ href: applyHref("healthcare"), label: "Apply for Accreditation" }}
         related={hcRelated(SELF)}
       />
     </div>

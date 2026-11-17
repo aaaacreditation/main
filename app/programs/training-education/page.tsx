@@ -4,7 +4,7 @@ import Link from "next/link";
 import JsonLd from "../../_components/JsonLd";
 import Glyph from "../../_components/site/Glyph";
 import NavyCard from "../../_components/site/NavyCard";
-import { CONTACT, FACTS } from "../../../lib/facts";
+import { CONTACT, FACTS, applyHref } from "../../../lib/facts";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "../../../lib/seo";
 import { seoPage } from "../../../lib/seo-overrides";
 import { getPageCaseStudies, metricStats, splitQuoteBy } from "../../../lib/case-studies";
@@ -56,8 +56,9 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const APPLY = "/apply";
+const APPLY = applyHref("training");
 const ADCP_URL = "https://adcp.aaa-accreditation.org";
+const ADCP_EXPLAINER = "/news/what-is-the-american-directory-of-competent-personnel-adcp-and-how-does-it-benefit-your-graduates";
 const DIRECTORY = "/directory/accredited-organizations";
 
 const Arrow = () => <Glyph name="arrow-right" size={14} strokeWidth={2} />;
@@ -555,9 +556,19 @@ export default async function Page() {
                 />
               </figure>
 
-              <a href={ADCP_URL} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-white">
-                Explore ADCP <Arrow />
-              </a>
+              {/* Nov 2026 (client): "Explore ADCP" opened the ADCP sign-in page, which
+                  means nothing to a visitor who is not accredited yet. It now explains how
+                  ADCP works; the sign-in stays available for accredited organizations.
+                  An explainer video or a sample certificate can replace the article link
+                  once the client supplies one. */}
+              <div className="tepx-adcp-actions">
+                <Link href={ADCP_EXPLAINER} className="ax-btn ax-btn-white">
+                  How ADCP Works <Arrow />
+                </Link>
+                <a href={ADCP_URL} target="_blank" rel="noopener noreferrer" className="tepx-adcp-signin">
+                  Accredited organization? Sign in to ADCP
+                </a>
+              </div>
             </article>
 
             <div className="tepx-side">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CONSULT } from "@/lib/facts";
 
 /**
  * Shared building blocks for the healthcare accreditation cluster
@@ -11,7 +12,7 @@ import Link from "next/link";
 
 export const HC_APPLICATION_FORM =
   "https://aaa-accreditation.org/wp-content/uploads/2025/02/Application-form.docx";
-export const HC_CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
+export const HC_CONSULT = CONSULT.healthcare;
 export const HC_EMAIL = "healthcare@aaa-accreditation.org";
 
 /** Inline stroke icon wrapper — matches the reference pages' icon language. */

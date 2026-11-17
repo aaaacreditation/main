@@ -3,6 +3,7 @@ import Image from "next/image";
 import Icon from "./Icon";
 import SealRosette from "./SealRosette";
 import { CONTACT, FACTS, PROGRAMS, SOCIAL } from "../../lib/facts";
+import WhatsAppIcon from "./WhatsAppIcon";
 
 /**
  * Site footer.
@@ -103,7 +104,7 @@ export default function Footer() {
               </a>
             </div>
             <div className="item">
-              <Icon name="globe" size={16} className="ico" />
+              <WhatsAppIcon size={16} className="ico" />
               <div>
                 WhatsApp
                 <br />

@@ -7,7 +7,7 @@ import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import { breadcrumbSchema, faqSchema } from "../../lib/seo";
 import { seoPage } from "../../lib/seo-overrides";
-import { FACTS } from "@/lib/facts";
+import { FACTS, CONSULT } from "@/lib/facts";
 import "./membership.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
+const BOOKING = CONSULT.membership;
 
 /* ------------------------------------------------------------------ content
    Every fact below is transcribed from the client's live membership pages
@@ -211,7 +211,7 @@ export default function Page() {
             <Link href="/membership/apply" className="ax-btn ax-btn-gold">
               Apply for Membership <Icon name="arrow" size={16} />
             </Link>
-            <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
+            <a href={BOOKING} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
               Book a Free Consultation
             </a>
           </>

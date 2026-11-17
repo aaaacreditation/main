@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import Icon, { type IconName } from "../../_components/Icon";
 import ReadinessCheck from "../../programs/smes-accreditation-program/ReadinessCheck";
-import { CONTACT, FACTS } from "@/lib/facts";
+import { CONTACT, FACTS, CONSULT } from "@/lib/facts";
 import "../../programs/smes-accreditation-program/sme.css";
+import WhatsAppIcon from "../../_components/WhatsAppIcon";
 
 export const metadata: Metadata = {
   title: "SMEs Funding Readiness Accreditation",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
+const BOOKING = CONSULT.sme;
 
 const FUNDING_GAP = [
   {
@@ -295,7 +296,7 @@ export default function Page() {
                 Check Your Readiness for Free
                 <Icon name="arrow" size={16} />
               </Link>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
+              <a href={BOOKING} target="_blank" rel="noopener noreferrer" className="smex-btn smex-btn-ghost">
                 Book Your Consultation
               </a>
             </div>
@@ -512,7 +513,7 @@ export default function Page() {
               <Link href={CONTACT.quoteHref} className="btn btn-gold">
                 Start your accreditation <Icon name="arrow" size={14} className="arrow" />
               </Link>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="btn btn-ghost-light">
+              <a href={BOOKING} target="_blank" rel="noopener noreferrer" className="btn btn-ghost-light">
                 Book a free consultation
               </a>
             </div>
@@ -652,7 +653,7 @@ export default function Page() {
                 Our team is here to guide you every step of the way. Apply today and
                 get accredited, or book a free consultation first.
               </p>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer" className="sme-consult">
+              <a href={BOOKING} target="_blank" rel="noopener noreferrer" className="sme-consult">
                 <span className="sme-consult-ico"><Icon name="cert" size={22} /></span>
                 <span>
                   <strong>Book a free 30-minute consultation</strong>
@@ -672,7 +673,7 @@ export default function Page() {
                 <span><strong>Call us</strong>+1 (571) 601 2616</span>
               </div>
               <a className="sme-contact-item" href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
-                <span className="ico"><Icon name="phone" size={18} /></span>
+                <span className="ico"><WhatsAppIcon size={18} /></span>
                 <span><strong>WhatsApp</strong>{CONTACT.whatsapp}</span>
               </a>
               <div className="sme-contact-item">

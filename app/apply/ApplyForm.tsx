@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { ADVISORS, CONSULT, type ApplyProgram } from "@/lib/facts";
 
 type Status = "idle" | "sending" | "ok" | "error";
 type FieldKey = "org" | "country" | "rep" | "email" | "program" | "heard" | "phone" | "scope";
@@ -10,20 +12,31 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**
  * Program list preserved from the previous /apply form. The ISO/IEC 17021-1
- * entry now carries the program's current name, "Management Systems
- * Certification Bodies Accreditation".
+ * entry carries the program's current name, "Management Systems Certification
+ * Bodies Accreditation". Nov 2026 (client): the SMEs program was missing, and
+ * each program page now links here with `?program=<key>` so its program is
+ * pre-selected; `consult` is whose calendar the "book a consultation" link
+ * opens for it.
  */
-const PROGRAMS = [
-  "Healthcare Accreditation",
-  "Training & Education Provider",
-  "Medical Laboratories (ISO 15189)",
-  "Testing & Calibration (ISO/IEC 17025)",
-  "Inspection Bodies (ISO/IEC 17020)",
-  "Management Systems Certification Bodies Accreditation (ISO/IEC 17021-1)",
-  "Product Certification (ISO/IEC 17065)",
-  "Personnel Certification (ISO/IEC 17024)",
-  "Proficiency Testing (ISO/IEC 17043)",
+const APPLY_PROGRAMS: { label: string; keys: ApplyProgram[]; consult: keyof typeof CONSULT }[] = [
+  { label: "Healthcare Accreditation", keys: ["healthcare"], consult: "healthcare" },
+  { label: "Training & Education Provider", keys: ["training"], consult: "training" },
+  { label: "SMEs Accreditation Program", keys: ["sme"], consult: "sme" },
+  { label: "Medical Laboratories (ISO 15189)", keys: ["medical-labs"], consult: "cab" },
+  { label: "Testing & Calibration (ISO/IEC 17025)", keys: ["testing-labs", "calibration-labs"], consult: "cab" },
+  { label: "Inspection Bodies (ISO/IEC 17020)", keys: ["inspection"], consult: "cab" },
+  {
+    label: "Management Systems Certification Bodies Accreditation (ISO/IEC 17021-1)",
+    keys: ["management-systems"],
+    consult: "cab",
+  },
+  { label: "Product Certification (ISO/IEC 17065)", keys: ["product"], consult: "cab" },
+  { label: "Personnel Certification (ISO/IEC 17024)", keys: ["personnel"], consult: "cab" },
+  { label: "Proficiency Testing (ISO/IEC 17043)", keys: ["proficiency-testing"], consult: "cab" },
 ];
+
+const programForKey = (key: string | null) =>
+  APPLY_PROGRAMS.find((p) => (p.keys as string[]).includes(key ?? ""))?.label ?? "";
 
 const HEARD_ABOUT = [
   "Google / search engine",
@@ -47,14 +60,78 @@ const EMPTY = {
 };
 
 /**
+ * The "Start your application" card for /apply: the copy column (children,
+ * rendered on the server) with a consultation link for the chosen program's
+ * advisor, and the form. The static HTML is the card with nothing selected
+ * (Suspense fallback); `?program=` is read once it hydrates.
+ */
+export default function ApplyCard({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<Card initialProgram="">{children}</Card>}>
+      <CardFromUrl>{children}</CardFromUrl>
+    </Suspense>
+  );
+}
+
+function CardFromUrl({ children }: { children: React.ReactNode }) {
+  const initial = programForKey(useSearchParams().get("program"));
+  // Keyed so a same-page link with a different program starts a fresh form.
+  return (
+    <Card key={initial} initialProgram={initial}>
+      {children}
+    </Card>
+  );
+}
+
+function Card({ initialProgram, children }: { initialProgram: string; children: React.ReactNode }) {
+  const [program, setProgram] = useState(initialProgram);
+  const chosen = APPLY_PROGRAMS.find((p) => p.label === program);
+  const advisor = chosen ? ADVISORS.find((a) => a.url === CONSULT[chosen.consult]) : undefined;
+
+  return (
+    <div className="apx-card reveal">
+      <div className="apx-card-copy">
+        {children}
+        <p className="apx-card-aside">
+          Prefer to talk it through first?{" "}
+          {chosen && advisor ? (
+            <>
+              <a href={advisor.url} target="_blank" rel="noopener noreferrer">
+                Book a 30-minute consultation with {advisor.name}
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              Book a 30-minute consultation with{" "}
+              {ADVISORS.map((a, i) => (
+                <span key={a.key}>
+                  {i > 0 && (i === ADVISORS.length - 1 ? " or " : ", ")}
+                  <a href={a.url} target="_blank" rel="noopener noreferrer">
+                    {a.name}
+                  </a>{" "}
+                  ({a.area})
+                </span>
+              ))}
+              .
+            </>
+          )}
+        </p>
+      </div>
+      <ApplyForm initialProgram={initialProgram} onProgram={setProgram} />
+    </div>
+  );
+}
+
+/**
  * "Start your application" form for /apply.
  *
  * Posts to the shared /api/leads endpoint with source "apply-form". This
  * registers the intent to apply and puts an advisor in touch — the formal
  * application is still the signed program application form (Stage 1).
  */
-export default function ApplyForm() {
-  const [values, setValues] = useState(EMPTY);
+function ApplyForm({ initialProgram, onProgram }: { initialProgram: string; onProgram: (p: string) => void }) {
+  const [values, setValues] = useState({ ...EMPTY, program: initialProgram });
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>("idle");
   const [failure, setFailure] = useState("");
@@ -62,6 +139,7 @@ export default function ApplyForm() {
   function set(key: keyof typeof EMPTY, value: string) {
     setValues((v) => ({ ...v, [key]: value }));
     if (key in errors) setErrors((e) => ({ ...e, [key]: undefined }));
+    if (key === "program") onProgram(value);
   }
 
   function validate(): Errors {
@@ -258,9 +336,9 @@ export default function ApplyForm() {
             <option value="" disabled>
               Select a program…
             </option>
-            {PROGRAMS.map((p) => (
-              <option key={p} value={p}>
-                {p}
+            {APPLY_PROGRAMS.map((p) => (
+              <option key={p.label} value={p.label}>
+                {p.label}
               </option>
             ))}
           </select>

@@ -2,11 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ContentStatus } from "@prisma/client";
+import { ContentStatus, TermKind } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { audit, requireArea } from "@/lib/admin";
 import { slugify } from "@/lib/slug";
 import { recordSlugChange } from "@/lib/seo-overrides";
+import { ensureTerms, isSection, parseNames } from "@/lib/taxonomy";
 import { signOut } from "@/auth";
 
 /* ---------- shared helpers ---------- */
@@ -18,14 +19,6 @@ function str(formData: FormData, key: string, max = 100_000): string {
 
 function parseStatus(v: string): ContentStatus {
   return v === "PUBLISHED" ? ContentStatus.PUBLISHED : ContentStatus.DRAFT;
-}
-
-function parseTags(v: string): string[] {
-  return v
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .slice(0, 20);
 }
 
 async function uniquePostSlug(base: string, excludeId?: string) {
@@ -47,9 +40,13 @@ async function uniquePageSlug(base: string, excludeId?: string) {
 }
 
 function revalidateNews(slug?: string) {
-  revalidatePath("/news");
+  // Every listing a post can appear on: both Resources sections with their
+  // archive pages, and the category and tag pages (all under /news).
+  revalidatePath("/news", "layout");
+  revalidatePath("/articles", "layout");
   if (slug) revalidatePath(`/news/${slug}`);
   revalidatePath("/"); // home shows latest insights
+  revalidatePath("/sitemap.xml");
 }
 
 /* ---------- session ---------- */
@@ -72,8 +69,19 @@ export async function savePost(formData: FormData) {
   const content = str(formData, "content");
   const excerpt = str(formData, "excerpt", 800);
   const coverImage = str(formData, "coverImage", 600) || null;
-  const category = str(formData, "category", 80) || "News";
-  const tags = parseTags(str(formData, "tags", 600));
+  // Category and tags come from the managed lists (Admin → Categories & Tags);
+  // a new one typed in the editor is added to its list on save (Nov 2026).
+  const pickedCategory = str(formData, "category", 80);
+  const newSection = str(formData, "newCategorySection", 20);
+  const categoryName =
+    pickedCategory === "__new" ? str(formData, "newCategory", 60) || "News" : pickedCategory || "News";
+  const [categoryTerm] = await ensureTerms(
+    TermKind.POST_CATEGORY,
+    parseNames(categoryName, 1),
+    isSection(newSection) ? newSection : "news"
+  );
+  const category = categoryTerm?.name ?? "News";
+  const tags = (await ensureTerms(TermKind.POST_TAG, parseNames(str(formData, "tags", 1200), 20))).map((t) => t.name);
   const seoTitle = str(formData, "seoTitle", 200) || null;
   const seoDescription = str(formData, "seoDescription", 400) || null;
 

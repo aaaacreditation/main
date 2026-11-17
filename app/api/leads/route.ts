@@ -45,36 +45,36 @@ export async function POST(req: Request) {
     );
   }
 
-  // The /apply and /contact forms email each submission to the enquiries
-  // mailbox; the visitor only sees the thank-you message once that email has
-  // been sent. Saving the lead for the admin panel is then best-effort, so a
-  // database hiccup never turns a delivered request into an error (and a
-  // duplicate on retry).
+  // The request has reached AAA once EITHER the lead is saved (it shows in
+  // Admin → Leads) OR the notification email to the enquiries mailbox has
+  // gone out. Only when both fail does the visitor see an error. (Nov 2026:
+  // the email used to be required, so with SMTP off on the preview server
+  // every /contact and /apply submission was rejected AND discarded.)
+  let saved = false;
+  try {
+    await prisma.lead.create({ data: record });
+    saved = true;
+  } catch (err) {
+    console.error(`${data.source} lead save failed:`, err);
+  }
+
   const mail = notification(data);
+  let mailed = false;
   if (mail) {
     try {
       await sendMail({ ...mail, replyTo: data.email });
+      mailed = true;
     } catch (err) {
       console.error(`${data.source} email failed:`, err);
-      return NextResponse.json(
-        { error: `We couldn't send your request right now — please email ${LEADS_TO}.` },
-        { status: 500 }
-      );
     }
-    await prisma.lead.create({ data: record }).catch((err) => console.error("Lead save failed after email:", err));
-    return NextResponse.json({ ok: true });
   }
 
-  try {
-    await prisma.lead.create({ data: record });
-  } catch (err) {
-    console.error("Lead capture failed:", err);
+  if (!saved && !mailed) {
     return NextResponse.json(
-      { error: "We couldn't save your application right now — please email sme@aaa-accreditation.org." },
+      { error: `We couldn't send your request right now — please email ${LEADS_TO}.` },
       { status: 500 }
     );
   }
-
   return NextResponse.json({ ok: true });
 }
 

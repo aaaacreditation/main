@@ -7,7 +7,7 @@ import PageHero from "../../../_components/PageHero";
 import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
 import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, HC_CONSULT, hcRelated } from "../cluster";
-import { FACTS } from "@/lib/facts";
+import { FACTS, applyHref } from "@/lib/facts";
 import "../hc.css";
 
 const SELF = "/programs/healthcare/why-aaa";
@@ -105,7 +105,7 @@ export default function Page() {
         ]}
         actions={
           <>
-            <Link href="/apply" className="ax-btn ax-btn-gold">
+            <Link href={applyHref("healthcare")} className="ax-btn ax-btn-gold">
               Apply for Accreditation <ArrowIcon />
             </Link>
             <a href={HC_CONSULT} target="_blank" rel="noopener noreferrer" className="ax-btn ax-btn-ghost">
@@ -272,7 +272,7 @@ export default function Page() {
           </>
         }
         text="Tell us about your facility and a dedicated advisor will come back with the applicable standards, a survey format that suits you and a realistic timeline."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
+        primary={{ href: applyHref("healthcare"), label: "Apply for Accreditation" }}
         secondary={{ href: "/contact", label: "Talk to the healthcare team" }}
         related={hcRelated(SELF)}
       />

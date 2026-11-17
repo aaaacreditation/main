@@ -15,10 +15,13 @@ export default function RichTextEditor({
   name,
   initialHTML = "",
   placeholder = "Write your content…",
+  onChange,
 }: {
-  name: string;
+  /** Form field to submit the HTML as. Omit when `onChange` handles it (case study builder). */
+  name?: string;
   initialHTML?: string;
   placeholder?: string;
+  onChange?: (html: string) => void;
 }) {
   const [html, setHtml] = useState(initialHTML);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -37,14 +40,18 @@ export default function RichTextEditor({
       Placeholder.configure({ placeholder }),
     ],
     content: initialHTML,
-    onUpdate: ({ editor }) => setHtml(editor.getHTML()),
+    onUpdate: ({ editor }) => {
+      const next = editor.getHTML();
+      setHtml(next);
+      onChange?.(next);
+    },
   });
 
   if (!editor) {
     return (
       <div className="rte">
         <div className="rte-body rte-loading">Loading editor…</div>
-        <input type="hidden" name={name} value={html} />
+        {name ? <input type="hidden" name={name} value={html} /> : null}
       </div>
     );
   }
@@ -136,7 +143,7 @@ export default function RichTextEditor({
           e.target.value = "";
         }}
       />
-      <input type="hidden" name={name} value={html} />
+      {name ? <input type="hidden" name={name} value={html} /> : null}
     </div>
   );
 }

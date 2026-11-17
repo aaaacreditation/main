@@ -74,10 +74,27 @@ function Logo({ o, size }: { o: Org; size: "card" | "modal" }) {
   );
 }
 
-export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
+/** A register filter: a built-in "Accredited as" type or a custom register tag (Nov 2026). */
+type RegisterFilter = { id: string; label: string; standard?: string; icon: GlyphName };
+
+export default function DirectoryExplorer({
+  orgs,
+  customTags = [],
+}: {
+  orgs: Org[];
+  /** Register tags from Admin → Categories & Tags, after the built-in types. */
+  customTags?: { slug: string; name: string }[];
+}) {
+  const filters: RegisterFilter[] = useMemo(
+    () => [
+      ...REGISTER_TYPES.map((t) => ({ id: t, ...ACCREDITATION_TYPES[t], icon: TYPE_ICON[t] })),
+      ...customTags.map((t) => ({ id: t.slug, label: t.name, icon: "badge-check" as GlyphName })),
+    ],
+    [customTags]
+  );
   const [query, setQuery] = useState("");
   const [country, setCountry] = useState(ALL_COUNTRIES);
-  const [tag, setTag] = useState<AccreditationTypeId | null>(null);
+  const [tag, setTag] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusFilter>("Accredited");
   // How many cards are revealed, keyed to the filters so any change starts from the top.
   const [paging, setPaging] = useState({ key: "", count: PAGE });
@@ -172,7 +189,7 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
     };
   }, [active]);
 
-  const tagLabel = tag ? ACCREDITATION_TYPES[tag].label : undefined;
+  const tagLabel = tag ? filters.find((f) => f.id === tag)?.label : undefined;
   const visible = filtered.slice(0, shown);
 
   return (
@@ -235,22 +252,19 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
             <button type="button" className={"dx-chip" + (tag === null ? " on" : "")} aria-pressed={tag === null} onClick={() => setTag(null)}>
               All
             </button>
-            {REGISTER_TYPES.map((t) => {
-              const { label, standard } = ACCREDITATION_TYPES[t];
-              return (
-                <button
-                  type="button"
-                  key={t}
-                  className={"dx-chip" + (tag === t ? " on" : "")}
-                  aria-pressed={tag === t}
-                  title={standard}
-                  onClick={() => setTag((cur) => (cur === t ? null : t))}
-                  disabled={!typeCounts[t]}
-                >
-                  <Glyph name={TYPE_ICON[t]} size={14} strokeWidth={1.9} /> {label}
-                </button>
-              );
-            })}
+            {filters.map(({ id: t, label, standard, icon }) => (
+              <button
+                type="button"
+                key={t}
+                className={"dx-chip" + (tag === t ? " on" : "")}
+                aria-pressed={tag === t}
+                title={standard}
+                onClick={() => setTag((cur) => (cur === t ? null : t))}
+                disabled={!typeCounts[t]}
+              >
+                <Glyph name={icon} size={14} strokeWidth={1.9} /> {label}
+              </button>
+            ))}
           </div>
           {/* Pointer affordance only — keyboard users reach every chip with Tab, which scrolls it into view. */}
           {more.left && (
@@ -380,11 +394,13 @@ export default function DirectoryExplorer({ orgs }: { orgs: Org[] }) {
               const types = orgTypes(active);
               return types.size > 0 ? (
                 <ul className="dx-modal-tags" aria-label="Listed in the register as">
-                  {REGISTER_TYPES.filter((t) => types.has(t)).map((t) => (
-                    <li key={t}>
-                      <Glyph name={TYPE_ICON[t]} size={13} strokeWidth={1.9} /> {ACCREDITATION_TYPES[t].label}
-                    </li>
-                  ))}
+                  {filters
+                    .filter((f) => types.has(f.id))
+                    .map((f) => (
+                      <li key={f.id}>
+                        <Glyph name={f.icon} size={13} strokeWidth={1.9} /> {f.label}
+                      </li>
+                    ))}
                 </ul>
               ) : null;
             })()}

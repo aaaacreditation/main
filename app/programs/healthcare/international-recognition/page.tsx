@@ -7,6 +7,7 @@ import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
 import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, LineIcon, hcRelated } from "../cluster";
 import "../hc.css";
+import { applyHref } from "@/lib/facts";
 
 const SELF = "/programs/healthcare/international-recognition";
 const ISQUA_MEMBERS = "https://isqua.org/membership/institutional-members.html";
@@ -354,7 +355,7 @@ export default function Page() {
           </>
         }
         text="Talk to the healthcare team about how AAA accreditation is recognized in the markets you operate in, and what it would take for your facility to achieve it."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
+        primary={{ href: applyHref("healthcare"), label: "Apply for Accreditation" }}
         secondary={{ href: "/contact", label: "Talk to the healthcare team" }}
         related={hcRelated(SELF)}
       />

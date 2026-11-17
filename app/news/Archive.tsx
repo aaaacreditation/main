@@ -5,27 +5,21 @@ import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
 import Icon from "../_components/Icon";
-import { getPublishedPosts } from "@/lib/content";
 import { FACTS } from "@/lib/facts";
 import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
-import {
-  PER_PAGE,
-  formatDate,
-  formatDateShort,
-  isoDate,
-  pageHref,
-  pageWindow,
-  summarize,
-} from "./helpers";
+import { SECTIONS, termSlug, type Section } from "@/lib/taxonomy";
+import { PER_PAGE, formatDate, formatDateShort, isoDate, pageWindow, summarize } from "./helpers";
+import { pageCountOf, scopeBase, scopePageHref, scopedPosts, type ArchiveScope } from "./scope";
 import "./news.css";
 
 /**
- * The AAA newsroom archive, shared by `/news` (page 1) and `/news/page/[n]`.
+ * The newsroom archive template, shared by every listing page (see scope.ts):
+ * News & Announcements (/news), Articles (/articles), and one page per
+ * category (/news/category/…) and tag (/news/tag/…), each paginated.
  *
- * Pagination scheme: `/news` is page 1 and `/news/archive/2` … `/news/archive/N`
- * carry the rest. (The WordPress-native `/news/page/:n` shape is already taken
- * by a permanent redirect to `/news` in next.config.ts.) PER_PAGE is 20, which
- * puts the 299 migrated posts on 15 pages — the same count the live site has.
+ * Nov 2026 (client feedback): the Resources menu's "Articles" and "News &
+ * Announcements" used to open the same page. Each category now belongs to one
+ * of the two sections in Admin → Categories & Tags.
  */
 
 const RAIL_COUNT = 3;
@@ -49,42 +43,101 @@ const ELSEWHERE: { href: string; label: string; text: string }[] = [
   },
 ];
 
-export default async function Archive({ page }: { page: number }) {
-  const posts = await getPublishedPosts();
+/** Headline copy for each kind of listing. */
+function heading(scope: ArchiveScope) {
+  if (scope.kind === "section" && scope.section === "articles") {
+    return {
+      eyebrow: "AAA Articles",
+      title: (
+        <>
+          Articles on <em>accreditation, quality and standards.</em>
+        </>
+      ),
+      intro: "Practical guidance and perspectives from the AAA team for training providers, healthcare organizations, conformity assessment bodies and SMEs.",
+      label: SECTIONS.articles.label,
+    };
+  }
+  if (scope.kind === "section") {
+    return {
+      eyebrow: "AAA Newsroom",
+      title: (
+        <>
+          News &amp; announcements from <em>the accreditation community.</em>
+        </>
+      ),
+      intro: "Newly accredited organizations, partnership announcements, events and milestones from the American Accreditation Association.",
+      label: SECTIONS.news.label,
+    };
+  }
+  if (scope.kind === "category") {
+    return {
+      eyebrow: SECTIONS[scope.term.section].label,
+      title: <>{scope.term.name}</>,
+      intro: `Everything the American Accreditation Association has published under ${scope.term.name}, newest first.`,
+      label: scope.term.name,
+    };
+  }
+  return {
+    eyebrow: "Tag",
+    title: <>Tagged “{scope.term.name}”</>,
+    intro: `Articles and news from the American Accreditation Association tagged ${scope.term.name}, newest first.`,
+    label: `Tagged “${scope.term.name}”`,
+  };
+}
+
+export default async function Archive({ page, scope }: { page: number; scope: ArchiveScope }) {
+  const { posts, all, categories } = await scopedPosts(scope);
   const total = posts.length;
-  const pageCount = Math.max(1, Math.ceil(total / PER_PAGE));
+  const pageCount = pageCountOf(total);
 
   if (page < 1 || page > pageCount) notFound();
 
   const start = (page - 1) * PER_PAGE;
   const slice = posts.slice(start, start + PER_PAGE);
   const isFirst = page === 1;
+  const base = scopeBase(scope);
+  const href = (n: number) => scopePageHref(scope, n);
+  const head = heading(scope);
 
-  const lead = isFirst ? slice[0] : undefined;
-  const rail = isFirst ? slice.slice(1, 1 + RAIL_COUNT) : [];
-  const cards = isFirst ? slice.slice(1 + RAIL_COUNT) : slice;
+  // Only a section's front page gets the featured story + rail.
+  const featured = isFirst && scope.kind === "section" && slice.length > 4;
+  const lead = featured ? slice[0] : undefined;
+  const rail = featured ? slice.slice(1, 1 + RAIL_COUNT) : [];
+  const cards = featured ? slice.slice(1 + RAIL_COUNT) : slice;
 
   const oldest = posts[total - 1];
   const firstYear = oldest ? oldest.date.slice(0, 4) : "2020";
 
+  // The section this listing sits in, for the crumbs and the category chips.
+  const section: Section | null =
+    scope.kind === "section" ? scope.section : scope.kind === "category" ? scope.term.section : null;
+  const sectionCrumb = section ? { href: SECTIONS[section].path, label: SECTIONS[section].label } : null;
+  const here = scope.kind === "section" ? [] : [{ href: base, label: head.label }];
+  const trail = [...(scope.kind === "section" ? [] : sectionCrumb ? [sectionCrumb] : []), ...here];
   const crumbs = isFirst
-    ? [{ label: "AAA News" }]
-    : [{ href: "/news", label: "AAA News" }, { label: `Page ${page}` }];
+    ? [...trail.slice(0, -1), { label: scope.kind === "section" ? head.label : trail[trail.length - 1].label }]
+    : [...(scope.kind === "section" ? [{ href: base, label: head.label }] : trail), { label: `Page ${page}` }];
 
+  // Category chips: every category of this section that has published posts.
+  const chips = section
+    ? categories
+        .filter((c) => c.section === section)
+        .map((c) => ({ c, n: all.filter((p) => termSlug(p.category || "News") === c.slug).length }))
+        .filter((x) => x.n > 0)
+    : [];
+  const other: Section | null = section ? (section === "news" ? "articles" : "news") : null;
+
+  const schemaTrail = [
+    ...trail.map((t) => ({ name: t.label, path: t.href })),
+    ...(scope.kind === "section" ? [{ name: head.label, path: base }] : []),
+  ];
   const schema = [
-    breadcrumbSchema(
-      isFirst
-        ? [{ name: "AAA News", path: "/news" }]
-        : [
-            { name: "AAA News", path: "/news" },
-            { name: `Page ${page}`, path: pageHref(page) },
-          ]
-    ),
+    breadcrumbSchema(isFirst ? schemaTrail : [...schemaTrail, { name: `Page ${page}`, path: href(page) }]),
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: isFirst ? "AAA News & Events" : `AAA News & Events — page ${page}`,
-      url: `${SITE_URL}${pageHref(page)}`,
+      name: isFirst ? `AAA ${head.label}` : `AAA ${head.label} — page ${page}`,
+      url: `${SITE_URL}${href(page)}`,
       isPartOf: { "@id": `${SITE_URL}/#website` },
       publisher: { "@id": `${SITE_URL}/#organization` },
       mainEntity: {
@@ -107,17 +160,13 @@ export default async function Archive({ page }: { page: number }) {
 
       <PageHero
         image="/hero.jpg"
-        eyebrow="AAA Newsroom"
-        badge={isFirst ? "AAA Newsroom" : `AAA Newsroom · Page ${page} of ${pageCount}`}
-        title={
-          <>
-            News &amp; events from <em>the accreditation community.</em>
-          </>
-        }
-        intro="Newly accredited organizations, partnership announcements, standards guidance and milestones from the American Accreditation Association."
+        eyebrow={head.eyebrow}
+        badge={isFirst ? head.eyebrow : `${head.eyebrow} · Page ${page} of ${pageCount}`}
+        title={head.title}
+        intro={head.intro}
         crumbs={crumbs}
         meta={[
-          { k: "Articles published", v: String(total) },
+          { k: "Published", v: String(total) },
           { k: "Archive from", v: firstYear },
           { k: "Countries served", v: FACTS.countriesPlus },
         ]}
@@ -130,9 +179,9 @@ export default async function Archive({ page }: { page: number }) {
               <span className="eyebrow">Latest</span>
               <h2>The most recent update.</h2>
               <p>
-                Every announcement below is published by the AAA newsroom — accreditation
-                decisions, recognitions, partnerships and guidance for the organizations we work
-                with worldwide.
+                {section === "articles"
+                  ? "Guidance from the AAA team on accreditation, quality and standards, for the organizations we work with worldwide."
+                  : "Accreditation decisions, recognitions, partnerships and events from the AAA newsroom, for the organizations we work with worldwide."}
               </p>
             </div>
 
@@ -187,12 +236,48 @@ export default async function Archive({ page }: { page: number }) {
       <section className={isFirst ? "ax-section cream" : "ax-section"} id="archive">
         <div className="container">
           <div className="ax-head reveal">
-            <span className="eyebrow">{isFirst ? "The archive" : `Page ${page}`}</span>
-            <h2>{isFirst ? "Earlier from the newsroom." : "More from the newsroom."}</h2>
-            <p>
-              {`Showing ${start + 1}–${start + slice.length} of ${total} articles · page ${page} of ${pageCount}.`}
-            </p>
+            <span className="eyebrow">{isFirst ? (featured ? "The archive" : head.label) : `Page ${page}`}</span>
+            <h2>{isFirst ? (featured ? `Earlier ${head.label.toLowerCase()}.` : `${total} ${total === 1 ? "article" : "articles"}.`) : `More ${head.label.toLowerCase()}.`}</h2>
+            {total > 0 && (
+              <p>
+                {`Showing ${start + 1}–${start + slice.length} of ${total} · page ${page} of ${pageCount}.`}
+              </p>
+            )}
           </div>
+
+          {(chips.length > 0 || other) && (
+            <nav className="nx-cats reveal" aria-label="Browse by category">
+              {section && (
+                <Link
+                  href={SECTIONS[section].path}
+                  className={"nx-cat" + (scope.kind === "section" ? " on" : "")}
+                  aria-current={scope.kind === "section" ? "page" : undefined}
+                >
+                  All {SECTIONS[section].label.toLowerCase()}
+                </Link>
+              )}
+              {chips.map(({ c, n }) => {
+                const on = scope.kind === "category" && scope.term.slug === c.slug;
+                return (
+                  <Link
+                    key={c.slug}
+                    href={`/news/category/${c.slug}`}
+                    className={"nx-cat" + (on ? " on" : "")}
+                    aria-current={on ? "page" : undefined}
+                  >
+                    {c.name} <span>{n}</span>
+                  </Link>
+                );
+              })}
+              {other && (
+                <Link href={SECTIONS[other].path} className="nx-cat nx-cat-other">
+                  {SECTIONS[other].label} <Icon name="arrow" size={12} />
+                </Link>
+              )}
+            </nav>
+          )}
+
+          {total === 0 && <p className="nx-empty">Nothing has been published here yet.</p>}
 
           {/* Oct 2026: image-led cards on the site card (NavyCard surface), with
               the post's featured image synced from the old site. */}
@@ -226,10 +311,10 @@ export default async function Archive({ page }: { page: number }) {
 
           {pageCount > 1 && (
             <>
-              <nav className="nx-pager reveal" aria-label="News archive pagination">
+              <nav className="nx-pager reveal" aria-label={`${head.label} pagination`}>
                 {page > 1 ? (
                   <Link
-                    href={pageHref(page - 1)}
+                    href={href(page - 1)}
                     className="nx-page-edge"
                     rel="prev"
                     aria-label="Previous page"
@@ -252,7 +337,7 @@ export default async function Archive({ page }: { page: number }) {
                       {n}
                     </span>
                   ) : (
-                    <Link href={pageHref(n)} key={n} aria-label={`Page ${n}`}>
+                    <Link href={href(n)} key={n} aria-label={`Page ${n}`}>
                       {n}
                     </Link>
                   )
@@ -260,7 +345,7 @@ export default async function Archive({ page }: { page: number }) {
 
                 {page < pageCount ? (
                   <Link
-                    href={pageHref(page + 1)}
+                    href={href(page + 1)}
                     className="nx-page-edge"
                     rel="next"
                     aria-label="Next page"
@@ -274,7 +359,7 @@ export default async function Archive({ page }: { page: number }) {
                 )}
               </nav>
               <p className="nx-pager-note">
-                {`${total} articles across ${pageCount} pages, newest first.`}
+                {`${total} published across ${pageCount} pages, newest first.`}
               </p>
             </>
           )}

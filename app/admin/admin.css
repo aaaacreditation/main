@@ -226,3 +226,47 @@ html:has(.adm), html:has(.adm) body{ overflow-x: clip; }
 .adm .rte-body .tiptap th p,
 .adm .rte-body .tiptap td p{ margin: 0; }
 .adm .rte-body .tiptap .selectedCell::after{ content: ""; position: absolute; inset: 0; background: rgba(23, 61, 115, .08); pointer-events: none; }
+
+/* Tag picker + inline "new category" (Nov 2026, Categories & Tags). */
+.adm .adm-tagpicker { display: grid; gap: 8px; }
+.adm .adm-tagpicker-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.adm .adm-tagpicker-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px 4px 10px;
+  border-radius: 999px;
+  background: var(--aaa-blue-50);
+  border: 1px solid var(--aaa-blue-100);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--aaa-blue);
+}
+.adm .adm-tagpicker-chips button {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--aaa-blue);
+  cursor: pointer;
+}
+.adm .adm-tagpicker-chips button:hover { background: var(--aaa-blue); color: #fff; }
+.adm .adm-tagpicker-suggest { display: flex; flex-wrap: wrap; gap: 6px; }
+.adm .adm-tagpicker-suggest button {
+  padding: 3px 9px;
+  border: 1px dashed var(--aaa-blue-100);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+.adm .adm-tagpicker-suggest button:hover { border-color: var(--aaa-blue); color: var(--aaa-blue); }
+.adm .adm-newterm { display: grid; gap: 6px; margin-top: 6px; }

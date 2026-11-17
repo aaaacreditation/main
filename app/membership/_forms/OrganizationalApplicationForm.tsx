@@ -78,7 +78,7 @@ export default function OrganizationalApplicationForm({ source }: { source: stri
 
   if (status === "ok") {
     return (
-      <FormDone title="Application received">
+      <FormDone title="Application received" subject="Organizational membership – legal status document">
         <p>
           Thank you for applying for AAA Organizational Membership. Our membership team will review
           your institution&rsquo;s details and contact you within two business days. Please email a

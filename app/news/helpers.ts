@@ -145,17 +145,6 @@ export function readingTime(content: string): number {
 }
 
 /**
- * Builds the archive URL for a 1-based page number.
- *
- * Page 1 is the bare `/news`; pages 2+ live at `/news/archive/2` … The legacy
- * WordPress shape (`/news/page/2`) is claimed by a permanent redirect to
- * `/news` in next.config.ts, so it cannot serve results.
- */
-export function pageHref(page: number): string {
-  return page <= 1 ? "/news" : `/news/archive/${page}`;
-}
-
-/**
  * Pagination model: first, last, and a window around the current page, with
  * `null` standing in for an elided run.
  */

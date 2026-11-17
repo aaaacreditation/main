@@ -11,6 +11,7 @@ import { CONTACT } from "@/lib/facts";
 import { articleSchema, breadcrumbSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import CaseStudyBody from "../CaseStudyBody";
+import CaseStudyLayout from "../CaseStudyLayout";
 import CaseStudyCard from "../CaseStudyCard";
 import "../case-studies.css";
 
@@ -152,7 +153,7 @@ export default async function CaseStudyPage({ params }: Props) {
         }
       >
         <article>
-          <CaseStudyBody html={a.body} title={a.title} />
+          {a.layout ? <CaseStudyLayout layout={a.layout} title={a.title} /> : <CaseStudyBody html={a.body} title={a.title} />}
         </article>
         <p className="csx-back">
           <Link href="/case-studies" className="ax-link">

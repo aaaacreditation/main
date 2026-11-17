@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import Icon from "../../_components/Icon";
-import { CONTACT } from "@/lib/facts";
+import { CONSULT, applyHref } from "@/lib/facts";
 
-const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
+const BOOKING = CONSULT.sme;
 
 const CATS: { cat: string; qs: [string, string] }[] = [
   {
@@ -237,11 +237,11 @@ export default function ReadinessCheck() {
           </div>
 
           <div className="smerc-cta">
-            <Link href={CONTACT.quoteHref} className="btn btn-primary">
+            <Link href={applyHref("sme")} className="btn btn-primary">
               Apply now <Icon name="arrow" size={14} className="arrow" />
             </Link>
             <a
-              href={CONSULT}
+              href={BOOKING}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-ghost"

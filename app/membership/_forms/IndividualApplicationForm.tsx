@@ -80,7 +80,7 @@ export default function IndividualApplicationForm({
 
   if (status === "ok") {
     return (
-      <FormDone title="Application received">
+      <FormDone title="Application received" subject="Individual membership – CV">
         <p>
           Thank you for applying for AAA {track.toLowerCase()}. Our membership team will review
           your details and contact you within two business days. Please email your CV (PDF or

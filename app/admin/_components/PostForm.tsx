@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { savePost } from "../actions";
+import TagPicker from "./TagPicker";
 import RichTextEditor from "./RichTextEditor";
 import ImageField from "./ImageField";
 import SubmitButton from "./SubmitButton";
@@ -20,8 +22,27 @@ export interface PostFormData {
   seoDescription?: string | null;
 }
 
-export default function PostForm({ post }: { post?: PostFormData }) {
+/** A category from Admin → Categories & Tags, and the Resources page that lists it. */
+export type CategoryOption = { name: string; section: "news" | "articles" };
+
+const SECTION_LABEL = { news: "News & Announcements", articles: "Articles" } as const;
+
+export default function PostForm({
+  post,
+  categories = [],
+  tagSuggestions = [],
+}: {
+  post?: PostFormData;
+  categories?: CategoryOption[];
+  tagSuggestions?: string[];
+}) {
   const editing = Boolean(post?.id);
+  // An imported article can carry a category that is not in the list yet;
+  // it stays selectable and is added to the list on save.
+  const current = post?.category || "News";
+  const known = categories.find((c) => c.name.toLowerCase() === current.toLowerCase());
+  const [category, setCategory] = useState(known?.name ?? current);
+  const extra = known ? null : current;
 
   return (
     <form action={savePost} className="adm-form">
@@ -86,27 +107,55 @@ export default function PostForm({ post }: { post?: PostFormData }) {
               placeholder="auto-generated from title"
             />
             <label className="adm-label" htmlFor="pf-category">Category</label>
-            <input
+            <select
               id="pf-category"
-              className="sme-input"
+              className="sme-select"
               name="category"
-              list="pf-categories"
-              defaultValue={post?.category || "News"}
-            />
-            <datalist id="pf-categories">
-              <option value="News" />
-              <option value="Announcements" />
-              <option value="Insights" />
-              <option value="Events" />
-            </datalist>
-            <label className="adm-label" htmlFor="pf-tags">Tags</label>
-            <input
-              id="pf-tags"
-              className="sme-input"
-              name="tags"
-              defaultValue={(post?.tags || []).join(", ")}
-              placeholder="accreditation, healthcare"
-            />
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              {(["news", "articles"] as const).map((sec) => (
+                <optgroup key={sec} label={SECTION_LABEL[sec]}>
+                  {categories
+                    .filter((c) => c.section === sec)
+                    .map((c) => (
+                      <option key={c.name} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                </optgroup>
+              ))}
+              {extra ? <option value={extra}>{extra} (not in the list yet)</option> : null}
+              <option value="__new">+ New category…</option>
+            </select>
+            {category === "__new" ? (
+              <div className="adm-newterm">
+                <input
+                  className="sme-input"
+                  name="newCategory"
+                  maxLength={60}
+                  required
+                  autoFocus
+                  placeholder="New category name"
+                  aria-label="New category name"
+                />
+                <select className="sme-select" name="newCategorySection" defaultValue="articles" aria-label="Listed on">
+                  <option value="news">Listed on {SECTION_LABEL.news}</option>
+                  <option value="articles">Listed on {SECTION_LABEL.articles}</option>
+                </select>
+              </div>
+            ) : (
+              <p className="adm-hint">
+                Listed on{" "}
+                {SECTION_LABEL[categories.find((c) => c.name === category)?.section ?? "news"]}.{" "}
+                <Link href="/admin/taxonomy?tab=categories">Manage categories</Link>
+              </p>
+            )}
+            <span className="adm-label">Tags</span>
+            <TagPicker name="tags" initial={post?.tags || []} suggestions={tagSuggestions} />
+            <p className="adm-hint">
+              <Link href="/admin/taxonomy?tab=tags">Manage tags</Link>
+            </p>
           </div>
 
           <div className="adm-panel">

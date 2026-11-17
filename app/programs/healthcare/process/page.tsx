@@ -17,6 +17,7 @@ import {
   hcRelated,
 } from "../cluster";
 import "../hc.css";
+import { applyHref } from "@/lib/facts";
 
 const SELF = "/programs/healthcare/process";
 
@@ -498,7 +499,7 @@ export default function Page() {
           </>
         }
         text="The sooner a dedicated advisor is assigned and the self-assessment tool is in your hands, the sooner your three to six month preparation phase begins."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
+        primary={{ href: applyHref("healthcare"), label: "Apply for Accreditation" }}
         secondary={{ href: "/contact", label: "Talk to the healthcare team" }}
         related={hcRelated(SELF)}
       />

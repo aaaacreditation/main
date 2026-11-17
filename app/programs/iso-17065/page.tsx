@@ -39,6 +39,13 @@ const DATA: SchemeData = {
     imageAlt: "AAA Accreditation",
     stats: heroStats(["Countries Served", "Assessors", "Validity", "Recognition"], "Global"),
   },
+  advisor: {
+    intro: "Tell us about your product, process or service certification schemes and requested scope.",
+    field: "Certification Schemes",
+    placeholder: "Describe the products, processes or services you certify and the schemes you operate",
+    sector: "Product certification body",
+    source: "iso-17065-advisor",
+  },
   suitability: {
     title: "Is ISO/IEC 17065 Accreditation Right for Your Certification Body?",
     paragraphs: [

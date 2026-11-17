@@ -14,7 +14,7 @@ export default async function NewOrganizationPage({
 }) {
   await requireArea("directory");
   const { error } = await searchParams;
-  const { countries, accreditedAsOptions } = await editorOptions();
+  const { countries, accreditedAsOptions, customTags } = await editorOptions();
 
   return (
     <>
@@ -32,7 +32,7 @@ export default async function NewOrganizationPage({
             {ORG_FORM_ERRORS[error] ?? "The organization couldn’t be saved. Check the fields and try again."}
           </p>
         ) : null}
-        <OrgForm countries={countries} accreditedAsOptions={accreditedAsOptions} />
+        <OrgForm countries={countries} accreditedAsOptions={accreditedAsOptions} customTags={customTags} />
       </div>
     </>
   );

@@ -289,7 +289,12 @@ body{
 
 <script>
 /* ---------------- config ---------------- */
+/* Nov 2026 (client feedback): the result buttons were mailto: links, which do nothing
+   without a mail app (and inside this iframe). "Apply" now opens the site's apply form
+   with the SMEs program selected; the advisor buttons book Babita, the SME advisor
+   (lib/facts.ts ADVISORS). Each completed check is also saved to the admin's Leads. */
 const CONTACT={email:'info@aaa-accreditation.org',phone:'+15716012616',wa:'447727388234',collect:'aaa.accreditation4@gmail.com',
+  apply:'/apply?program=sme#start', advisor:'https://calendly.com/babita-s/30min',
   /* Paste your Google Apps Script Web App URL here to save every submission as a row in your Google Sheet.
      Setup steps are in SETUP-GOOGLE-SHEET.txt. Leave blank to disable. */
   sheet:''};
@@ -632,7 +637,7 @@ function rDisq(){
       <div class="disq-reason-row" style="padding:5px 0"><i class="ti ti-gavel" style="color:var(--mid);font-size:15px;margin-top:1px" aria-hidden="true"></i><span>Resolve any outstanding legal or compliance matters</span></div>
     </div>
     <div style="width:100%">
-      <a class="cta cta-navy" href="${mailUrl('not')}">Talk to us about getting ready <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      <a class="cta cta-navy" href="${CONTACT.advisor}" target="_blank" rel="noopener">Talk to us about getting ready <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
     </div>
     <button class="restart-link" onclick="restart()">← Start over</button>
     <div class="footer-note"><i class="ti ti-lock" style="font-size:11px" aria-hidden="true"></i>Your responses are confidential</div>
@@ -697,7 +702,7 @@ function rResult(){
     h+=`</div><div class="icard"><div class="icard-title"><i class="ti ti-file-description" style="color:var(--mid)" aria-hidden="true"></i>Documents likely required</div>`;
     docs.forEach(dc=>{h+=`<div class="irow"><i class="ti ti-paperclip" style="color:var(--mid)" aria-hidden="true"></i><div class="irow-main">${dc}</div></div>`;});
     h+=`</div><div class="cta-stack">
-      <a class="cta cta-navy" href="${mailUrl('eligible')}">Apply for accreditation <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      <a class="cta cta-navy" href="${CONTACT.apply}" target="_top">Apply for accreditation <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
       <a class="cta cta-ghost" href="${waUrl('eligible')}" target="_blank" rel="noopener">Chat with us on WhatsApp</a>
     </div>`;
   }
@@ -707,7 +712,7 @@ function rResult(){
     h+=`</div><div class="icard"><div class="icard-title"><i class="ti ti-file-x" style="color:var(--a-mid)" aria-hidden="true"></i>Documentation to prepare</div>`;
     gps.slice(0,4).forEach(g=>{h+=`<div class="irow"><i class="ti ti-paperclip" style="color:var(--muted)" aria-hidden="true"></i><div><div class="irow-main">${g.t}</div><div class="irow-sub">${g.docs.map(dd=>`<span class="pill">${dd}</span>`).join('')}</div></div></div>`;});
     h+=`</div><div class="cta-stack">
-      <a class="cta cta-amber" href="${mailUrl('partial')}">Talk to an advisor <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      <a class="cta cta-amber" href="${CONTACT.advisor}" target="_blank" rel="noopener">Talk to an advisor <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
       <a class="cta cta-ghost" href="${waUrl('partial')}" target="_blank" rel="noopener">Chat with us on WhatsApp</a>
     </div>`;
   }
@@ -715,7 +720,7 @@ function rResult(){
     h+=`<div class="icard"><div class="icard-title"><i class="ti ti-circle-x" style="color:var(--r-mid)" aria-hidden="true"></i>Foundations to build first</div>`;
     gps.slice(0,3).forEach(g=>{h+=`<div class="irow"><i class="ti ${g.icon}" style="color:var(--r-mid)" aria-hidden="true"></i><div><div class="irow-main">${g.t}</div><div class="irow-sub">${g.s}</div></div></div>`;});
     h+=`</div><div class="cta-stack">
-      <a class="cta cta-navy" href="${mailUrl('not')}">Get a readiness plan <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      <a class="cta cta-navy" href="${CONTACT.advisor}" target="_blank" rel="noopener">Get a readiness plan <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
       <a class="cta cta-ghost" href="${waUrl('not')}" target="_blank" rel="noopener">Chat with us on WhatsApp</a>
     </div>`;
   }
@@ -794,7 +799,16 @@ function submitLead(outcomeLabel){
       fetch(CONTACT.sheet,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(row)}).catch(()=>{});
     }catch(err){/* silent */}
   }
-  // 2) Email notification to the inbox
+  // 2) The site's own lead store (Admin → Leads), same origin as this page
+  try{
+    fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      business:L.biz||'', contact:L.name||L.biz||'', email:L.email||'',
+      sector:'SMEs Accreditation Program', stage:outcomeLabel||'',
+      message:Object.entries(payload).filter(([k])=>!k.startsWith('_')&&!['Business','Contact','Email'].includes(k)).map(([k,v])=>k+': '+v).join('\n'),
+      source:'sme-readiness-check'
+    })}).catch(()=>{});
+  }catch(err){/* silent */}
+  // 3) Email notification to the inbox
   try{
     fetch('https://formsubmit.co/ajax/'+encodeURIComponent(CONTACT.collect),{
       method:'POST',

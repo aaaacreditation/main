@@ -71,6 +71,26 @@
 .ctx .ctx-card-urgent a { font-weight: 600; color: var(--aaa-blue); border-bottom: 1px solid rgba(23, 61, 115, 0.3); }
 .ctx .ctx-card-urgent a:hover { color: var(--aaa-gold-700); border-color: var(--aaa-gold); }
 
+/* WhatsApp chat (Nov 2026): the logo beside the number, as a tappable row. */
+.ctx .ctx-wa-chat {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 16px 10px 12px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 12px;
+  background: var(--aaa-blue-50);
+  color: var(--aaa-blue);
+  transition: border-color 0.2s, background 0.2s;
+}
+.ctx .ctx-wa-chat:hover { border-color: var(--aaa-blue); background: #fff; }
+.ctx .ctx-wa-chat:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
+.ctx .ctx-wa-chat span { display: flex; flex-direction: column; font-size: 14px; font-weight: 600; line-height: 1.3; color: var(--aaa-blue-950); }
+.ctx .ctx-wa-chat b { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--aaa-gold-700); }
+.ctx .ctx-wa { display: inline-flex; align-items: center; gap: 6px; }
+.ctx .ctx-wa svg { flex: none; }
+
 /* -------------------------------- Fields -------------------------------- */
 .ctx .ctx-form { position: relative; }
 .ctx .ctx-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import ImageField from "../../_components/ImageField";
-import RichTextEditor from "../../_components/RichTextEditor";
+import CaseStudyBuilder from "./CaseStudyBuilder";
 import SubmitButton from "../../_components/SubmitButton";
 import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
 import { saveCaseStudy } from "./actions";
@@ -38,6 +38,8 @@ export interface CaseStudyFormData {
   subtitle?: string;
   excerpt?: string;
   body?: string;
+  /** Page-builder layout JSON (Nov 2026); null for an article that was never opened in the builder. */
+  layout?: unknown;
   scope?: string;
   website?: string | null;
   /** yyyy-mm-dd */
@@ -390,12 +392,10 @@ export default function CaseStudyForm({
               />
             </div>
           </div>
-          <label className="adm-label">Article</label>
-          <RichTextEditor name="body" initialHTML={cs?.body ?? ""} placeholder="The organization’s case study…" />
+          <span className="adm-label">Page builder</span>
+          <CaseStudyBuilder initialLayout={cs?.layout ?? null} initialBody={cs?.body ?? ""} />
           <p className="adm-hint">
-            To show a video, paste its YouTube link as a paragraph on its own — the page turns it into a
-            player. The photo above is the page’s hero image; Sector, Country and Scope appear beside the
-            article.
+            The photo above is the page’s hero image; Sector, Country and Scope appear beside the article.
           </p>
         </div>
 

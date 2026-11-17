@@ -51,6 +51,7 @@ export default async function EditOrganizationPage({
         <OrgForm
           countries={options.countries}
           accreditedAsOptions={options.accreditedAsOptions}
+          customTags={options.customTags}
           org={{
             id: org.id,
             slug: org.slug,

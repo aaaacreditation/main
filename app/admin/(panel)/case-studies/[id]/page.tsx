@@ -86,6 +86,7 @@ export default async function EditCaseStudyPage({
             subtitle: cs.subtitle,
             excerpt: cs.excerpt,
             body: cs.body,
+            layout: cs.layout,
             scope: cs.scope,
             website: cs.website,
             publishedAt: cs.publishedAt ? cs.publishedAt.toISOString().slice(0, 10) : "",

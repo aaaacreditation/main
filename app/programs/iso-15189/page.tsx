@@ -39,6 +39,13 @@ const DATA: SchemeData = {
     caption: "Global Medical City team celebrating their ISO 15189 accreditation with AAA.",
     stats: heroStats(["Countries Served", "Assessors & Experts", "Accreditation Validity", "Recognition"], "Global"),
   },
+  advisor: {
+    intro: "Tell us about your medical laboratory and the examinations you want accredited.",
+    field: "Laboratory Examinations",
+    placeholder: "Describe your laboratory disciplines (e.g. clinical chemistry, haematology, microbiology) and requested scope",
+    sector: "Medical laboratory",
+    source: "iso-15189-advisor",
+  },
   suitability: {
     title: "Is ISO 15189 Accreditation Right for Your Medical Laboratory?",
     paragraphs: [

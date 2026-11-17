@@ -6,8 +6,9 @@ import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";
 import { breadcrumbSchema, faqSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
-import { CONTACT, FACTS } from "@/lib/facts";
+import { CONTACT, FACTS, CONSULT } from "@/lib/facts";
 import "./faq.css";
+import WhatsAppIcon from "../_components/WhatsAppIcon";
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
@@ -25,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
+const BOOKING = CONSULT.general;
 
 function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
   return (
@@ -401,10 +402,7 @@ export default function Page() {
             </li>
             <li className="faqx-channel">
               <span className="ax-ico" aria-hidden="true">
-                <LineIcon>
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z" />
-                </LineIcon>
+                <WhatsAppIcon size={18} />
               </span>
               <b>WhatsApp</b>
               <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
@@ -419,7 +417,7 @@ export default function Page() {
                 </LineIcon>
               </span>
               <b>Book a call</b>
-              <a href={CONSULT} target="_blank" rel="noopener noreferrer">
+              <a href={BOOKING} target="_blank" rel="noopener noreferrer">
                 30-minute consultation
               </a>
             </li>

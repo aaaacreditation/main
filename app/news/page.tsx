@@ -3,15 +3,16 @@ import Archive from "./Archive";
 import { seoPage } from "@/lib/seo-overrides";
 
 /**
- * Page 1 of the newsroom archive. Pages 2+ live at /news/page/[page].
+ * News & Announcements, page 1 (Resources menu). Pages 2+ live at
+ * /news/archive/[page]; Articles have their own listing at /articles.
  */
 export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
-    title: "AAA News & Accreditation Updates",
+    title: "AAA News & Announcements",
     description:
-      "Accreditation announcements, recognitions, partnerships and standards guidance from the American Accreditation Association newsroom, updated year-round.",
+      "Accreditation announcements, newly accredited organizations, recognitions, partnerships and events from the American Accreditation Association newsroom.",
     path: "/news",
     keywords: [
       "AAA news",
@@ -23,5 +24,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Page() {
-  return <Archive page={1} />;
+  return <Archive page={1} scope={{ kind: "section", section: "news" }} />;
 }

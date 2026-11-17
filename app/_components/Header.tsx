@@ -47,7 +47,7 @@ const GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     label: "Academy & Community",
     href: "/membership",
     items: [
-      { href: EXTERNAL.academy, label: "AAA Academy" },
+      { href: EXTERNAL.academy, label: "AAA Academy", external: true },
       { href: "/membership/organizational", label: "Organizational Membership" },
       { href: "/membership/individual", label: "Individual Membership" },
     ],
@@ -65,7 +65,7 @@ const GROUPS: { label: string; href: string; items: NavItem[] }[] = [
     href: "/news",
     items: [
       { href: "/case-studies", label: "Success Stories" },
-      { href: "/news", label: "Articles" },
+      { href: "/articles", label: "Articles" },
       { href: "/news", label: "News & Announcements" },
     ],
   },

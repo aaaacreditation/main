@@ -39,6 +39,13 @@ const DATA: SchemeData = {
     caption: "Technical competence, reliable PT schemes, and meaningful performance evaluation.",
     stats: heroStats(),
   },
+  advisor: {
+    intro: "Tell us about your proficiency testing schemes and requested scope.",
+    field: "Proficiency Testing Schemes",
+    placeholder: "Describe your PT / interlaboratory comparison schemes, participants and requested scope",
+    sector: "Proficiency testing provider",
+    source: "iso-17043-advisor",
+  },
   suitability: {
     title: "Is ISO/IEC 17043 Accreditation Right for Your Organization?",
     paragraphs: [

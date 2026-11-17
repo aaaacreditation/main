@@ -47,8 +47,9 @@ export type Org = {
   logo?: string;
   /** Flag artwork uploaded in the admin; falls back to `countryArt(country)`. */
   flag?: string;
-  /** Extra "Accredited as" tags ticked in the admin — see `orgTypes()`. */
-  tags?: AccreditationTypeId[];
+  /** Extra "Accredited as" tags ticked in the admin — built-in type ids, or the
+   *  slugs of custom register tags (Admin → Categories & Tags). See `orgTypes()`. */
+  tags?: string[];
   accreditations: Accreditation[];
 };
 
@@ -126,8 +127,8 @@ export function accreditationType(a: Accreditation): AccreditationTypeId {
  * Every type an organization is listed under in the register: the ones its
  * records name, plus any tags ticked for it in the admin.
  */
-export function orgTypes(o: Org): Set<AccreditationTypeId> {
-  const out = new Set<AccreditationTypeId>();
+export function orgTypes(o: Org): Set<string> {
+  const out = new Set<string>();
   for (const a of o.accreditations) {
     const t = accreditationType(a);
     if (t !== "other") out.add(t);

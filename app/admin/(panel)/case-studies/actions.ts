@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ContentStatus } from "@prisma/client";
+import { ContentStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { audit, bool, int, requireArea, str } from "@/lib/admin";
 import { isAllowedImageSrc } from "@/lib/case-studies";
+import { layoutIsEmpty, layoutToHtml, parseLayout } from "@/lib/case-study-layout";
 import { recordSlugChange } from "@/lib/seo-overrides";
 import { slugify } from "@/lib/slug";
 import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
@@ -79,9 +80,23 @@ export async function saveCaseStudy(formData: FormData) {
   const scope = str(formData, "scope", 600);
   const websiteRaw = str(formData, "website", 500);
   const website = websiteRaw ? (/^https?:\/\//i.test(websiteRaw) ? websiteRaw : `https://${websiteRaw}`) : null;
-  const rawBody = str(formData, "body", 400_000);
-  // TipTap leaves "<p></p>" in an emptied editor; treat that as no article.
-  const body = rawBody.replace(/<p>\s*<\/p>/g, "").trim() ? rawBody : "";
+  // The article comes from the page builder (Nov 2026). It is only re-read
+  // when the builder was changed, so saving an untouched case study keeps its
+  // body (and layout) exactly as stored. `body` is regenerated from the layout.
+  const layoutDirty = str(formData, "layoutDirty", 2) === "1";
+  let body = existing?.body ?? "";
+  let layout: Prisma.InputJsonValue | typeof Prisma.DbNull | undefined;
+  if (layoutDirty) {
+    const parsed = parseLayout(str(formData, "layout", 900_000));
+    if (!parsed) fail("layout");
+    if (parsed && !layoutIsEmpty(parsed)) {
+      layout = parsed as unknown as Prisma.InputJsonValue;
+      body = layoutToHtml(parsed);
+    } else {
+      layout = Prisma.DbNull;
+      body = "";
+    }
+  }
   const dateRaw = str(formData, "publishedAt", 10);
 
   if (!name) fail("name");
@@ -157,6 +172,7 @@ export async function saveCaseStudy(formData: FormData) {
     subtitle,
     excerpt,
     body,
+    ...(layout !== undefined ? { layout } : {}),
     scope,
     website,
     publishedAt,

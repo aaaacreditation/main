@@ -66,6 +66,7 @@ export function leadSourceLabel(source: string): string {
     "home-apply": "Home application (legacy)",
     "quote-form": "Quote form (legacy)",
     "sme-application": "SMEs program application",
+    "sme-readiness-check": "SME readiness check",
     "cab-advisor": "CAB hub advisor",
     "training-education-advisor": "Training & Education advisor",
     "membership-application": "Membership application",

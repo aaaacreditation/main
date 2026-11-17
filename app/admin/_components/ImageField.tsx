@@ -7,12 +7,19 @@ export default function ImageField({
   name,
   label,
   initial = "",
+  onChange,
 }: {
-  name: string;
+  /** Form field to submit the URL as. Omit when `onChange` handles it (case study builder). */
+  name?: string;
   label: string;
   initial?: string;
+  onChange?: (url: string) => void;
 }) {
-  const [url, setUrl] = useState(initial);
+  const [url, setUrlState] = useState(initial);
+  const setUrl = (next: string) => {
+    setUrlState(next);
+    onChange?.(next);
+  };
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -76,7 +83,7 @@ export default function ImageField({
           e.target.value = "";
         }}
       />
-      <input type="hidden" name={name} value={url} />
+      {name ? <input type="hidden" name={name} value={url} /> : null}
     </div>
   );
 }

@@ -400,3 +400,48 @@
   .nxp .nx-updown a,
   .nxp .nx-pager a { transition: none; }
 }
+
+/* ------------------------------------------------ Category chips (Nov 2026) */
+/* Under each listing's heading: All · each category with its count · the other
+   Resources section. Also the category + tags under an article. */
+.nxp .nx-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-top: clamp(20px, 2.4vw, 28px);
+}
+.nxp .nx-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--aaa-blue-100);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--aaa-blue);
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.nxp .nx-cat span {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--aaa-blue-50);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--aaa-blue);
+}
+.nxp .nx-cat:hover { border-color: var(--aaa-blue); }
+.nxp .nx-cat:focus-visible { outline: 2px solid var(--aaa-blue); outline-offset: 2px; }
+.nxp .nx-cat.on { border-color: var(--aaa-blue); background: var(--aaa-blue); color: #fff; }
+.nxp .nx-cat.on span { background: rgba(255, 255, 255, 0.18); color: #fff; }
+.nxp .nx-cat-other { margin-left: auto; border-style: dashed; color: var(--aaa-gold-700); }
+.nxp .nx-cat-other:hover { border-color: var(--aaa-gold); }
+.nxp .nx-empty { margin: 28px 0 0; font-size: 15px; color: var(--ink-600); }
+.nxp .nx-post-terms { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; }
+@media (max-width: 720px) {
+  .nxp .nx-cat-other { margin-left: 0; }
+}

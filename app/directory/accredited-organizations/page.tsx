@@ -5,11 +5,14 @@ import PageHero from "../../_components/PageHero";
 import JsonLd from "../../_components/JsonLd";
 import Icon from "../../_components/Icon";
 import DirectoryExplorer from "./DirectoryExplorer";
+import { TermKind } from "@prisma/client";
 import { getAccreditedOrganizations, registerStats } from "@/lib/directory";
+import { getTerms } from "@/lib/taxonomy";
 import { CONTACT, FACTS } from "@/lib/facts";
 import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import "./directory.css";
+import WhatsAppIcon from "../../_components/WhatsAppIcon";
 
 /**
  * The public register of AAA-accredited organizations.
@@ -77,7 +80,7 @@ const VERIFY: { title: string; text: string }[] = [
 ];
 
 export default async function Page() {
-  const orgs = await getAccreditedOrganizations();
+  const [orgs, customTags] = await Promise.all([getAccreditedOrganizations(), getTerms(TermKind.ORG_TAG)]);
   const stats = registerStats(orgs);
 
   const schema = [
@@ -135,7 +138,7 @@ export default async function Page() {
       {/* 02 — The register */}
       <section className="ax-section cream" id="register">
         <div className="container">
-          <DirectoryExplorer orgs={orgs} />
+          <DirectoryExplorer orgs={orgs} customTags={customTags.map((t) => ({ slug: t.slug, name: t.name }))} />
         </div>
       </section>
 
@@ -264,9 +267,7 @@ export default async function Page() {
                 <li>
                   <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
                     <span className="ax-ico" aria-hidden="true">
-                      <LineIcon>
-                        <path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.2-5.3A8.5 8.5 0 1 1 21 11.5z" />
-                      </LineIcon>
+                      <WhatsAppIcon size={16} />
                     </span>
                     {CONTACT.whatsapp}
                     <i>INTL</i>

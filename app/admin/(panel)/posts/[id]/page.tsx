@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { requireArea } from "@/lib/admin";
 import { toEditorHtml } from "@/lib/mdish";
 import { deletePost } from "../../../actions";
+import { TermKind } from "@prisma/client";
+import { getTerms } from "@/lib/taxonomy";
 import PostForm from "../../../_components/PostForm";
 import DangerButton from "../../../_components/DangerButton";
 
@@ -16,6 +18,9 @@ export default async function EditPostPage({
   params: Promise<{ id: string }>;
 }) {
   await requireArea("content");
+  const [categoryTerms, tagTerms] = await Promise.all([getTerms(TermKind.POST_CATEGORY), getTerms(TermKind.POST_TAG)]);
+  const categories = categoryTerms.map((c) => ({ name: c.name, section: c.section }));
+  const tagSuggestions = tagTerms.map((t) => t.name);
   const { id } = await params;
   const post = await prisma.post.findUnique({ where: { id } });
   if (!post) notFound();
@@ -38,6 +43,8 @@ export default async function EditPostPage({
       </header>
       <div className="adm-content">
         <PostForm
+          categories={categories}
+          tagSuggestions={tagSuggestions}
           post={{
             id: post.id,
             title: post.title,

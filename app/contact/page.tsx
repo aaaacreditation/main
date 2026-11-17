@@ -5,7 +5,8 @@ import { breadcrumbSchema, ORG, SITE_NAME, SITE_URL } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import ContactForm from "./ContactForm";
 import "./contact.css";
-import { CONTACT, FACTS } from "@/lib/facts";
+import { ADVISORS, CONTACT, FACTS } from "@/lib/facts";
+import WhatsAppIcon from "../_components/WhatsAppIcon";
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
@@ -15,8 +16,6 @@ export async function generateMetadata(): Promise<Metadata> {
     path: "/contact",
   });
 }
-
-const CONSULT = "https://calendly.com/accreditationaaa/consultation-call-am";
 
 function LineIcon({ children, strokeWidth = 1.7 }: { children: React.ReactNode; strokeWidth?: number }) {
   return (
@@ -61,7 +60,15 @@ const CHANNELS: { title: string; icon: React.ReactNode; lines: { k: string; v: R
     icon: <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" />,
     lines: [
       { k: "Telephone", v: <a href="tel:+15716012616">+1 (571) 601 2616</a> },
-      { k: "WhatsApp", v: <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">{CONTACT.whatsapp}</a> },
+      {
+        k: "WhatsApp",
+        v: (
+          <a className="ctx-wa" href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcon size={16} />
+            {CONTACT.whatsapp}
+          </a>
+        ),
+      },
       { k: "Fax", v: "+1 (571) 376 6582" },
     ],
   },
@@ -86,16 +93,16 @@ const CHANNELS: { title: string; icon: React.ReactNode; lines: { k: string; v: R
         <path d="m9 15 2 2 4-4" />
       </>
     ),
-    lines: [
-      {
-        k: "30 minutes, no obligation",
-        v: (
-          <a href={CONSULT} target="_blank" rel="noopener noreferrer">
-            Choose a time with an advisor
-          </a>
-        ),
-      },
-    ],
+    // One calendar per advisor (client feedback, Nov 2026) — the visitor picks
+    // the person who covers their program.
+    lines: ADVISORS.map((a) => ({
+      k: a.area,
+      v: (
+        <a href={a.url} target="_blank" rel="noopener noreferrer">
+          Book with {a.name}
+        </a>
+      ),
+    })),
   },
 ];
 
@@ -194,11 +201,15 @@ export default function Page() {
               </ul>
               <p className="ctx-card-urgent">
                 Prefer to talk it through? Call <a href="tel:+15716012616">+1 (571) 601 2616</a> or{" "}
-                <a href={CONSULT} target="_blank" rel="noopener noreferrer">
-                  book a 30-minute consultation
-                </a>
-                .
+                <a href="#reach-us">book a 30-minute consultation</a> with the advisor for your program.
               </p>
+              <a className="ctx-wa-chat" href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon size={22} />
+                <span>
+                  <b>WhatsApp chat</b>
+                  {CONTACT.whatsapp}
+                </span>
+              </a>
             </div>
             <ContactForm />
           </div>

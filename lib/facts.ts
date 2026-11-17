@@ -56,12 +56,75 @@ export const CONTACT = {
   postalCode: "22182",
   country: "USA",
   addressLine: "8609 Westwood Center Drive, Tysons Corner, VA 22182, USA",
+  /** General / CAB consultations (Adam). Program pages book their own advisor — see `CONSULT`. */
   consultationUrl: "https://calendly.com/accreditationaaa/consultation-call-am",
   /** The enquiry form on /contact. Every "talk to us" CTA lands here (Oct 2026). */
   formHref: "/contact#enquiry",
   /** Same form with "Quote request" pre-selected — the separate /quote page was retired (Oct 2026). */
   quoteHref: "/contact?topic=quote#enquiry",
 } as const;
+
+/**
+ * The advisors visitors can book a 30-minute consultation with, and their
+ * Calendly pages (client "AAA New Website" feedback, Nov 2026). Every
+ * "Book a consultation" link reads `CONSULT` below rather than a hardcoded URL.
+ */
+export const ADVISORS = [
+  {
+    key: "adam",
+    name: "Adam",
+    area: "Training & Education Providers",
+    url: "https://calendly.com/accreditationaaa/consultation-call-am",
+  },
+  {
+    key: "sara",
+    name: "Sara",
+    area: "Healthcare",
+    url: "https://calendly.com/aaa-accreditation/30min",
+  },
+  {
+    key: "babita",
+    name: "Babita",
+    area: "TEPA, SMEs & Memberships",
+    url: "https://calendly.com/babita-s/30min",
+  },
+] as const;
+
+const advisorUrl = (key: (typeof ADVISORS)[number]["key"]) => ADVISORS.find((a) => a.key === key)!.url;
+
+/**
+ * Which advisor's calendar each part of the site books. Conformity assessment
+ * bodies have no named advisor in the client's list, so they keep the general
+ * calendar (Adam's), like every page without a program.
+ */
+export const CONSULT = {
+  general: advisorUrl("adam"),
+  training: advisorUrl("adam"),
+  cab: advisorUrl("adam"),
+  healthcare: advisorUrl("sara"),
+  sme: advisorUrl("babita"),
+  membership: advisorUrl("babita"),
+} as const;
+
+/**
+ * The /apply form with its program pre-selected (Nov 2026 client feedback: a
+ * visitor arriving from the TEPA page should not face a list of every program).
+ * Keys are read by app/apply/ApplyForm.tsx (`APPLY_PROGRAMS[].keys`).
+ */
+export type ApplyProgram =
+  | "healthcare"
+  | "training"
+  | "sme"
+  | "medical-labs"
+  | "testing-labs"
+  | "calibration-labs"
+  | "inspection"
+  | "management-systems"
+  | "product"
+  | "personnel"
+  | "proficiency-testing";
+
+export const applyHref = (program?: ApplyProgram) => (program ? `/apply?program=${program}#start` : "/apply");
 
 /**
  * Official AAA social profiles, taken from the live site (Aug 2026). The
@@ -195,8 +258,8 @@ export const CAB_SCHEMES = [
  */
 export const EXTERNAL = {
   accreditedPersonnel: "https://adcp.aaa-accreditation.org",
-  /** TODO(client): AAA Academy URL. */
-  academy: "/about-accreditation",
+  /** The AAA Academy of Accreditation site (Nov 2026: was a placeholder link to /about-accreditation). */
+  academy: "https://academy.aaa-accreditation.org",
   /** TODO(client): client portal login URL. */
   clientPortal: "/contact",
 } as const;

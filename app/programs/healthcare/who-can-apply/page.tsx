@@ -7,6 +7,7 @@ import { breadcrumbSchema, faqSchema } from "../../../../lib/seo";
 import { seoPage } from "../../../../lib/seo-overrides";
 import { ArrowIcon, ClusterNav, HC_CONSULT, HC_EMAIL, LineIcon, hcRelated } from "../cluster";
 import "../hc.css";
+import { applyHref } from "@/lib/facts";
 
 const SELF = "/programs/healthcare/who-can-apply";
 
@@ -328,7 +329,7 @@ export default function Page() {
           </>
         }
         text="Tell us about your facility and a dedicated advisor will confirm the applicable chapters of the standards and set out a realistic route to accreditation."
-        primary={{ href: "/apply", label: "Apply for Accreditation" }}
+        primary={{ href: applyHref("healthcare"), label: "Apply for Accreditation" }}
         secondary={{ href: "/contact", label: "Talk to the healthcare team" }}
         related={hcRelated(SELF)}
       />
