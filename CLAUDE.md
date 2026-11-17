@@ -322,8 +322,11 @@ Rules:
 ## Admin Portal (`/admin`) — Oct 27 2026
 
 The CMS ("Content Studio", July 2026) was expanded into the **AAA Admin Portal**. Postgres via
-Prisma 6 (not 7), NextAuth v5 credentials. Deployment: `docs/DEPLOYMENT.md` (Vercel now,
-Hetzner Docker later — `Dockerfile`, `docker-compose.prod.yml`, `deploy/`).
+Prisma 6 (not 7), NextAuth v5 credentials. Deployment: the **Contabo server** 94.72.110.40
+(Docker stack — `Dockerfile`, `docker-compose.prod.yml`, `deploy/`; `sh deploy/preview-deploy.sh`,
+see `docs/DEPLOYMENT.md` "Preview server"). Vercel and Neon are retired (Nov 10 2026). The site
+stays on Contabo, including for go-live (confirmed Nov 17 2026). The Hetzner box 2.28.26.33 hosts
+only the TEPA landing pages (campaigns.aaa-accreditation.org) and has never run this site.
 
 - **Areas** (`app/admin/(panel)/…`): Dashboard · Leads & Applications (`leads/`, CSV export,
   timeline, assignment, bulk status) · News & Blog · Case Studies · Pages · Media Library ·
