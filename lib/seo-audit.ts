@@ -878,11 +878,11 @@ export interface SitemapPath {
   lastModified: number;
 }
 
-/** Every path in the site's sitemap (app/sitemap.ts), deduplicated, in sitemap order. */
+/** Every path in the site's sitemaps (lib/sitemap.ts), deduplicated, in sitemap order. */
 export async function sitemapPaths(): Promise<SitemapPath[]> {
   // Imported lazily: the sitemap pulls in the content layer and its bundled JSON.
-  const { default: sitemap } = await import("../app/sitemap");
-  const entries = await sitemap();
+  const { sitemapEntries } = await import("./sitemap");
+  const entries = await sitemapEntries();
   // The sitemap lists public addresses (old WordPress URLs, Nov 2026); the SEO
   // Center keys everything by route path, so map them back — posts, which sit
   // at the root, by their slugs.

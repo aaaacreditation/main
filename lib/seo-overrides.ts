@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { publicPath } from "./public-urls";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { prisma } from "./db";
-import { pageMeta, SITE_URL, type MetaInput } from "./seo";
+import { clampDescription, pageMeta, SITE_URL, titleFor, type MetaInput } from "./seo";
 import { invalidateRedirectCache, stripTrailingSlash } from "./redirect-map";
 
 /**
@@ -148,12 +148,12 @@ export function applySeoOverride(meta: Metadata, o: SeoOverride | null): Metadat
 
   if (filled(o.title)) {
     const title = o.title.trim();
-    out.title = title;
+    out.title = titleFor(title);
     og.title = title;
     tw.title = title;
   }
   if (filled(o.description)) {
-    const description = o.description.trim();
+    const description = clampDescription(o.description);
     out.description = description;
     og.description = description;
     tw.description = description;

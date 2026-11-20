@@ -7,17 +7,17 @@ import ReadinessLauncher from "./ReadinessLauncher";
 import BareChrome from "./BareChrome";
 import { FACTS, CONSULT, applyHref } from "@/lib/facts";
 import { withSeoOverride } from "@/lib/seo-overrides";
-import { SITE_URL } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, pageMeta, serviceSchema } from "@/lib/seo";
+import JsonLd from "../../_components/JsonLd";
 import "./sme.css";
 
+const PATH = "/programs/smes-accreditation-program";
+const DESCRIPTION = `Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in ${FACTS.countriesLabel}. Take the free 2-minute check.`;
+
 export async function generateMetadata(): Promise<Metadata> {
-  return withSeoOverride("/programs/smes-accreditation-program", {
-    title: { absolute: "SMEs Accreditation Program | AAA" },
-    description:
-      `Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in ${FACTS.countriesLabel}. Take the free 2-minute check.`,
-    // Metadata only — the page's frozen markup and sme.css are untouched.
-    alternates: { canonical: `${SITE_URL}/programs/smes-accreditation-program/` },
-  });
+  // Metadata and JSON-LD only — the page's frozen markup and sme.css are untouched.
+  // pageMeta adds the OpenGraph/Twitter card this page was missing (Nov 2026).
+  return withSeoOverride(PATH, pageMeta({ title: "SMEs Accreditation Program", description: DESCRIPTION, path: PATH }));
 }
 
 const BOOKING = CONSULT.sme;
@@ -274,6 +274,21 @@ export default async function Page() {
       {/* TEMPORARY: hides the site header/footer on sme.aaa-accreditation.org
           only. Remove together with proxy.ts when the full site launches. */}
       <BareChrome />
+      <JsonLd
+        schema={[
+          breadcrumbSchema([
+            { name: "Accreditation Programs", path: "/programs" },
+            { name: "SMEs Accreditation Program", path: PATH },
+          ]),
+          serviceSchema({
+            name: "AAA SMEs Accreditation Program",
+            description: DESCRIPTION,
+            path: PATH,
+            audience: "Small and medium-sized enterprises",
+          }),
+          faqSchema(FAQ),
+        ]}
+      />
 
       {/* Section 1 — Hero */}
       <section className="smex-hero lpx-hero lpx-hero--nav">

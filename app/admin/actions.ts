@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import { audit, requireArea } from "@/lib/admin";
 import { slugify } from "@/lib/slug";
 import { recordSlugChange } from "@/lib/seo-overrides";
+import { notifySearchEngines, refreshSitemaps } from "@/lib/search-engines";
 import { ensureTerms, isSection, parseNames } from "@/lib/taxonomy";
 import { signOut } from "@/auth";
 
@@ -47,7 +48,9 @@ function revalidateNews(slug?: string) {
   // Posts render at the site root, /<slug>/ (old WordPress URLs, Nov 2026).
   if (slug) revalidatePath(`/${slug}`);
   revalidatePath("/"); // home shows latest insights
-  revalidatePath("/sitemap.xml");
+  refreshSitemaps();
+  // Bing & co. hear about the article at once (live site only).
+  if (slug) notifySearchEngines([`/news/${slug}`, "/news", "/articles"]);
 }
 
 /* ---------- session ---------- */
@@ -194,6 +197,8 @@ export async function savePage(formData: FormData) {
   }
 
   revalidatePath(`/${slug}`);
+  refreshSitemaps();
+  if (status === ContentStatus.PUBLISHED) notifySearchEngines([`/${slug}`]);
   redirect("/admin/pages?saved=1");
 }
 
@@ -204,6 +209,7 @@ export async function deletePage(formData: FormData) {
   const page = await prisma.page.delete({ where: { id } }).catch(() => null);
   if (page) {
     revalidatePath(`/${page.slug}`);
+    refreshSitemaps();
     await audit(session.user.id, "delete", "page", id, page.title);
   }
   redirect("/admin/pages?deleted=1");

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Archive from "../../../Archive";
-import { parsePage, termBySlug } from "../../../scope";
+import { parsePage, scopedPosts, termBySlug } from "../../../scope";
 import { seoPage } from "@/lib/seo-overrides";
+import { getSeoSettings } from "@/lib/site-settings";
 
 /**
  * One tag's posts (Nov 2026): /news/tag/{slug}, then /news/tag/{slug}/2 …
@@ -27,10 +28,14 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const r = await resolve(params);
   if (!r) return { title: "AAA News" };
+  const [{ posts }, settings] = await Promise.all([scopedPosts({ kind: "tag", term: r.term }), getSeoSettings()]);
   return seoPage({
-    title: `Tagged “${r.term.name}”${r.n > 1 ? ` — Page ${r.n}` : ""} | AAA News`,
-    description: `Articles and announcements from the American Accreditation Association tagged ${r.term.name}: accreditation updates and guidance, newest first.`,
+    title: `${r.term.name}${r.n > 1 ? ` — Page ${r.n}` : ""} | AAA News`,
+    description: `${r.term.name}: articles and announcements from the American Accreditation Association (AAA) on this topic, newest first.`,
     path: `/news/tag/${r.term.slug}${r.n > 1 ? `/${r.n}` : ""}`,
+    // A tag with a single article is a thin copy of that article: online for
+    // old links, out of search and the sitemap (minimum set in SEO Center).
+    noindex: posts.length < settings.tagMinPosts,
   });
 }
 

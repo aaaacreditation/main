@@ -12,6 +12,7 @@ import { CONTACT, FACTS, PROGRAMS } from "@/lib/facts";
 import { getHomeStories } from "@/lib/case-studies";
 import { breadcrumbSchema, serviceSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
+import { getSeoSettings } from "@/lib/site-settings";
 import "./home.css";
 
 // Static with hourly ISR; saving a case study in the admin revalidates "/" at once.
@@ -32,8 +33,10 @@ export const revalidate = 3600;
 // The root layout's `title.template` does not apply to its own segment, so the
 // homepage carries the brand suffix itself.
 export async function generateMetadata(): Promise<Metadata> {
-  return seoPage({
-    title: "International Accreditation Body | AAA",
+  const [meta, settings] = await Promise.all([seoPage({
+    // Brand first (Nov 2026): the old home title led with "American
+    // Accreditation Association", the query the home page ranks for.
+    title: "American Accreditation Association | Accreditation Body",
     description: `AAA provides international accreditation for healthcare, training and education providers, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
     path: "/",
     keywords: [
@@ -44,7 +47,19 @@ export async function generateMetadata(): Promise<Metadata> {
       "conformity assessment accreditation",
       "SME accreditation",
     ],
-  });
+  }), getSeoSettings()]);
+  // Search Console / Bing / Yandex ownership tags (SEO Center → Search engines
+  // & AI). Engines only check the home page.
+  const other: Record<string, string> = {};
+  if (settings.bingVerification) other["msvalidate.01"] = settings.bingVerification;
+  return {
+    ...meta,
+    verification: {
+      ...(settings.googleVerification ? { google: settings.googleVerification } : {}),
+      ...(settings.yandexVerification ? { yandex: settings.yandexVerification } : {}),
+      ...(Object.keys(other).length ? { other } : {}),
+    },
+  };
 }
 
 const IMG = "/images/site/home";

@@ -199,6 +199,7 @@ export default async function HealthcarePage() {
         title={
           <>
             Healthcare Accreditation
+            <span className="ax-sr">: </span>
             <span className="hcx-h1-sub">
               Accreditation for Safer Care, Stronger Performance and Global Recognition
             </span>

@@ -32,6 +32,7 @@ const GROUPS: { label?: string; items: Item[] }[] = [
       { href: "/admin/seo", label: "SEO Center", exact: true, icon: "◎", area: "seo" },
       { href: "/admin/seo/pages", label: "Page Metadata", icon: "⌘", area: "seo" },
       { href: "/admin/seo/redirects", label: "Redirects", icon: "↪", area: "seo" },
+      { href: "/admin/seo/search-engines", label: "Search Engines & AI", icon: "⌖", area: "seo" },
     ],
   },
   {

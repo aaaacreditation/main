@@ -1933,3 +1933,15 @@ html:root { --header-h: 220px; }
   .ax-hero.v2 > .ax-hero-visual .ax-hero-photo,
   .ax-hero.v2 > .ax-hero-visual figcaption { animation: none; }
 }
+
+/* Text for screen readers and search engines only — e.g. the ": " between an
+   h1 and its display:block tagline, so the heading reads as two phrases, not
+   "Healthcare AccreditationAccreditation for…" (Nov 2026 SEO pass). */
+.ax-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

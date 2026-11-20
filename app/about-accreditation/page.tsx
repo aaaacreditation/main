@@ -27,7 +27,7 @@ import "./about-accreditation.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
-    title: "About Accreditation",
+    title: "What Is Accreditation? How It Works & Why It Matters",
     description:
       "What accreditation is, what it delivers, how it differs from certification, and how the AAA accreditation process works from application to renewal.",
     path: "/about-accreditation",

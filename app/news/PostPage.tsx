@@ -11,15 +11,17 @@ import {
   formatDate,
   formatDateShort,
   isoDate,
+  isThinPost,
   metaDescription,
   readingTime,
   summarize,
+  wordCount,
 } from "./helpers";
 import { TermKind } from "@prisma/client";
 import { getPublishedPost, getPublishedPosts, type PublicPost } from "@/lib/content";
 import { SECTIONS, categoryFor, getTerms, sectionOf, termSlug } from "@/lib/taxonomy";
 import { CONTACT } from "@/lib/facts";
-import { SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema } from "@/lib/seo";
+import { FEED_ALTERNATES, SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema, clampDescription, titleFor } from "@/lib/seo";
 import { withSeoOverride } from "@/lib/seo-overrides";
 import "./news.css";
 import { postPath } from "@/lib/public-urls";
@@ -34,25 +36,38 @@ import { postPath } from "@/lib/public-urls";
  * the article is framed by its date, reading time, siblings and related items.
  */
 
+/**
+ * The canonical article for `post`: a "-2" copy of another post with the same
+ * headline (WordPress re-publishes) points search engines at the original.
+ */
+async function canonicalSlugOf(post: PublicPost): Promise<string> {
+  const base = post.slug.replace(/-\d+$/, "");
+  if (base === post.slug) return post.slug;
+  const original = await getPublishedPost(base);
+  return original && original.title.trim().toLowerCase() === post.title.trim().toLowerCase() ? original.slug : post.slug;
+}
+
 /** Metadata for the post at /<slug>/, or null when there is no such post. */
 export async function postMetadata(slug: string): Promise<Metadata | null> {
   const post = await getPublishedPost(slug);
   if (!post) return null;
 
-  // pageMeta is not used here: the article title is the post's own headline and
-  // must not be truncated, and the canonical/OG data is assembled per post.
+  // pageMeta is not used here: the canonical/OG data is assembled per post.
   // An SEO Center override for this URL (SeoEntry) is applied on top.
   // The editor's SEO fields win over the headline/excerpt-derived defaults.
   const title = post.seoTitle?.trim() || post.title;
-  const description = post.seoDescription?.trim() || metaDescription(post);
-  const url = `${SITE_URL}${postPath(post.slug)}`;
+  const description = clampDescription(post.seoDescription?.trim() || metaDescription(post));
+  const url = `${SITE_URL}${postPath(await canonicalSlugOf(post))}`;
   // The cover when there is one, else the generated site-wide card.
   const image = post.coverImage || "/opengraph-image";
 
   return withSeoOverride(`/news/${post.slug}`, {
-    title,
+    // Long headlines are shown without the " | AAA" suffix (lib/seo.ts).
+    title: titleFor(title),
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, types: FEED_ALTERNATES },
+    // Image-only posts with no text stay online but out of search (Nov 2026).
+    ...(isThinPost(post) ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "article",
       url,
@@ -61,6 +76,9 @@ export async function postMetadata(slug: string): Promise<Metadata | null> {
       description,
       locale: "en_US",
       publishedTime: post.date,
+      ...(post.modified ? { modifiedTime: post.modified } : {}),
+      section: post.category || "News",
+      ...(post.tags.length ? { tags: post.tags } : {}),
       images: [{ url: image, alt: post.title }],
     },
     twitter: { card: "summary_large_image", title, description, images: [image] },
@@ -144,6 +162,13 @@ export default async function PostPage({ slug }: { slug: string }) {
             description,
             path: `/news/${post.slug}`,
             datePublished: post.date,
+            dateModified: post.modified,
+            image: post.coverImage ?? undefined,
+            // Announcements are news; the Articles section is guidance.
+            type: sectionOf(categories, post.category) === "articles" ? "BlogPosting" : "NewsArticle",
+            section: post.category || "News",
+            keywords: post.tags,
+            wordCount: wordCount(post.content),
           }),
         ]}
       />

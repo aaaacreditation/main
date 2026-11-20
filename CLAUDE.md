@@ -356,6 +356,38 @@ Rules:
   - The audit data (old sitemaps, REST API, Wayback) and probe scripts are not in the repo; the
     9 extra legacy documents are listed in `deploy/wp-uploads-extra.txt`.
 
+### Search engines & AI files (Nov 20 2026 SEO pass)
+
+- **Titles/descriptions**: `pageMeta`/`seoPage`/post metadata run titles through `titleFor()` — a
+  title that would pass 60 characters with " | AAA" is shown without the suffix — and descriptions
+  through `clampDescription()` (≤ 160). Still write descriptions of 120–160 characters yourself;
+  the clamp is a safety net. The home title leads with the brand ("American Accreditation
+  Association | …", as the old site did).
+- **Sitemaps** (`lib/sitemap.ts`, served by `app/sitemaps/[name]/route.ts` through rewrites) keep
+  the old Yoast names: `/sitemap_index.xml` (+ `/sitemap.xml`), `page-sitemap.xml`,
+  `post-sitemap1.xml`… (200 per file), `category-sitemap.xml`, `post_tag-sitemap.xml`,
+  `custom_box-sitemap.xml`, `case_study-sitemap.xml`. New static pages go in `STATIC_ROUTES` there.
+  `lastmod` only where real (edits/publication). Left out: SeoEntry noindex paths, thin posts
+  (`isThinPost`, < 40 words — holiday greetings), "-2" duplicate posts (canonical → original), tags
+  below `tagMinPosts`. Admin saves call `refreshSitemaps()` (tag "sitemap", also feeds/llms).
+- **Settings** (`SiteSetting` table, key "seo", `lib/site-settings.ts`): Search Console / Bing /
+  Yandex verification (home page only; the Google default is the OLD site's token — keep it, the
+  client's Search Console property depends on it), AI-crawler policy + extra robots disallows
+  (`lib/robots-policy.ts`), IndexNow on/off + key, tag-page minimum, llms.txt note. Edited in
+  Admin → SEO Center → **Search engines & AI** (`/admin/seo/search-engines`).
+- **IndexNow** (`lib/search-engines.ts`): `notifySearchEngines(paths)` after content saves (posts,
+  CMS pages, case studies, register, SEO overrides); key at `/indexnow-key.txt`. Never runs where
+  `NOINDEX=true` (`isLiveSite()`), i.e. never from the preview server.
+- **Machine-readable files**: `/llms.txt`, `/llms-full.txt` (built from the rendered pages via
+  `lib/html-to-markdown.ts`; page list in `lib/llms.ts` SECTIONS), `/facts.json`,
+  `/accredited-organizations.json`, RSS at the old `/feed/` address, `/feed.json`. Feed `<link>`s
+  are in every page head (`FEED_ALTERNATES`).
+- Branded 404 (`app/not-found.tsx`), web manifest + seal icons (`app/manifest.ts`, `public/icons`,
+  `app/apple-icon.png`). Structured-data logo = the square seal (`LOGO`, `public/logo/aaalog.png`).
+- Org profiles explain each accreditation type and link to the program page and to other
+  organizations in the same country (thin-content fix). An h1 with a display:block tagline needs
+  `<span className="ax-sr">: </span>` before the tagline, or search engines read the two run together.
+
 ## Admin Portal (`/admin`) — Oct 27 2026
 
 The CMS ("Content Studio", July 2026) was expanded into the **AAA Admin Portal**. Postgres via
@@ -367,7 +399,7 @@ only the TEPA landing pages (campaigns.aaa-accreditation.org) and has never run 
 
 - **Areas** (`app/admin/(panel)/…`): Dashboard · Leads & Applications (`leads/`, CSV export,
   timeline, assignment, bulk status) · News & Blog · Case Studies · Pages · Media Library ·
-  Accredited Register (`directory/`) · SEO Center (`seo/` audit crawler, `seo/pages`
+  Accredited Register (`directory/`) · SEO Center (`seo/` audit crawler, `seo/search-engines` settings, `seo/pages`
   metadata editor, `seo/redirects`) · Team & Access (`users/`) · Activity Log · My account.
 - **Roles** (`lib/admin.ts`): ADMIN everything; EDITOR everything except users; SALES
   dashboard + leads. Every admin page and server action starts with `requireArea(area)`

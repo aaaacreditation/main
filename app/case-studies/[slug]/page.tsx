@@ -8,7 +8,7 @@ import PageHero from "../../_components/PageHero";
 import Glyph from "../../_components/site/Glyph";
 import { getCaseStudyArticle, getCaseStudyArticles } from "@/lib/case-studies";
 import { CONTACT } from "@/lib/facts";
-import { articleSchema, breadcrumbSchema } from "@/lib/seo";
+import { articleSchema, breadcrumbSchema, clampDescription } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import CaseStudyBody from "../CaseStudyBody";
 import CaseStudyLayout from "../CaseStudyLayout";
@@ -29,10 +29,27 @@ export async function generateStaticParams() {
   return (await getCaseStudyArticles()).map((a) => ({ slug: a.slug }));
 }
 
+const plain = (html: string) =>
+  html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+
 /** Plain-text summary for meta descriptions when the article has no excerpt. */
 function summary(html: string, max = 155): string {
-  const text = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;/g, " ").replace(/\s+/g, " ").trim();
-  return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
+  // Paragraph text first: the body opens with headings that repeat the title.
+  const paras = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => plain(m[1])).filter((t) => t.length > 40);
+  const text = paras.join(" ") || plain(html);
+  return clampDescription(text, max);
+}
+
+/**
+ * Meta description (Nov 2026 audit): the imported excerpts are subtitles —
+ * fragments ("StudyMEDIC at a Glance") or whole paragraphs. A short one leads
+ * into the body's opening; a long one is cut to length.
+ */
+function describe(a: { excerpt: string; title: string; body: string }): string {
+  const ex = a.excerpt && a.excerpt !== a.title ? a.excerpt.trim() : "";
+  if (ex.length >= 110) return clampDescription(ex);
+  if (!ex) return summary(a.body);
+  return clampDescription(`${ex.replace(/[.:\s]+$/, "")} — ${summary(a.body, 400)}`);
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -41,7 +58,7 @@ export async function generateMetadata({ params }: Props) {
   if (!a) return { title: "Case Studies" };
   return seoPage({
     title: a.title,
-    description: a.excerpt && a.excerpt !== a.title ? a.excerpt : summary(a.body),
+    description: describe(a),
     path: `/case-studies/${a.slug}`,
     image: a.image ?? undefined,
     type: "article",
@@ -69,7 +86,7 @@ export default async function CaseStudyPage({ params }: Props) {
           ]),
           articleSchema({
             title: a.title,
-            description: a.excerpt || summary(a.body),
+            description: describe(a),
             path,
             datePublished: a.publishedAt,
             image: a.image ?? undefined,

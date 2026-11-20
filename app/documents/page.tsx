@@ -10,7 +10,7 @@ import "./documents.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
-    title: "Document Library",
+    title: "Accreditation Documents & Application Forms",
     description:
       "Download AAA application forms, accreditation requirements, policies and checklists — plus the ILAC and IAF documents behind them. Free, no signup.",
     path: "/documents",

@@ -13,12 +13,13 @@ export const dateTimeFmt = new Intl.DateTimeFormat("en-US", {
   minute: "2-digit",
 });
 
-export function SeoSubnav({ active }: { active: "overview" | "pages" }) {
+export function SeoSubnav({ active }: { active: "overview" | "pages" | "engines" }) {
   return (
     <nav className="adm-subnav" aria-label="SEO Center sections">
       <Link href="/admin/seo" className={active === "overview" ? "on" : undefined}>Overview &amp; audit</Link>
       <Link href="/admin/seo/pages" className={active === "pages" ? "on" : undefined}>Page metadata</Link>
       <Link href="/admin/seo/redirects">Redirects</Link>
+      <Link href="/admin/seo/search-engines" className={active === "engines" ? "on" : undefined}>Search engines &amp; AI</Link>
     </nav>
   );
 }

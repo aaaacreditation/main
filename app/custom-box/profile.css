@@ -15,3 +15,75 @@
   margin: 8px 0 4px;
   color: var(--aaa-blue, #173d73);
 }
+
+/* About-this-accreditation and related-organizations blocks (Nov 2026 SEO pass). */
+.orgx .orgx-about {
+  display: grid;
+  gap: 18px;
+}
+.orgx .orgx-about-item {
+  padding: 20px 22px;
+  background: #fff;
+  border: 1px solid var(--aaa-blue-100, #d7e2f4);
+  border-radius: var(--ax-radius, 16px);
+}
+.orgx .orgx-about-item h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--aaa-blue, #173d73);
+}
+.orgx .orgx-about-item p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
+}
+.orgx .orgx-about-item a {
+  color: var(--aaa-blue, #173d73);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.orgx .orgx-more {
+  margin-top: clamp(28px, 3.4vw, 40px);
+}
+.orgx .orgx-more h3 {
+  margin: 0 0 14px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--aaa-blue, #173d73);
+}
+.orgx .orgx-more ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.orgx .orgx-more a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--aaa-blue-100, #d7e2f4);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.orgx .orgx-more a:hover {
+  border-color: var(--aaa-blue, #173d73);
+  box-shadow: 0 8px 18px -12px rgba(6, 26, 44, 0.35);
+}
+.orgx .orgx-more strong {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--aaa-blue, #173d73);
+}
+.orgx .orgx-more span {
+  font-size: 12.5px;
+  color: #64748b;
+}

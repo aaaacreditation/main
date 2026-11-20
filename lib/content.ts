@@ -19,6 +19,11 @@ export interface PublicPost {
   category: string;
   /** Tag names (admin-managed list, Nov 2026). */
   tags: string[];
+  /**
+   * When the article was last edited in the admin (local ISO), if after it was
+   * published; absent for untouched posts — the import date is not an edit.
+   */
+  modified?: string;
   /** Search-result overrides set in the article editor (DB only). */
   seoTitle?: string | null;
   seoDescription?: string | null;
@@ -35,6 +40,14 @@ interface RawPost {
   cover?: string;
   category?: string;
   tags?: string[];
+}
+
+/** Rows edited after they were created/published, by more than this, count as modified. */
+const EDIT_GRACE_MS = 60 * 60_000;
+
+function modifiedOf(r: { createdAt: Date; updatedAt: Date; publishedAt: Date | null }): string | undefined {
+  const base = Math.max(r.createdAt.getTime(), r.publishedAt?.getTime() ?? 0);
+  return r.updatedAt.getTime() - base > EDIT_GRACE_MS ? toLocalIso(r.updatedAt) : undefined;
 }
 
 function toLocalIso(d: Date): string {
@@ -72,6 +85,7 @@ export async function getPublishedPosts(): Promise<PublicPost[]> {
       coverImage: r.coverImage,
       category: r.category,
       tags: r.tags,
+      modified: modifiedOf(r),
       seoTitle: r.seoTitle,
       seoDescription: r.seoDescription,
     }));
@@ -97,6 +111,7 @@ export async function getPublishedPost(slug: string): Promise<PublicPost | null>
       coverImage: r.coverImage,
       category: r.category,
       tags: r.tags,
+      modified: modifiedOf(r),
       seoTitle: r.seoTitle,
       seoDescription: r.seoDescription,
     };

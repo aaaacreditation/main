@@ -11,12 +11,13 @@ import {
   accreditationType,
   orgStatus,
   type Accreditation,
+  type AccreditationTypeId,
   type Org,
 } from "@/app/_data/accredited-organizations";
 import { getAccreditedOrganizations } from "@/lib/directory";
-import { findProfile } from "@/lib/org-profiles";
+import { findProfile, profilePath } from "@/lib/org-profiles";
 import { publicPath } from "@/lib/public-urls";
-import { CONTACT } from "@/lib/facts";
+import { CONTACT, PROGRAMS } from "@/lib/facts";
 import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import "../../directory/accredited-organizations/directory.css";
@@ -44,6 +45,79 @@ async function lookup(slug: string) {
 function typeLabel(a: Accreditation): string {
   const t = ACCREDITATION_TYPES[accreditationType(a)];
   return t.standard ? `${t.label} · ${t.standard}` : t.label;
+}
+
+/**
+ * What each kind of AAA accreditation confirms, with the program page that
+ * explains it (Nov 2026: profiles were ~190 words — thin for search — and
+ * linked nowhere but the register). General statements of what the standard
+ * covers, true of every organization holding that accreditation.
+ */
+const TYPE_COPY: Record<AccreditationTypeId, { href: string; link: string; text: string }> = {
+  training: {
+    href: PROGRAMS.training.href,
+    link: PROGRAMS.training.label,
+    text: "AAA accreditation of a training or education provider confirms that its programs, trainers, learner assessment and quality management have been independently evaluated against AAA's accreditation criteria, and are kept under annual surveillance.",
+  },
+  healthcare: {
+    href: PROGRAMS.healthcare.href,
+    link: PROGRAMS.healthcare.label,
+    text: "AAA healthcare accreditation evaluates a hospital, clinic or care provider on patient safety, clinical governance, quality improvement and patient-centered care. AAA's healthcare standards are assessed by ISQua's External Evaluation Association.",
+  },
+  school: {
+    href: PROGRAMS.school.href,
+    link: PROGRAMS.school.label,
+    text: "AAA school accreditation evaluates a school's governance and leadership, teaching and learning, student welfare and continuous improvement against AAA's standards for K–12 institutions.",
+  },
+  "management-systems": {
+    href: PROGRAMS.iso17021.href,
+    link: PROGRAMS.iso17021.label,
+    text: "Accreditation to ISO/IEC 17021-1 confirms that a certification body auditing and certifying management systems — such as ISO 9001, ISO 14001 or ISO 45001 — is competent, consistent and impartial, so the certificates it issues can be trusted.",
+  },
+  personnel: {
+    href: PROGRAMS.iso17024.href,
+    link: PROGRAMS.iso17024.label,
+    text: "Accreditation to ISO/IEC 17024 confirms that a personnel certification body certifies people's competence through fair, valid and reliable examination, and manages its certification scheme impartially.",
+  },
+  product: {
+    href: PROGRAMS.iso17065.href,
+    link: PROGRAMS.iso17065.label,
+    text: "Accreditation to ISO/IEC 17065 confirms that a body certifying products, processes or services operates competently, consistently and impartially.",
+  },
+  "testing-lab": {
+    href: PROGRAMS.testingLabs.href,
+    link: PROGRAMS.testingLabs.label,
+    text: "Accreditation to ISO/IEC 17025 confirms a testing laboratory's technical competence and the validity of the results it reports.",
+  },
+  "calibration-lab": {
+    href: PROGRAMS.calibrationLabs.href,
+    link: PROGRAMS.calibrationLabs.label,
+    text: "Accreditation to ISO/IEC 17025 confirms a calibration laboratory's technical competence, measurement traceability and the validity of the calibration results it reports.",
+  },
+  inspection: {
+    href: PROGRAMS.iso17020.href,
+    link: PROGRAMS.iso17020.label,
+    text: "Accreditation to ISO/IEC 17020 confirms that an inspection body is competent to carry out inspections and does so impartially and consistently.",
+  },
+  proficiency: {
+    href: PROGRAMS.iso17043.href,
+    link: PROGRAMS.iso17043.label,
+    text: "Accreditation to ISO/IEC 17043 confirms that a proficiency testing provider designs and runs its schemes competently, so laboratories can rely on them to check their performance.",
+  },
+  other: {
+    href: "/about-accreditation",
+    link: "What accreditation means",
+    text: "Accreditation is independent confirmation that an organization meets recognized standards of competence, quality and impartiality, assessed by AAA and kept under regular surveillance.",
+  },
+};
+
+/** Other organizations to link to: same country first, then the same kind of accreditation. */
+function neighbours(all: Org[], org: Org, max = 6): Org[] {
+  const types = new Set(org.accreditations.map(accreditationType));
+  const others = all.filter((o) => o.name !== org.name);
+  const sameCountry = org.country ? others.filter((o) => o.country === org.country) : [];
+  const sameType = others.filter((o) => !sameCountry.includes(o) && o.accreditations.some((a) => types.has(accreditationType(a))));
+  return [...sameCountry, ...sameType].slice(0, max);
 }
 
 function StatusPill({ status }: { status: string }) {
@@ -84,6 +158,9 @@ export default async function OrganizationProfile({ params }: { params: Promise<
   const { org, slug: main } = await lookup(slug);
   const path = `/custom-box/${main}`;
   const status = orgStatus(org);
+  const kinds = [...new Set(org.accreditations.map(accreditationType))];
+  const nearby = neighbours(await getAccreditedOrganizations(), org);
+  const sameCountry = nearby.length > 0 && nearby[0].country === org.country;
 
   return (
     <div className="axp dxp orgx">
@@ -100,7 +177,15 @@ export default async function OrganizationProfile({ params }: { params: Promise<
             url: `${SITE_URL}${publicPath(path)}`,
             ...(org.logo ? { logo: org.logo.startsWith("http") ? org.logo : `${SITE_URL}${org.logo}` } : {}),
             ...(org.description ? { description: org.description } : {}),
-            ...(org.country ? { address: { "@type": "PostalAddress", addressCountry: org.country } } : {}),
+            ...(org.country ? { address: { "@type": "PostalAddress", addressCountry: org.country, ...(org.location ? { addressLocality: org.location } : {}) } } : {}),
+            // The accreditation, as a credential awarded by AAA.
+            hasCredential: org.accreditations.map((a) => ({
+              "@type": "EducationalOccupationalCredential",
+              name: `AAA accreditation — ${a.accreditedAs}`,
+              credentialCategory: "Accreditation",
+              identifier: a.number,
+              recognizedBy: { "@id": `${SITE_URL}/#organization` },
+            })),
           },
         ]}
       />
@@ -185,6 +270,53 @@ export default async function OrganizationProfile({ params }: { params: Promise<
               </Link>
             </div>
           </article>
+        </div>
+      </section>
+
+      <section className="ax-section cream">
+        <div className="container orgx-wrap">
+          <div className="ax-head">
+            <span className="eyebrow">About this accreditation</span>
+            <h2>What {kinds.length > 1 ? "these accreditations confirm" : "this accreditation confirms"}</h2>
+          </div>
+          <div className="orgx-about">
+            {kinds.map((k) => (
+              <div key={k} className="orgx-about-item">
+                <h3>{ACCREDITATION_TYPES[k].standard ? `${ACCREDITATION_TYPES[k].label} · ${ACCREDITATION_TYPES[k].standard}` : ACCREDITATION_TYPES[k].label}</h3>
+                <p>
+                  {TYPE_COPY[k].text}{" "}
+                  <Link href={TYPE_COPY[k].href}>{TYPE_COPY[k].link} →</Link>
+                </p>
+              </div>
+            ))}
+            <div className="orgx-about-item">
+              <h3>How to check a listing</h3>
+              <p>
+                Each record in the AAA register carries an accreditation number, scope and validity date. The register
+                shows the status as published; to confirm it, contact AAA with the accreditation number. Certificates
+                issued under AAA can be checked in the{" "}
+                {/* The certificate portal is a static app outside Next routing (public/adcp). */}
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                <a href="/adcp/">AAA certificate portal</a>.
+              </p>
+            </div>
+          </div>
+
+          {nearby.length > 0 && (
+            <nav className="orgx-more" aria-label="More accredited organizations">
+              <h3>{sameCountry ? `More AAA-accredited organizations in ${org.country}` : "More AAA-accredited organizations"}</h3>
+              <ul>
+                {nearby.map((o) => (
+                  <li key={o.name}>
+                    <Link href={profilePath(o)}>
+                      <strong>{o.name}</strong>
+                      <span>{o.country}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
       </section>
 

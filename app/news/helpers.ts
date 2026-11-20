@@ -132,11 +132,32 @@ export function summarize(post: PublicPost, max = 190): string {
  * fill it on its own.
  */
 export function metaDescription(post: PublicPost): string {
-  const base = summarize(post, 158);
+  // An article with no text of its own (a few 2020 image-only posts) is
+  // described by its headline rather than a bare suffix (Nov 2026 audit).
+  // Imported excerpts often open with the headline itself ("How to Get … Accredited
+  // E-learning has exploded…"); Google shows the title already, so drop it.
+  const full = summarize(post, 400);
+  const lead = full.toLowerCase().startsWith(post.title.trim().toLowerCase()) ? full.slice(post.title.trim().length).replace(/^[\s:.\-–—]+/, "") : full;
+  const base = (lead.length >= 60 ? clamp(lead, 158) : summarize(post, 158)) || post.title;
   if (base.length >= 110) return base;
   const suffix = " — an update from the American Accreditation Association newsroom.";
   return clamp(`${base.replace(/[.\s]+$/, "")}${suffix}`, 158);
 }
+
+/** Words of body text below which an article is too thin to offer search engines. */
+const THIN_WORDS = 40;
+
+/**
+ * True for articles with (almost) no text — image-only 2020 posts migrated
+ * from WordPress. They stay online at their old addresses, but are kept out
+ * of search results (noindex) and the sitemaps (Nov 2026 audit).
+ */
+export function isThinPost(post: PublicPost): boolean {
+  return toPlainText(post.content ?? "").split(" ").filter(Boolean).length < THIN_WORDS;
+}
+
+/** Body word count (structured data). */
+export const wordCount = (content: string) => toPlainText(content ?? "").split(" ").filter(Boolean).length;
 
 /** Rough reading time from the body text, floored at one minute. */
 export function readingTime(content: string): number {

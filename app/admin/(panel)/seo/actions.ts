@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { audit, requireArea, str } from "@/lib/admin";
 import { auditBaseUrl, normalizeRoutePath, recheckSeoPath } from "@/lib/seo-audit";
+import { notifySearchEngines, refreshSitemaps } from "@/lib/search-engines";
 
 /* SEO Center server actions: per-path metadata overrides (SeoEntry) and
  * single-page re-checks. The public side reads SeoEntry through
@@ -48,7 +49,8 @@ function refreshPublic(path: string) {
   // after a save already shows the new metadata instead of a stale copy.
   updateTag("seo");
   revalidatePath(path);
-  revalidatePath("/sitemap.xml");
+  refreshSitemaps();
+  notifySearchEngines([path]);
 }
 
 export async function saveSeoEntry(formData: FormData) {

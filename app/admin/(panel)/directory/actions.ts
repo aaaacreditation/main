@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { notifySearchEngines, refreshSitemaps } from "@/lib/search-engines";
 import { redirect } from "next/navigation";
 import { ContentStatus, TermKind } from "@prisma/client";
 import { prisma } from "@/lib/db";
@@ -103,6 +104,9 @@ async function uniqueOrgSlug(base: string, excludeId?: string) {
 function revalidateDirectory() {
   revalidatePath("/directory/accredited-organizations");
   revalidatePath("/admin/directory");
+  // Profiles (/custom-box/<slug>/) are listed in custom_box-sitemap.xml.
+  refreshSitemaps();
+  notifySearchEngines(["/directory/accredited-organizations"]);
 }
 
 export async function saveOrganization(formData: FormData) {

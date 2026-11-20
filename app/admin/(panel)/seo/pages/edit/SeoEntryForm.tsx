@@ -41,7 +41,9 @@ export default function SeoEntryForm({ path, siteUrl, suffix, limits, initial, l
 
   const tTrim = title.trim();
   const dTrim = description.trim();
-  const shownTitle = tTrim ? `${tTrim}${suffix}` : live?.title || "";
+  // A title that would pass the limit with the suffix is shown without it (lib/seo.ts titleFor).
+  const withSuffix = tTrim.length + suffix.length <= limits.titleMax;
+  const shownTitle = tTrim ? (withSuffix ? `${tTrim}${suffix}` : tTrim) : live?.title || "";
   const shownDesc = dTrim || live?.description || "";
   const titleLen = shownTitle.length;
   const descLen = shownDesc.length;
@@ -87,7 +89,7 @@ export default function SeoEntryForm({ path, siteUrl, suffix, limits, initial, l
         SEO title
         <span className={`adm-counter${toneClass(titleTone)}`}>
           {titleLen} / {limits.titleMax}
-          {tTrim ? ` incl. “${suffix.trim()}”` : ""}
+          {tTrim && withSuffix ? ` incl. “${suffix.trim()}”` : ""}
         </span>
       </label>
       <input
@@ -100,8 +102,8 @@ export default function SeoEntryForm({ path, siteUrl, suffix, limits, initial, l
         placeholder={live?.title ? live.title.replace(new RegExp(`${escapeRe(suffix)}$`), "") : "e.g. Healthcare Accreditation for Hospitals & Clinics"}
       />
       <p className="adm-hint">
-        Leave blank to keep the page&apos;s built-in title. The site adds “{suffix.trim()}” to the end automatically, so aim for{" "}
-        {limits.titleMax - suffix.length} characters or fewer here, with the main topic first.
+        Leave blank to keep the page&apos;s built-in title. The site adds “{suffix.trim()}” to the end when the title is{" "}
+        {limits.titleMax - suffix.length} characters or fewer; longer titles are shown on their own. Put the main topic first.
       </p>
       {doubleSuffix ? (
         <p className="adm-hint" style={{ color: "var(--danger)" }}>

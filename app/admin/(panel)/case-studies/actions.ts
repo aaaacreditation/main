@@ -8,6 +8,7 @@ import { audit, bool, int, requireArea, str } from "@/lib/admin";
 import { isAllowedImageSrc } from "@/lib/case-studies";
 import { layoutIsEmpty, layoutToHtml, parseLayout } from "@/lib/case-study-layout";
 import { recordSlugChange } from "@/lib/seo-overrides";
+import { notifySearchEngines, refreshSitemaps } from "@/lib/search-engines";
 import { slugify } from "@/lib/slug";
 import { PROGRAM_PAGES } from "@/app/_data/page-case-studies";
 import { IMAGE_POSITIONS, listHref, parseTab, placementWhere } from "./shared";
@@ -19,7 +20,8 @@ function revalidateCaseStudies(...slugs: string[]) {
   for (const pg of PROGRAM_PAGES) revalidatePath(pg.path);
   revalidatePath("/case-studies");
   for (const slug of slugs) revalidatePath(`/case-studies/${slug}`);
-  revalidatePath("/sitemap.xml");
+  refreshSitemaps();
+  notifySearchEngines(slugs.filter(Boolean).map((slug) => `/case-studies/${slug}`));
   revalidatePath("/admin/case-studies");
 }
 

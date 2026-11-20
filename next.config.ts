@@ -62,8 +62,8 @@ const LEGACY_REDIRECTS: Record<string, string> = {
   "/10-advantages-of-national-accreditation": "/news/how-to-become-an-accredited-training-center",
   "/pdc-gain-the-organizational-membership-of-aaa": "/news/ptc-gain-the-organizational-membership-of-aaa",
   "/2": "/news/2022-workplace-learning-report",
-  "/feed": "/news",
-  "/comments/feed": "/news",
+  // "/feed" is a real RSS feed again (app/feed/route.ts, Nov 2026).
+  "/comments/feed": "/feed",
   // Test and draft pages that were left published on the old site.
   "/aaa-american-accreditation-association-test": "/",
   "/accredited-organizations-test": "/directory/accredited-organizations",
@@ -97,6 +97,8 @@ const LEGACY_PATTERNS = [
   // /news/2/ was page 2 of the old news page; author archives were already broken there.
   { source: "/news/:n(\\d{1,3})", destination: "/news/page/:n/" },
   { source: "/author/:name/:rest*", destination: "/news/" },
+  // WordPress per-category, per-tag and per-post feeds → the site feed (Nov 2026).
+  { source: "/:path+/feed", destination: "/feed/" },
   /*
    * WordPress "page 2" of a page or post (/about-aaa/2/), which the old site
    * 301'd to the page itself. Two-segment paths only, and never under a
@@ -190,6 +192,13 @@ const nextConfig: NextConfig = {
         { source: "/category/:slug/page/:n(\\d+)", destination: "/news/category/:slug/:n" },
         { source: "/tag/:slug", destination: "/news/tag/:slug" },
         { source: "/tag/:slug/page/:n(\\d+)", destination: "/news/tag/:slug/:n" },
+        // XML sitemaps under the old WordPress (Yoast) file names — lib/sitemap.ts.
+        { source: "/sitemap.xml", destination: "/sitemaps/index" },
+        { source: "/sitemap_index.xml", destination: "/sitemaps/index" },
+        {
+          source: "/:name(page-sitemap|category-sitemap|post_tag-sitemap|custom_box-sitemap|case_study-sitemap|post-sitemap\\d+).xml",
+          destination: "/sitemaps/:name",
+        },
       ],
       afterFiles: [
         /*

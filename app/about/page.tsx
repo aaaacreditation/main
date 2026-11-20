@@ -22,9 +22,9 @@ import "./about.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
-    title: "About AAA",
+    title: "About the American Accreditation Association",
     description:
-      `The American Accreditation Association is an independent international accreditation body headquartered in Virginia, USA, serving organizations across ${FACTS.countriesPlus} countries.`,
+      `The American Accreditation Association is an independent international accreditation body based in Virginia, USA, serving organizations in ${FACTS.countriesPlus} countries.`,
     path: "/about",
     keywords: [
       "American Accreditation Association",

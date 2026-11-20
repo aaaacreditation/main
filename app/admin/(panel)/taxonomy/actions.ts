@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { refreshSitemaps } from "@/lib/search-engines";
 import { redirect } from "next/navigation";
 import { TermKind } from "@prisma/client";
 import { prisma } from "@/lib/db";
@@ -39,7 +40,7 @@ function revalidateKind(kind: TermKind) {
   } else {
     revalidatePath("/news", "layout");
     revalidatePath("/articles", "layout");
-    revalidatePath("/sitemap.xml");
+    refreshSitemaps();
     revalidatePath("/admin/posts", "layout");
   }
   revalidatePath("/admin/taxonomy");

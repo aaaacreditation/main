@@ -29,7 +29,48 @@ export const ORG = {
 } as const;
 
 /** The generated site-wide share card (app/opengraph-image.tsx). */
-const DEFAULT_OG_IMAGE = "/opengraph-image";
+export const DEFAULT_OG_IMAGE = "/opengraph-image";
+
+/** <link rel="alternate"> to the article feeds, on every page (as WordPress did). */
+export const FEED_ALTERNATES = {
+  "application/rss+xml": [{ url: `${SITE_URL}/feed/`, title: `${SITE_NAME} — News & Articles` }],
+  "application/feed+json": [{ url: `${SITE_URL}/feed.json`, title: `${SITE_NAME} — News & Articles (JSON Feed)` }],
+};
+
+/**
+ * The square AAA seal, used as the logo in structured data (Nov 2026). Google
+ * shows it on white in results and knowledge panels, so not the wide header
+ * logo: AAA-Logo.png has white lettering and would vanish there.
+ */
+export const LOGO = { url: `${SITE_URL}/logo/aaalog.png`, width: 710, height: 671 } as const;
+
+/** Suffix the root layout's title template adds ("%s | AAA"). */
+const TITLE_SUFFIX = " | AAA";
+/** Longest title Google shows in full (≈ 600px). */
+export const TITLE_MAX = 60;
+
+/**
+ * Title for `metadata.title`. Short titles get the " | AAA" suffix from the
+ * layout template; a title that would pass 60 characters with it is used on
+ * its own (Nov 2026 audit: 282 titles were cut off in results, most of them
+ * by the suffix alone).
+ */
+export function titleFor(title: string): string | { absolute: string } {
+  const t = title.trim();
+  return t.length + TITLE_SUFFIX.length > TITLE_MAX ? { absolute: t } : t;
+}
+
+/** Longest meta description shown in full. */
+export const DESCRIPTION_MAX = 160;
+
+/** A description cut to ≤ 160 characters at a word boundary, with an ellipsis when cut. */
+export function clampDescription(text: string, max = DESCRIPTION_MAX): string {
+  const t = text.replace(/\s+/g, " ").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max - 1);
+  const at = cut.lastIndexOf(" ");
+  return `${(at > max * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,;:.\-–—]+$/, "")}…`;
+}
 
 export type MetaInput = {
   title: string;
@@ -71,11 +112,12 @@ export function pageMeta({
       : `${SITE_URL}${image}`
     : undefined;
 
+  description = clampDescription(description);
   return {
-    title,
+    title: titleFor(title),
     description,
     ...(keywords && keywords.length > 0 ? { keywords } : {}),
-    alternates: { canonical: url },
+    alternates: { canonical: url, types: FEED_ALTERNATES },
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type,
@@ -112,10 +154,10 @@ export function organizationSchema() {
     alternateName: ORG.alternateName,
     legalName: ORG.legalName,
     url: SITE_URL,
-    logo: {
-      "@type": "ImageObject",
-      url: `${SITE_URL}/logo/AAA-Logo.png`,
-    },
+    description:
+      "The American Accreditation Association (AAA) is an international accreditation body headquartered in Virginia, USA. It accredits healthcare organizations, conformity assessment bodies, training and education providers, schools and SMEs.",
+    logo: { "@type": "ImageObject", ...LOGO },
+    image: { "@type": "ImageObject", ...LOGO },
     email: ORG.email,
     telephone: ORG.telephone,
     address: {
@@ -172,6 +214,15 @@ export function websiteSchema() {
     inLanguage: "en-US",
   };
 }
+
+/** The organization, inline: Google's article/review parsers want a name and logo, not only an @id. */
+const orgRef = () => ({
+  "@type": "Organization",
+  "@id": `${SITE_URL}/#organization`,
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: { "@type": "ImageObject", ...LOGO },
+});
 
 export function breadcrumbSchema(items: { name: string; path: string }[]) {
   return {
@@ -242,23 +293,45 @@ export function articleSchema({
   description,
   path,
   datePublished,
+  dateModified,
   image,
+  type = "Article",
+  section,
+  keywords,
+  wordCount,
 }: {
   title: string;
   description: string;
   path: string;
   datePublished?: string;
+  dateModified?: string;
   image?: string;
+  /** NewsArticle for announcements, BlogPosting for articles (Nov 2026). */
+  type?: "Article" | "NewsArticle" | "BlogPosting";
+  section?: string;
+  keywords?: string[];
+  wordCount?: number;
 }) {
+  const url = `${SITE_URL}${publicPath(path)}`;
+  // Google's Article rich result requires an image; pages without one use the
+  // generated site card.
+  const img = image ?? DEFAULT_OG_IMAGE;
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: title,
+    "@type": type,
+    headline: title.length > 110 ? `${title.slice(0, 109).trimEnd()}…` : title,
     description,
-    mainEntityOfPage: `${SITE_URL}${publicPath(path)}`,
+    url,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
     ...(datePublished ? { datePublished } : {}),
-    ...(image ? { image: image.startsWith("http") ? image : `${SITE_URL}${image}` } : {}),
-    author: { "@id": `${SITE_URL}/#organization` },
-    publisher: { "@id": `${SITE_URL}/#organization` },
+    ...(datePublished || dateModified ? { dateModified: dateModified ?? datePublished } : {}),
+    image: [img.startsWith("http") ? img : `${SITE_URL}${img}`],
+    ...(section ? { articleSection: section } : {}),
+    ...(keywords && keywords.length > 0 ? { keywords: keywords.join(", ") } : {}),
+    ...(wordCount ? { wordCount } : {}),
+    inLanguage: "en-US",
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    author: orgRef(),
+    publisher: orgRef(),
   };
 }

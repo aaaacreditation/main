@@ -23,7 +23,7 @@ import "./programs.css";
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
     title: "Accreditation Programs",
-    description: `Accreditation programs from the American Accreditation Association for education and training, healthcare, conformity assessment bodies and SMEs across ${FACTS.countriesPlus} countries.`,
+    description: `AAA accreditation programs for training and education providers, healthcare, conformity assessment bodies, schools and SMEs, recognized in ${FACTS.countriesPlus} countries.`,
     path: "/programs",
   });
 }

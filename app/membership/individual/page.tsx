@@ -169,6 +169,7 @@ export default function IndividualMembershipPage() {
         title={
           <>
             Individual Membership
+            <span className="ax-sr">: </span>
             <span className="mind-tagline">Connect. Develop. Contribute. Be Recognized.</span>
           </>
         }
