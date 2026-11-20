@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Glyph, { type GlyphName } from "./Glyph";
 
 /**

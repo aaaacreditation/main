@@ -56,6 +56,9 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 - Map deep navy: `#0E2A47` — world-map fill for countries without AAA accreditation (accredited countries use brand navy `#173d73`).
   Exception (Oct 22 2026, client): the **home page** map (`.homex .hx-reach-map` in `home.css`) fills
   countries without accreditation with `#005ac2`. Reserved for that map only. Only accredited countries are interactive (name tooltip, hover, pointer) on every map.
+- WhatsApp green: `#25D366` (hover `#1EBE5A` → `#128C4A`) — reserved exclusively for the floating WhatsApp
+  button (`.fcx-wa`, `app/_components/floating-contact.css`), at the client's request (Nov 17 2026). Every
+  other WhatsApp icon on the site stays in the surrounding brand colour (`WhatsAppIcon`, currentColor).
 - Light blue surfaces: `#eef4ff` (`--aaa-blue-50`) subtle tinted backgrounds; `#d7e2f4` (`--aaa-blue-100`) tinted borders.
 - White: `#FFFFFF` — backgrounds, surfaces, text on brand color.
 - Neutral 900: `#0F172A` — body text on light backgrounds.
@@ -72,7 +75,7 @@ These are the official brand guidelines for AAA. Follow them strictly for all UI
 - Tailwind: set Poppins as the default `font-sans` in `tailwind.config` so every element inherits it.
 
 ### Font Weights (Poppins)
-- 300 — Light (rare, large display only)
+- 300 — Light (rare, large display only) — not loaded since Nov 2026 (unused; add it back to `app/layout.tsx` only if a design needs it)
 - 400 — Regular (body text, default)
 - 500 — Medium (subheadings, emphasized body)
 - 600 — SemiBold (buttons, section titles)
@@ -277,14 +280,15 @@ Rules:
   — `Brand` renders both and CSS (`.sh2-logo-light` / `.sh2-logo-navy`) picks one. The frozen SME page's hero padding is
   re-keyed to `--header-h` from `aaa-ds.css` (`.smex-hero.lpx-hero--nav .lpx-hero-inner`).
 - **59 countries** (was 58) — client figure; every page reads it from `FACTS`. The world map
-  (`WorldMap.tsx` `ACCREDITED`) is the client's list: 55 distinct map countries (the list has
+  (`ACCREDITED` in `WorldMapInteractive.tsx`; since Nov 2026 the map is client-only and loads when it scrolls near the viewport — `WorldMapFigure` in `WorldMap.tsx`) is the client's list: 55 distinct map countries (the list has
   duplicate UAE and Georgia rows, skips #49, and Scotland is drawn as the UK). Bahrain and
   Malta are marker-only points added in `scripts/generate-world-map.mjs`; Somaliland is merged
   into Somalia.
 - **`/quote` is retired.** Every "Request a Quote" CTA uses `CONTACT.quoteHref`
   (`/contact?topic=quote#enquiry`, pre-selects "Quote request" in `ContactForm`); "Talk to an
   expert" / "Request information" CTAs use `CONTACT.formHref` (`/contact#enquiry`). `/quote`
-  and `/get-a-quote` redirect there.
+  redirects there; the old site's `/get-a-quote/` is a real page (Nov 2026) showing the contact
+  form with "Quote request" preselected.
 - **Footer**: the client's new blurb, and only the four main programs (TEPA, Healthcare, CABs,
   SMEs).
 - **Home**: "Why Organizations Trust AAA" cards are compact stacked rows beside the map; the
@@ -304,6 +308,12 @@ Rules:
   in `lib/facts.ts` map each area to its advisor — Adam (TEPA, general, CAB), Sara (Healthcare),
   Babita (SMEs, Memberships); /contact lists all three. Apply buttons link `applyHref(program)` so
   /apply pre-selects the program. Every WhatsApp number shows `WhatsAppIcon` (currentColor).
+- **Floating contact widget** (Nov 17 2026, client): `FloatingContact.tsx` (+ `floating-contact.css`,
+  scoped `.fcx`), rendered by `SiteChrome` on every page except `/admin` and `/lp/`. A WhatsApp-green
+  circle (`CONTACT.whatsappHref`, white rim for the navy footer, pulse rings) under a white "Free
+  Consultation Call" card whose blue "Schedule Now" books `CONSULT` for the current section. The card
+  shows after 1.6 s (on phones, after scrolling past the first screen) and stays closed for the visit
+  once dismissed. The button is WhatsApp green (client, Nov 17 2026); the card stays navy + white. `z-index: 48`, under the header, menus and dialogs.
 - The ISO/IEC 17021-1 program is named **"Management Systems Certification Bodies
   Accreditation"** (renamed Aug 2026 from "System Certification Bodies"). Use
   `PROGRAMS.iso17021.label`.
@@ -316,8 +326,35 @@ Rules:
 - Every page emits JSON-LD via `<JsonLd>`: `breadcrumbSchema` always, plus `faqSchema` /
   `serviceSchema` / `articleSchema` where they apply. `organizationSchema` and
   `websiteSchema` are emitted once, in `app/layout.tsx`.
-- Legacy WordPress URLs are redirected in `next.config.ts`; the news-post redirects are
-  generated from `app/news/posts-data.json`, so re-running the migration keeps them in sync.
+- **Public URLs = the old WordPress URLs (Nov 17 2026, client: "real links, not redirects").**
+  Every page that existed on aaa-accreditation.org answers at its exact old address, trailing
+  slash included. Route folders keep their names; `app/_data/public-urls.json` maps each route to
+  its public address (`pages`) and lists other old addresses that show the same page (`aliases`,
+  canonical = the page's address). `next.config.ts` rewrites public → route and redirects route →
+  public, so every page has one URL. Rules:
+  - Write internal links as **route paths** (`/about`, `/news/<slug>`, `/programs/healthcare`)
+    through `Link` from `@/app/_components/SiteLink` (never `next/link` on public pages) — it renders
+    `publicPath()` (`lib/public-urls.ts`). Raw `<a>` / absolute URLs: wrap in `publicPath()`.
+  - `pageMeta`/`seoPage`, `breadcrumbSchema`, `serviceSchema`, `articleSchema` and the sitemap
+    map paths themselves — keep passing route paths.
+  - Posts are served at the root, `/<slug>/`, by `app/[slug]` (CMS page first, then post —
+    `app/news/PostPage.tsx`); categories `/category/<slug>/[page/<n>/]`, tags
+    `/tag/<slug>/[page/<n>/]`, news pages `/news/page/<n>/` (rewrites to `app/news/...`).
+  - Accredited-organization profiles are real pages at `/custom-box/<slug>/`
+    (`app/custom-box/[slug]`, `lib/org-profiles.ts`, old slugs in `app/_data/legacy-custom-box.json`).
+  - Pathname checks must accept both forms (the server may see the route, the browser the public
+    address): use `routeOf(pathname)`.
+  - `trailingSlash: true` with `skipTrailingSlashRedirect`; `proxy.ts` adds the slash for pages
+    only (not `/api`, `/admin`).
+  - Redirects remain only for URLs the old site itself redirected (index.php, dated permalinks,
+    `?p=`/`?page_id=` shortlinks, `/<page>/2/`…), test pages and typos (`LEGACY_REDIRECTS` /
+    `LEGACY_PATTERNS`); spam slugs return 410 in `proxy.ts`. A new page that replaces an old URL
+    goes in `public-urls.json`, not in the redirects.
+  - The old site's post tags were imported (migration `20261117120000_wp_post_tags`), so the 99
+    `/tag/<slug>/` pages are real. New old-site posts: `node scripts/sync-news-posts.mjs`, then
+    on the server `docker compose -f docker-compose.prod.yml run --rm app seed --only=news`.
+  - The audit data (old sitemaps, REST API, Wayback) and probe scripts are not in the repo; the
+    9 extra legacy documents are listed in `deploy/wp-uploads-extra.txt`.
 
 ## Admin Portal (`/admin`) — Oct 27 2026
 

@@ -1,0 +1,280 @@
+/* =====================================================================
+   Floating contact widget (FloatingContact.tsx, Nov 17 2026, client):
+   sticky WhatsApp button + "Free Consultation Call" card, bottom-right.
+   Card: brand navy + white. Button: WhatsApp green (client, Nov 17 2026 —
+   reserved for this button, see CLAUDE.md "Supporting Palette"). z-index 48 keeps it under the header (50/55),
+   the mobile menu (49), dropdowns (60) and dialogs (200).
+   ===================================================================== */
+
+.fcx {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 48;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  pointer-events: none;
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
+}
+.fcx > * { pointer-events: auto; }
+
+/* ------------------------------------------------------------- card */
+.fcx .fcx-card {
+  position: relative;
+  width: 288px;
+  padding: 18px 18px 16px;
+  background: #fff;
+  border: 1px solid var(--aaa-blue-100, #d7e2f4);
+  border-radius: 18px;
+  box-shadow:
+    0 18px 40px -12px rgba(6, 26, 44, 0.28),
+    0 4px 12px -4px rgba(6, 26, 44, 0.12);
+  transform-origin: calc(100% - 30px) 100%;
+  transition:
+    opacity 0.38s var(--ease-out, cubic-bezier(.22, 1, .36, 1)),
+    transform 0.5s var(--ease-out, cubic-bezier(.22, 1, .36, 1)),
+    visibility 0s linear 0s;
+}
+/* Tail pointing at the WhatsApp button. */
+.fcx .fcx-card::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-right: 1px solid var(--aaa-blue-100, #d7e2f4);
+  border-bottom: 1px solid var(--aaa-blue-100, #d7e2f4);
+  border-bottom-right-radius: 3px;
+  transform: rotate(45deg);
+}
+/* Navy hairline across the top edge. */
+.fcx .fcx-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 22px;
+  right: 22px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, var(--aaa-blue, #173d73), var(--aaa-blue-500, #244f93));
+}
+.fcx .fcx-card[data-state="closed"] {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px) scale(0.94);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+
+.fcx .fcx-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.25s ease;
+}
+.fcx .fcx-close:hover { background: var(--aaa-blue-50, #eef4ff); color: var(--aaa-blue, #173d73); transform: rotate(90deg); }
+.fcx .fcx-close:focus-visible { outline: 2px solid var(--aaa-blue, #173d73); outline-offset: 2px; }
+
+.fcx .fcx-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-right: 18px;
+}
+.fcx .fcx-ico {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--aaa-blue-50, #eef4ff);
+  color: var(--aaa-blue, #173d73);
+  box-shadow: inset 0 0 0 1.5px var(--aaa-blue-100, #d7e2f4);
+}
+.fcx .fcx-ico svg { animation: fcx-ring 4.8s ease-in-out 2.4s infinite; transform-origin: 50% 60%; }
+.fcx .fcx-title {
+  margin: 1px 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--aaa-blue, #173d73);
+}
+.fcx .fcx-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.fcx .fcx-btn {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--aaa-blue, #173d73), var(--aaa-blue-500, #244f93));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: 0 8px 18px -8px rgba(23, 61, 115, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+/* Light sheen that sweeps across the button every few seconds. */
+.fcx .fcx-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  transform: skewX(-18deg);
+  animation: fcx-sheen 5s ease-in-out 2.2s infinite;
+}
+.fcx .fcx-btn:hover { filter: brightness(0.92); transform: translateY(-1px); box-shadow: 0 12px 22px -10px rgba(23, 61, 115, 0.8); color: #fff; text-decoration: none; }
+.fcx .fcx-btn:focus-visible { outline: 2px solid var(--aaa-blue, #173d73); outline-offset: 3px; }
+.fcx .fcx-btn-arrow { transition: transform 0.25s ease; }
+.fcx .fcx-btn:hover .fcx-btn-arrow { transform: translateX(3px); }
+
+/* ---------------------------------------------------- WhatsApp button */
+.fcx .fcx-wa {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin-right: 2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25d366, #1ebe5a);
+  color: #fff;
+  /* White rim so the button stays visible over the navy footer. */
+  box-shadow:
+    0 0 0 3px #fff,
+    0 14px 28px -8px rgba(6, 26, 44, 0.5);
+  text-decoration: none;
+  /* "backwards", not "both": a kept end state would override the hover scale. */
+  animation: fcx-pop 0.6s var(--ease-out, cubic-bezier(.22, 1, .36, 1)) 0.4s backwards;
+  transition: transform 0.25s var(--ease-out, cubic-bezier(.22, 1, .36, 1)), box-shadow 0.25s ease;
+}
+.fcx .fcx-wa:hover { transform: scale(1.07); background: linear-gradient(135deg, #1ebe5a, #128c4a); box-shadow: 0 0 0 3px #fff, 0 18px 34px -8px rgba(6, 26, 44, 0.6); }
+.fcx .fcx-wa:focus-visible { outline: 3px solid var(--aaa-gold, #b38a2e); outline-offset: 4px; }
+.fcx .fcx-wa-ico { position: relative; z-index: 1; animation: fcx-wiggle 6s ease-in-out 3s infinite; }
+
+/* Two pulse rings, half a cycle apart. */
+.fcx .fcx-wa-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.45);
+  animation: fcx-pulse 2.6s ease-out infinite;
+}
+.fcx .fcx-wa-ring.two { animation-delay: 1.3s; }
+
+/* Label that slides out on hover (pointer devices only). */
+.fcx .fcx-wa-tip {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: var(--aaa-blue-950, #061a2c);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  /* Faint edge so the pill still reads over the navy footer. */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16), 0 8px 18px -8px rgba(6, 26, 44, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(8px, -50%);
+  transition: opacity 0.2s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .fcx .fcx-wa:hover .fcx-wa-tip,
+  .fcx .fcx-wa:focus-visible .fcx-wa-tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -50%);
+    transition: opacity 0.2s ease, transform 0.25s ease, visibility 0s;
+  }
+}
+
+/* ------------------------------------------------------------ motion */
+@keyframes fcx-pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  80%, 100% { transform: scale(1.75); opacity: 0; }
+}
+@keyframes fcx-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes fcx-wiggle {
+  0%, 88%, 100% { transform: rotate(0); }
+  90% { transform: rotate(-14deg); }
+  92% { transform: rotate(12deg); }
+  94% { transform: rotate(-8deg); }
+  96% { transform: rotate(5deg); }
+}
+@keyframes fcx-ring {
+  0%, 84%, 100% { transform: rotate(0); }
+  87% { transform: rotate(-10deg); }
+  90% { transform: rotate(9deg); }
+  93% { transform: rotate(-5deg); }
+}
+@keyframes fcx-sheen {
+  0%, 70% { left: -60%; }
+  100% { left: 130%; }
+}
+
+/* ------------------------------------------------------------- phones */
+@media (max-width: 640px) {
+  .fcx { gap: 14px; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); }
+  .fcx .fcx-card { width: min(268px, calc(100vw - 28px)); padding: 15px 15px 14px; border-radius: 16px; }
+  .fcx .fcx-ico { width: 38px; height: 38px; }
+  .fcx .fcx-title { font-size: 14px; }
+  .fcx .fcx-text { font-size: 12.5px; }
+  .fcx .fcx-btn { margin-top: 12px; padding: 10px 14px; font-size: 13.5px; }
+  .fcx .fcx-wa { width: 54px; height: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fcx .fcx-card,
+  .fcx .fcx-card[data-state="closed"] { transition: opacity 0.2s ease, visibility 0s linear 0.2s; transform: none; }
+  .fcx .fcx-wa,
+  .fcx .fcx-wa-ico,
+  .fcx .fcx-ico svg,
+  .fcx .fcx-btn::after,
+  .fcx .fcx-wa-ring { animation: none; }
+  .fcx .fcx-wa-ring { display: none; }
+}
+
+@media print {
+  .fcx { display: none; }
+}

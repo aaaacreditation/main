@@ -1,0 +1,15 @@
+# Legacy WordPress uploads that no page of the new site links to, but that are
+# linked from outside (emails, search results, old posts on other sites) and
+# must keep downloading after the domain moves. Paths relative to
+# wp-content/uploads/. Found by the Nov 17 2026 URL audit (Wayback Machine +
+# the old sitemaps); each answered 200 on the old site.
+# deploy/wp-uploads-manifest.sh appends this list; lines starting with # are skipped.
+2020/04/General-requirements-for-accreditation.pdf
+2021/11/AAA-Accreditation-Standard.pdf
+2023/01/Application-form-personnel-certfication-V2.docx
+2023/03/Application-form-Inspection-Bodies.doc
+2023/03/Application-form-PT-providers-V2.docx
+2023/03/Application-form-for-accreditation-of-medical-labs.doc
+2023/03/Application-form-system_product-certfication-Bodies.doc
+2023/03/Application-form-testing-cal-labs.doc
+2023/07/Application-form-Halal-certfication-Bodies-2.doc

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Glyph from "../_components/site/Glyph";
 import type { CaseStudyArticle } from "@/lib/case-studies";
 

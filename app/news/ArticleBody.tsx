@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import type { CSSProperties, ReactNode } from "react";
 
 /*

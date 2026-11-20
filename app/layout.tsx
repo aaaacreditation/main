@@ -12,7 +12,9 @@ import { FACTS } from "../lib/facts";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  // 300 dropped (Nov 2026, speed): nothing on the public site uses it, and
+  // every weight listed here is a font file each visitor preloads.
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 

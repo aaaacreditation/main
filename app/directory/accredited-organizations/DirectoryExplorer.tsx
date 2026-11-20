@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Glyph, { type GlyphName } from "../../_components/site/Glyph";
 import {
   ACCREDITATION_TYPES,
@@ -16,6 +16,7 @@ import {
   type Org,
 } from "@/app/_data/accredited-organizations";
 import { CONTACT } from "@/lib/facts";
+import { profilePath } from "@/lib/org-profiles";
 
 export type { Accreditation, Org } from "@/app/_data/accredited-organizations";
 
@@ -450,6 +451,9 @@ export default function DirectoryExplorer({
             <div className="dx-modal-actions">
               <Link href={CONTACT.formHref} className="ax-btn ax-btn-blue sm">
                 Verify this listing <Glyph name="arrow-right" size={14} strokeWidth={2} />
+              </Link>
+              <Link href={profilePath(active)} className="ax-btn ax-btn-ghost-navy sm">
+                Full profile
               </Link>
               <Link href={CONTACT.quoteHref} className="ax-btn ax-btn-ghost-navy sm">
                 Get a quote

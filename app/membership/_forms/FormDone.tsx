@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import { useState } from "react";
 import { CONTACT } from "@/lib/facts";
 

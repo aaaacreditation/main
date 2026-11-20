@@ -16,8 +16,11 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-grep -rhoE "https?://(www\.)?aaa-accreditation\.org/wp-content/uploads/[^\"')<> ]+" app lib \
-  | sed -E 's#^https?://(www\.)?aaa-accreditation\.org/wp-content/uploads/##' \
-  | sed -E 's/[?#].*$//' \
-  | grep -E '\.(pdf|docx?|xlsx?|pptx?|jpe?g|png|gif|webp)$' \
-  | sort -u
+{
+  grep -rhoE "https?://(www\.)?aaa-accreditation\.org/wp-content/uploads/[^\"')<> ]+" app lib \
+    | sed -E 's#^https?://(www\.)?aaa-accreditation\.org/wp-content/uploads/##' \
+    | sed -E 's/[?#].*$//' \
+    | grep -E '\.(pdf|docx?|xlsx?|pptx?|jpe?g|png|gif|webp)$'
+  # Files linked only from outside the site (Nov 2026 URL audit).
+  grep -vE '^\s*(#|$)' deploy/wp-uploads-extra.txt
+} | sort -u

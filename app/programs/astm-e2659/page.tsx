@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import CTA from "../../_components/CTA";
 import Icon from "../../_components/Icon";
 import JsonLd from "../../_components/JsonLd";

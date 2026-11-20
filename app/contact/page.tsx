@@ -7,6 +7,7 @@ import ContactForm from "./ContactForm";
 import "./contact.css";
 import { ADVISORS, CONTACT, FACTS } from "@/lib/facts";
 import WhatsAppIcon from "../_components/WhatsAppIcon";
+import { publicPath } from "@/lib/public-urls";
 
 export async function generateMetadata(): Promise<Metadata> {
   return seoPage({
@@ -109,8 +110,8 @@ const CHANNELS: { title: string; icon: React.ReactNode; lines: { k: string; v: R
 const contactPageSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  "@id": `${SITE_URL}/contact#contactpage`,
-  url: `${SITE_URL}/contact`,
+  "@id": `${SITE_URL}${publicPath("/contact")}#contactpage`,
+  url: `${SITE_URL}${publicPath("/contact")}`,
   name: "Contact the American Accreditation Association",
   description:
     "Contact details, office address and enquiry form for the American Accreditation Association (AAA).",

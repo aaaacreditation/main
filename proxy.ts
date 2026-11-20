@@ -19,7 +19,8 @@ const ALLOWED_PREFIXES = [
   "/programs/smes-accreditation-program", // the live page
   "/programs/sme-funding-readiness", // old slug (308s to the new one)
   "/readiness-check", // self-assessment app iframed on the page
-  "/apply", // the page's primary CTA
+  "/apply-for-accreditation", // the page's primary CTA (public address of /apply, Nov 2026)
+  "/apply",
   "/api/leads", // lead-capture endpoint
 ];
 
@@ -48,7 +49,8 @@ const GONE = new Set([
   "/unibet-casino-jak-prezentuje-swoj-program-lojalnosciowy",
   "/czy-unibet-casino-ma-najlepsze-gry-na-rynku",
   "/unibet-casino-jak-analizowac-wyniki-gier",
-  "/rokubet-bonus-kisitlamalari-mekanizmalar-ve-oyuncu-icin-anla",
+  // The full slug (the Aug 2026 capture was truncated, so this URL 404'd).
+  "/rokubet-bonus-kisitlamalari-mekanizmalar-ve-oyuncu-icin-anlamlari",
   "/how-to-check-your-winomania-account-balance-efficiently",
   "/what-are-the-payment-withdrawal-options-at-mr-sloty",
 ]);
@@ -60,13 +62,33 @@ const GONE = new Set([
  * on every host, not just the gated subdomain.
  */
 const FROZEN_CANONICAL = new Set([
-  "/programs/iso-17021",
+  // Public (old-site) address of /programs/iso-17021 since Nov 2026.
+  "/system-certification-bodies-accreditation-iso-iec-17021-1",
   "/programs/smes-accreditation-program",
 ]);
 
 function withCanonical(res: NextResponse, path: string) {
-  res.headers.set("Link", `<${CANONICAL_ORIGIN}${path}>; rel="canonical"`);
+  // Page addresses end in "/" (next.config.ts trailingSlash, Nov 2026).
+  const p = path.endsWith("/") ? path : `${path}/`;
+  res.headers.set("Link", `<${CANONICAL_ORIGIN}${p}>; rel="canonical"`);
   return res;
+}
+
+/*
+ * Page addresses end in "/", as they did on the old WordPress site (Nov 2026).
+ * next.config.ts skips Next's own add-the-slash redirect so that it can be
+ * applied here to pages only: /api, /admin, the static mirrors and anything
+ * that is not a GET keep their exact URLs.
+ */
+const NO_SLASH = /^\/(api|admin|_next|media|adcp|wp-content|readiness-check)(\/|$)/;
+function slashRedirect(request: NextRequest) {
+  // The raw URL: nextUrl normalizes trailing slashes when trailingSlash is set.
+  const raw = new URL(request.url);
+  const { pathname } = raw;
+  if (pathname === "/" || pathname.endsWith("/") || NO_SLASH.test(pathname)) return null;
+  if (request.method !== "GET" && request.method !== "HEAD") return null;
+  // Absolute, on the host the visitor used (Caddy passes the Host header through).
+  return NextResponse.redirect(new URL(`${pathname}/${raw.search}`, request.nextUrl.origin), 308);
 }
 
 /*
@@ -107,6 +129,9 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
       headers: { "X-Robots-Tag": "noindex" },
     });
   }
+
+  const slashed = slashRedirect(request);
+  if (slashed) return slashed;
 
   const host = request.headers.get("host")?.split(":")[0];
   if (host !== GATED_HOST) {

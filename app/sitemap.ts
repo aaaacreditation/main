@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { ContentStatus, TermKind } from "@prisma/client";
 import { SITE_URL } from "../lib/seo";
+import { postPath, publicPath } from "../lib/public-urls";
+import { profilePath } from "../lib/org-profiles";
+import { getAccreditedOrganizations } from "../lib/directory";
 import { getPublishedPosts } from "../lib/content";
 import { getTerms, sectionOf, termSlug } from "../lib/taxonomy";
 import { getCaseStudyArticles } from "../lib/case-studies";
@@ -34,7 +37,8 @@ const page = (
   priority: number,
   changeFrequency: Entry["changeFrequency"] = "monthly",
 ): Entry => ({
-  url: path === "/" ? SITE_URL : `${SITE_URL}${path}`,
+  // Public address (old WordPress URL, trailing slash) — lib/public-urls.ts, Nov 2026.
+  url: path === "/" ? SITE_URL : `${SITE_URL}${publicPath(path)}`,
   lastModified: new Date(),
   changeFrequency,
   priority,
@@ -144,19 +148,21 @@ const pathOf = (url: string) => url.replace(SITE_URL, "") || "/";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let posts: Entry[] = [];
   let archives: Entry[] = [];
-  const [cms, hidden, caseStudies] = await Promise.all([
+  const [cms, hidden, caseStudies, profiles] = await Promise.all([
     cmsPages(),
     noindexPaths(),
     // Falls back to the bundled snapshot without a database.
     getCaseStudyArticles().then((list) =>
       list.map((a) => ({ ...page(`/case-studies/${a.slug}`, 0.5, "yearly"), lastModified: new Date(a.publishedAt) })),
     ),
+    // Accredited-organization profiles, /custom-box/<slug>/ (old-site addresses, Nov 2026).
+    getAccreditedOrganizations().then((orgs) => orgs.map((o) => page(profilePath(o), 0.4, "monthly"))),
   ]);
 
   try {
     const published = await getPublishedPosts();
     posts = published.map((p) => ({
-      url: `${SITE_URL}/news/${p.slug}`,
+      url: `${SITE_URL}${postPath(p.slug)}`,
       lastModified: new Date(p.date),
       changeFrequency: "yearly" as const,
       priority: 0.5,
@@ -175,6 +181,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...categories
         .filter((c) => published.some((p) => termSlug(p.category || "News") === c.slug))
         .map((c) => page(`/news/category/${c.slug}`, 0.4, "weekly")),
+      // Tag pages (tags imported from the old site, Nov 2026), for tags in use.
+      ...(await getTerms(TermKind.POST_TAG))
+        .filter((t) => published.some((p) => p.tags.some((x) => termSlug(x) === t.slug)))
+        .map((t) => page(`/news/tag/${t.slug}`, 0.3, "weekly")),
     ];
   } catch {
     // A sitemap missing the news archive still beats a build failure.
@@ -184,9 +194,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Built-in routes win over a CMS page with the same slug (as they do when
   // rendering), and each URL is listed once.
   const seen = new Set<string>();
-  return [...STATIC_ROUTES, ...archives, ...cms, ...posts, ...caseStudies].filter((e) => {
+  // SeoEntry paths are route paths; the sitemap lists public addresses.
+  const hiddenPublic = new Set([...hidden].map((h) => publicPath(h)));
+  return [...STATIC_ROUTES, ...archives, ...cms, ...posts, ...caseStudies, ...profiles].filter((e) => {
     const path = pathOf(e.url);
-    if (seen.has(e.url) || hidden.has(path) || EXCLUDED.some((x) => path.startsWith(x))) return false;
+    if (seen.has(e.url) || hiddenPublic.has(path) || EXCLUDED.some((x) => path.startsWith(x))) return false;
     seen.add(e.url);
     return true;
   });

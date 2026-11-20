@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Image from "next/image";
 import CTA from "../_components/CTA";
 import JsonLd from "../_components/JsonLd";

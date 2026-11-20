@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import JsonLd from "./_components/JsonLd";
 import { WorldMapFigure } from "./_components/WorldMap";
 import NavyCard from "./_components/site/NavyCard";
@@ -196,6 +196,7 @@ export default async function HomePage() {
           alt="AAA team and healthcare professionals during an accreditation-related event"
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
         />
         <span className="hx-hero-scrim" aria-hidden="true" />

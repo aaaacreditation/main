@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { publicPath } from "./public-urls";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { prisma } from "./db";
 import { pageMeta, SITE_URL, type MetaInput } from "./seo";
@@ -204,19 +205,24 @@ export async function withSeoOverride(path: string, metadata: Metadata): Promise
  * Never throws; returns false if the redirect could not be written.
  */
 export async function recordSlugChange(fromPath: string, toPath: string): Promise<boolean> {
+  // Route paths (SeoEntry keys) …
   const from = normalizeSeoPath(fromPath);
   const to = normalizeSeoPath(toPath);
   if (from === to || from === "/") return false;
+  // … and the public addresses visitors use, which the redirect must match
+  // (old WordPress URLs with a trailing slash, Nov 2026 — lib/public-urls.ts).
+  const fromAt = normalizeSeoPath(publicPath(from));
+  const toAt = publicPath(to);
 
   let ok = true;
   try {
     await prisma.$transaction([
-      prisma.redirect.deleteMany({ where: { from: to } }),
-      prisma.redirect.updateMany({ where: { to: from }, data: { to } }),
+      prisma.redirect.deleteMany({ where: { from: normalizeSeoPath(toAt) } }),
+      prisma.redirect.updateMany({ where: { to: { in: [from, publicPath(from)] } }, data: { to: toAt } }),
       prisma.redirect.upsert({
-        where: { from },
-        create: { from, to, permanent: true, note: "Automatic: URL changed in the admin" },
-        update: { to, permanent: true },
+        where: { from: fromAt },
+        create: { from: fromAt, to: toAt, permanent: true, note: "Automatic: URL changed in the admin" },
+        update: { to: toAt, permanent: true },
       }),
     ]);
   } catch (err) {

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "../_components/SiteLink";
 import { notFound } from "next/navigation";
-import PageHero from "../../_components/PageHero";
-import PageBody from "../../_components/PageBody";
-import CTA from "../../_components/CTA";
-import JsonLd from "../../_components/JsonLd";
-import Icon from "../../_components/Icon";
-import PostBody from "../PostBody";
+import PageHero from "../_components/PageHero";
+import PageBody from "../_components/PageBody";
+import CTA from "../_components/CTA";
+import JsonLd from "../_components/JsonLd";
+import Icon from "../_components/Icon";
+import PostBody from "./PostBody";
 import {
   formatDate,
   formatDateShort,
@@ -14,33 +14,30 @@ import {
   metaDescription,
   readingTime,
   summarize,
-} from "../helpers";
+} from "./helpers";
 import { TermKind } from "@prisma/client";
 import { getPublishedPost, getPublishedPosts, type PublicPost } from "@/lib/content";
 import { SECTIONS, categoryFor, getTerms, sectionOf, termSlug } from "@/lib/taxonomy";
 import { CONTACT } from "@/lib/facts";
 import { SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema } from "@/lib/seo";
 import { withSeoOverride } from "@/lib/seo-overrides";
-import "../news.css";
-
-export const revalidate = 300;
+import "./news.css";
+import { postPath } from "@/lib/public-urls";
 
 /**
- * A single newsroom article.
+ * A single newsroom article, served at the site root (/<slug>/) by app/[slug] —
+ * the old WordPress permalink, which the client asked to keep as the real
+ * address (Nov 2026). /news/<slug> redirects there (next.config.ts).
  *
  * Cover images on the migrated posts still point at the old WordPress host, so
  * they are deliberately not rendered — the layout is typographic instead, and
  * the article is framed by its date, reading time, siblings and related items.
  */
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
+/** Metadata for the post at /<slug>/, or null when there is no such post. */
+export async function postMetadata(slug: string): Promise<Metadata | null> {
   const post = await getPublishedPost(slug);
-  if (!post) return { title: "AAA News" };
+  if (!post) return null;
 
   // pageMeta is not used here: the article title is the post's own headline and
   // must not be truncated, and the canonical/OG data is assembled per post.
@@ -48,7 +45,7 @@ export async function generateMetadata({
   // The editor's SEO fields win over the headline/excerpt-derived defaults.
   const title = post.seoTitle?.trim() || post.title;
   const description = post.seoDescription?.trim() || metaDescription(post);
-  const url = `${SITE_URL}/news/${post.slug}`;
+  const url = `${SITE_URL}${postPath(post.slug)}`;
   // The cover when there is one, else the generated site-wide card.
   const image = post.coverImage || "/opengraph-image";
 
@@ -102,12 +99,7 @@ function NavCard({
   );
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export default async function PostPage({ slug }: { slug: string }) {
   const post = await getPublishedPost(slug);
   if (!post) notFound();
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import PageHero from "./PageHero";
 import Icon from "./Icon";
 import CTA from "./CTA";

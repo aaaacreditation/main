@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import JsonLd from "../../_components/JsonLd";
 import PageHero from "../../_components/PageHero";
 import NavyCard from "../../_components/site/NavyCard";

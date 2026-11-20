@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import CTA from "../../_components/CTA";
 import PageHero from "../../_components/PageHero";
 import JsonLd from "../../_components/JsonLd";
@@ -13,6 +13,7 @@ import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
 import "./directory.css";
 import WhatsAppIcon from "../../_components/WhatsAppIcon";
+import { publicPath } from "@/lib/public-urls";
 
 /**
  * The public register of AAA-accredited organizations.
@@ -89,7 +90,7 @@ export default async function Page() {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       name: "Accredited Organizations — AAA public register",
-      url: `${SITE_URL}/directory/accredited-organizations`,
+      url: `${SITE_URL}${publicPath("/directory/accredited-organizations")}`,
       isPartOf: { "@id": `${SITE_URL}/#website` },
       publisher: { "@id": `${SITE_URL}/#organization` },
       mainEntity: {

@@ -34,6 +34,7 @@ interface RawPost {
   /** Local featured image (public/news/covers), from scripts/sync-news-posts.mjs. */
   cover?: string;
   category?: string;
+  tags?: string[];
 }
 
 function toLocalIso(d: Date): string {
@@ -50,7 +51,8 @@ const fallbackPosts: PublicPost[] = (postsJson as unknown as RawPost[])
     // Never fall back to images[0]: those are old-site wp-content URLs.
     coverImage: p.cover ?? null,
     category: p.category ?? "News",
-    tags: [],
+    // Tags from the old site (Nov 2026) — same values the database holds.
+    tags: Array.isArray(p.tags) ? p.tags : [],
   }))
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 

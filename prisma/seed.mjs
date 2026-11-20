@@ -26,6 +26,15 @@ async function main() {
     await seedCaseStudyPages();
     return;
   }
+  // `node prisma/seed.mjs --only=news` (Nov 2026) adds just the posts that
+  // scripts/sync-news-posts.mjs topped up — safe against production: users are
+  // not touched, and existing posts (edited in the admin or not) are never
+  // overwritten. New posts are credited to the first admin, if there is one.
+  if (process.argv.includes("--only=news")) {
+    const admin = await prisma.user.findFirst({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } });
+    await seedNewPosts(admin?.id ?? null, { backfill: false });
+    return;
+  }
 
   const email = process.env.ADMIN_EMAIL || "admin@aaa-accreditation.org";
   const password = process.env.ADMIN_PASSWORD || "ChangeMe!2026";
@@ -38,6 +47,17 @@ async function main() {
   });
   console.log(`Admin user ready: ${admin.email}`);
 
+  await seedNewPosts(admin.id, { backfill: true });
+
+  await seedCaseStudies();
+  await seedCaseStudyPages();
+  await seedOrganizations();
+}
+
+/* ------------------------------------------------------------------- news */
+
+/** Insert every snapshot post whose slug is not in the database yet. */
+async function seedNewPosts(authorId, { backfill }) {
   const existing = await prisma.post.count();
   console.log(`Posts already in database: ${existing}`);
 
@@ -62,9 +82,10 @@ async function main() {
     // copies made by scripts/sync-news-posts.mjs (Oct 2026), never wp-content.
     coverImage: p.cover ?? null,
     category: p.category ?? "News",
+    tags: Array.isArray(p.tags) ? p.tags : [],
     status: "PUBLISHED",
     publishedAt: new Date(p.date),
-    authorId: admin.id,
+    authorId,
   }));
 
   let imported = 0;
@@ -76,6 +97,7 @@ async function main() {
     imported += res.count;
   }
   console.log(`Imported ${imported} posts from posts-data.json.`);
+  if (!backfill) return;
 
   // Backfill covers and categories on posts imported before they existed.
   // Only rows still carrying the import defaults (no cover, "News") are
@@ -90,10 +112,6 @@ async function main() {
     backfilled += res.count;
   }
   console.log(`Backfilled cover/category on ${backfilled} posts.`);
-
-  await seedCaseStudies();
-  await seedCaseStudyPages();
-  await seedOrganizations();
 }
 
 /* ------------------------------------------------------------ case studies */

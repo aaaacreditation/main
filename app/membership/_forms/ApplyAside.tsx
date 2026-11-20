@@ -1,5 +1,5 @@
 import { CONSULT, CONTACT } from "@/lib/facts";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Icon from "../../_components/Icon";
 import WhatsAppIcon from "../../_components/WhatsAppIcon";
 

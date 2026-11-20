@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Icon from "../../_components/Icon";
 import { CONSULT, applyHref } from "@/lib/facts";
 

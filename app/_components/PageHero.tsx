@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Image from "next/image";
 import { Children, isValidElement, type ReactNode } from "react";
 import Stat from "./site/Stat";
@@ -70,7 +70,7 @@ export default function PageHero({
       {background && (
         <div className="axh-bg">
           <span className="axh-media">
-            <Image src={background} alt={imageAlt} fill sizes="100vw" priority />
+            <Image src={background} alt={imageAlt} fill sizes="100vw" priority fetchPriority="high" />
           </span>
         </div>
       )}
@@ -90,6 +90,7 @@ export default function PageHero({
                 fill
                 sizes="(max-width: 980px) 100vw, 50vw"
                 priority
+                fetchPriority="high"
               />
             </span>
             {caption && (

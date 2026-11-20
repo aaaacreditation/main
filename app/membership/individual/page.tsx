@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Image from "next/image";
 import PageHero from "../../_components/PageHero";
 import JsonLd from "../../_components/JsonLd";

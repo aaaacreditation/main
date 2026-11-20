@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "../_components/SiteLink";
 import { notFound } from "next/navigation";
 import PageHero from "../_components/PageHero";
 import PageBody from "../_components/PageBody";
@@ -11,11 +11,16 @@ import { looksLikeHtml, mdishToHtml } from "@/lib/mdish";
 import { CONTACT } from "@/lib/facts";
 import { SITE_URL, breadcrumbSchema } from "@/lib/seo";
 import { seoPage } from "@/lib/seo-overrides";
+import PostPage, { postMetadata } from "../news/PostPage";
 
 /**
  * Catch-all renderer for CMS pages created in the admin. Built-in app routes
  * always take precedence over this dynamic segment, so admin-created pages
  * can never shadow the fixed site.
+ *
+ * Nov 2026: also every news post. Posts sat at the site root on the old
+ * WordPress site (/<slug>/) and the client asked for those URLs to stay the
+ * real ones, so a slug that is not a CMS page is looked up as a post.
  *
  * Aug 2026: re-skinned onto the `.ax-*` design system so a page authored in the
  * admin lands in the same navy/gold editorial shell as the hand-built routes —
@@ -54,7 +59,7 @@ export async function generateMetadata({
   const { slug } = await params;
   if (!SLUG_RE.test(slug)) return {};
   const page = await getPublishedPage(slug);
-  if (!page) return {};
+  if (!page) return (await postMetadata(slug)) ?? {};
 
   // Prefer an explicit SEO description; otherwise the intro, unless the intro is
   // too short to be a useful snippet and the body offers more of the page's own
@@ -84,7 +89,7 @@ export default async function CmsPage({
   if (!SLUG_RE.test(slug)) notFound();
 
   const page = await getPublishedPage(slug);
-  if (!page) notFound();
+  if (!page) return <PostPage slug={slug} />;
 
   // Admin pages are authored as HTML; anything migrated as markdown-ish plain
   // text is converted so both generations render inside `.ax-prose`.
@@ -100,7 +105,7 @@ export default async function CmsPage({
             "@context": "https://schema.org",
             "@type": "WebPage",
             name: page.seoTitle?.trim() || page.title,
-            url: `${SITE_URL}/${page.slug}`,
+            url: `${SITE_URL}/${page.slug}/`,
             ...(page.intro?.trim() ? { description: page.intro.trim() } : {}),
             dateModified: updated.toISOString(),
             isPartOf: { "@id": `${SITE_URL}/#website` },

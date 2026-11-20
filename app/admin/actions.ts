@@ -44,7 +44,8 @@ function revalidateNews(slug?: string) {
   // archive pages, and the category and tag pages (all under /news).
   revalidatePath("/news", "layout");
   revalidatePath("/articles", "layout");
-  if (slug) revalidatePath(`/news/${slug}`);
+  // Posts render at the site root, /<slug>/ (old WordPress URLs, Nov 2026).
+  if (slug) revalidatePath(`/${slug}`);
   revalidatePath("/"); // home shows latest insights
   revalidatePath("/sitemap.xml");
 }
@@ -110,7 +111,7 @@ export async function savePost(formData: FormData) {
       },
     });
     if (existing.slug !== slug) {
-      revalidatePath(`/news/${existing.slug}`);
+      revalidatePath(`/${existing.slug}`);
       // A published article's old URL may be indexed or linked — keep it alive.
       if (existing.status === ContentStatus.PUBLISHED) {
         await recordSlugChange(`/news/${existing.slug}`, `/news/${slug}`);

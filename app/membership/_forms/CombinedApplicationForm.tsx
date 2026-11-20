@@ -126,7 +126,7 @@ export default function CombinedApplicationForm({ source }: { source: string }) 
             </select>
             <span className="hint">
               Not sure yet? Compare the two on the{" "}
-              <a href="/membership">membership overview</a>.
+              <a href="/membership/">membership overview</a>.
             </span>
           </div>
         </div>

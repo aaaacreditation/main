@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Image from "next/image";
 import Icon from "./Icon";
 import SealRosette from "./SealRosette";

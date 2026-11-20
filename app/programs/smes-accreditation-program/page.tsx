@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Icon from "../../_components/Icon";
 import { getSmeCaseStudies } from "@/lib/case-studies";
 import ReadinessLauncher from "./ReadinessLauncher";
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       `Get an independent AAA SMEs Accreditation and a Business Readiness Score stakeholders trust. Recognised in ${FACTS.countriesLabel}. Take the free 2-minute check.`,
     // Metadata only — the page's frozen markup and sme.css are untouched.
-    alternates: { canonical: `${SITE_URL}/programs/smes-accreditation-program` },
+    alternates: { canonical: `${SITE_URL}/programs/smes-accreditation-program/` },
   });
 }
 

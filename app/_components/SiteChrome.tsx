@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import FloatingContact from "./FloatingContact";
 
 export default function SiteChrome({
   header,
@@ -18,6 +19,7 @@ export default function SiteChrome({
       {!bare && header}
       <main id="main">{children}</main>
       {!bare && footer}
+      {!bare && <FloatingContact />}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import PageHero from "../../_components/PageHero";
 import CTA from "../../_components/CTA";
 import NavyCard from "../../_components/site/NavyCard";

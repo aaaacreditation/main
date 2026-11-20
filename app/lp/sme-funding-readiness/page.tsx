@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import Icon, { type IconName } from "../../_components/Icon";
 import ReadinessCheck from "../../programs/smes-accreditation-program/ReadinessCheck";
 import { CONTACT, FACTS, CONSULT } from "@/lib/facts";

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Glyph from "../site/Glyph";
+import { publicPath } from "@/lib/public-urls";
 
 export type SuccessStory = {
   name: string;
@@ -47,7 +48,8 @@ export default function SuccessCarousel({
   const group = (clone: boolean) => (
     <ul className="hx-ss-group" inert={clone} aria-hidden={clone || undefined}>
       {stories.map((s, i) => {
-        const href = s.video ?? s.href ?? moreHref;
+        // Internal links render at their public address (lib/public-urls.ts, Nov 2026).
+        const href = publicPath(s.video ?? s.href ?? moreHref);
         // On-site case-study pages open in place; videos and other sites in a new tab.
         const offsite = /^https?:\/\//.test(href);
         return (

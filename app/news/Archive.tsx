@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/app/_components/SiteLink";
 import { notFound } from "next/navigation";
 import PageHero from "../_components/PageHero";
 import CTA from "../_components/CTA";
@@ -11,6 +11,7 @@ import { SECTIONS, termSlug, type Section } from "@/lib/taxonomy";
 import { PER_PAGE, formatDate, formatDateShort, isoDate, pageWindow, summarize } from "./helpers";
 import { pageCountOf, scopeBase, scopePageHref, scopedPosts, type ArchiveScope } from "./scope";
 import "./news.css";
+import { publicPath } from "@/lib/public-urls";
 
 /**
  * The newsroom archive template, shared by every listing page (see scope.ts):
@@ -147,7 +148,7 @@ export default async function Archive({ page, scope }: { page: number; scope: Ar
         itemListElement: slice.map((p, i) => ({
           "@type": "ListItem",
           position: start + i + 1,
-          url: `${SITE_URL}/news/${p.slug}`,
+          url: `${SITE_URL}${publicPath(`/news/${p.slug}`)}`,
           name: p.title,
         })),
       },

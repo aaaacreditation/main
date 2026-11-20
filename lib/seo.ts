@@ -8,6 +8,8 @@
  * answers questions — an FAQPage block.
  */
 
+import { publicPath } from "./public-urls";
+
 export const SITE_URL = "https://aaa-accreditation.org";
 export const SITE_NAME = "American Accreditation Association";
 export const SITE_SHORT = "AAA";
@@ -61,7 +63,8 @@ export function pageMeta({
   type = "website",
   publishedTime,
 }: MetaInput) {
-  const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
+  // Canonical = the page's public address (its old WordPress URL, Nov 2026).
+  const url = path === "/" ? SITE_URL : `${SITE_URL}${publicPath(path)}`;
   const ogImage = image
     ? image.startsWith("http")
       ? image
@@ -179,7 +182,7 @@ export function breadcrumbSchema(items: { name: string; path: string }[]) {
       "@type": "ListItem",
       position: i + 1,
       name: item.name,
-      item: item.path === "/" ? SITE_URL : `${SITE_URL}${item.path}`,
+      item: item.path === "/" ? SITE_URL : `${SITE_URL}${publicPath(item.path)}`,
     })),
   };
 }
@@ -219,7 +222,7 @@ export function serviceSchema({
     name,
     description,
     serviceType: "Accreditation",
-    url: `${SITE_URL}${path}`,
+    url: `${SITE_URL}${publicPath(path)}`,
     provider: { "@id": `${SITE_URL}/#organization` },
     areaServed: "Worldwide",
     ...(audience ? { audience: { "@type": "Audience", audienceType: audience } } : {}),
@@ -252,7 +255,7 @@ export function articleSchema({
     "@type": "Article",
     headline: title,
     description,
-    mainEntityOfPage: `${SITE_URL}${path}`,
+    mainEntityOfPage: `${SITE_URL}${publicPath(path)}`,
     ...(datePublished ? { datePublished } : {}),
     ...(image ? { image: image.startsWith("http") ? image : `${SITE_URL}${image}` } : {}),
     author: { "@id": `${SITE_URL}/#organization` },

@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { publicPath, routeOf } from "./public-urls";
 import { prisma } from "./db";
 import { SITE_URL } from "./seo";
 
@@ -420,7 +421,8 @@ export function normalizeRoutePath(input: string): string | null {
 }
 
 export function expectedCanonical(path: string): string {
-  return path === "/" ? SITE_URL : `${SITE_URL}${path}`;
+  // Keys are route paths; pages declare their public (old-site) address, Nov 2026.
+  return path === "/" ? SITE_URL : `${SITE_URL}${publicPath(path)}`;
 }
 
 function normalizeBase(base: string): string {
@@ -808,7 +810,7 @@ export async function auditPath(
   let xRobots = "";
   let error = "";
   try {
-    const res = await fetch(base + path, {
+    const res = await fetch(base + publicPath(path), {
       redirect: "manual",
       cache: "no-store",
       headers: { "user-agent": AUDIT_USER_AGENT, accept: "text/html,application/xhtml+xml" },
@@ -881,10 +883,17 @@ export async function sitemapPaths(): Promise<SitemapPath[]> {
   // Imported lazily: the sitemap pulls in the content layer and its bundled JSON.
   const { default: sitemap } = await import("../app/sitemap");
   const entries = await sitemap();
+  // The sitemap lists public addresses (old WordPress URLs, Nov 2026); the SEO
+  // Center keys everything by route path, so map them back — posts, which sit
+  // at the root, by their slugs.
+  const { getPublishedPosts } = await import("./content");
+  const postSlugs = new Set((await getPublishedPosts()).map((p) => p.slug));
   const seen = new Set<string>();
   const out: SitemapPath[] = [];
   for (const e of entries) {
-    const path = pathFromUrl(e.url);
+    const at = pathFromUrl(e.url);
+    const route = at ? routeOf(at) : "";
+    const path = /^\/[^/]+$/.test(route) && postSlugs.has(route.slice(1)) ? `/news${route}` : route;
     if (!path || seen.has(path)) continue;
     seen.add(path);
     const lm = e.lastModified ? new Date(e.lastModified).getTime() : 0;

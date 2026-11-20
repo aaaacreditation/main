@@ -1,0 +1,17 @@
+/* Accredited-organization profile pages, /custom-box/<slug>/ (Nov 2026).
+   The register's detail-dialog styles (directory.css, .dxp) laid out as a page. */
+
+.orgx .orgx-wrap {
+  max-width: 860px;
+}
+.orgx .orgx-card {
+  padding: clamp(22px, 3.4vw, 40px);
+  background: #fff;
+  border: 1px solid var(--aaa-blue-100, #d7e2f4);
+  border-radius: var(--ax-radius-lg, 22px);
+  box-shadow: 0 24px 48px -28px rgba(6, 26, 44, 0.28);
+}
+.orgx .orgx-card h2 {
+  margin: 8px 0 4px;
+  color: var(--aaa-blue, #173d73);
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type Status = "idle" | "sending" | "ok" | "error";
 type FieldKey = "first" | "last" | "email" | "phone" | "organization" | "country" | "topic" | "message";
@@ -52,7 +52,10 @@ export default function ContactForm() {
 }
 
 function EnquiryFormFromUrl() {
-  const topic = TOPIC_PARAMS[useSearchParams().get("topic") ?? ""] ?? "";
+  // The old site's quote page, /get-a-quote/, now shows this form (Nov 2026)
+  // and arrives with the quote topic chosen, like ?topic=quote does.
+  const quotePage = usePathname().startsWith("/get-a-quote");
+  const topic = TOPIC_PARAMS[useSearchParams().get("topic") ?? (quotePage ? "quote" : "")] ?? "";
   // Keyed so a same-page link with a different topic starts a fresh form.
   return <EnquiryForm key={topic} initialTopic={topic} />;
 }

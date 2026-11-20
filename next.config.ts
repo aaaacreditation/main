@@ -2,116 +2,136 @@ import type { NextConfig } from "next";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-/* ---------------------------------------------------------------- redirects */
+/* =========================================================== public URLs */
 
-/**
- * Legacy WordPress page URLs → their route in this rebuild.
+/*
+ * Nov 17 2026 (client): every page of the old WordPress site must answer at its
+ * EXACT old address, not through a redirect. app/_data/public-urls.json maps
+ * each route folder to that address (`pages`) and lists the other old
+ * addresses that showed the same content (`aliases`); lib/public-urls.ts turns
+ * route paths into those addresses for links, canonicals and the sitemap.
  *
- * Captured from a live audit of https://aaa-accreditation.org on 2026-08-28.
- * Every one of these is an indexed URL today, so shipping without them would
- * throw away years of accumulated ranking and break inbound links.
+ *   old address  ──rewrite──▶  route folder        (200, address unchanged)
+ *   route folder ──redirect─▶  old address         (one public URL per page)
+ *
+ * Posts are served at the root (/<slug>/) by app/[slug]; organization profiles
+ * at /custom-box/<slug>/ by app/custom-box/[slug]. Only URLs the old site
+ * itself redirected (or that were test pages / spam) are redirects here.
  */
-const LEGACY_PAGES: Record<string, string> = {
-  // About / institutional
-  "/about-aaa": "/about",
-  "/aaa-management-structur": "/about",
-  "/aaa-standards": "/about-accreditation",
-  "/advisory-technical-committees": "/advisory-committees",
-  "/safeguarding-impartiality-policy": "/impartiality-policy",
-  "/national-international-partnership": "/partnerships",
-  "/international-partnerships": "/partnerships",
-  "/become-a-partner": "/partnerships",
-  "/privacy-policy": "/privacy",
-  "/contact-us": "/contact",
-  // Oct 2026: /quote was retired — quotes go through the contact form
-  // (CONTACT.quoteHref in lib/facts.ts). Next does not chain redirects, so
-  // the WordPress URL points straight at the form too.
-  "/get-a-quote": "/contact?topic=quote#enquiry",
-  "/quote": "/contact?topic=quote#enquiry",
-  "/apply-for-accreditation": "/apply",
-
-  // Healthcare cluster
-  "/healthcare-accreditation": "/programs/healthcare",
-  "/healthcare-accreditation/why-aaa-accreditation": "/programs/healthcare/why-aaa",
-  "/healthcare-accreditation/international-recognition": "/programs/healthcare/international-recognition",
-  "/healthcare-accreditation/accreditation-standards": "/programs/healthcare/standards",
-  "/healthcare-accreditation/accreditation-process": "/programs/healthcare/process",
-  "/healthcare-accreditation/who-can-be-accredited": "/programs/healthcare/who-can-apply",
-  "/healthcare-accreditation/consultation-services": "/programs/healthcare/consultation",
-
-  // Program hubs
-  "/conformity-assessment-bodies-accreditation": "/programs/conformity-assessment-bodies",
-  "/certification-bodies-accreditation": "/programs/conformity-assessment-bodies",
-  "/laboratories-accreditation": "/programs/conformity-assessment-bodies",
-  "/training-education-providers-accreditation": "/programs/training-education",
-  "/training-course-programs-accreditation": "/programs/training-education",
-  "/training-courses-accreditation": "/programs/training-education",
-  "/school-system-accreditation": "/programs/school-accreditation",
-
-  // ISO scheme pages
-  "/system-certification-bodies-accreditation-iso-iec-17021-1": "/programs/iso-17021",
-  "/personnel-certification-bodies-accreditation-iso-iec-17024": "/programs/iso-17024",
-  "/product-certification-bodies-accreditation-iso-iec-17065-and-halal": "/programs/iso-17065",
-  "/inspection-bodies-accreditation-iso-iec-17020": "/programs/iso-17020",
-  "/testing-calibration-laboratories-17025-accreditation-bodies": "/programs/testing-laboratories",
-  "/medical-laboratories-accreditation-iso-15189": "/programs/iso-15189",
-  "/proficiency-testing-providers-accreditation-iso-iec-17043": "/programs/iso-17043",
-  "/training-providers-accreditation-astm-e-2659": "/programs/astm-e2659",
-
-  // Membership
-  "/individual-membership": "/membership/individual",
-  "/organizational-membership": "/membership/organizational",
-  "/membership-application": "/membership/apply",
-  "/individual-membership-application": "/membership/individual/apply",
-  "/individual-membership-application-recognized-competency-member":
-    "/membership/individual/recognized-competency",
-  "/organizational-membership-application": "/membership/organizational/apply",
-
-  // Directories
-  "/accredited-organizations": "/directory/accredited-organizations",
-  "/adao": "/directory/accredited-organizations",
-  "/accredited-personnel": "/directory/accredited-organizations",
-  // The /directory hub ("Verification Portal") was removed Oct 30 2026 (client).
-  "/directory": "/directory/accredited-organizations",
-
-  // Accredited-organisation profile pages — no per-client pages in the rebuild,
-  // so they land on the register that lists them.
-  "/delta-university-for-science-technology-gamasa-egypt": "/directory/accredited-organizations",
-  "/american-international-theism-university-florida-usa": "/directory/accredited-organizations",
-  "/inspeed-global-sarasota-usa-istanbul-turkey": "/directory/accredited-organizations",
-  "/enertech-qatar-safety-doha-qatar": "/directory/accredited-organizations",
-  "/american-learning-center-vienna-usa": "/directory/accredited-organizations",
-
-  // The SME program page moved to its client-approved slug (July 2026).
-  "/programs/sme-funding-readiness": "/programs/smes-accreditation-program",
+const PUBLIC = JSON.parse(readFileSync(path.join(process.cwd(), "app/_data/public-urls.json"), "utf8")) as {
+  pages: Record<string, string>;
+  aliases: Record<string, string>;
+};
+const noSlash = (p: string) => (p.length > 1 ? p.replace(/\/+$/, "") : p);
+/** The public address of a route path (same rules as lib/public-urls.ts, for the static maps below). */
+const pub = (route: string) => {
+  const r = noSlash(route);
+  if (PUBLIC.pages[r]) return PUBLIC.pages[r];
+  const post = r.match(/^\/news\/([^/]+)$/);
+  if (post) return `/${post[1]}/`;
+  return r === "/" ? "/" : `${r}/`;
 };
 
 /**
- * Post permalinks changed shape: WordPress served them at the site root
- * (`/<slug>/`), this build serves them under `/news/<slug>`. The slug list is
- * read from the migration snapshot so it stays in sync automatically.
- *
- * A blanket `/:slug → /news/:slug` rule is NOT possible: `app/[slug]` is the
- * CMS catch-all for database-authored pages and would be shadowed by it.
+ * Old URLs that the old site itself redirected, or that pointed at test pages,
+ * typos and retired forms — kept as permanent redirects to the right page.
+ * (Old URLs that showed a page are NOT here: they are real pages now.)
  */
-function newsPostRedirects() {
-  try {
-    const file = path.join(process.cwd(), "app/news/posts-data.json");
-    const posts = JSON.parse(readFileSync(file, "utf8")) as { slug: string }[];
-    const reserved = new Set(Object.keys(LEGACY_PAGES).map((p) => p.slice(1)));
+const LEGACY_REDIRECTS: Record<string, string> = {
+  // Retired on this site before launch.
+  "/quote": "/contact?topic=quote#enquiry",
+  "/programs/iso-17025": "/programs/testing-laboratories",
+  "/programs/sme-funding-readiness": "/programs/smes-accreditation-program",
+  "/directory": "/directory/accredited-organizations",
+  "/adao": "/directory/accredited-organizations",
+  "/accredited-organizations-directory": "/directory/accredited-organizations",
+  // Redirected (or missing) on the old site, found by the Nov 17 2026 audit.
+  "/aaa-management-structure": "/governance-leadership",
+  "/aaa-technical-committee": "/advisory-committees",
+  "/product-certification-bodies-accreditation-iso-iec-17065": "/programs/iso-17065",
+  "/testing-calibration-laboratories-accreditation-iso-iec-17025": "/programs/testing-laboratories",
+  "/training-providers-accreditation": "/programs/astm-e2659",
+  "/role-of-healthcare-accreditation-in-healthcare-system-bodies": "/programs/healthcare",
+  "/role-of-accreditation-in-healthcare-system-bodies": "/programs/healthcare",
+  "/role-of-accreditation-in-healthcare-system-bodies/why-aaa-accreditation": "/programs/healthcare/why-aaa",
+  "/role-of-accreditation-in-healthcare-system-bodies/international-recognition": "/programs/healthcare/international-recognition",
+  "/role-of-accreditation-in-healthcare-system-bodies/accreditation-standards": "/programs/healthcare/standards",
+  "/role-of-accreditation-in-healthcare-system-bodies/accreditation-process": "/programs/healthcare/process",
+  "/role-of-accreditation-in-healthcare-system-bodies/who-can-be-accredited": "/programs/healthcare/who-can-apply",
+  "/role-of-accreditation-in-healthcare-system-bodies/consultation-services": "/programs/healthcare/consultation",
+  "/10-advantages-of-national-accreditation": "/news/how-to-become-an-accredited-training-center",
+  "/pdc-gain-the-organizational-membership-of-aaa": "/news/ptc-gain-the-organizational-membership-of-aaa",
+  "/2": "/news/2022-workplace-learning-report",
+  "/feed": "/news",
+  "/comments/feed": "/news",
+  // Test and draft pages that were left published on the old site.
+  "/aaa-american-accreditation-association-test": "/",
+  "/accredited-organizations-test": "/directory/accredited-organizations",
+  "/healthcare-accreditation-test2": "/programs/healthcare",
+  "/6643-2": "/",
+  "/sample-page": "/",
+  "/formtest": "/",
+  "/test-form": "/",
+  "/test-2": "/",
+  "/test2": "/",
+  "/test3": "/",
+  "/test10": "/",
+  "/timer": "/",
+  "/files": "/",
+  "/loginfiles": "/",
+};
 
-    return posts
-      .filter((p) => p.slug && !reserved.has(p.slug))
-      .map((p) => ({
-        source: `/${p.slug}`,
-        destination: `/news/${p.slug}`,
+/** Whole families of old URLs the old site redirected (Nov 17 2026 audit). */
+const LEGACY_PATTERNS = [
+  // Pre-2021 permalinks: /index.php/<page>/ and dated /YYYY/MM/DD/<post>/.
+  { source: "/index.php/:y(\\d{4})/:m(\\d{2})/:d(\\d{2})/:slug", destination: "/:slug/" },
+  { source: "/:y(\\d{4})/:m(\\d{2})/:d(\\d{2})/:slug", destination: "/:slug/" },
+  { source: "/index.php", destination: "/" },
+  { source: "/index.php/:path+", destination: "/:path+/" },
+  // Certificate links typed with "adao" instead of the ADCP portal's "adcp".
+  { source: "/adao/CertificateDetails/:id", destination: "/adcp/CertificateDetails/:id/" },
+  // Box archives.
+  { source: "/aaa_box/training-education-providers-accreditation/:rest*", destination: pub("/programs/training-education") },
+  { source: "/aaa_box/conformity-assessment-bodies-accreditation/:rest*", destination: pub("/programs/conformity-assessment-bodies") },
+  { source: "/aaa_box/:rest*", destination: "/" },
+  // /news/2/ was page 2 of the old news page; author archives were already broken there.
+  { source: "/news/:n(\\d{1,3})", destination: "/news/page/:n/" },
+  { source: "/author/:name/:rest*", destination: "/news/" },
+  /*
+   * WordPress "page 2" of a page or post (/about-aaa/2/), which the old site
+   * 301'd to the page itself. Two-segment paths only, and never under a
+   * section of this site that has children of its own.
+   */
+  {
+    source: "/:slug((?!(?:news|articles|category|tag|custom-box|case-studies|media|api|admin|_next)/)[^/.]+)/:n(\\d{1,3})",
+    destination: "/:slug/",
+  },
+].map((r) => ({ ...r, permanent: true }));
+
+/**
+ * WordPress shortlinks: /?p=<post id> and /?page_id=<page id>, which the old
+ * site redirected to the post or page (ids from its REST API, Nov 2026).
+ */
+function shortlinkRedirects() {
+  try {
+    const file = path.join(process.cwd(), "app/_data/legacy-wp-ids.json");
+    const ids = JSON.parse(readFileSync(file, "utf8")) as Record<"p" | "page_id", Record<string, string>>;
+    return (["p", "page_id"] as const).flatMap((key) =>
+      Object.entries(ids[key] ?? {}).map(([id, to]) => ({
+        source: "/",
+        has: [{ type: "query" as const, key, value: id }],
+        destination: to === "/" ? "/" : `${noSlash(to)}/`,
         permanent: true,
-      }));
+      }))
+    );
   } catch {
-    // Never fail the build over a missing snapshot.
     return [];
   }
 }
+
+/* ================================================================ config */
+
+const IMAGE_EXT = "webp|png|jpg|jpeg|svg|gif|avif|ico|mp4|webm";
 
 const nextConfig: NextConfig = {
   /*
@@ -122,20 +142,35 @@ const nextConfig: NextConfig = {
    * dir ".next.nosync" — it stays inside the project (so node_modules
    * resolution for postcss/tailwind keeps working) but iCloud leaves it alone.
    *
-   * Vercel has no iCloud and expects the default ".next" output directory, so
-   * we only apply the ".nosync" override for local builds (VERCEL is unset).
-   *
-   * The Docker image (Dockerfile, for the Hetzner VPS) builds with
-   * NEXT_OUTPUT=standalone. That build also uses the default ".next" — the
+   * The Docker image (Dockerfile, for the Contabo server) builds with
+   * NEXT_OUTPUT=standalone. That build uses the default ".next" — the
    * Dockerfile copies .next/standalone and .next/static out of it — and emits
-   * the self-contained server.js the container runs. Plain local builds and
-   * Vercel builds are unaffected (output stays the default).
+   * the self-contained server.js the container runs.
    */
   distDir: process.env.VERCEL || process.env.NEXT_OUTPUT ? ".next" : ".next.nosync",
   output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
 
+  /*
+   * WordPress addresses end in "/" and so do ours (Nov 2026). Next's own
+   * add-the-slash redirect is skipped: proxy.ts adds it for pages only, so
+   * /api, /admin and NextAuth keep their exact URLs.
+   */
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
+
+  // Caddy compresses every response (zstd, else gzip). Compressing here too
+  // only spends CPU and hides responses from Caddy's better zstd encoder.
+  compress: false,
+  poweredByHeader: false,
+
   images: {
     formats: ["image/avif", "image/webp"],
+    // Fewer, better-spaced widths: shorter srcset attributes in every page and
+    // fewer variants to generate; nothing renders wider than 1920 CSS px.
+    deviceSizes: [640, 828, 1080, 1280, 1920],
+    imageSizes: [48, 96, 128, 256, 384],
+    // Optimized images are kept a week (browser and server) instead of 4 hours.
+    minimumCacheTTL: 604800,
     remotePatterns: [
       { protocol: "https", hostname: "aaa-accreditation.org" },
       { protocol: "https", hostname: "www.aaa-accreditation.org" },
@@ -143,37 +178,50 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
-    return [
-      /*
-       * The SME funding-readiness self-assessment is a self-contained static
-       * app (public/readiness-check/index.html), not an App Router page. Next
-       * serves public/ files by exact path only, so map the clean URL onto it.
-       */
-      { source: "/readiness-check", destination: "/readiness-check/index.html" },
-    ];
+    return {
+      beforeFiles: [
+        // Old page addresses → the route that renders them.
+        ...Object.entries(PUBLIC.pages).map(([route, address]) => ({ source: noSlash(address), destination: route })),
+        ...Object.entries(PUBLIC.aliases).map(([address, route]) => ({ source: noSlash(address), destination: route })),
+        // WordPress archive shapes.
+        { source: "/news/page/:n(\\d+)", destination: "/news/archive/:n" },
+        { source: "/articles/page/:n(\\d+)", destination: "/articles/archive/:n" },
+        { source: "/category/:slug", destination: "/news/category/:slug" },
+        { source: "/category/:slug/page/:n(\\d+)", destination: "/news/category/:slug/:n" },
+        { source: "/tag/:slug", destination: "/news/tag/:slug" },
+        { source: "/tag/:slug/page/:n(\\d+)", destination: "/news/tag/:slug/:n" },
+      ],
+      afterFiles: [
+        /*
+         * The SME funding-readiness self-assessment is a self-contained static
+         * app (public/readiness-check/index.html), not an App Router page.
+         */
+        { source: "/readiness-check", destination: "/readiness-check/index.html" },
+      ],
+      fallback: [],
+    };
   },
 
   async redirects() {
-    const pages = Object.entries(LEGACY_PAGES).map(([source, destination]) => ({
-      source,
-      destination,
-      permanent: true,
-    }));
-
     return [
-      ...pages,
+      // Route folders → their public (old) address, so each page has one URL.
+      ...Object.entries(PUBLIC.pages).map(([route, address]) => ({ source: route, destination: address, permanent: true })),
+      { source: "/news/archive/:n(\\d+)", destination: "/news/page/:n/", permanent: true },
+      { source: "/articles/archive/:n(\\d+)", destination: "/articles/page/:n/", permanent: true },
+      { source: "/news/category/:slug", destination: "/category/:slug/", permanent: true },
+      { source: "/news/category/:slug/:n(\\d+)", destination: "/category/:slug/page/:n/", permanent: true },
+      { source: "/news/tag/:slug", destination: "/tag/:slug/", permanent: true },
+      { source: "/news/tag/:slug/:n(\\d+)", destination: "/tag/:slug/page/:n/", permanent: true },
+      // Posts live at the root, as on the old site.
+      {
+        source: "/news/:slug((?!(?:archive|category|tag|page|\\d+)(?:/|$))[^/.]+)",
+        destination: "/:slug/",
+        permanent: true,
+      },
 
-      // Oct 2026: ISO/IEC 17025 split into Testing and Calibration Laboratories
-      // pages per the client's CAB hub; the combined page now lands on Testing.
-      { source: "/programs/iso-17025", destination: "/programs/testing-laboratories", permanent: true },
-
-      // WordPress archive pagination and the single author archive.
-      { source: "/news/page/:n", destination: "/news", permanent: true },
-      { source: "/author/:name", destination: "/news", permanent: true },
-      { source: "/category/:name", destination: "/news", permanent: true },
-      { source: "/tag/:name", destination: "/news", permanent: true },
-
-      ...newsPostRedirects(),
+      ...Object.entries(LEGACY_REDIRECTS).map(([source, to]) => ({ source, destination: pub(to.split(/[?#]/)[0]) + (to.match(/[?#].*$/)?.[0] ?? ""), permanent: true })),
+      ...LEGACY_PATTERNS,
+      ...shortlinkRedirects(),
     ];
   },
 
@@ -192,11 +240,19 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // The migrated documents and images are immutable once published.
-        source: "/documents/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
+        // The migrated documents are immutable once published (files only — not the /documents/ page).
+        source: "/documents/:path+\\.:ext(pdf|docx?|xlsx?|pptx?)",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        // Site images and video in public/: a week fresh, a month stale-while-revalidate.
+        // They were served with max-age=0, so every visit re-downloaded them.
+        source: `/:dir(images|logo|news|case-studies|accredited|programs|sectors|about|home|docs|video)/:path*\\.:ext(${IMAGE_EXT})`,
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }],
+      },
+      {
+        source: `/:file([^/]+\\.(?:${IMAGE_EXT}))`,
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }],
       },
     ];
   },
