@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { LEADS_TO, sendMail } from "@/lib/mailer";
 import { leadKindFromSource } from "@/lib/leads";
+import { leadEmail } from "@/lib/lead-email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -50,23 +51,29 @@ export async function POST(req: Request) {
   // gone out. Only when both fail does the visitor see an error. (Nov 2026:
   // the email used to be required, so with SMTP off on the preview server
   // every /contact and /apply submission was rejected AND discarded.)
-  let saved = false;
+
+  // 1. Save it — it shows in Admin → Leads.
+  let saved: { id: string; createdAt: Date } | null = null;
   try {
-    await prisma.lead.create({ data: record });
-    saved = true;
+    saved = await prisma.lead.create({ data: record, select: { id: true, createdAt: true } });
   } catch (err) {
     console.error(`${data.source} lead save failed:`, err);
   }
 
-  const mail = notification(data);
+  // 2. Email it to the enquiries mailbox — every form, not only Contact and
+  // Apply (Nov 2026, client). Recorded on the lead's timeline when it goes out.
   let mailed = false;
-  if (mail) {
-    try {
-      await sendMail({ ...mail, replyTo: data.email });
-      mailed = true;
-    } catch (err) {
-      console.error(`${data.source} email failed:`, err);
-    }
+  try {
+    const mail = leadEmail({ ...record, id: saved?.id, createdAt: saved?.createdAt ?? new Date() });
+    await sendMail({ ...mail, replyTo: data.email });
+    mailed = true;
+  } catch (err) {
+    console.error(`${data.source} email failed:`, err);
+  }
+  if (saved && mailed) {
+    await prisma.leadActivity
+      .create({ data: { leadId: saved.id, type: "email", body: `Notification emailed to ${LEADS_TO}.` } })
+      .catch((err) => console.error("lead email activity failed:", err));
   }
 
   if (!saved && !mailed) {
@@ -76,43 +83,4 @@ export async function POST(req: Request) {
     );
   }
   return NextResponse.json({ ok: true });
-}
-
-type Lead = { business: string; contact: string; email: string; phone: string; sector: string; message: string; source: string };
-
-/** The email for sources that notify the enquiries mailbox; null for the rest. */
-function notification(d: Lead): { subject: string; text: string } | null {
-  if (d.source === "apply-form") {
-    return {
-      subject: `New application inquiry: ${d.business} (${d.sector || "program not set"})`,
-      text: [
-        "New accreditation request from the website's Apply page.",
-        [
-          `Legal entity: ${d.business}`,
-          `Authorized representative: ${d.contact}`,
-          `Email: ${d.email}`,
-          `Phone: ${d.phone}`,
-          `Program applied for: ${d.sector}`,
-        ].join("\n"),
-        d.message,
-      ].join("\n\n"),
-    };
-  }
-  if (d.source === "contact-form") {
-    return {
-      subject: `New website enquiry: ${d.sector || "General enquiry"} from ${d.contact} (${d.business})`,
-      text: [
-        "New enquiry from the website's Contact page.",
-        [
-          `Name: ${d.contact}`,
-          `Organization: ${d.business}`,
-          `Email: ${d.email}`,
-          `Phone: ${d.phone}`,
-          `Topic: ${d.sector}`,
-        ].join("\n"),
-        d.message,
-      ].join("\n\n"),
-    };
-  }
-  return null;
 }

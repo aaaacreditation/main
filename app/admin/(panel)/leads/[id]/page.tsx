@@ -26,7 +26,12 @@ const ERRORS: Record<string, string> = {
   assignee: "That team member can't be assigned — their account is inactive or was removed.",
 };
 
-const ACTIVITY_LABEL: Record<string, string> = { note: "Note", status: "Status change", assign: "Assignment" };
+const ACTIVITY_LABEL: Record<string, string> = {
+  note: "Note",
+  status: "Status change",
+  assign: "Assignment",
+  email: "Email",
+};
 
 export default async function LeadDetail({
   params,

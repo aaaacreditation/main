@@ -439,10 +439,14 @@ only the TEPA landing pages (campaigns.aaa-accreditation.org) and has never run 
   drop (plus arrow buttons) in `CaseStudyBuilder.tsx`. `body` is regenerated from the layout on save so
   "non-empty body = article" still holds; an untouched case study is saved without regenerating it.
   Rows without a layout render `body` as before.
-- **Leads**: all site forms post to `/api/leads`; the lead is saved first and the notification email is
-  best-effort (Nov 2026 — SMTP is off on the preview server, and the email used to be required); it derives `kind` (CONTACT / APPLICATION /
-  QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new form by picking a
-  `source` that `leadKindFromSource()` classifies.
+- **Leads**: all site forms post to `/api/leads`; the lead is saved first (Admin → Leads) and then
+  **every form** is emailed to `LEADS_EMAIL_TO` (default `CONTACT.email`, info@aaa-accreditation.org) in
+  one format (`lib/lead-email.ts`, Nov 23 2026, client: "in the dashboard like now and at the same time
+  sent to info"). The email is best-effort; when it goes out, the lead's timeline gets an `email`
+  activity. SMTP settings live only on the server — set them with `sh deploy/set-smtp.sh` (run by the
+  user in Terminal; it prompts for the password hidden and sends a test enquiry). It derives `kind`
+  (CONTACT / APPLICATION / QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new
+  form by picking a `source` that `leadKindFromSource()` classifies.
 - **Uploads** go to the Media table (bytea) and are served from `/media/<id>/<name>` — works
   on Vercel's read-only filesystem and travels with a `pg_dump`. 4 MB cap.
 - **Redirects**: coded ones in `next.config.ts` run first; admin-managed ones are applied in
