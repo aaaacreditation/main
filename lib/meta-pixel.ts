@@ -1,15 +1,16 @@
 /**
  * Meta (Facebook / Instagram) Pixel — the browser half of the site's Meta
  * tracking (Nov 26 2026, client). Safe to import from client components: no
- * secrets here. The pixel ID is public (it is in every page's HTML).
+ * secrets here. The pixel ID is public (every visitor's browser sees it).
  *
  * The server half is lib/meta-capi.ts: /api/leads sends each form conversion
  * to the Conversions API and returns the same events (with their event IDs)
- * to the form, which fires them here with `trackLead()`. Meta counts an event
+ * to the form, which fires them here (`trackMetaLead()`, called by
+ * `trackLead()` in lib/ad-tracking.ts). Meta counts an event
  * received from both sides once, so ad blockers no longer hide conversions.
  *
  * Events:
- *  - PageView     every page, including in-app navigations (MetaPixel.tsx)
+ *  - PageView     every page, including in-app navigations (AdPixels.tsx)
  *  - Lead         every form submission (browser + Conversions API)
  *  - Contact      contact-form enquiries (browser + API), and clicks on
  *                 WhatsApp / phone / email links (browser)
@@ -35,7 +36,7 @@ function fbq(...args: unknown[]) {
 }
 
 /** A page view after an in-app navigation (the base code tracks the first one). */
-export function trackPageView() {
+export function trackMetaPageView() {
   fbq("track", "PageView");
 }
 
@@ -43,7 +44,7 @@ export function trackPageView() {
  * Fire the browser copy of the events /api/leads sent to the Conversions API.
  * Pass the parsed JSON of a successful response; anything else is ignored.
  */
-export function trackLead(response: unknown) {
+export function trackMetaLead(response: unknown) {
   const events = (response as { meta?: unknown } | null)?.meta;
   if (!Array.isArray(events)) return;
   for (const e of events as PixelEvent[]) {
@@ -52,8 +53,8 @@ export function trackLead(response: unknown) {
   }
 }
 
-/** Clicks that start a conversation or a booking (delegated in MetaPixel.tsx). */
-export function trackLinkClick(href: string) {
+/** Clicks that start a conversation or a booking (delegated in AdPixels.tsx). */
+export function trackMetaLinkClick(href: string) {
   const h = href.toLowerCase();
   if (h.startsWith("https://wa.me") || h.includes("whatsapp.com") || h.startsWith("whatsapp:")) {
     fbq("track", "Contact", { content_name: "WhatsApp" });

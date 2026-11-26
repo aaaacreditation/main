@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { trackLead } from "@/lib/meta-pixel";
+import { trackLead } from "@/lib/ad-tracking";
 import { useSearchParams } from "next/navigation";
 import { ADVISORS, CONSULT, type ApplyProgram } from "@/lib/facts";
 

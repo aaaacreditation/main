@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { trackLead } from "@/lib/meta-pixel";
+import { trackLead } from "@/lib/ad-tracking";
 import { usePathname, useSearchParams } from "next/navigation";
 
 type Status = "idle" | "sending" | "ok" | "error";

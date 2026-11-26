@@ -8,7 +8,7 @@
  * labelled block that reads cleanly in the admin Content Studio.
  */
 
-import { trackLead } from "@/lib/meta-pixel";
+import { trackLead } from "@/lib/ad-tracking";
 
 export type LeadPayload = {
   business: string;

@@ -80,6 +80,7 @@ profile, ufw 22/80/443.
 | `SMTP_FROM`, `LEADS_EMAIL_TO` | optional | optional | Defaults: `"AAA Website" <SMTP_USER>` / `info@aaa-accreditation.org`. |
 | `META_CAPI_TOKEN` | for Meta ads | leave unset | Conversions API token for pixel 1127877600087566 (`lib/meta-capi.ts`). Without it only the browser Pixel reports. Set with `sh deploy/set-meta-capi.sh`. |
 | `META_TEST_EVENT_CODE` | unset | optional | Sends the server's events to Events Manager → Test events instead of counting them. Remove after checking. |
+| `OPENAI_ADS_CONVERSIONS_API_KEY` | for OpenAI Ads | leave unset | Conversions API key for OpenAI Ads pixel 6NRM8WHoC284zxFVq4ab6g (`lib/openai-capi.ts`). Without it only the browser Measurement Pixel reports. Set with `sh deploy/set-openai-ads.sh`. |
 | `NOINDEX` | unset | `true` | `true` makes robots.txt disallow everything. |
 | `SEO_AUDIT_BASE_URL` | optional | optional | Where the admin SEO audit crawls. Unset = the origin of the admin request (right for Vercel). |
 

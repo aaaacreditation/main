@@ -4,6 +4,7 @@ import { LEADS_TO, sendMail } from "@/lib/mailer";
 import { leadKindFromSource } from "@/lib/leads";
 import { leadEmail } from "@/lib/lead-email";
 import { leadPixelEvents, sendLeadToMeta } from "@/lib/meta-capi";
+import { emailSha256, leadOpenAiEvents, sendLeadToOpenAi } from "@/lib/openai-capi";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -84,12 +85,24 @@ export async function POST(req: Request) {
     );
   }
 
-  // 3. Meta: send the conversion to the Conversions API once the visitor has
-  // their answer, and hand the same events (same IDs, no personal data) back
-  // to the form for the browser Pixel — Meta counts each pair once (Nov 2026).
-  const meta = leadPixelEvents(record);
+  // 3. Ad platforms (Meta, OpenAI Ads): send the conversion to each
+  // Conversions API once the visitor has their answer, and hand the same
+  // events (same IDs) back to the form for the browser pixels — each platform
+  // counts the pair once (Nov 2026). The only personal data returned is the
+  // submitter's own email as a SHA-256 hash, for the OpenAI Pixel's `init`.
   const createdAt = saved?.createdAt ?? new Date();
-  after(() => sendLeadToMeta(meta, { ...data, createdAt }, req));
+  const meta = leadPixelEvents(record);
+  const openaiEvents = leadOpenAiEvents(record);
+  after(() =>
+    Promise.all([
+      sendLeadToMeta(meta, { ...data, createdAt }, req),
+      sendLeadToOpenAi(openaiEvents, { email: data.email, createdAt }, req),
+    ]),
+  );
 
-  return NextResponse.json({ ok: true, meta });
+  return NextResponse.json({
+    ok: true,
+    meta,
+    openai: { user: { email_sha256: emailSha256(data.email) }, events: openaiEvents },
+  });
 }

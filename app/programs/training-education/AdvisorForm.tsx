@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trackLead } from "@/lib/meta-pixel";
+import { trackLead } from "@/lib/ad-tracking";
 
 /**
  * Enquiry form for the Training & Education Providers page (final CTA).

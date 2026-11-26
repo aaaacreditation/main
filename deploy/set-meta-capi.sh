@@ -16,7 +16,7 @@
 #
 # It writes META_CAPI_TOKEN and META_TEST_EVENT_CODE into the server's
 # deploy/.env.production (other lines untouched, file stays 600), restarts the
-# app and asks Meta whether the token can reach the pixel.
+# app and sends Meta one test event (never counted) to check the token.
 set -eu
 
 HOST="${PREVIEW_HOST:-root@94.72.110.40}"
@@ -84,23 +84,24 @@ echo "    app restarted"
 $C exec -T app node -e '
 const token = process.env.META_CAPI_TOKEN, test = process.env.META_TEST_EVENT_CODE;
 const pixel = "1127877600087566", graph = "https://graph.facebook.com/v25.0";
+// Check by sending one Lead marked as a test event (it never counts as real):
+// Conversions API tokens may send events without being allowed to read the
+// pixel itself, so reading the pixel (GET ?fields=name) is NOT a valid check —
+// it answers "(#100) Missing Permission" for a token that works (Nov 26 2026).
 (async () => {
-  const r = await fetch(`${graph}/${pixel}?fields=id,name`, { headers: { authorization: `Bearer ${token}` } });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) { console.log(`==> Meta did NOT accept the token: ${j.error?.message ?? r.status}`); process.exit(1); }
-  console.log(`==> OK: the token reaches pixel ${j.id} (${j.name ?? "no name"}).`);
-  if (!test) { console.log("    Live mode: form submissions now count in Events Manager."); return; }
   const e = await fetch(`${graph}/${pixel}/events`, {
     method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ access_token: token, test_event_code: test, data: [{
+    body: JSON.stringify({ access_token: token, test_event_code: test || "TEST29861", data: [{
       event_name: "Lead", event_time: Math.floor(Date.now() / 1000), action_source: "website",
       event_source_url: "https://aaa-accreditation.org/contact-us/",
       user_data: { client_user_agent: "aaa-website-setup-check", client_ip_address: "127.0.0.1" },
       custom_data: { content_name: "Setup check" } }] }),
   });
   const ej = await e.json().catch(() => ({}));
-  console.log(e.ok ? `    Test event sent (events_received: ${ej.events_received}) — look under Test events (${test}).`
-                   : `    Test event refused: ${ej.error?.message ?? e.status}`);
+  if (!e.ok) { console.log(`==> Meta did NOT accept the token: ${ej.error?.message ?? e.status}`); process.exit(1); }
+  console.log(`==> OK: Meta accepted a test event for pixel ${pixel} (events_received: ${ej.events_received}).`);
+  console.log(test ? `    Test mode: the server's events show under Test events (${test}) and do not count.`
+                   : "    Live mode: form submissions now count in Events Manager.");
 })().catch((err) => { console.log(`==> Could not reach Meta: ${err.message}`); process.exit(1); });
 '
 REMOTE

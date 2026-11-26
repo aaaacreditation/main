@@ -451,18 +451,28 @@ only the TEPA landing pages (campaigns.aaa-accreditation.org) and has never run 
   activity. SMTP settings live only on the server — set them with `sh deploy/set-smtp.sh` (run by the
   user in Terminal; it prompts for the password hidden and sends a test enquiry). It derives `kind`
   (CONTACT / APPLICATION / QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new
-  form by picking a `source` that `leadKindFromSource()` classifies, and call `trackLead(data)` after
-  its successful POST (see Meta below).
-- **Meta Pixel + Conversions API** (Nov 26 2026, client; pixel `1127877600087566`): `MetaPixel.tsx`
-  (rendered by `app/layout.tsx`; not on /admin, not in `next dev`) loads the Pixel, tracks PageView on
-  every navigation, and Contact on WhatsApp/phone/email clicks + custom `BookConsultationClick` on
-  Calendly links. Every form submission is a **Lead**, plus **Contact** (contact form) or
-  **SubmitApplication** (applications, memberships): `/api/leads` builds the events
-  (`leadPixelEvents`, `lib/meta-capi.ts`), sends them server-side with hashed email/phone/name, IP,
-  user agent and `_fbp`/`_fbc` (in `after()`, Graph v25.0), and returns them as `meta` so the form
-  fires the browser copy with the same event IDs (`trackLead`, `lib/meta-pixel.ts`) — Meta
-  de-duplicates. The token is server-only (`META_CAPI_TOKEN`, set by the user with
-  `sh deploy/set-meta-capi.sh`); without it only the browser Pixel reports.
+  form by picking a `source` that `leadKindFromSource()` classifies, and call `trackLead(data)`
+  (`lib/ad-tracking.ts`) after its successful POST (see ad tracking below).
+- **Ad tracking: Meta + OpenAI Ads, Pixel + Conversions API** (Nov 26 2026, client). One browser layer,
+  `lib/ad-tracking.ts` (`trackLead`, `trackPageView`, `trackLinkClick`), fans out to each platform
+  (`lib/meta-pixel.ts`, `lib/openai-pixel.ts`); `AdPixels.tsx` (rendered by `app/layout.tsx`; not on
+  /admin, not in `next dev`) loads both pixels, tracks page views on every navigation and the
+  WhatsApp/phone/email/Calendly clicks. `/api/leads` builds each platform's events, sends them
+  server-side in `after()` and returns them (`meta`, `openai`) so the form fires the browser copy with
+  the same event IDs — each platform de-duplicates.
+  - **Meta** (pixel `1127877600087566`, Graph v25.0, `lib/meta-capi.ts`): every form = Lead, + Contact
+    (contact form) or SubmitApplication (applications, memberships); Contact on contact-link clicks,
+    custom BookConsultationClick on Calendly. Server sends hashed email/phone/name, IP, UA, `_fbp`/`_fbc`.
+    Token `META_CAPI_TOKEN` (+ optional `META_TEST_EVENT_CODE`) via `sh deploy/set-meta-capi.sh`.
+  - **OpenAI Ads** (pixel `6NRM8WHoC284zxFVq4ab6g`, `lib/openai-capi.ts`, schema from OpenAI's
+    `openai/plugins` openai-ads-conversions reference): page_viewed on every page, contents_viewed on
+    program/membership/case-study pages, every form = lead_created, + registration_completed
+    (applications, memberships); custom whatsapp_click / phone_click / email_click /
+    book_consultation_click. Server sends hashed email, IP, UA, the raw `__oppref` cookie and
+    `source_url` (origin + path, this site only); the browser gets the email hash via `oaiq("init",
+    { user })`. Key `OPENAI_ADS_CONVERSIONS_API_KEY` via `sh deploy/set-openai-ads.sh`.
+  - Tokens/keys are server-only and set by the user in Terminal; without one, only that platform's
+    browser pixel reports. No consent banner exists yet (open question with the client).
 - **Uploads** go to the Media table (bytea) and are served from `/media/<id>/<name>` — works
   on Vercel's read-only filesystem and travels with a `pg_dump`. 4 MB cap.
 - **Redirects**: coded ones in `next.config.ts` run first; admin-managed ones are applied in
