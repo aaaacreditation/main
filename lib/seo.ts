@@ -28,8 +28,14 @@ export const ORG = {
   countryName: "United States",
 } as const;
 
-/** The generated site-wide share card (app/opengraph-image.tsx). */
-export const DEFAULT_OG_IMAGE = "/opengraph-image";
+/**
+ * The generated site-wide share card (app/opengraph-image.tsx). Social
+ * networks cache a preview image by its URL: bump `v` whenever the card
+ * changes (v=2, Nov 26 2026: AAA seal + Poppins). The trailing slash is the
+ * address it is served at (trailingSlash); without it proxy.ts answers with a
+ * 308 first, which some preview crawlers do not follow.
+ */
+export const DEFAULT_OG_IMAGE = "/opengraph-image/?v=2";
 
 /** <link rel="alternate"> to the article feeds, on every page (as WordPress did). */
 export const FEED_ALTERNATES = {

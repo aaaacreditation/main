@@ -21,7 +21,7 @@ import { TermKind } from "@prisma/client";
 import { getPublishedPost, getPublishedPosts, type PublicPost } from "@/lib/content";
 import { SECTIONS, categoryFor, getTerms, sectionOf, termSlug } from "@/lib/taxonomy";
 import { CONTACT } from "@/lib/facts";
-import { FEED_ALTERNATES, SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema, clampDescription, titleFor } from "@/lib/seo";
+import { DEFAULT_OG_IMAGE, FEED_ALTERNATES, SITE_NAME, SITE_URL, articleSchema, breadcrumbSchema, clampDescription, titleFor } from "@/lib/seo";
 import { withSeoOverride } from "@/lib/seo-overrides";
 import "./news.css";
 import { postPath } from "@/lib/public-urls";
@@ -59,7 +59,7 @@ export async function postMetadata(slug: string): Promise<Metadata | null> {
   const description = clampDescription(post.seoDescription?.trim() || metaDescription(post));
   const url = `${SITE_URL}${postPath(await canonicalSlugOf(post))}`;
   // The cover when there is one, else the generated site-wide card.
-  const image = post.coverImage || "/opengraph-image";
+  const image = post.coverImage || DEFAULT_OG_IMAGE;
 
   return withSeoOverride(`/news/${post.slug}`, {
     // Long headlines are shown without the " | AAA" suffix (lib/seo.ts).

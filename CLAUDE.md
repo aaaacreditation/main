@@ -384,6 +384,11 @@ Rules:
   are in every page head (`FEED_ALTERNATES`).
 - Branded 404 (`app/not-found.tsx`), web manifest + seal icons (`app/manifest.ts`, `public/icons`,
   `app/apple-icon.png`). Structured-data logo = the square seal (`LOGO`, `public/logo/aaalog.png`).
+- **Favicon + share card = the AAA seal** (Nov 26 2026, client): `app/favicon.ico` (16–64px, transparent)
+  and `app/icon.png` (192px) are cut from `aaalog.png`; the share card `app/opengraph-image.tsx` shows the
+  seal and is set in Poppins (`public/fonts/og/`, OFL). Pages point at `DEFAULT_OG_IMAGE`
+  (`/opengraph-image/?v=N` — trailing slash, no 308); bump `v` when the card changes so social networks
+  drop their cached copy.
 - Org profiles explain each accreditation type and link to the program page and to other
   organizations in the same country (thin-content fix). An h1 with a display:block tagline needs
   `<span className="ax-sr">: </span>` before the tagline, or search engines read the two run together.
