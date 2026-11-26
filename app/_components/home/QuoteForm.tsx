@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackLead } from "@/lib/meta-pixel";
 import Icon from "../Icon";
 import { PROGRAMS } from "@/lib/facts";
 
@@ -53,6 +54,7 @@ export default function QuoteForm() {
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(data?.error || "Something went wrong — please try again.");
+      trackLead(data);
       setStatus("ok");
     } catch (err) {
       setStatus("error");

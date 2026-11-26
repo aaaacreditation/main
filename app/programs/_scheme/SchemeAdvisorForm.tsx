@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { trackLead } from "@/lib/meta-pixel";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
@@ -54,6 +55,7 @@ export default function SchemeAdvisorForm({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Something went wrong. Please try again.");
+      trackLead(data);
       setStatus("ok");
     } catch (err) {
       setStatus("error");

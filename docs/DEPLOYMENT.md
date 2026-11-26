@@ -78,6 +78,8 @@ profile, ufw 22/80/443.
 | `AUTH_URL` | optional | leave unset | Vercel's host detection works; set it only to pin the production origin. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | for lead emails | optional | Without them leads are still stored, just not emailed. |
 | `SMTP_FROM`, `LEADS_EMAIL_TO` | optional | optional | Defaults: `"AAA Website" <SMTP_USER>` / `info@aaa-accreditation.org`. |
+| `META_CAPI_TOKEN` | for Meta ads | leave unset | Conversions API token for pixel 1127877600087566 (`lib/meta-capi.ts`). Without it only the browser Pixel reports. Set with `sh deploy/set-meta-capi.sh`. |
+| `META_TEST_EVENT_CODE` | unset | optional | Sends the server's events to Events Manager → Test events instead of counting them. Remove after checking. |
 | `NOINDEX` | unset | `true` | `true` makes robots.txt disallow everything. |
 | `SEO_AUDIT_BASE_URL` | optional | optional | Where the admin SEO audit crawls. Unset = the origin of the admin request (right for Vercel). |
 

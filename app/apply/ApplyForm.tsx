@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import { trackLead } from "@/lib/meta-pixel";
 import { useSearchParams } from "next/navigation";
 import { ADVISORS, CONSULT, type ApplyProgram } from "@/lib/facts";
 
@@ -193,6 +194,7 @@ function ApplyForm({ initialProgram, onProgram }: { initialProgram: string; onPr
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Something went wrong. Please try again.");
+      trackLead(data);
       setStatus("ok");
     } catch (err) {
       setStatus("error");

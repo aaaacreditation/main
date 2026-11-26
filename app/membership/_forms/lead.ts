@@ -8,6 +8,8 @@
  * labelled block that reads cleanly in the admin Content Studio.
  */
 
+import { trackLead } from "@/lib/meta-pixel";
+
 export type LeadPayload = {
   business: string;
   contact: string;
@@ -34,6 +36,7 @@ export async function postLead(payload: LeadPayload): Promise<void> {
   if (!res.ok) {
     throw new Error(data?.error || "Something went wrong. Please try again.");
   }
+  trackLead(data);
 }
 
 /** Read a form field, trimmed. */

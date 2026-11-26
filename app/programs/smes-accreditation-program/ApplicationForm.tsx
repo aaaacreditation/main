@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackLead } from "@/lib/meta-pixel";
 
 const SECTOR_OPTIONS = [
   "Manufacturing",
@@ -53,6 +54,7 @@ export default function ApplicationForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Something went wrong. Please try again.");
+      trackLead(data);
       setStatus("ok");
     } catch (err) {
       setStatus("error");

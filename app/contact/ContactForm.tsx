@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import { trackLead } from "@/lib/meta-pixel";
 import { usePathname, useSearchParams } from "next/navigation";
 
 type Status = "idle" | "sending" | "ok" | "error";
@@ -119,6 +120,7 @@ function EnquiryForm({ initialTopic = "" }: { initialTopic?: string }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Something went wrong. Please try again.");
+      trackLead(data);
       setStatus("ok");
     } catch (err) {
       setStatus("error");

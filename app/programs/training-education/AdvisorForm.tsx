@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackLead } from "@/lib/meta-pixel";
 
 /**
  * Enquiry form for the Training & Education Providers page (final CTA).
@@ -43,6 +44,7 @@ export default function AdvisorForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Something went wrong. Please try again.");
+      trackLead(data);
       setStatus("ok");
     } catch (err) {
       setStatus("error");

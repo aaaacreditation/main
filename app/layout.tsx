@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import RevealClient from "./_components/RevealClient";
+import MetaPixel from "./_components/MetaPixel";
 import SiteChrome from "./_components/SiteChrome";
 import JsonLd from "./_components/JsonLd";
 import { SITE_URL, SITE_NAME, organizationSchema, websiteSchema } from "../lib/seo";
@@ -75,6 +76,7 @@ export default function RootLayout({
           {children}
         </SiteChrome>
         <RevealClient />
+        <MetaPixel />
       </body>
     </html>
   );

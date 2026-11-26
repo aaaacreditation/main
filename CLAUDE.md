@@ -451,7 +451,18 @@ only the TEPA landing pages (campaigns.aaa-accreditation.org) and has never run 
   activity. SMTP settings live only on the server — set them with `sh deploy/set-smtp.sh` (run by the
   user in Terminal; it prompts for the password hidden and sends a test enquiry). It derives `kind`
   (CONTACT / APPLICATION / QUOTE / ADVISOR / MEMBERSHIP) from `source` via `lib/leads.ts`. Add a new
-  form by picking a `source` that `leadKindFromSource()` classifies.
+  form by picking a `source` that `leadKindFromSource()` classifies, and call `trackLead(data)` after
+  its successful POST (see Meta below).
+- **Meta Pixel + Conversions API** (Nov 26 2026, client; pixel `1127877600087566`): `MetaPixel.tsx`
+  (rendered by `app/layout.tsx`; not on /admin, not in `next dev`) loads the Pixel, tracks PageView on
+  every navigation, and Contact on WhatsApp/phone/email clicks + custom `BookConsultationClick` on
+  Calendly links. Every form submission is a **Lead**, plus **Contact** (contact form) or
+  **SubmitApplication** (applications, memberships): `/api/leads` builds the events
+  (`leadPixelEvents`, `lib/meta-capi.ts`), sends them server-side with hashed email/phone/name, IP,
+  user agent and `_fbp`/`_fbc` (in `after()`, Graph v25.0), and returns them as `meta` so the form
+  fires the browser copy with the same event IDs (`trackLead`, `lib/meta-pixel.ts`) — Meta
+  de-duplicates. The token is server-only (`META_CAPI_TOKEN`, set by the user with
+  `sh deploy/set-meta-capi.sh`); without it only the browser Pixel reports.
 - **Uploads** go to the Media table (bytea) and are served from `/media/<id>/<name>` — works
   on Vercel's read-only filesystem and travels with a `pg_dump`. 4 MB cap.
 - **Redirects**: coded ones in `next.config.ts` run first; admin-managed ones are applied in

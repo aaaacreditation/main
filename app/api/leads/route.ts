@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/db";
 import { LEADS_TO, sendMail } from "@/lib/mailer";
 import { leadKindFromSource } from "@/lib/leads";
 import { leadEmail } from "@/lib/lead-email";
+import { leadPixelEvents, sendLeadToMeta } from "@/lib/meta-capi";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -82,5 +83,13 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-  return NextResponse.json({ ok: true });
+
+  // 3. Meta: send the conversion to the Conversions API once the visitor has
+  // their answer, and hand the same events (same IDs, no personal data) back
+  // to the form for the browser Pixel — Meta counts each pair once (Nov 2026).
+  const meta = leadPixelEvents(record);
+  const createdAt = saved?.createdAt ?? new Date();
+  after(() => sendLeadToMeta(meta, { ...data, createdAt }, req));
+
+  return NextResponse.json({ ok: true, meta });
 }
